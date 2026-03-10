@@ -1,8 +1,81 @@
-<p>home works!</p>
-<ul>
-  @for ( tournament of tournaments(); track tournament.id) {
-  <li>
-    <a routerLink="{{tournament.url}}">{{tournament.name}}</a>
-  </li>
-  }
-</ul>
+<div class="home-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <h1>Txapelketak</h1>
+    <p class="hero-subtitle">Gérez vos tournois simplement et efficacement</p>
+    <p-button
+      label="Créer un tournoi"
+      icon="pi pi-plus"
+      routerLink="/tournaments/new"
+    />
+  </div>
+
+  <!-- How it works -->
+  <section class="features-section">
+    <h2>Comment ça marche ?</h2>
+    <div class="features-grid">
+      @for (feature of features(); track feature.title) {
+        <p-card styleClass="feature-card">
+          <div class="feature-content">
+            <i [class]="feature.icon + ' feature-icon'"></i>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
+          </div>
+        </p-card>
+      }
+    </div>
+  </section>
+
+  <!-- Tournament List -->
+  <section class="tournaments-section">
+    <div class="section-header">
+      <h2>Tournois</h2>
+      <p-button
+        label="Créer un tournoi"
+        icon="pi pi-plus"
+        severity="secondary"
+        [outlined]="true"
+        routerLink="/tournaments/new"
+      />
+    </div>
+    <p-table [value]="tournaments()" styleClass="p-datatable-striped">
+      <ng-template #header>
+        <tr>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>Joueurs</th>
+          <th>Date de début</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-tournament>
+        <tr>
+          <td>{{ tournament.name }}</td>
+          <td>{{ tournament.type }}</td>
+          <td>{{ tournament.playerCount }}</td>
+          <td>{{ tournament.startDate }}</td>
+          <td>
+            <p-tag
+              [value]="statusLabel(tournament.status)"
+              [severity]="statusSeverity(tournament.status)"
+            />
+          </td>
+          <td>
+            <p-button
+              icon="pi pi-eye"
+              [rounded]="true"
+              [text]="true"
+              [routerLink]="tournament.url"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="6" class="text-center">Aucun tournoi disponible</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </section>
+</div>

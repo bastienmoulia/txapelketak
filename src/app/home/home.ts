@@ -81,6 +81,24 @@ export class Home {
       description:
         "Saisissez les résultats en temps réel et consultez les classements mis à jour automatiquement.",
     },
+    {
+      icon: "pi pi-link",
+      title: "Accès par URL",
+      description:
+        "Partagez votre tournoi simplement avec un lien. Pas d'inscription requise, aucune donnée personnelle.",
+    },
+    {
+      icon: "pi pi-dollar",
+      title: "100% gratuit",
+      description:
+        "Créez et organisez autant de tournois que vous le souhaitez, complètement gratuitement.",
+    },
+    {
+      icon: "pi pi-code",
+      title: "Libre et open source",
+      description:
+        "Code source ouvert, aucune publicité, aucune limitation. À vous de jouer.",
+    },
   ]);
 
   statusSeverity(

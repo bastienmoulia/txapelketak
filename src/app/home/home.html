@@ -15,13 +15,13 @@
     <h2>Comment ça marche ?</h2>
     <div class="features-grid">
       @for (feature of features(); track feature.title) {
-        <p-card styleClass="feature-card">
-          <div class="feature-content">
-            <i [class]="feature.icon + ' feature-icon'"></i>
-            <h3>{{ feature.title }}</h3>
-            <p>{{ feature.description }}</p>
-          </div>
-        </p-card>
+      <p-card styleClass="feature-card">
+        <div class="feature-content">
+          <i [class]="feature.icon + ' feature-icon'"></i>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </div>
+      </p-card>
       }
     </div>
   </section>
@@ -38,7 +38,7 @@
         routerLink="/tournaments/new"
       />
     </div>
-    <p-table [value]="tournaments()" styleClass="p-datatable-striped">
+    <p-table [value]="tournaments()" class="p-datatable-striped">
       <ng-template #header>
         <tr>
           <th>Nom</th>

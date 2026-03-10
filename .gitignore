@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Angular build outputs
+.angular/
+dist/
+out-tsc/
+
+# Test outputs
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+environment*.local.ts
+.env
+.env.*
+
+# IDE and editor files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated files
+.DS_Store
+Thumbs.db

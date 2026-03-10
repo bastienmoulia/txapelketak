@@ -1,0 +1,159 @@
+.tournament-new-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 4rem);
+  background-color: var(--p-surface-ground);
+}
+
+.tournament-new-card {
+  width: 100%;
+  max-width: 640px;
+  background-color: var(--p-surface-card);
+  border-radius: var(--p-border-radius-xl);
+  padding: 2rem;
+  box-shadow: var(--p-card-shadow);
+}
+
+.tournament-new-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  color: var(--p-text-color);
+}
+
+.tournament-steps {
+  margin-bottom: 2rem;
+}
+
+.tournament-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.step-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--p-text-color);
+}
+
+.step-description {
+  margin: 0;
+  color: var(--p-text-muted-color);
+  font-size: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--p-text-color);
+}
+
+.chip-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chip-input {
+  flex: 1;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--p-surface-border);
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 4rem;
+  color: var(--p-green-500);
+}
+
+.success-icon i {
+  font-size: 4rem;
+}
+
+.success-state h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--p-text-color);
+}
+
+.success-state p {
+  margin: 0;
+  color: var(--p-text-muted-color);
+}
+
+.manage-url-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background-color: var(--p-surface-100);
+  border: 1px solid var(--p-surface-border);
+  border-radius: var(--p-border-radius);
+  padding: 0.75rem 1rem;
+  word-break: break-all;
+  width: 100%;
+}
+
+.manage-url-box code {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: var(--p-primary-color);
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+:host ::ng-deep .field-error {
+  margin-top: 0.25rem;
+}
+
+:host ::ng-deep .p-floatlabel {
+  width: 100%;
+}

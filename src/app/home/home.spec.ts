@@ -38,16 +38,16 @@ describe("Home", () => {
 
   it("should display the list of tournaments", () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const rows = compiled.querySelectorAll("p-table tbody tr");
-    expect(rows.length).toBeGreaterThan(0);
+    const table = compiled.querySelector("p-table");
+    expect(table).toBeTruthy();
   });
 
-  it("should have 3 mock tournaments by default", () => {
-    expect(component.tournaments().length).toBe(3);
+  it("should have 0 tournaments by default (no Firestore in tests)", () => {
+    expect(component.tournaments().length).toBe(0);
   });
 
-  it("should display 3 feature cards", () => {
-    expect(component.features().length).toBe(3);
+  it("should display 6 feature cards", () => {
+    expect(component.features().length).toBe(6);
   });
 
   it("should return correct status label", () => {

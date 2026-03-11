@@ -14,6 +14,7 @@ import { Chip } from "primeng/chip";
 import { Button } from "primeng/button";
 import { FloatLabel } from "primeng/floatlabel";
 import { MessageModule } from "primeng/message";
+import { Header } from "../../header/header";
 
 type TournamentType = "poules" | "finale" | "poules+finale";
 
@@ -30,6 +31,7 @@ type TournamentType = "poules" | "finale" | "poules+finale";
     Button,
     FloatLabel,
     MessageModule,
+    Header,
   ],
   templateUrl: "./tournament-new.html",
   styleUrl: "./tournament-new.css",
@@ -56,10 +58,7 @@ export class TournamentNew {
     teams: new FormControl<string[]>([]),
     groups: new FormControl<string[]>([]),
     creatorUsername: new FormControl("", [Validators.required]),
-    creatorEmail: new FormControl("", [
-      Validators.required,
-      Validators.email,
-    ]),
+    creatorEmail: new FormControl("", [Validators.required, Validators.email]),
   });
 
   teamInput = signal("");

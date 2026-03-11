@@ -1,0 +1,23 @@
+.app-header {
+  background-color: var(--p-surface-card);
+  border-bottom: 1px solid var(--p-content-border-color);
+  padding: 1rem 0;
+  box-shadow: var(--p-card-shadow);
+  color: var(--p-text-color);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--p-text-color);
+}

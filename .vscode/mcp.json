@@ -1,0 +1,17 @@
+{
+  "servers": {
+    "angular-cli": {
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"]
+    },
+    "primeng": {
+      "command": "npx",
+      "args": ["-y", "@primeng/mcp"]
+    },
+    "firebase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "firebase-tools@latest", "mcp"]
+    }
+  }
+}

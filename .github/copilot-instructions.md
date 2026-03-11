@@ -18,7 +18,7 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 
 ### Inclus
 
-- Gestion des droits d'accès et des rôles utilisateurs.
+- Gestion des droits d'accès et des rôles utilisateurs par URL.
 - Gestion des tournois (création, édition, archivage).
 - Gestion des joueurs et des équipes (si applicable).
 - Gestion des matchs (planification, scores, état).
@@ -29,6 +29,7 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 
 ### Hors périmètre
 
+- Authentification classique (compte utilisateur) : accès via URL avec jeton sécurisé.
 - Paiements, inscriptions publiques en ligne.
 - Système de messagerie interne.
 - Gestion de billetterie.

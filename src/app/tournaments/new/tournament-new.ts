@@ -119,6 +119,8 @@ export class TournamentNew {
 
     if (this.form.valid) {
       const value = this.form.value;
+      const tournamentName = (value.name ?? "").trim();
+      const creatorEmail = (value.creatorEmail ?? "").trim();
 
       const tournamentId = await runInInjectionContext(
         this.environmentInjector,
@@ -141,17 +143,37 @@ export class TournamentNew {
 
       const tournament = {
         id: tournamentId,
-        name: value.name,
+        name: tournamentName,
         description: value.description ?? "",
         type: value.type as TournamentType,
         status: "waitingValidation" as const,
         creatorUsername: value.creatorUsername,
-        creatorEmail: value.creatorEmail,
+        creatorEmail,
+        creatorAdminToken: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
       };
 
       await runInInjectionContext(this.environmentInjector, async () => {
         await addDoc(this.tournamentsCollection, tournament);
+      });
+
+      const adminUrl = `${window.location.origin}/tournaments/${tournament.id}/admin/${tournament.creatorAdminToken}`;
+
+      // Write to 'mail' collection for Firebase Extension to send email
+      await runInInjectionContext(this.environmentInjector, async () => {
+        await addDoc(collection(this.firestore, "mail"), {
+          to: creatorEmail,
+          message: {
+            subject: `Acces admin - ${tournamentName}`,
+            html: `
+              <p>Bonjour,</p>
+              <p>Votre tournoi <strong>${tournamentName}</strong> a ete cree.</p>
+              <p>Voici votre lien d'administration :</p>
+              <p><a href="${adminUrl}">${adminUrl}</a></p>
+              <p>Conservez ce lien de maniere privee.</p>
+            `,
+          },
+        });
       });
 
       this.submitted.set(true);

@@ -157,3 +157,17 @@
 :host ::ng-deep .p-floatlabel {
   width: 100%;
 }
+
+:host ::ng-deep .field .p-inputtext,
+:host ::ng-deep .field .p-textarea {
+  width: 100%;
+}
+
+:host ::ng-deep .field .p-selectbutton {
+  display: flex;
+  width: 100%;
+}
+
+:host ::ng-deep .field .p-selectbutton .p-togglebutton {
+  flex: 1;
+}

@@ -1,8 +1,13 @@
 import { Routes } from "@angular/router";
-import { Home } from "./home/home";
-import { TournamentNew } from "./tournaments/new/tournament-new";
 
 export const routes: Routes = [
-  { path: "", component: Home },
-  { path: "tournaments/new", component: TournamentNew },
+  {
+    path: "",
+    loadComponent: () => import("./home/home").then((m) => m.Home),
+  },
+  {
+    path: "tournaments/new",
+    loadComponent: () =>
+      import("./tournaments/new/tournament-new").then((m) => m.TournamentNew),
+  },
 ];

@@ -51,13 +51,6 @@
             <label for="description">Description (optionnelle)</label>
           </p-floatlabel>
         </div>
-      </div>
-      }
-
-      <!-- Step 2: Configuration -->
-      @if (currentStep() === 1) {
-      <div class="form-step" data-testid="step-2">
-        <h2 class="step-title">Configuration du tournoi</h2>
 
         <div class="field">
           <label class="field-label">Type de tournoi *</label>
@@ -69,80 +62,12 @@
             data-testid="field-type"
           />
         </div>
-
-        <div class="field">
-          <label class="field-label">Équipes (optionnel)</label>
-          <div class="chip-input-row">
-            <input
-              pInputText
-              placeholder="Nom de l'équipe"
-              [value]="teamInput()"
-              (input)="teamInput.set($any($event.target).value)"
-              (keydown)="onTeamInputKeydown($event)"
-              class="chip-input"
-              data-testid="field-team-input"
-            />
-            <p-button
-              type="button"
-              icon="pi pi-plus"
-              [rounded]="true"
-              [text]="true"
-              (onClick)="addTeam(teamInput())"
-              aria-label="Ajouter une équipe"
-            />
-          </div>
-          @if (teams.length > 0) {
-          <div class="chip-list" data-testid="teams-list">
-            @for (team of teams; track team) {
-            <p-chip
-              [label]="team"
-              [removable]="true"
-              (onRemove)="removeTeam(team)"
-            />
-            }
-          </div>
-          }
-        </div>
-
-        <div class="field">
-          <label class="field-label">Groupes (optionnel)</label>
-          <div class="chip-input-row">
-            <input
-              pInputText
-              placeholder="Nom du groupe"
-              [value]="groupInput()"
-              (input)="groupInput.set($any($event.target).value)"
-              (keydown)="onGroupInputKeydown($event)"
-              class="chip-input"
-              data-testid="field-group-input"
-            />
-            <p-button
-              type="button"
-              icon="pi pi-plus"
-              [rounded]="true"
-              [text]="true"
-              (onClick)="addGroup(groupInput())"
-              aria-label="Ajouter un groupe"
-            />
-          </div>
-          @if (groups.length > 0) {
-          <div class="chip-list" data-testid="groups-list">
-            @for (group of groups; track group) {
-            <p-chip
-              [label]="group"
-              [removable]="true"
-              (onRemove)="removeGroup(group)"
-            />
-            }
-          </div>
-          }
-        </div>
       </div>
       }
 
-      <!-- Step 3: Créateur -->
-      @if (currentStep() === 2) {
-      <div class="form-step" data-testid="step-3">
+      <!-- Step 2: Créateur -->
+      @if (currentStep() === 1) {
+      <div class="form-step" data-testid="step-2">
         <h2 class="step-title">Informations du créateur</h2>
         <p class="step-description">
           Ces informations permettront de vous identifier comme organisateur. Un
@@ -242,7 +167,7 @@
             label="Créer le tournoi"
             icon="pi pi-check"
             iconPos="right"
-            [disabled]="!isStep3Valid()"
+            [disabled]="!isStep2Valid()"
             data-testid="btn-submit"
           />
           }
@@ -255,38 +180,16 @@
       <div class="success-icon">
         <i class="pi pi-check-circle"></i>
       </div>
-      <h2>Tournoi créé avec succès !</h2>
-      <p>Conservez ce lien pour gérer votre tournoi :</p>
-      <div class="manage-url-box">
-        <code>{{ createdManageUrl() }}</code>
-        <p-button
-          type="button"
-          [icon]="urlCopied() ? 'pi pi-check' : 'pi pi-copy'"
-          [label]="urlCopied() ? 'Copié !' : 'Copier'"
-          [severity]="urlCopied() ? 'success' : 'secondary'"
-          [text]="true"
-          [rounded]="true"
-          (onClick)="copyManageUrl()"
-          aria-label="Copier le lien de gestion"
-          data-testid="btn-copy-url"
-        />
-      </div>
-      <div class="success-actions">
-        <p-button
-          label="Gérer le tournoi"
-          icon="pi pi-cog"
-          [routerLink]="createdManageUrl()"
-          data-testid="btn-manage"
-        />
-        <p-button
-          label="Retour à l'accueil"
-          icon="pi pi-home"
-          severity="secondary"
-          [outlined]="true"
-          routerLink="/"
-          data-testid="btn-home"
-        />
-      </div>
+      <h2>Tournoi créé</h2>
+      <p>Votre tournoi est en attente de validation.</p>
+      <p-button
+        label="Retour à l'accueil"
+        icon="pi pi-home"
+        severity="secondary"
+        [outlined]="true"
+        routerLink="/"
+        data-testid="btn-home"
+      />
     </div>
     }
   </div>

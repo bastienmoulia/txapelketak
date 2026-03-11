@@ -172,7 +172,8 @@ export class TournamentDetail {
         },
       });
       this.resendEmailSent.set(true);
-    }).catch(() => {
+    }).catch((err) => {
+      console.error("Failed to resend email:", err);
       this.resendEmailError.set("Une erreur est survenue. Veuillez réessayer.");
     });
   }
@@ -215,7 +216,8 @@ export class TournamentDetail {
       this.managerAddSuccess.set(true);
       this.newManagerUsername.reset();
       this.newManagerEmail.reset();
-    }).catch(() => {
+    }).catch((err) => {
+      console.error("Failed to add manager:", err);
       this.managerAddError.set("Une erreur est survenue. Veuillez réessayer.");
     });
   }

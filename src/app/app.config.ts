@@ -27,8 +27,6 @@ export const appConfig: ApplicationConfig = {
         apiKey: "AIzaSyAml_FZRsRZjrClzGdbqyWkWTEQ3SKmTlA",
         authDomain: "txapelketak-ac529.firebaseapp.com",
         messagingSenderId: "210687482712",
-        projectNumber: "210687482712",
-        version: "2",
       }),
     ),
     provideFirestore(() => getFirestore()),

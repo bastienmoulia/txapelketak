@@ -28,14 +28,16 @@ interface Feature {
   styleUrl: "./home.css",
 })
 export class Home {
-  firestore = inject(Firestore);
+  firestore = inject(Firestore, { optional: true });
   tournaments = signal<Tournament[]>([]);
 
   constructor() {
-    const tournamentsCollection = collection(this.firestore, "tournaments");
-    collectionData(tournamentsCollection).subscribe((data) => {
-      this.tournaments.set(data as Tournament[]);
-    });
+    if (this.firestore) {
+      const tournamentsCollection = collection(this.firestore, "tournaments");
+      collectionData(tournamentsCollection).subscribe((data) => {
+        this.tournaments.set(data as Tournament[]);
+      });
+    }
   }
 
   features = signal<Feature[]>([

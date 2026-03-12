@@ -75,3 +75,9 @@
 .section-header h2 {
   margin-bottom: 0;
 }
+
+.see-all-tournaments {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

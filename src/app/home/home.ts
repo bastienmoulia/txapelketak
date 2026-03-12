@@ -1,4 +1,5 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Firestore, collection, collectionData } from "@angular/fire/firestore";
 import { RouterLink } from "@angular/router";
 import { ButtonModule } from "primeng/button";
@@ -31,12 +32,24 @@ export class Home {
   firestore = inject(Firestore, { optional: true });
   tournaments = signal<Tournament[]>([]);
 
+  recentTournaments = computed(() =>
+    [...this.tournaments()]
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      })
+      .slice(0, 5),
+  );
+
   constructor() {
     if (this.firestore) {
       const tournamentsCollection = collection(this.firestore, "tournaments");
-      collectionData(tournamentsCollection).subscribe((data) => {
-        this.tournaments.set(data as Tournament[]);
-      });
+      collectionData(tournamentsCollection)
+        .pipe(takeUntilDestroyed())
+        .subscribe((data) => {
+          this.tournaments.set(data as Tournament[]);
+        });
     }
   }
 
@@ -108,6 +121,8 @@ export class Home {
         return "Terminé";
       case "archived":
         return "Archivé";
+      case "waitingValidation":
+        return "En attente de validation";
       default:
         return status;
     }

@@ -21,3 +21,8 @@
   font-weight: 700;
   color: var(--p-text-color);
 }
+
+.app-title a {
+  color: inherit;
+  text-decoration: none;
+}

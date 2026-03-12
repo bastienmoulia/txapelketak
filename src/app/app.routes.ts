@@ -11,6 +11,13 @@ export const routes: Routes = [
       import("./tournaments/new/tournament-new").then((m) => m.TournamentNew),
   },
   {
+    path: "tournaments",
+    loadComponent: () =>
+      import("./tournaments/list/tournament-list").then(
+        (m) => m.TournamentList,
+      ),
+  },
+  {
     path: ":id",
     loadComponent: () =>
       import("./tournaments/detail/tournament-detail").then(

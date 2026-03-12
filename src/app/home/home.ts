@@ -7,7 +7,9 @@ import { CardModule } from "primeng/card";
 import { TableModule } from "primeng/table";
 import { TagModule } from "primeng/tag";
 import { CallPipe } from "ngxtension/call-apply";
-import { Tournament, TournamentStatus } from "./tournament.interface";
+import { Tournament } from "./tournament.interface";
+import { TournamentStatusLabelPipe } from "../shared/pipes/tournament-status-label.pipe";
+import { TournamentStatusSeverityPipe } from "../shared/pipes/tournament-status-severity.pipe";
 
 interface Feature {
   icon: string;
@@ -24,6 +26,8 @@ interface Feature {
     TableModule,
     TagModule,
     CallPipe,
+    TournamentStatusLabelPipe,
+    TournamentStatusSeverityPipe,
   ],
   templateUrl: "./home.html",
   styleUrl: "./home.css",
@@ -91,42 +95,6 @@ export class Home {
         "Code source ouvert, aucune publicité, aucune limitation. À vous de jouer.",
     },
   ]);
-
-  statusSeverity(
-    status: TournamentStatus,
-  ): "success" | "info" | "secondary" | "warn" | "danger" | "contrast" {
-    switch (status) {
-      case "ongoing":
-        return "success";
-      case "upcoming":
-        return "info";
-      case "completed":
-        return "secondary";
-      case "waitingValidation":
-        return "warn";
-      case "archived":
-        return "danger";
-      default:
-        return "warn";
-    }
-  }
-
-  statusLabel(status: TournamentStatus): string {
-    switch (status) {
-      case "ongoing":
-        return "En cours";
-      case "upcoming":
-        return "À venir";
-      case "completed":
-        return "Terminé";
-      case "archived":
-        return "Archivé";
-      case "waitingValidation":
-        return "En attente de validation";
-      default:
-        return status;
-    }
-  }
 
   getTournamentLink(tournament: Tournament): string {
     return `/${tournament.id}`;

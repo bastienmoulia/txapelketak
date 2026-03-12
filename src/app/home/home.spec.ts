@@ -79,20 +79,4 @@ describe("Home", () => {
   it("should display 6 feature cards", () => {
     expect(component.features().length).toBe(6);
   });
-
-  it("should return correct status label", () => {
-    expect(component.statusLabel("ongoing")).toBe("En cours");
-    expect(component.statusLabel("upcoming")).toBe("À venir");
-    expect(component.statusLabel("completed")).toBe("Terminé");
-    expect(component.statusLabel("archived")).toBe("Archivé");
-    expect(component.statusLabel("waitingValidation")).toBe(
-      "En attente de validation",
-    );
-  });
-
-  it("should return correct status severity", () => {
-    expect(component.statusSeverity("ongoing")).toBe("success");
-    expect(component.statusSeverity("upcoming")).toBe("info");
-    expect(component.statusSeverity("completed")).toBe("secondary");
-  });
 });

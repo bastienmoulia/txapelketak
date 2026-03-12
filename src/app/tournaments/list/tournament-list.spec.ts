@@ -46,19 +46,8 @@ describe("TournamentList", () => {
     expect(hasCreateButton).toBe(true);
   });
 
-  it("should return correct status label", () => {
-    expect(component.statusLabel("ongoing")).toBe("En cours");
-    expect(component.statusLabel("upcoming")).toBe("À venir");
-    expect(component.statusLabel("completed")).toBe("Terminé");
-    expect(component.statusLabel("archived")).toBe("Archivé");
-    expect(component.statusLabel("waitingValidation")).toBe(
-      "En attente de validation",
-    );
-  });
-
-  it("should return correct status severity", () => {
-    expect(component.statusSeverity("ongoing")).toBe("success");
-    expect(component.statusSeverity("upcoming")).toBe("info");
-    expect(component.statusSeverity("completed")).toBe("secondary");
+  it("should display the header", () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector("app-header")).toBeTruthy();
   });
 });

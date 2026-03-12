@@ -53,8 +53,8 @@
           <td>{{ tournament.type }}</td>
           <td>
             <p-tag
-              [value]="statusLabel(tournament.status)"
-              [severity]="statusSeverity(tournament.status)"
+              [value]="tournament.status | tournamentStatusLabel"
+              [severity]="tournament.status | tournamentStatusSeverity"
             />
           </td>
           <td>

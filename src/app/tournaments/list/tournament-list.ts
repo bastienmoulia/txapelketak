@@ -6,11 +6,23 @@ import { ButtonModule } from "primeng/button";
 import { TableModule } from "primeng/table";
 import { TagModule } from "primeng/tag";
 import { CallPipe } from "ngxtension/call-apply";
-import { Tournament, TournamentStatus } from "../../home/tournament.interface";
+import { Tournament } from "../../home/tournament.interface";
+import { Header } from "../../header/header";
+import { TournamentStatusLabelPipe } from "../../shared/pipes/tournament-status-label.pipe";
+import { TournamentStatusSeverityPipe } from "../../shared/pipes/tournament-status-severity.pipe";
 
 @Component({
   selector: "app-tournament-list",
-  imports: [RouterLink, ButtonModule, TableModule, TagModule, CallPipe],
+  imports: [
+    RouterLink,
+    ButtonModule,
+    TableModule,
+    TagModule,
+    CallPipe,
+    Header,
+    TournamentStatusLabelPipe,
+    TournamentStatusSeverityPipe,
+  ],
   templateUrl: "./tournament-list.html",
   styleUrl: "./tournament-list.css",
 })
@@ -26,42 +38,6 @@ export class TournamentList {
         .subscribe((data) => {
           this.tournaments.set(data as Tournament[]);
         });
-    }
-  }
-
-  statusSeverity(
-    status: TournamentStatus,
-  ): "success" | "info" | "secondary" | "warn" | "danger" | "contrast" {
-    switch (status) {
-      case "ongoing":
-        return "success";
-      case "upcoming":
-        return "info";
-      case "completed":
-        return "secondary";
-      case "waitingValidation":
-        return "warn";
-      case "archived":
-        return "danger";
-      default:
-        return "warn";
-    }
-  }
-
-  statusLabel(status: TournamentStatus): string {
-    switch (status) {
-      case "ongoing":
-        return "En cours";
-      case "upcoming":
-        return "À venir";
-      case "completed":
-        return "Terminé";
-      case "archived":
-        return "Archivé";
-      case "waitingValidation":
-        return "En attente de validation";
-      default:
-        return status;
     }
   }
 

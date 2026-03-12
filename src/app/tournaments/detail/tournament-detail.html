@@ -66,7 +66,10 @@
 
       @if (!resendEmailSent()) {
       <div class="resend-email-section" data-testid="resend-email-section">
-        <p>Vous n'avez pas reçu l'email de confirmation ? Renseignez votre adresse email pour le renvoyer.</p>
+        <p>
+          Vous n'avez pas reçu l'email de confirmation ? Renseignez votre
+          adresse email pour le renvoyer.
+        </p>
         <div class="resend-email-form">
           <p-floatlabel variant="on">
             <input
@@ -85,8 +88,7 @@
             text="Veuillez saisir une adresse email valide."
             styleClass="field-error"
           />
-          }
-          @if (resendEmailError()) {
+          } @if (resendEmailError()) {
           <p-message
             severity="error"
             [text]="resendEmailError()"
@@ -110,117 +112,8 @@
       />
       }
     </div>
-    }
-
-    <!-- Tournament content (when not waiting validation) -->
-    @if (t.status !== 'waitingValidation') {
-
-    <!-- Teams / Players section -->
-    <section class="section" data-testid="teams-section">
-      <h2>
-        <i class="pi pi-users"></i> Équipes / Joueurs
-      </h2>
-      @if (t.teams && t.teams.length > 0) {
-      <ul class="teams-list" data-testid="teams-list">
-        @for (team of t.teams; track team) {
-        <li class="team-item">{{ team }}</li>
-        }
-      </ul>
-      } @else {
-      <p class="empty-message">Aucune équipe ou joueur enregistré.</p>
-      }
-    </section>
-
-    <!-- Type-specific content (dynamic) -->
-    @if (t.type === 'poules' || t.type === 'poules+finale') {
-    <section class="section" data-testid="poules-section">
-      <h2><i class="pi pi-table"></i> Poules</h2>
-      @if (t.groups && t.groups.length > 0) {
-      <div class="groups-grid">
-        @for (group of t.groups; track group) {
-        <p-card [header]="group" styleClass="group-card">
-          <p class="empty-message">Aucun match dans ce groupe.</p>
-        </p-card>
-        }
-      </div>
-      } @else {
-      <p class="empty-message">Aucun groupe configuré.</p>
-      }
-    </section>
-    }
-
-    @if (t.type === 'finale' || t.type === 'poules+finale') {
-    <section class="section" data-testid="finale-section">
-      <h2><i class="pi pi-trophy"></i> Phase finale</h2>
-      <p class="empty-message">La phase finale n'a pas encore commencé.</p>
-    </section>
-    }
-
-    <!-- Managers section -->
-    <section class="section" data-testid="managers-section">
-      <h2><i class="pi pi-user-edit"></i> Organisateurs</h2>
-      @if (t.managers && t.managers.length > 0) {
-      <ul class="managers-list">
-        @for (manager of t.managers; track manager.email) {
-        <li class="manager-item">
-          <i class="pi pi-user"></i>
-          <span>{{ manager.username }}</span>
-          <span class="manager-email">{{ manager.email }}</span>
-        </li>
-        }
-      </ul>
-      } @else {
-      <p class="empty-message">Aucun organisateur supplémentaire.</p>
-      }
-
-      <div class="add-manager-form" data-testid="add-manager-form">
-        <h3>Inviter un organisateur</h3>
-        <div class="manager-form-fields">
-          <p-floatlabel variant="on">
-            <input
-              pInputText
-              id="managerUsername"
-              [formControl]="newManagerUsername"
-              class="w-full"
-              data-testid="field-manager-username"
-            />
-            <label for="managerUsername">Pseudo *</label>
-          </p-floatlabel>
-          <p-floatlabel variant="on">
-            <input
-              pInputText
-              id="managerEmail"
-              [formControl]="newManagerEmail"
-              type="email"
-              class="w-full"
-              data-testid="field-manager-email"
-            />
-            <label for="managerEmail">Email *</label>
-          </p-floatlabel>
-          <p-button
-            label="Inviter"
-            icon="pi pi-send"
-            (onClick)="onAddManager()"
-            data-testid="btn-add-manager"
-          />
-        </div>
-        @if (managerAddError()) {
-        <p-message
-          severity="error"
-          [text]="managerAddError()"
-          data-testid="add-manager-error"
-        />
-        }
-        @if (managerAddSuccess()) {
-        <p-message
-          severity="success"
-          text="Invitation envoyée avec succès !"
-          data-testid="add-manager-success"
-        />
-        }
-      </div>
-    </section>
-
+    } @else {
+    <h2>TODO</h2>
     }
   </div>
   }

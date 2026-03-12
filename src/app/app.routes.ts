@@ -24,4 +24,11 @@ export const routes: Routes = [
         (m) => m.TournamentDetail,
       ),
   },
+  {
+    path: ":id/admin",
+    loadComponent: () =>
+      import("./tournaments/admin/tournament-admin").then(
+        (m) => m.TournamentAdmin,
+      ),
+  },
 ];

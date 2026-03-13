@@ -19,7 +19,7 @@ export interface Manager {
   token: string;
 }
 
-export type TournamentType = "poules" | "finale" | "poules+finale";
+export type TournamentType = "poules" | "finale" | "poules_finale";
 
 export type TournamentStatus =
   | "waitingValidation"

@@ -1,4 +1,5 @@
-.app-header {
+:host {
+  display: block;
   background-color: var(--p-surface-card);
   border-bottom: 1px solid var(--p-content-border-color);
   padding: 1rem 0;
@@ -6,7 +7,7 @@
   color: var(--p-text-color);
 }
 
-.header-container {
+header {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
@@ -15,14 +16,19 @@
   align-items: center;
 }
 
-.app-title {
+h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--p-text-color);
 }
 
-.app-title a {
+h1 a {
   color: inherit;
   text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
 }

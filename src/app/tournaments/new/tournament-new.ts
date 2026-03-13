@@ -31,9 +31,8 @@ import { Button } from "primeng/button";
 import { FloatLabel } from "primeng/floatlabel";
 import { MessageModule } from "primeng/message";
 import { startWith } from "rxjs";
-import { Header } from "../../header/header";
-
-type TournamentType = "poules" | "finale" | "poules+finale";
+import { Header } from "../../shared/header/header";
+import { TournamentType } from "../../home/tournament.interface";
 
 @Component({
   selector: "app-tournament-new",
@@ -63,7 +62,7 @@ export class TournamentNew {
   typeOptions: { label: string; value: TournamentType }[] = [
     { label: "Poules", value: "poules" },
     { label: "Phase finale", value: "finale" },
-    { label: "Poules + Phase finale", value: "poules+finale" },
+    { label: "Poules + Phase finale", value: "poules_finale" },
   ];
 
   form = new FormGroup({

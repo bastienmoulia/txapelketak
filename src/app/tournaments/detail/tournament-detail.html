@@ -2,119 +2,68 @@
 
 <div class="tournament-detail-container">
   @if (loading()) {
-  <div class="loading-state" data-testid="loading-state">
-    <i class="pi pi-spin pi-spinner loading-spinner"></i>
-    <p>Chargement du tournoi...</p>
-  </div>
-  } @else if (notFound()) {
-  <div class="not-found-state" data-testid="not-found-state">
-    <i class="pi pi-exclamation-triangle not-found-icon"></i>
-    <h2>Tournoi introuvable</h2>
-    <p>Ce tournoi n'existe pas ou a été supprimé.</p>
-    <p-button
-      label="Retour à l'accueil"
-      icon="pi pi-home"
-      severity="secondary"
-      [outlined]="true"
-      routerLink="/"
-      data-testid="btn-home"
-    />
-  </div>
-  } @else if (tournament(); as t) {
-  <div class="tournament-content">
-    <!-- Header -->
-    <div class="tournament-header">
-      <div class="tournament-title-row">
-        <h1 data-testid="tournament-name">{{ t.name }}</h1>
-        <p-tag
-          [value]="statusLabel(t.status)"
-          [severity]="statusSeverity(t.status)"
-          data-testid="tournament-status"
-        />
-      </div>
-      @if (t.description) {
-      <p class="tournament-description" data-testid="tournament-description">
-        {{ t.description }}
-      </p>
-      }
-      <p class="tournament-type">
-        <i class="pi pi-trophy"></i> {{ typeLabel(t.type) }}
-      </p>
+    <div class="loading-state" data-testid="loading-state">
+      <i class="pi pi-spin pi-spinner loading-spinner"></i>
+      <p>Chargement du tournoi...</p>
     </div>
-
-    <!-- Waiting validation message -->
-    @if (t.status === 'waitingValidation') {
-    <div class="validation-section" data-testid="validation-section">
-      <p-message
-        severity="warn"
-        styleClass="validation-message"
-        data-testid="validation-message"
-      >
-        <ng-template #content>
-          <div class="validation-content">
-            <i class="pi pi-clock"></i>
-            <div>
-              <strong>En attente de validation</strong>
-              <p>
-                Ce tournoi est en attente de validation par l'administrateur.
-                Vous recevrez un email une fois le tournoi validé.
-              </p>
-            </div>
-          </div>
-        </ng-template>
-      </p-message>
-
-      @if (!resendEmailSent()) {
-      <div class="resend-email-section" data-testid="resend-email-section">
-        <p>
-          Vous n'avez pas reçu l'email de confirmation ? Renseignez votre
-          adresse email pour le renvoyer.
-        </p>
-        <div class="resend-email-form">
-          <p-floatlabel variant="on">
-            <input
-              pInputText
-              id="resendEmail"
-              [formControl]="resendEmailControl"
-              type="email"
-              class="w-full"
-              data-testid="field-resend-email"
-            />
-            <label for="resendEmail">Votre adresse email</label>
-          </p-floatlabel>
-          @if (resendEmailControl.invalid && resendEmailControl.touched) {
-          <p-message
-            severity="error"
-            text="Veuillez saisir une adresse email valide."
-            styleClass="field-error"
-          />
-          } @if (resendEmailError()) {
-          <p-message
-            severity="error"
-            [text]="resendEmailError()"
-            styleClass="field-error"
-            data-testid="resend-email-error"
-          />
-          }
-          <p-button
-            label="Renvoyer l'email"
-            icon="pi pi-send"
-            (onClick)="onResendEmail()"
-            data-testid="btn-resend-email"
+  } @else if (notFound()) {
+    <div class="not-found-state" data-testid="not-found-state">
+      <i class="pi pi-exclamation-triangle not-found-icon"></i>
+      <h2>Tournoi introuvable</h2>
+      <p>Ce tournoi n'existe pas ou a été supprimé.</p>
+      <p-button
+        label="Retour à l'accueil"
+        icon="pi pi-home"
+        severity="secondary"
+        [outlined]="true"
+        routerLink="/"
+        data-testid="btn-home"
+      />
+    </div>
+  } @else if (tournament(); as t) {
+    <div class="tournament-content">
+      <!-- Header -->
+      <div class="tournament-header">
+        <div class="tournament-title-row">
+          <h1 data-testid="tournament-name">{{ t.name }}</h1>
+          <p-tag
+            [value]="statusLabel(t.status)"
+            [severity]="statusSeverity(t.status)"
+            data-testid="tournament-status"
           />
         </div>
+        @if (t.description) {
+          <p class="tournament-description" data-testid="tournament-description">
+            {{ t.description }}
+          </p>
+        }
       </div>
+
+      <!-- Waiting validation message -->
+      @if (t.status === 'waitingValidation') {
+        <div class="validation-section" data-testid="validation-section">
+          <p-message
+            severity="warn"
+            styleClass="validation-message"
+            data-testid="validation-message"
+          >
+            <ng-template #content>
+              <div class="validation-content">
+                <i class="pi pi-clock"></i>
+                <div>
+                  <strong>En attente de validation</strong>
+                  <p>
+                    Ce tournoi est en attente de validation par l'administrateur. Vous recevrez un
+                    email une fois le tournoi validé.
+                  </p>
+                </div>
+              </div>
+            </ng-template>
+          </p-message>
+        </div>
       } @else {
-      <p-message
-        severity="success"
-        text="Email renvoyé avec succès !"
-        data-testid="resend-email-success"
-      />
+        <app-types [tournament]="t" />
       }
     </div>
-    } @else {
-    <h2>TODO</h2>
-    }
-  </div>
   }
 </div>

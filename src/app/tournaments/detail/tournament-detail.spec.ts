@@ -60,6 +60,6 @@ describe("TournamentDetail", () => {
   it("should return correct type label", () => {
     expect(component.typeLabel("poules")).toBe("Poules");
     expect(component.typeLabel("finale")).toBe("Phase finale");
-    expect(component.typeLabel("poules+finale")).toBe("Poules + Phase finale");
+    expect(component.typeLabel("poules_finale")).toBe("Poules + Phase finale");
   });
 });

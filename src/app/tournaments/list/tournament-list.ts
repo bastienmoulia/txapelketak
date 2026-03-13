@@ -7,7 +7,7 @@ import { TableModule } from "primeng/table";
 import { TagModule } from "primeng/tag";
 import { CallPipe } from "ngxtension/call-apply";
 import { Tournament } from "../../home/tournament.interface";
-import { Header } from "../../header/header";
+import { Header } from "../../shared/header/header";
 import { TournamentStatusLabelPipe } from "../../shared/pipes/tournament-status-label.pipe";
 import { TournamentStatusSeverityPipe } from "../../shared/pipes/tournament-status-severity.pipe";
 

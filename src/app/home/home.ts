@@ -1,15 +1,15 @@
-import { Component, computed, inject, signal } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Firestore, collection, collectionData } from "@angular/fire/firestore";
-import { RouterLink } from "@angular/router";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { TableModule } from "primeng/table";
-import { TagModule } from "primeng/tag";
-import { CallPipe } from "ngxtension/call-apply";
-import { Tournament } from "./tournament.interface";
-import { TournamentStatusLabelPipe } from "../shared/pipes/tournament-status-label.pipe";
-import { TournamentStatusSeverityPipe } from "../shared/pipes/tournament-status-severity.pipe";
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { CallPipe } from 'ngxtension/call-apply';
+import { Tournament } from './tournament.interface';
+import { TournamentStatusLabelPipe } from '../shared/pipes/tournament-status-label.pipe';
+import { TournamentStatusSeverityPipe } from '../shared/pipes/tournament-status-severity.pipe';
 
 interface Feature {
   icon: string;
@@ -18,7 +18,7 @@ interface Feature {
 }
 
 @Component({
-  selector: "app-home",
+  selector: 'app-home',
   imports: [
     RouterLink,
     ButtonModule,
@@ -29,8 +29,8 @@ interface Feature {
     TournamentStatusLabelPipe,
     TournamentStatusSeverityPipe,
   ],
-  templateUrl: "./home.html",
-  styleUrl: "./home.css",
+  templateUrl: './home.html',
+  styleUrl: './home.css',
 })
 export class Home {
   firestore = inject(Firestore, { optional: true });
@@ -48,7 +48,7 @@ export class Home {
 
   constructor() {
     if (this.firestore) {
-      const tournamentsCollection = collection(this.firestore, "tournaments");
+      const tournamentsCollection = collection(this.firestore, 'tournaments');
       collectionData(tournamentsCollection)
         .pipe(takeUntilDestroyed())
         .subscribe((data) => {
@@ -59,44 +59,41 @@ export class Home {
 
   features = signal<Feature[]>([
     {
-      icon: "pi pi-trophy",
-      title: "Créez votre tournoi",
-      description:
-        "Configurez facilement vos tournois : poules, phases finales, ou les deux.",
+      icon: 'pi pi-trophy',
+      title: 'Créez votre tournoi',
+      description: 'Configurez facilement vos tournois : poules, phases finales, ou les deux.',
     },
     {
-      icon: "pi pi-users",
-      title: "Gérez les joueurs",
-      description:
-        "Ajoutez vos participants et organisez-les en groupes ou en têtes de série.",
+      icon: 'pi pi-users',
+      title: 'Gérez les joueurs',
+      description: 'Ajoutez vos participants et organisez-les en groupes ou en têtes de série.',
     },
     {
-      icon: "pi pi-chart-bar",
-      title: "Suivez les scores",
+      icon: 'pi pi-chart-bar',
+      title: 'Suivez les scores',
       description:
-        "Saisissez les résultats en temps réel et consultez les classements mis à jour automatiquement.",
+        'Saisissez les résultats en temps réel et consultez les classements mis à jour automatiquement.',
     },
     {
-      icon: "pi pi-link",
-      title: "Accès par URL",
+      icon: 'pi pi-link',
+      title: 'Accès par URL',
       description:
         "Partagez votre tournoi simplement avec un lien. Pas d'inscription requise, aucune donnée personnelle.",
     },
     {
-      icon: "pi pi-euro",
-      title: "100% gratuit",
+      icon: 'pi pi-euro',
+      title: '100% gratuit',
       description:
-        "Créez et organisez autant de tournois que vous le souhaitez, complètement gratuitement.",
+        'Créez et organisez autant de tournois que vous le souhaitez, complètement gratuitement.',
     },
     {
-      icon: "pi pi-code",
-      title: "Libre et open source",
-      description:
-        "Code source ouvert, aucune publicité, aucune limitation. À vous de jouer.",
+      icon: 'pi pi-code',
+      title: 'Libre et open source',
+      description: 'Code source ouvert, aucune publicité, aucune limitation. À vous de jouer.',
     },
   ]);
 
   getTournamentLink(tournament: Tournament): string {
-    return `/${tournament.id}`;
+    return `/tournaments/${tournament.id}`;
   }
 }

@@ -131,52 +131,6 @@
   gap: 1rem;
 }
 
-.managers-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.manager-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--p-surface-ground);
-  border-radius: var(--p-border-radius);
-}
-
-.manager-email {
-  color: var(--p-text-muted-color);
-  font-size: 0.875rem;
-}
-
-.add-manager-form {
-  border-top: 1px solid var(--p-surface-border);
-  padding-top: 1rem;
-  margin-top: 1rem;
-}
-
-.add-manager-form h3 {
-  margin: 0 0 1rem;
-  font-size: 1rem;
-}
-
-.manager-form-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: flex-end;
-}
-
-.manager-form-fields p-floatlabel {
-  flex: 1;
-  min-width: 200px;
-}
-
 .empty-message {
   color: var(--p-text-muted-color);
   font-style: italic;

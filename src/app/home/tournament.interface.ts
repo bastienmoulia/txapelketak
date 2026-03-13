@@ -1,29 +1,26 @@
 export interface Tournament {
-  id: string;
+  id: number;
   name: string;
   description: string;
   type: TournamentType;
   status: TournamentStatus;
-  creatorUsername?: string;
-  creatorEmail?: string;
-  manageToken?: string;
-  createdAt?: string;
-  teams?: string[];
-  groups?: string[];
-  managers?: Manager[];
+  createdAt: string;
+  data?: any;
 }
 
-export interface Manager {
+export interface User {
+  tournamentId: number;
   username: string;
   email: string;
   token: string;
+  rights: string[]; // e.g. ['admin', 'manager']
 }
 
-export type TournamentType = "poules" | "finale" | "poules_finale";
+export type TournamentType = 'poules' | 'finale' | 'poules_finale';
 
 export type TournamentStatus =
-  | "waitingValidation"
-  | "upcoming"
-  | "ongoing"
-  | "completed"
-  | "archived";
+  | 'waitingValidation'
+  | 'upcoming'
+  | 'ongoing'
+  | 'completed'
+  | 'archived';

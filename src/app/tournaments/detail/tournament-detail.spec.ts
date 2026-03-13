@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { provideRouter } from "@angular/router";
-import { ActivatedRoute } from "@angular/router";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { TournamentDetail } from "./tournament-detail";
+import { TournamentDetail } from './tournament-detail';
 
-describe("TournamentDetail", () => {
+describe('TournamentDetail', () => {
   let component: TournamentDetail;
   let fixture: ComponentFixture<TournamentDetail>;
 
@@ -16,7 +16,7 @@ describe("TournamentDetail", () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { paramMap: { get: () => "test-id-123" } },
+            snapshot: { paramMap: { get: () => 'test-id-123' } },
           },
         },
       ],
@@ -27,39 +27,56 @@ describe("TournamentDetail", () => {
     await fixture.whenStable();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should read the tournament id from the route", () => {
-    expect(component.tournamentId()).toBe("test-id-123");
+  it('should read the tournament id from the route', () => {
+    expect(component.tournamentId()).toBe('test-id-123');
   });
 
-  it("should show not found when tournament does not exist", () => {
+  it('should show not found when tournament does not exist', () => {
     expect(component.notFound()).toBe(true);
   });
 
-  it("should return correct status label", () => {
-    expect(component.statusLabel("ongoing")).toBe("En cours");
-    expect(component.statusLabel("upcoming")).toBe("À venir");
-    expect(component.statusLabel("completed")).toBe("Terminé");
-    expect(component.statusLabel("archived")).toBe("Archivé");
-    expect(component.statusLabel("waitingValidation")).toBe(
-      "En attente de validation",
+  it('should render tournament status label using pipe', () => {
+    component.loading.set(false);
+    component.notFound.set(false);
+    component.tournament.set({
+      id: 123,
+      name: 'Tournoi test',
+      description: 'Description',
+      type: 'poules',
+      status: 'ongoing',
+      createdAt: new Date().toISOString(),
+    });
+
+    fixture.detectChanges();
+
+    const statusTag = fixture.nativeElement.querySelector('p-tag');
+    expect(statusTag?.getAttribute('ng-reflect-value')).toBe('En cours');
+  });
+
+  it('should show waiting validation message and hide types', () => {
+    component.loading.set(false);
+    component.notFound.set(false);
+    component.tournament.set({
+      id: 123,
+      name: 'Tournoi test',
+      description: 'Description',
+      type: 'poules',
+      status: 'waitingValidation',
+      createdAt: new Date().toISOString(),
+    });
+
+    fixture.detectChanges();
+
+    const validationSection = fixture.nativeElement.querySelector(
+      '[data-testid="validation-section"]',
     );
-  });
+    const typesComponent = fixture.nativeElement.querySelector('app-types');
 
-  it("should return correct status severity", () => {
-    expect(component.statusSeverity("ongoing")).toBe("success");
-    expect(component.statusSeverity("upcoming")).toBe("info");
-    expect(component.statusSeverity("completed")).toBe("secondary");
-    expect(component.statusSeverity("waitingValidation")).toBe("warn");
-    expect(component.statusSeverity("archived")).toBe("danger");
-  });
-
-  it("should return correct type label", () => {
-    expect(component.typeLabel("poules")).toBe("Poules");
-    expect(component.typeLabel("finale")).toBe("Phase finale");
-    expect(component.typeLabel("poules_finale")).toBe("Poules + Phase finale");
+    expect(validationSection).toBeTruthy();
+    expect(typesComponent).toBeFalsy();
   });
 });

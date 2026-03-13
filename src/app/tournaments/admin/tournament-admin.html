@@ -1,1 +1,7 @@
-<p>admin works!</p>
+@if (loading()) {
+  <p>Vérification des accès...</p>
+} @else if (accessDenied()) {
+  <p>Accès refusé : lien invalide ou expiré.</p>
+} @else if (user(); as adminUser) {
+  <p>Bienvenue {{ adminUser.username }} (tournoi {{ tournamentId() }}).</p>
+}

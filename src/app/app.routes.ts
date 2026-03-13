@@ -1,34 +1,35 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: "",
-    loadComponent: () => import("./home/home").then((m) => m.Home),
+    path: '',
+    loadComponent: () => import('./home/home').then((m) => m.Home),
   },
   {
-    path: "tournaments/new",
-    loadComponent: () =>
-      import("./tournaments/new/tournament-new").then((m) => m.TournamentNew),
-  },
-  {
-    path: "tournaments",
-    loadComponent: () =>
-      import("./tournaments/list/tournament-list").then(
-        (m) => m.TournamentList,
-      ),
-  },
-  {
-    path: ":id",
-    loadComponent: () =>
-      import("./tournaments/detail/tournament-detail").then(
-        (m) => m.TournamentDetail,
-      ),
-  },
-  {
-    path: ":id/admin",
-    loadComponent: () =>
-      import("./tournaments/admin/tournament-admin").then(
-        (m) => m.TournamentAdmin,
-      ),
+    path: 'tournaments',
+    loadComponent: () => import('./main/main').then((m) => m.Main),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./tournaments/list/tournament-list').then((m) => m.TournamentList),
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('./tournaments/new/tournament-new').then((m) => m.TournamentNew),
+      },
+
+      {
+        path: ':tournamentId',
+        loadComponent: () =>
+          import('./tournaments/detail/tournament-detail').then((m) => m.TournamentDetail),
+      },
+      {
+        path: ':tournamentId/:token',
+        loadComponent: () =>
+          import('./tournaments/admin/tournament-admin').then((m) => m.TournamentAdmin),
+      },
+    ],
   },
 ];

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 
 import { TournamentAdmin } from './tournament-admin';
 
@@ -15,7 +16,9 @@ describe('TournamentAdmin', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            params: of({ tournamentId: '123', token: 'token-abc' }),
             snapshot: {
+              params: { tournamentId: '123', token: 'token-abc' },
               paramMap: {
                 get: (key: string) => {
                   if (key === 'tournamentId') return '123';

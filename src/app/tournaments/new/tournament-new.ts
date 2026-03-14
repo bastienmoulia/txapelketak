@@ -28,6 +28,8 @@ import { MessageModule } from 'primeng/message';
 import { startWith } from 'rxjs';
 import { Tournament, TournamentType, User } from '../../home/tournament.interface';
 
+import { Header } from '../../shared/header/header';
+
 @Component({
   selector: 'app-tournament-new',
   imports: [
@@ -40,17 +42,18 @@ import { Tournament, TournamentType, User } from '../../home/tournament.interfac
     Button,
     FloatLabel,
     MessageModule,
+    Header,
   ],
   templateUrl: './tournament-new.html',
   styleUrl: './tournament-new.css',
 })
 export class TournamentNew {
-  firestore = inject(Firestore);
+  firestore = inject(Firestore, { optional: true });
   environmentInjector = inject(EnvironmentInjector);
 
   currentStep = signal(0);
 
-  steps = [{ label: 'Informations' }, { label: 'Créateur' }];
+  steps = [{ label: 'Informations' }, { label: 'Équipes & Groupes' }, { label: 'Créateur' }];
 
   typeOptions: { label: string; value: TournamentType }[] = [
     { label: 'Poules', value: 'poules' },
@@ -67,6 +70,12 @@ export class TournamentNew {
   });
 
   submitted = signal(false);
+  createdManageUrl = signal('');
+
+  teamInput = signal('');
+  teams: string[] = [];
+
+  groups: string[] = [];
 
   private formValue = toSignal(this.form.valueChanges.pipe(startWith(this.form.getRawValue())), {
     initialValue: this.form.getRawValue(),
@@ -77,13 +86,32 @@ export class TournamentNew {
     return this.form.controls.name.valid;
   });
 
-  isStep2Valid = computed(() => {
+  isStep2Valid = computed(() => true);
+
+  isStep3Valid = computed(() => {
     this.formValue();
     return this.form.controls.creatorUsername.valid && this.form.controls.creatorEmail.valid;
   });
 
-  private tournamentsCollection = collection(this.firestore, 'tournaments');
-  private usersCollection = collection(this.firestore, 'users');
+  addTeam(name: string): void {
+    if (!this.teams.includes(name)) {
+      this.teams.push(name);
+    }
+  }
+
+  removeTeam(name: string): void {
+    this.teams = this.teams.filter((t) => t !== name);
+  }
+
+  addGroup(name: string): void {
+    if (!this.groups.includes(name)) {
+      this.groups.push(name);
+    }
+  }
+
+  removeGroup(name: string): void {
+    this.groups = this.groups.filter((g) => g !== name);
+  }
 
   nextStep(): void {
     const step = this.currentStep();
@@ -102,7 +130,7 @@ export class TournamentNew {
     }
   }
 
-  async onSubmit(): Promise<void> {
+  onSubmit(): void {
     this.form.get('creatorUsername')?.markAsTouched();
     this.form.get('creatorEmail')?.markAsTouched();
 
@@ -112,48 +140,78 @@ export class TournamentNew {
       const creatorUsername = (value.creatorUsername ?? '').trim();
       const creatorEmail = (value.creatorEmail ?? '').trim();
 
-      const tournamentId = await runInInjectionContext(this.environmentInjector, async () => {
-        const latestTournamentQuery = query(
-          this.tournamentsCollection,
-          orderBy('id', 'desc'),
-          limit(1),
-        );
-        const latestTournamentSnapshot = await getDocs(latestTournamentQuery);
-        const latestTournament = latestTournamentSnapshot.docs[0]?.data() as {
-          id?: number;
-        };
-        const latestTournamentId =
-          typeof latestTournament?.id === 'number' ? latestTournament.id : 0;
+      const tournamentId = Date.now();
+      const manageToken = crypto.randomUUID();
 
-        return latestTournamentId + 1;
-      });
+      this.createdManageUrl.set(`/tournaments/${tournamentId}/manage`);
+      this.submitted.set(true);
+
+      if (this.firestore) {
+        void this.persistToFirestore(
+          tournamentId,
+          tournamentName,
+          creatorUsername,
+          creatorEmail,
+          manageToken,
+          value.description ?? '',
+          value.type as TournamentType,
+        );
+      }
+    }
+  }
+
+  private async persistToFirestore(
+    tournamentId: number,
+    tournamentName: string,
+    creatorUsername: string,
+    creatorEmail: string,
+    manageToken: string,
+    description: string,
+    type: TournamentType,
+  ): Promise<void> {
+    const firestore = this.firestore!;
+    const tournamentsCollection = collection(firestore, 'tournaments');
+    const usersCollection = collection(firestore, 'users');
+
+    try {
+      const latestTournamentQuery = query(
+        tournamentsCollection,
+        orderBy('id', 'desc'),
+        limit(1),
+      );
+      const latestTournamentSnapshot = await runInInjectionContext(
+        this.environmentInjector,
+        () => getDocs(latestTournamentQuery),
+      );
+      const latestTournament = latestTournamentSnapshot.docs[0]?.data() as { id?: number };
+      const nextId =
+        typeof latestTournament?.id === 'number' ? latestTournament.id + 1 : tournamentId;
 
       const tournament: Tournament = {
-        id: tournamentId,
+        id: nextId,
         name: tournamentName,
-        description: value.description ?? '',
-        type: value.type as TournamentType,
+        description,
+        type,
         status: 'waitingValidation' as const,
         createdAt: new Date().toISOString(),
       };
       const user: User = {
-        tournamentId: tournamentId,
+        tournamentId: nextId,
         username: creatorUsername,
         email: creatorEmail,
-        token: crypto.randomUUID(),
+        token: manageToken,
         rights: ['admin'],
       };
 
       await runInInjectionContext(this.environmentInjector, async () => {
-        await addDoc(this.tournamentsCollection, tournament);
-        await addDoc(this.usersCollection, user);
+        await addDoc(tournamentsCollection, tournament);
+        await addDoc(usersCollection, user);
       });
 
-      const adminUrl = `${window.location.origin}/tournaments/${tournament.id}/${user.token}`;
+      const adminUrl = `${window.location.origin}/tournaments/${nextId}/${manageToken}`;
 
-      // Write to 'mail' collection for Firebase Extension to send email
       await runInInjectionContext(this.environmentInjector, async () => {
-        await addDoc(collection(this.firestore, 'mail'), {
+        await addDoc(collection(firestore, 'mail'), {
           to: creatorEmail,
           message: {
             subject: `Accès admin - ${tournamentName}`,
@@ -167,8 +225,8 @@ export class TournamentNew {
           },
         });
       });
-
-      this.submitted.set(true);
+    } catch (error) {
+      console.error('Failed to persist tournament to Firestore', error);
     }
   }
 }

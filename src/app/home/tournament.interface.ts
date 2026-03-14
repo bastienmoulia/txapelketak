@@ -1,5 +1,5 @@
 export interface Tournament {
-  id: number;
+  id: number | string;
   name: string;
   description: string;
   type: TournamentType;
@@ -9,7 +9,7 @@ export interface Tournament {
 }
 
 export interface User {
-  tournamentId: number;
+  tournamentId: number | string;
   username: string;
   email: string;
   token: string;

@@ -1,27 +1,23 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import { TournamentStatus } from "../../home/tournament.interface";
+import { Pipe, PipeTransform } from '@angular/core';
+import { TournamentStatus } from '../../home/tournament.interface';
 
 @Pipe({
-  name: "tournamentStatusSeverity",
+  name: 'tournamentStatusSeverity',
   standalone: true,
 })
 export class TournamentStatusSeverityPipe implements PipeTransform {
-  transform(
-    status: TournamentStatus,
-  ): "success" | "info" | "secondary" | "warn" | "danger" | "contrast" {
+  transform(status: TournamentStatus): 'success' | 'info' | 'warn' | 'danger' | null {
     switch (status) {
-      case "ongoing":
-        return "success";
-      case "upcoming":
-        return "info";
-      case "completed":
-        return "secondary";
-      case "waitingValidation":
-        return "warn";
-      case "archived":
-        return "danger";
+      case 'ongoing':
+        return 'success';
+      case 'paused':
+        return 'warn';
+      case 'waitingValidation':
+        return 'danger';
+      case 'archived':
+        return 'info';
       default:
-        return "warn";
+        return null;
     }
   }
 }

@@ -18,9 +18,4 @@ export interface User {
 
 export type TournamentType = 'poules' | 'finale' | 'poules_finale';
 
-export type TournamentStatus =
-  | 'waitingValidation'
-  | 'upcoming'
-  | 'ongoing'
-  | 'completed'
-  | 'archived';
+export type TournamentStatus = 'waitingValidation' | 'paused' | 'ongoing' | 'archived';

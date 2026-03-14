@@ -41,21 +41,12 @@
         <div class="validation-section" data-testid="validation-section">
           <p-message
             severity="warn"
+            icon="pi pi-clock"
             styleClass="validation-message"
             data-testid="validation-message"
           >
-            <ng-template #content>
-              <div class="validation-content">
-                <i class="pi pi-clock"></i>
-                <div>
-                  <strong>En attente de validation</strong>
-                  <p>
-                    Ce tournoi est en attente de validation par l'administrateur. Vous recevrez un
-                    email une fois le tournoi validé.
-                  </p>
-                </div>
-              </div>
-            </ng-template>
+            L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre
+            patience.
           </p-message>
         </div>
       } @else {

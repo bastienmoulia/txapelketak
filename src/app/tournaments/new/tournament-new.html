@@ -6,7 +6,7 @@
       [model]="steps"
       [activeIndex]="currentStep()"
       [readonly]="true"
-      styleClass="tournament-steps"
+      class="tournament-steps"
     />
 
     @if (!submitted()) {
@@ -28,11 +28,9 @@
                 <label for="name">Nom du tournoi *</label>
               </p-floatlabel>
               @if (form.get('name')?.invalid && form.get('name')?.touched) {
-                <p-message
-                  severity="error"
-                  text="Le nom du tournoi est obligatoire."
-                  styleClass="field-error"
-                />
+                <p-message severity="error" styleClass="field-error">
+                  Le nom du tournoi est obligatoire.
+                </p-message>
               }
             </div>
 
@@ -84,11 +82,9 @@
                 <label for="creatorUsername">Pseudo *</label>
               </p-floatlabel>
               @if (form.get('creatorUsername')?.invalid && form.get('creatorUsername')?.touched) {
-                <p-message
-                  severity="error"
-                  text="Le pseudo est obligatoire."
-                  styleClass="field-error"
-                />
+                <p-message severity="error" styleClass="field-error">
+                  Le pseudo est obligatoire.
+                </p-message>
               }
             </div>
 
@@ -106,17 +102,13 @@
               </p-floatlabel>
               @if (form.get('creatorEmail')?.invalid && form.get('creatorEmail')?.touched) {
                 @if (form.get('creatorEmail')?.errors?.['required']) {
-                  <p-message
-                    severity="error"
-                    text="L'email est obligatoire."
-                    styleClass="field-error"
-                  />
+                  <p-message severity="error" styleClass="field-error">
+                    L'email est obligatoire.
+                  </p-message>
                 } @else if (form.get('creatorEmail')?.errors?.['email']) {
-                  <p-message
-                    severity="error"
-                    text="L'adresse email n'est pas valide."
-                    styleClass="field-error"
-                  />
+                  <p-message severity="error" styleClass="field-error">
+                    L'adresse email n'est pas valide.
+                  </p-message>
                 }
               }
             </div>

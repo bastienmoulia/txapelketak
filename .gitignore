@@ -37,7 +37,8 @@ environment*.local.ts
 Thumbs.db
 
 # Firebase
-.firebase
+.firebase/*
 !.firebase/emulator-data/
+!.firebase/emulator-data/**
 *-debug.log
 .runtimeconfig.json

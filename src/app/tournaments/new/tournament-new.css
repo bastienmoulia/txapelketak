@@ -23,6 +23,7 @@
 }
 
 .tournament-steps {
+  display: block;
   margin-bottom: 2rem;
 }
 

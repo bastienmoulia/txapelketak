@@ -3,11 +3,7 @@
   <div class="hero-section">
     <h1>Txapelketak</h1>
     <p class="hero-subtitle">Gérez vos tournois simplement et efficacement</p>
-    <p-button
-      label="Créer un tournoi"
-      icon="pi pi-plus"
-      routerLink="/tournaments/new"
-    />
+    <p-button label="Créer un tournoi" icon="pi pi-plus" routerLink="/tournaments/new" />
   </div>
 
   <a
@@ -22,7 +18,7 @@
       viewBox="0 0 250 250"
       style="
         fill: var(--p-primary-color);
-        color: var(--p-surface-900);
+        color: var(--p-content-background);
         position: absolute;
         top: 0;
         border: 0;
@@ -50,13 +46,13 @@
     <h2>Comment ça marche ?</h2>
     <div class="features-grid">
       @for (feature of features(); track feature.title) {
-      <p-card styleClass="feature-card">
-        <div class="feature-content">
-          <i [class]="feature.icon + ' feature-icon'"></i>
-          <h3>{{ feature.title }}</h3>
-          <p>{{ feature.description }}</p>
-        </div>
-      </p-card>
+        <p-card styleClass="feature-card">
+          <div class="feature-content">
+            <i [class]="feature.icon + ' feature-icon'"></i>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
+          </div>
+        </p-card>
       }
     </div>
   </section>
@@ -105,14 +101,16 @@
         </tr>
       </ng-template>
     </p-table>
-    <div class="see-all-tournaments">
-      <p-button
-        label="Voir tous les tournois"
-        icon="pi pi-list"
-        severity="secondary"
-        [outlined]="true"
-        routerLink="/tournaments"
-      />
-    </div>
+    @if (recentTournaments().length > 0) {
+      <div class="see-all-tournaments">
+        <p-button
+          label="Voir tous les tournois"
+          icon="pi pi-list"
+          severity="secondary"
+          [outlined]="true"
+          routerLink="/tournaments"
+        />
+      </div>
+    }
   </section>
 </div>

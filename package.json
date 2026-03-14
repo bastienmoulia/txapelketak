@@ -8,7 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "emulators": "npx firebase emulators:start --only firestore"
+    "emulators": "npx firebase emulators:start --only firestore --import=.firebase/emulator-data --export-on-exit"
   },
   "private": true,
   "packageManager": "npm@11.6.1",

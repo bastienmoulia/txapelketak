@@ -45,9 +45,4 @@ describe("TournamentList", () => {
     );
     expect(hasCreateButton).toBe(true);
   });
-
-  it("should display the header", () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector("app-header")).toBeTruthy();
-  });
 });

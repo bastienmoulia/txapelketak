@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { TournamentDetail } from './tournament-detail';
 
@@ -16,7 +17,11 @@ describe('TournamentDetail', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { paramMap: { get: () => 'test-id-123' } },
+            params: of({ tournamentId: 'test-id-123' }),
+            snapshot: {
+              params: { tournamentId: 'test-id-123' },
+              paramMap: { get: () => 'test-id-123' },
+            },
           },
         },
       ],
@@ -54,7 +59,7 @@ describe('TournamentDetail', () => {
     fixture.detectChanges();
 
     const statusTag = fixture.nativeElement.querySelector('p-tag');
-    expect(statusTag?.getAttribute('ng-reflect-value')).toBe('En cours');
+    expect(statusTag?.textContent?.trim()).toBe('En cours');
   });
 
   it('should show waiting validation message and hide types', () => {

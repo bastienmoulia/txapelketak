@@ -12,6 +12,14 @@ describe('Types', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(Types);
+    fixture.componentRef.setInput('tournament', {
+      id: 1,
+      name: 'Test Tournoi',
+      description: '',
+      type: 'poules',
+      status: 'upcoming',
+      createdAt: '2024-01-01',
+    });
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

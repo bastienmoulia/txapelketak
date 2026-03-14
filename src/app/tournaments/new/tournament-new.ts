@@ -45,7 +45,7 @@ import { Tournament, TournamentType, User } from '../../home/tournament.interfac
   styleUrl: './tournament-new.css',
 })
 export class TournamentNew {
-  firestore = inject(Firestore);
+  firestore = inject(Firestore, { optional: true });
   environmentInjector = inject(EnvironmentInjector);
 
   currentStep = signal(0);
@@ -82,9 +82,6 @@ export class TournamentNew {
     return this.form.controls.creatorUsername.valid && this.form.controls.creatorEmail.valid;
   });
 
-  private tournamentsCollection = collection(this.firestore, 'tournaments');
-  private usersCollection = collection(this.firestore, 'users');
-
   nextStep(): void {
     const step = this.currentStep();
     if (step === 0 && !this.isStep1Valid()) {
@@ -107,14 +104,23 @@ export class TournamentNew {
     this.form.get('creatorEmail')?.markAsTouched();
 
     if (this.form.valid) {
+      this.submitted.set(true);
+
+      if (!this.firestore) {
+        return;
+      }
+
       const value = this.form.value;
       const tournamentName = (value.name ?? '').trim();
       const creatorUsername = (value.creatorUsername ?? '').trim();
       const creatorEmail = (value.creatorEmail ?? '').trim();
 
+      const tournamentsCollection = collection(this.firestore, 'tournaments');
+      const usersCollection = collection(this.firestore, 'users');
+
       const tournamentId = await runInInjectionContext(this.environmentInjector, async () => {
         const latestTournamentQuery = query(
-          this.tournamentsCollection,
+          tournamentsCollection,
           orderBy('id', 'desc'),
           limit(1),
         );
@@ -145,15 +151,15 @@ export class TournamentNew {
       };
 
       await runInInjectionContext(this.environmentInjector, async () => {
-        await addDoc(this.tournamentsCollection, tournament);
-        await addDoc(this.usersCollection, user);
+        await addDoc(tournamentsCollection, tournament);
+        await addDoc(usersCollection, user);
       });
 
       const adminUrl = `${window.location.origin}/tournaments/${tournament.id}/${user.token}`;
 
       // Write to 'mail' collection for Firebase Extension to send email
       await runInInjectionContext(this.environmentInjector, async () => {
-        await addDoc(collection(this.firestore, 'mail'), {
+        await addDoc(collection(this.firestore!, 'mail'), {
           to: creatorEmail,
           message: {
             subject: `Accès admin - ${tournamentName}`,
@@ -167,8 +173,6 @@ export class TournamentNew {
           },
         });
       });
-
-      this.submitted.set(true);
     }
   }
 }

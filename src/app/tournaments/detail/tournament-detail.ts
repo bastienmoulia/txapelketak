@@ -3,12 +3,10 @@ import {
   Component,
   EnvironmentInjector,
   inject,
-  runInInjectionContext,
   signal,
-  Type,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';

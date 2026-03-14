@@ -1,12 +1,12 @@
 @switch (tournament().type) {
   @case ('poules') {
-    <app-admin-poules [tournamentData]="tournament().data" />
+    <app-admin-poules [tournamentData]="poulesData()" />
   }
   @case ('finale') {
-    <app-admin-finale [tournamentData]="tournament().data" />
+    <app-admin-finale [tournamentData]="finaleData()" />
   }
   @case ('poules_finale') {
-    <app-admin-poules-finale [tournamentData]="tournament().data" />
+    <app-admin-poules-finale [tournamentData]="poulesFinaleData()" />
   }
   @default {
     <p>Type de tournoi inconnu : {{ tournament().type }}</p>

@@ -36,7 +36,9 @@ export const appConfig: ApplicationConfig = {
       if (environment.useFirestoreEmulator) {
         try {
           connectFirestoreEmulator(firestore, '127.0.0.1', 8080);
-        } catch {}
+        } catch (error) {
+          console.warn('Could not connect to Firestore emulator', error);
+        }
       }
 
       return firestore;

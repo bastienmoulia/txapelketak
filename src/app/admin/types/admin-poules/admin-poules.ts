@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { PoulesData } from '../../../tournaments/types/poules/poules';
 
 @Component({
   selector: 'app-admin-poules',
@@ -8,5 +9,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminPoules {
-  tournamentData = input.required<any>();
+  tournamentData = input.required<PoulesData>();
 }

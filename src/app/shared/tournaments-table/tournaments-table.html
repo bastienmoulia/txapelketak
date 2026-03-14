@@ -20,7 +20,7 @@
       <td>
         <p-button
           label="Ouvrir"
-          [routerLink]="'/tournaments/' + tournament.id"
+          [routerLink]="getTournamentLink()(tournament)"
           [disabled]="tournament.status === 'paused' || tournament.status === 'waitingValidation'"
         />
       </td>

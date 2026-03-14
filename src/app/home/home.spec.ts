@@ -57,7 +57,7 @@ describe('Home', () => {
         name: 'T1',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-01',
       },
       {
@@ -65,7 +65,7 @@ describe('Home', () => {
         name: 'T2',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-02',
       },
       {
@@ -73,7 +73,7 @@ describe('Home', () => {
         name: 'T3',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-03',
       },
       {
@@ -81,7 +81,7 @@ describe('Home', () => {
         name: 'T4',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-04',
       },
       {
@@ -89,7 +89,7 @@ describe('Home', () => {
         name: 'T5',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-05',
       },
       {
@@ -97,7 +97,7 @@ describe('Home', () => {
         name: 'T6',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-06',
       },
     ]);
@@ -111,7 +111,7 @@ describe('Home', () => {
         name: 'T1',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-01',
       },
       {
@@ -119,7 +119,7 @@ describe('Home', () => {
         name: 'T2',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-02',
       },
       {
@@ -127,7 +127,7 @@ describe('Home', () => {
         name: 'T3',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-03',
       },
       {
@@ -135,7 +135,7 @@ describe('Home', () => {
         name: 'T4',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-04',
       },
       {
@@ -143,7 +143,7 @@ describe('Home', () => {
         name: 'T5',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-05',
       },
       {
@@ -151,7 +151,7 @@ describe('Home', () => {
         name: 'T6',
         description: '',
         type: 'poules',
-        status: 'upcoming',
+        status: 'ongoing',
         createdAt: '2024-01-06',
       },
     ]);

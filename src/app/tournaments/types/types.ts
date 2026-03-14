@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Tournament } from '../../home/tournament.interface';
-import { Finale } from './finale/finale';
-import { Poules } from './poules/poules';
-import { PoulesFinale } from './poules-finale/poules-finale';
+import { Finale, FinaleData } from './finale/finale';
+import { Poules, PoulesData } from './poules/poules';
+import { PoulesFinale, PoulesFinaleData } from './poules-finale/poules-finale';
 
 @Component({
   selector: 'app-types',
@@ -13,4 +13,8 @@ import { PoulesFinale } from './poules-finale/poules-finale';
 })
 export class Types {
   tournament = input.required<Tournament>();
+
+  poulesData = computed(() => this.tournament().data as PoulesData);
+  finaleData = computed(() => this.tournament().data as FinaleData);
+  poulesFinaleData = computed(() => this.tournament().data as PoulesFinaleData);
 }

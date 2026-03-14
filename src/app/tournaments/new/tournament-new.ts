@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EnvironmentInjector,
   computed,
@@ -43,6 +44,7 @@ import { Tournament, TournamentType, User } from '../../home/tournament.interfac
   ],
   templateUrl: './tournament-new.html',
   styleUrl: './tournament-new.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentNew {
   firestore = inject(Firestore, { optional: true });
@@ -119,11 +121,7 @@ export class TournamentNew {
       const usersCollection = collection(this.firestore, 'users');
 
       const tournamentId = await runInInjectionContext(this.environmentInjector, async () => {
-        const latestTournamentQuery = query(
-          tournamentsCollection,
-          orderBy('id', 'desc'),
-          limit(1),
-        );
+        const latestTournamentQuery = query(tournamentsCollection, orderBy('id', 'desc'), limit(1));
         const latestTournamentSnapshot = await getDocs(latestTournamentQuery);
         const latestTournament = latestTournamentSnapshot.docs[0]?.data() as {
           id?: number;

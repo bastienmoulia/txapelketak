@@ -27,8 +27,7 @@ export const routes: Routes = [
       },
       {
         path: ':tournamentId/:token',
-        loadComponent: () =>
-          import('./tournaments/admin/tournament-admin').then((m) => m.TournamentAdmin),
+        loadComponent: () => import('./admin/admin').then((m) => m.Admin),
       },
     ],
   },

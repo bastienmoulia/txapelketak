@@ -1,15 +1,12 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { CallPipe } from 'ngxtension/call-apply';
 import { Tournament } from './tournament.interface';
-import { TournamentStatusLabelPipe } from '../shared/pipes/tournament-status-label.pipe';
-import { TournamentStatusSeverityPipe } from '../shared/pipes/tournament-status-severity.pipe';
+import { TournamentsTable } from '../shared/tournaments-table/tournaments-table';
+import { HeaderActions } from '../shared/header-actions/header-actions';
 
 interface Feature {
   icon: string;
@@ -19,18 +16,10 @@ interface Feature {
 
 @Component({
   selector: 'app-home',
-  imports: [
-    RouterLink,
-    ButtonModule,
-    CardModule,
-    TableModule,
-    TagModule,
-    CallPipe,
-    TournamentStatusLabelPipe,
-    TournamentStatusSeverityPipe,
-  ],
+  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions],
   templateUrl: './home.html',
   styleUrl: './home.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
   firestore = inject(Firestore, { optional: true });

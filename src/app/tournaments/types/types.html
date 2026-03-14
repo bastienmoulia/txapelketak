@@ -1,12 +1,12 @@
 @switch (tournament().type) {
   @case ('poules') {
-    <app-poules [tournament]="tournament()" />
+    <app-poules [tournamentData]="tournament().data" />
   }
   @case ('finale') {
-    <app-finale [tournament]="tournament()" />
+    <app-finale [tournamentData]="tournament().data" />
   }
   @case ('poules_finale') {
-    <app-poules-finale [tournament]="tournament()" />
+    <app-poules-finale [tournamentData]="tournament().data" />
   }
   @default {
     <p>Type de tournoi inconnu : {{ tournament().type }}</p>

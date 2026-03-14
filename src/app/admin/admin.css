@@ -1,0 +1,50 @@
+.admin-page {
+  width: min(100%, 52rem);
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.admin-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.state-loading {
+  align-items: flex-start;
+}
+
+.admin-meta {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.meta-label {
+  font-size: 0.9rem;
+  color: var(--p-text-muted-color);
+  min-width: 4.5rem;
+}
+
+.meta-value {
+  font-weight: 500;
+}
+
+.rights-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

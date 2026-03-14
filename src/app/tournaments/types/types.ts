@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { Tournament } from '../home/tournament.interface';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Tournament } from '../../home/tournament.interface';
 import { Finale } from './finale/finale';
 import { Poules } from './poules/poules';
 import { PoulesFinale } from './poules-finale/poules-finale';
@@ -9,6 +9,7 @@ import { PoulesFinale } from './poules-finale/poules-finale';
   imports: [Finale, Poules, PoulesFinale],
   templateUrl: './types.html',
   styleUrl: './types.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Types {
   tournament = input.required<Tournament>();

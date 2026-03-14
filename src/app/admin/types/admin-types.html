@@ -1,0 +1,14 @@
+@switch (tournament().type) {
+  @case ('poules') {
+    <app-admin-poules [tournamentData]="tournament().data" />
+  }
+  @case ('finale') {
+    <app-admin-finale [tournamentData]="tournament().data" />
+  }
+  @case ('poules_finale') {
+    <app-admin-poules-finale [tournamentData]="tournament().data" />
+  }
+  @default {
+    <p>Type de tournoi inconnu : {{ tournament().type }}</p>
+  }
+}

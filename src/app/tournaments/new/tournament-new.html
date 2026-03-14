@@ -28,7 +28,7 @@
                 <label for="name">Nom du tournoi *</label>
               </p-floatlabel>
               @if (form.get('name')?.invalid && form.get('name')?.touched) {
-                <p-message severity="error" styleClass="field-error">
+                <p-message severity="error" class="field-error">
                   Le nom du tournoi est obligatoire.
                 </p-message>
               }
@@ -82,7 +82,7 @@
                 <label for="creatorUsername">Pseudo *</label>
               </p-floatlabel>
               @if (form.get('creatorUsername')?.invalid && form.get('creatorUsername')?.touched) {
-                <p-message severity="error" styleClass="field-error">
+                <p-message severity="error" class="field-error">
                   Le pseudo est obligatoire.
                 </p-message>
               }
@@ -102,11 +102,11 @@
               </p-floatlabel>
               @if (form.get('creatorEmail')?.invalid && form.get('creatorEmail')?.touched) {
                 @if (form.get('creatorEmail')?.errors?.['required']) {
-                  <p-message severity="error" styleClass="field-error">
+                  <p-message severity="error" class="field-error">
                     L'email est obligatoire.
                   </p-message>
                 } @else if (form.get('creatorEmail')?.errors?.['email']) {
-                  <p-message severity="error" styleClass="field-error">
+                  <p-message severity="error" class="field-error">
                     L'adresse email n'est pas valide.
                   </p-message>
                 }

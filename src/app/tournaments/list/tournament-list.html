@@ -9,36 +9,5 @@
       routerLink="/tournaments/new"
     />
   </div>
-  <p-table [value]="tournaments()" class="p-datatable-striped">
-    <ng-template #header>
-      <tr>
-        <th>Nom</th>
-        <th>Type</th>
-        <th>Statut</th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-tournament>
-      <tr>
-        <td>{{ tournament.name }}</td>
-        <td>{{ tournament.type }}</td>
-        <td>
-          <p-tag
-            [value]="tournament.status | tournamentStatusLabel"
-            [severity]="tournament.status | tournamentStatusSeverity"
-          />
-        </td>
-        <td>
-          <a [routerLink]="tournament | call: getTournamentLink" pButton>
-            <span pButtonLabel>Ouvrir</span>
-          </a>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template #emptymessage>
-      <tr>
-        <td colspan="4" class="text-center">Aucun tournoi disponible</td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-tournaments-table [tournaments]="tournaments()" [getTournamentLink]="getTournamentLink" />
 </div>

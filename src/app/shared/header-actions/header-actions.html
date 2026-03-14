@@ -1,0 +1,21 @@
+<div class="header-actions">
+  <p-menu #themeMenu [model]="themeItems()" [popup]="true" appendTo="body" />
+  <p-button
+    type="button"
+    severity="secondary"
+    [outlined]="true"
+    [icon]="themeIcon()"
+    [label]="themeLabel()"
+    (onClick)="toggleMenu(themeMenu, $event)"
+  />
+
+  <p-menu #languageMenu [model]="languageItems()" [popup]="true" appendTo="body" />
+  <p-button
+    type="button"
+    severity="secondary"
+    [outlined]="true"
+    icon="pi pi-language"
+    [label]="languageLabel()"
+    (onClick)="toggleMenu(languageMenu, $event)"
+  />
+</div>

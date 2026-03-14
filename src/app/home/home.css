@@ -107,3 +107,9 @@
     animation: octocat-wave 560ms ease-in-out;
   }
 }
+
+app-header-actions {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+}

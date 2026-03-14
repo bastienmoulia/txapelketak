@@ -1,0 +1,34 @@
+<p-table [value]="tournaments()" class="p-datatable-striped">
+  <ng-template #header>
+    <tr>
+      <th>Nom</th>
+      <th>Type</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-tournament>
+    <tr>
+      <td>{{ tournament.name }}</td>
+      <td>{{ tournament.type }}</td>
+      <td>
+        <p-tag
+          [value]="tournament.status | tournamentStatusLabel"
+          [severity]="tournament.status | tournamentStatusSeverity"
+        />
+      </td>
+      <td>
+        <p-button
+          label="Ouvrir"
+          [routerLink]="'/tournaments/' + tournament.id"
+          [disabled]="tournament.status === 'paused' || tournament.status === 'waitingValidation'"
+        />
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="4" class="text-center">Aucun tournoi disponible</td>
+    </tr>
+  </ng-template>
+</p-table>

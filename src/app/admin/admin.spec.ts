@@ -2,15 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
-import { TournamentAdmin } from './tournament-admin';
+import { Admin } from './admin';
 
-describe('TournamentAdmin', () => {
-  let component: TournamentAdmin;
-  let fixture: ComponentFixture<TournamentAdmin>;
+describe('Admin', () => {
+  let component: Admin;
+  let fixture: ComponentFixture<Admin>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TournamentAdmin],
+      imports: [Admin],
       providers: [
         provideRouter([]),
         {
@@ -32,7 +32,7 @@ describe('TournamentAdmin', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TournamentAdmin);
+    fixture = TestBed.createComponent(Admin);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

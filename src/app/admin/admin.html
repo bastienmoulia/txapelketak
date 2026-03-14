@@ -1,0 +1,78 @@
+<section class="admin-page">
+  <p-toast position="top-right" />
+
+  <p-card class="admin-card">
+    <ng-template #title>
+      <div class="admin-title">
+        <i class="pi pi-shield"></i>
+        <span>Accès administration</span>
+      </div>
+    </ng-template>
+
+    @if (loading()) {
+      <div class="state state-loading" data-testid="admin-loading">
+        <p-progress-spinner
+          strokeWidth="4"
+          fill="transparent"
+          animationDuration=".8s"
+          [style]="{ width: '2.5rem', height: '2.5rem' }"
+        />
+        <p-message severity="info" variant="simple">Vérification des accès...</p-message>
+      </div>
+    } @else if (accessDenied()) {
+      <div class="state" data-testid="admin-denied">
+        <p-message severity="error" icon="pi pi-lock">
+          Accès refusé : lien invalide ou expiré.
+        </p-message>
+        <p-button
+          label="Retour à l'accueil"
+          icon="pi pi-home"
+          severity="secondary"
+          [outlined]="true"
+          routerLink="/"
+        />
+      </div>
+    } @else if (user(); as adminUser) {
+      <div class="state" data-testid="admin-authorized">
+        <p-message severity="success" icon="pi pi-check-circle">
+          Bienvenue {{ adminUser.username }}
+        </p-message>
+
+        <div class="admin-meta">
+          <div class="meta-row">
+            <span class="meta-label">Tournoi</span>
+            <p-tag [value]="tournamentId() ?? ''" severity="info" />
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Email</span>
+            <span class="meta-value">{{ adminUser.email }}</span>
+          </div>
+
+          <div class="meta-row">
+            <span class="meta-label">Droits</span>
+            <div class="rights-list">
+              @for (right of adminUser.rights; track right) {
+                <p-tag [value]="right" severity="contrast" />
+              }
+            </div>
+          </div>
+        </div>
+
+        @if (tournament(); as t) {
+          @if (t.status === 'archived') {
+            <p-message severity="warn" icon="pi pi-exclamation-triangle">
+              Ce tournoi est archivé. Les modifications ne sont pas autorisées.
+            </p-message>
+          } @else {
+            <app-admin-types [tournament]="t" />
+          }
+        } @else {
+          <p-message severity="warn" icon="pi pi-exclamation-triangle">
+            Tournoi introuvable ou non spécifié.
+          </p-message>
+        }
+      </div>
+    }
+  </p-card>
+</section>

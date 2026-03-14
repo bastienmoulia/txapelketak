@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EnvironmentInjector,
   inject,
@@ -14,7 +15,7 @@ import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 import { Tournament } from '../../home/tournament.interface';
-import { Types } from '../../types/types';
+import { Types } from '../types/types';
 import { injectParams } from 'ngxtension/inject-params';
 import { TournamentStatusLabelPipe } from '../../shared/pipes/tournament-status-label.pipe';
 import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-status-severity.pipe';
@@ -34,6 +35,7 @@ import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-stat
   ],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDetail {
   firestore = inject(Firestore, { optional: true });

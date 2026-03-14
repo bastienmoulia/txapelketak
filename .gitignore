@@ -38,5 +38,6 @@ Thumbs.db
 
 # Firebase
 .firebase
+!.firebase/emulator-data/
 *-debug.log
 .runtimeconfig.json

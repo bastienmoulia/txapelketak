@@ -95,7 +95,7 @@ export class TournamentNew {
 
   addTeam(name: string): void {
     if (!this.teams.includes(name)) {
-      this.teams.push(name);
+      this.teams = [...this.teams, name];
     }
   }
 
@@ -105,7 +105,7 @@ export class TournamentNew {
 
   addGroup(name: string): void {
     if (!this.groups.includes(name)) {
-      this.groups.push(name);
+      this.groups = [...this.groups, name];
     }
   }
 

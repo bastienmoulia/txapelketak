@@ -1,4 +1,3 @@
-<app-header />
 <div class="tournament-new-container">
   <div class="tournament-new-card">
     <h1 class="tournament-new-title">Créer un tournoi</h1>
@@ -64,96 +63,9 @@
           </div>
         }
 
-        <!-- Step 2: Équipes & Groupes -->
+        <!-- Step 2: Créateur -->
         @if (currentStep() === 1) {
           <div class="form-step" data-testid="step-2">
-            <h2 class="step-title">Équipes & Groupes</h2>
-            <p class="step-description">
-              Ajoutez les équipes et les groupes de votre tournoi (optionnel).
-            </p>
-
-            <div class="field">
-              <p-floatlabel variant="on">
-                <input
-                  pInputText
-                  id="teamInput"
-                  [value]="teamInput()"
-                  (input)="teamInput.set($any($event.target).value)"
-                  class="w-full"
-                  data-testid="field-team-input"
-                />
-                <label for="teamInput">Nom de l'équipe</label>
-              </p-floatlabel>
-              <p-button
-                type="button"
-                label="Ajouter"
-                icon="pi pi-plus"
-                [disabled]="!teamInput()"
-                (onClick)="addTeam(teamInput()); teamInput.set('')"
-                data-testid="btn-add-team"
-              />
-            </div>
-
-            @if (teams.length > 0) {
-              <ul class="item-list" data-testid="team-list">
-                @for (team of teams; track team) {
-                  <li>
-                    {{ team }}
-                    <p-button
-                      type="button"
-                      icon="pi pi-trash"
-                      severity="danger"
-                      [text]="true"
-                      (onClick)="removeTeam(team)"
-                    />
-                  </li>
-                }
-              </ul>
-            }
-
-            <div class="field field-spacing-top">
-              <p-floatlabel variant="on">
-                <input
-                  pInputText
-                  id="groupInput"
-                  #groupInputRef
-                  class="w-full"
-                  data-testid="field-group-input"
-                />
-                <label for="groupInput">Nom du groupe</label>
-              </p-floatlabel>
-              <p-button
-                type="button"
-                label="Ajouter"
-                icon="pi pi-plus"
-                [disabled]="!groupInputRef.value"
-                (onClick)="addGroup(groupInputRef.value); groupInputRef.value = ''"
-                data-testid="btn-add-group"
-              />
-            </div>
-
-            @if (groups.length > 0) {
-              <ul class="item-list" data-testid="group-list">
-                @for (group of groups; track group) {
-                  <li>
-                    {{ group }}
-                    <p-button
-                      type="button"
-                      icon="pi pi-trash"
-                      severity="danger"
-                      [text]="true"
-                      (onClick)="removeGroup(group)"
-                    />
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-        }
-
-        <!-- Step 3: Créateur -->
-        @if (currentStep() === 2) {
-          <div class="form-step" data-testid="step-3">
             <h2 class="step-title">Informations du créateur</h2>
             <p class="step-description">
               Ces informations permettront de vous identifier comme organisateur. Un lien de gestion
@@ -252,7 +164,7 @@
                 label="Créer le tournoi"
                 icon="pi pi-check"
                 iconPos="right"
-                [disabled]="!isStep3Valid()"
+                [disabled]="!isStep2Valid()"
                 data-testid="btn-submit"
               />
             }

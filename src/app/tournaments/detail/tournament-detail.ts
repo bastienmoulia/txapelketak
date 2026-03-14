@@ -18,7 +18,6 @@ import { Types } from '../../types/types';
 import { injectParams } from 'ngxtension/inject-params';
 import { TournamentStatusLabelPipe } from '../../shared/pipes/tournament-status-label.pipe';
 import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-status-severity.pipe';
-import { Header } from '../../shared/header/header';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -32,7 +31,6 @@ import { Header } from '../../shared/header/header';
     Types,
     TournamentStatusLabelPipe,
     TournamentStatusSeverityPipe,
-    Header,
   ],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',

@@ -52,28 +52,28 @@ describe("Home", () => {
 
   it("should limit recentTournaments to 5", () => {
     component.tournaments.set([
-      { id: "1", name: "T1", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-01" },
-      { id: "2", name: "T2", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-02" },
-      { id: "3", name: "T3", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-03" },
-      { id: "4", name: "T4", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-04" },
-      { id: "5", name: "T5", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-05" },
-      { id: "6", name: "T6", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-06" },
+      { id: 1, name: "T1", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-01" },
+      { id: 2, name: "T2", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-02" },
+      { id: 3, name: "T3", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-03" },
+      { id: 4, name: "T4", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-04" },
+      { id: 5, name: "T5", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-05" },
+      { id: 6, name: "T6", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-06" },
     ]);
     expect(component.recentTournaments().length).toBe(5);
   });
 
   it("should display the 5 most recently created tournaments", () => {
     component.tournaments.set([
-      { id: "1", name: "T1", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-01" },
-      { id: "2", name: "T2", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-02" },
-      { id: "3", name: "T3", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-03" },
-      { id: "4", name: "T4", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-04" },
-      { id: "5", name: "T5", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-05" },
-      { id: "6", name: "T6", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-06" },
+      { id: 1, name: "T1", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-01" },
+      { id: 2, name: "T2", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-02" },
+      { id: 3, name: "T3", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-03" },
+      { id: 4, name: "T4", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-04" },
+      { id: 5, name: "T5", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-05" },
+      { id: 6, name: "T6", description: "", type: "poules", status: "upcoming", createdAt: "2024-01-06" },
     ]);
     const recent = component.recentTournaments();
-    expect(recent[0].id).toBe("6");
-    expect(recent[4].id).toBe("2");
+    expect(recent[0].id).toBe(6);
+    expect(recent[4].id).toBe(2);
   });
 
   it("should display 6 feature cards", () => {

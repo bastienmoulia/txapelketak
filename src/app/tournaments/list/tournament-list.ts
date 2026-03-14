@@ -9,7 +9,6 @@ import { CallPipe } from 'ngxtension/call-apply';
 import { Tournament } from '../../home/tournament.interface';
 import { TournamentStatusLabelPipe } from '../../shared/pipes/tournament-status-label.pipe';
 import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-status-severity.pipe';
-import { Header } from '../../shared/header/header';
 
 @Component({
   selector: 'app-tournament-list',
@@ -21,7 +20,6 @@ import { Header } from '../../shared/header/header';
     CallPipe,
     TournamentStatusLabelPipe,
     TournamentStatusSeverityPipe,
-    Header,
   ],
   templateUrl: './tournament-list.html',
   styleUrl: './tournament-list.css',

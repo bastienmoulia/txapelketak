@@ -171,7 +171,3 @@
 :host ::ng-deep .field .p-selectbutton .p-togglebutton {
   flex: 1;
 }
-
-.field-spacing-top {
-  margin-top: 1.5rem;
-}

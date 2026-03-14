@@ -8,11 +8,10 @@ import {
 import { Firestore, collection, getDocs, limit, query, where } from '@angular/fire/firestore';
 import { User } from '../../home/tournament.interface';
 import { injectParams } from 'ngxtension/inject-params';
-import { Header } from '../../shared/header/header';
 
 @Component({
   selector: 'app-tournament-admin',
-  imports: [Header],
+  imports: [],
   templateUrl: './tournament-admin.html',
   styleUrl: './tournament-admin.css',
 })

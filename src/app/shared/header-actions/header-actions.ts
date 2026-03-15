@@ -26,11 +26,14 @@ export class HeaderActions {
   private readonly destroyRef = inject(DestroyRef);
   private readonly themeStorageKey = 'txapelketak:theme-mode';
   private readonly languageStorageKey = 'txapelketak:language';
+  private readonly mobileBreakpoint = '(max-width: 640px)';
 
   private mediaQuery?: MediaQueryList;
+  private mobileMediaQuery?: MediaQueryList;
 
   themeMode = signal<ThemeMode>(this.readThemeMode());
   language = signal<LanguageCode>(this.readLanguage());
+  isMobile = signal<boolean>(false);
 
   themeLabel = computed(() => {
     switch (this.themeMode()) {
@@ -84,6 +87,7 @@ export class HeaderActions {
 
   constructor() {
     this.initializeThemeHandling();
+    this.initializeMobileDetection();
     this.applyLanguage();
   }
 
@@ -101,6 +105,21 @@ export class HeaderActions {
     this.language.set(language);
     this.persistValue(this.languageStorageKey, language);
     this.applyLanguage();
+  }
+
+  private initializeMobileDetection(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this.mobileMediaQuery = window.matchMedia?.(this.mobileBreakpoint);
+    this.isMobile.set(Boolean(this.mobileMediaQuery?.matches));
+
+    const handleMobileChange = (e: MediaQueryListEvent) => this.isMobile.set(e.matches);
+    this.mobileMediaQuery?.addEventListener?.('change', handleMobileChange);
+    this.destroyRef.onDestroy(() => {
+      this.mobileMediaQuery?.removeEventListener?.('change', handleMobileChange);
+    });
   }
 
   private initializeThemeHandling(): void {

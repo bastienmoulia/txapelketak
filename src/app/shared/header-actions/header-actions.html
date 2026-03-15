@@ -5,7 +5,8 @@
     severity="secondary"
     [outlined]="true"
     [icon]="themeIcon()"
-    [label]="themeLabel()"
+    [label]="isMobile() ? undefined : themeLabel()"
+    [ariaLabel]="themeLabel()"
     (onClick)="toggleMenu(themeMenu, $event)"
   />
 

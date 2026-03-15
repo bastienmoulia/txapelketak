@@ -15,4 +15,8 @@
   .header-actions :is(.p-button) {
     width: 100%;
   }
+
+  .header-actions :is(.theme-button) .p-button-label {
+    display: none;
+  }
 }

@@ -40,6 +40,6 @@ describe("TournamentList", () => {
 
   it("should display a link to create a tournament", () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain("Créer un tournoi");
+    expect(compiled.textContent).toContain("Créer");
   });
 });

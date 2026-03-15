@@ -52,7 +52,7 @@
   "tournaments": {
     "list": {
       "title": "Tournaments",
-      "create": "Create a tournament"
+      "create": "Create"
     },
     "new": {
       "title": "Create a tournament",

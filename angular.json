@@ -73,7 +73,8 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "browsers": ["chromium", "firefox", "webkit"]
+            "browsers": ["chromium", "firefox", "webkit"],
+            "runnerConfig": "vitest.config.ts"
           }
         },
         "lint": {

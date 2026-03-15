@@ -32,8 +32,17 @@ describe('HeaderActions', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render two action buttons with current labels', () => {
+  it('should render two action buttons with current labels', async () => {
+    // The test browser viewport is < 640px, so the component initializes
+    // in mobile mode. Explicitly switch to desktop mode to test desktop labels.
+    component.isMobile.set(false);
     fixture.detectChanges();
+    await fixture.whenStable();
+    // A second change detection cycle is needed because themeLabel() and
+    // languageLabel() depend on headerTranslations (a toSignal), which updates
+    // asynchronously after the transloco service emits the loaded translations.
+    fixture.detectChanges();
+    await fixture.whenStable();
     const buttons = Array.from(
       fixture.nativeElement.querySelectorAll('button'),
     ) as HTMLButtonElement[];
@@ -43,9 +52,10 @@ describe('HeaderActions', () => {
     expect(buttons[1].textContent).toContain('Français');
   });
 
-  it('should show 2-character label on language button when mobile', () => {
+  it('should show 2-character label on language button when mobile', async () => {
     component.isMobile.set(true);
     fixture.detectChanges();
+    await fixture.whenStable();
     const buttons = Array.from(
       fixture.nativeElement.querySelectorAll('button'),
     ) as HTMLButtonElement[];

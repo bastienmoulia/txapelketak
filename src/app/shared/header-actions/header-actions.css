@@ -16,7 +16,7 @@
     width: 100%;
   }
 
-  .header-actions :is(.theme-button) .p-button-label {
+  .header-actions :is(.theme-button)::ng-deep .p-button-label {
     display: none;
   }
 }

@@ -52,7 +52,7 @@
   "tournaments": {
     "list": {
       "title": "Torneos",
-      "create": "Crear un torneo"
+      "create": "Crear"
     },
     "new": {
       "title": "Crear un torneo",

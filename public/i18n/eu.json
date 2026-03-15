@@ -52,7 +52,7 @@
   "tournaments": {
     "list": {
       "title": "Txapelketak",
-      "create": "Txapelketa sortu"
+      "create": "Sortu"
     },
     "new": {
       "title": "Txapelketa sortu",

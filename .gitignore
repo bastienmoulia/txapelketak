@@ -8,6 +8,8 @@ out-tsc/
 
 # Test outputs
 coverage/
+.vitest-attachments/
+**/__screenshots__/
 
 # Logs
 npm-debug.log*

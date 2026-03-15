@@ -73,6 +73,51 @@ describe('TournamentsTable', () => {
     expect(buttons[2].disabled).toBe(false);
   });
 
+  it('should have sortable column headers for Nom, Type and Statut', async () => {
+    const sortIcons = Array.from(
+      fixture.nativeElement.querySelectorAll('p-sorticon'),
+    ) as HTMLElement[];
+
+    expect(sortIcons.length).toBe(3);
+  });
+
+  it('should sort tournaments by name when clicking Nom header', async () => {
+    fixture.componentRef.setInput('tournaments', [
+      {
+        id: 1,
+        name: 'Zeta',
+        description: '',
+        type: 'poules',
+        status: 'ongoing',
+        createdAt: '2024-01-01',
+      },
+      {
+        id: 2,
+        name: 'Alpha',
+        description: '',
+        type: 'finale',
+        status: 'ongoing',
+        createdAt: '2024-01-02',
+      },
+    ] satisfies Tournament[]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const sortableHeaders = Array.from(
+      fixture.nativeElement.querySelectorAll('th.p-datatable-sortable-column'),
+    ) as HTMLTableCellElement[];
+    const nomHeader = sortableHeaders[0];
+    nomHeader.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const rows = Array.from(
+      fixture.nativeElement.querySelectorAll('tbody tr td:first-child'),
+    ) as HTMLTableCellElement[];
+    expect(rows[0].textContent?.trim()).toBe('Alpha');
+    expect(rows[1].textContent?.trim()).toBe('Zeta');
+  });
+
   it('should use getTournamentLink input to build button links', async () => {
     const calledWith: Tournament[] = [];
     fixture.componentRef.setInput('getTournamentLink', (tournament: Tournament) => {

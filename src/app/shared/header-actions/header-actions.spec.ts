@@ -3,6 +3,44 @@ import { provideTranslocoTesting } from '../../testing/transloco-testing.provide
 
 import { HeaderActions } from './header-actions';
 
+function createMatchMedia(width: number): typeof window.matchMedia {
+  return ((query: string) => {
+    const maxWidthMatch = query.match(/\(max-width:\s*(\d+)px\)/);
+    if (maxWidthMatch) {
+      const breakpoint = Number(maxWidthMatch[1]);
+      return {
+        media: query,
+        matches: width <= breakpoint,
+        onchange: null,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => true,
+      } as MediaQueryList;
+    }
+
+    return {
+      media: query,
+      matches: false,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => true,
+    } as MediaQueryList;
+  }) as typeof window.matchMedia;
+}
+
+function setViewportWidth(width: number): void {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: createMatchMedia(width),
+  });
+}
+
 describe('HeaderActions', () => {
   let component: HeaderActions;
   let fixture: ComponentFixture<HeaderActions>;
@@ -10,6 +48,7 @@ describe('HeaderActions', () => {
   beforeEach(() => {
     localStorage.clear();
     document.documentElement.classList.remove('app-dark');
+    setViewportWidth(1024);
   });
 
   afterEach(() => {
@@ -44,14 +83,39 @@ describe('HeaderActions', () => {
   });
 
   it('should show 2-character label on language button when mobile', () => {
-    component.isMobile.set(true);
-    fixture.detectChanges();
+    setViewportWidth(375);
+    const mobileFixture = TestBed.createComponent(HeaderActions);
+    mobileFixture.detectChanges();
+
     const buttons = Array.from(
-      fixture.nativeElement.querySelectorAll('button'),
+      mobileFixture.nativeElement.querySelectorAll('button'),
     ) as HTMLButtonElement[];
 
     expect(buttons[1].textContent).toContain('FR');
     expect(buttons[1].textContent).not.toContain('Français');
+  });
+
+  it('should adapt language label depending on viewport width', () => {
+    const cases = [
+      { width: 1024, expected: 'Français', unexpected: 'FR' },
+      { width: 640, expected: 'FR', unexpected: 'Français' },
+      { width: 375, expected: 'FR', unexpected: 'Français' },
+    ];
+
+    for (const testCase of cases) {
+      setViewportWidth(testCase.width);
+      const viewportFixture = TestBed.createComponent(HeaderActions);
+      viewportFixture.detectChanges();
+
+      const buttons = Array.from(
+        viewportFixture.nativeElement.querySelectorAll('button'),
+      ) as HTMLButtonElement[];
+
+      expect(buttons[1].textContent).toContain(testCase.expected);
+      expect(buttons[1].textContent).not.toContain(testCase.unexpected);
+
+      viewportFixture.destroy();
+    }
   });
 
   it('should initialize dark mode from localStorage', async () => {

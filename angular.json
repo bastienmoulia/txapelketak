@@ -72,7 +72,9 @@
         },
         "test": {
           "builder": "@angular/build:unit-test",
-          "options": {}
+          "options": {
+            "browsers": ["chromium", "firefox", "webkit"]
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",

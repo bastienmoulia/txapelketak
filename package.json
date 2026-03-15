@@ -38,7 +38,6 @@
     "angular-eslint": "21.3.0",
     "concurrently": "^9.2.1",
     "eslint": "^10.0.2",
-    "jsdom": "^29.0.0",
     "ngxtension-plugin": "^7.2.0",
     "playwright": "^1.58.2",
     "prettier": "^3.8.1",

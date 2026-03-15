@@ -28,11 +28,3 @@ a {
     text-decoration: underline;
   }
 }
-
-@media (max-width: 640px) {
-  header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-}

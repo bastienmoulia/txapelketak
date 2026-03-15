@@ -3,6 +3,7 @@ const eslint = require('@eslint/js');
 const { defineConfig } = require('eslint/config');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
+const css = require('@eslint/css').default;
 
 module.exports = defineConfig([
   {
@@ -39,9 +40,20 @@ module.exports = defineConfig([
     rules: {},
   },
   {
+    files: ['**/*.css'],
+    language: 'css/css',
+    plugins: { css },
+    extends: ['css/recommended'],
+    rules: {
+      'css/no-invalid-properties': ['error', { allowUnknownVariables: true }],
+      'css/use-baseline': 'warn',
+    },
+  },
+  {
     files: ['**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
     },
   },
 ]);

@@ -7,6 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoService } from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -37,7 +38,15 @@ export class HeaderActions {
   language = signal<LanguageCode>(this.readLanguage());
   isMobile = signal<boolean>(false);
 
+  // Reactive signal: emits the translated 'header' object once translations are loaded
+  // and re-emits on every language change. This makes all dependent computed() signals
+  // re-evaluate after the async HTTP translation file is fetched.
+  private headerTranslations = toSignal(this.translocoService.selectTranslateObject('header'), {
+    initialValue: null,
+  });
+
   themeLabel = computed(() => {
+    this.headerTranslations();
     switch (this.themeMode()) {
       case 'light':
         return this.translocoService.translate('header.theme.light');
@@ -59,52 +68,59 @@ export class HeaderActions {
     }
   });
 
-  languageLabel = computed(() =>
-    this.translocoService.translate(`header.language.${this.language()}`),
-  );
+  languageLabel = computed(() => {
+    this.headerTranslations();
+    return this.translocoService.translate(`header.language.${this.language()}`);
+  });
 
   languageCode = computed(() => this.language().toUpperCase());
 
-  themeItems = computed<MenuItem[]>(() => [
-    {
-      label: this.translocoService.translate('header.theme.light'),
-      icon: 'pi pi-sun',
-      command: () => this.setThemeMode('light'),
-    },
-    {
-      label: this.translocoService.translate('header.theme.dark'),
-      icon: 'pi pi-moon',
-      command: () => this.setThemeMode('dark'),
-    },
-    {
-      label: this.translocoService.translate('header.theme.auto'),
-      icon: 'pi pi-desktop',
-      command: () => this.setThemeMode('auto'),
-    },
-  ]);
+  themeItems = computed<MenuItem[]>(() => {
+    this.headerTranslations();
+    return [
+      {
+        label: this.translocoService.translate('header.theme.light'),
+        icon: 'pi pi-sun',
+        command: () => this.setThemeMode('light'),
+      },
+      {
+        label: this.translocoService.translate('header.theme.dark'),
+        icon: 'pi pi-moon',
+        command: () => this.setThemeMode('dark'),
+      },
+      {
+        label: this.translocoService.translate('header.theme.auto'),
+        icon: 'pi pi-desktop',
+        command: () => this.setThemeMode('auto'),
+      },
+    ];
+  });
 
-  languageItems = computed<MenuItem[]>(() => [
-    {
-      label: this.translocoService.translate('header.language.fr'),
-      icon: 'pi pi-language',
-      command: () => this.setLanguage('fr'),
-    },
-    {
-      label: this.translocoService.translate('header.language.eu'),
-      icon: 'pi pi-language',
-      command: () => this.setLanguage('eu'),
-    },
-    {
-      label: this.translocoService.translate('header.language.en'),
-      icon: 'pi pi-language',
-      command: () => this.setLanguage('en'),
-    },
-    {
-      label: this.translocoService.translate('header.language.es'),
-      icon: 'pi pi-language',
-      command: () => this.setLanguage('es'),
-    },
-  ]);
+  languageItems = computed<MenuItem[]>(() => {
+    this.headerTranslations();
+    return [
+      {
+        label: this.translocoService.translate('header.language.fr'),
+        icon: 'pi pi-language',
+        command: () => this.setLanguage('fr'),
+      },
+      {
+        label: this.translocoService.translate('header.language.eu'),
+        icon: 'pi pi-language',
+        command: () => this.setLanguage('eu'),
+      },
+      {
+        label: this.translocoService.translate('header.language.en'),
+        icon: 'pi pi-language',
+        command: () => this.setLanguage('en'),
+      },
+      {
+        label: this.translocoService.translate('header.language.es'),
+        icon: 'pi pi-language',
+        command: () => this.setLanguage('es'),
+      },
+    ];
+  });
 
   constructor() {
     this.initializeThemeHandling();

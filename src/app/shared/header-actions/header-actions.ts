@@ -59,6 +59,8 @@ export class HeaderActions {
 
   languageLabel = computed(() => 'Français');
 
+  languageCode = computed(() => this.language().toUpperCase());
+
   themeItems = computed<MenuItem[]>(() => [
     {
       label: 'Clair',

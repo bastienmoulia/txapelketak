@@ -41,6 +41,17 @@ describe('HeaderActions', () => {
     expect(buttons[1].textContent).toContain('Français');
   });
 
+  it('should show 2-character label on language button when mobile', () => {
+    component.isMobile.set(true);
+    fixture.detectChanges();
+    const buttons = Array.from(
+      fixture.nativeElement.querySelectorAll('button'),
+    ) as HTMLButtonElement[];
+
+    expect(buttons[1].textContent).toContain('FR');
+    expect(buttons[1].textContent).not.toContain('Français');
+  });
+
   it('should initialize dark mode from localStorage', async () => {
     localStorage.setItem('txapelketak:theme-mode', 'dark');
 

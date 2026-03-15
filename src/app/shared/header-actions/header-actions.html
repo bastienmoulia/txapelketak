@@ -16,7 +16,8 @@
     severity="secondary"
     [outlined]="true"
     icon="pi pi-language"
-    [label]="languageLabel()"
+    [label]="isMobile() ? languageCode() : languageLabel()"
+    [ariaLabel]="languageLabel()"
     (onClick)="toggleMenu(languageMenu, $event)"
   />
 </div>

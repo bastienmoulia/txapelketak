@@ -7,12 +7,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 
 type ThemeMode = 'light' | 'dark' | 'auto';
-type LanguageCode = 'fr';
+type LanguageCode = 'fr' | 'eu' | 'en' | 'es';
 
 @Component({
   selector: 'app-header-actions',
@@ -24,6 +25,7 @@ type LanguageCode = 'fr';
 export class HeaderActions {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translocoService = inject(TranslocoService);
   private readonly themeStorageKey = 'txapelketak:theme-mode';
   private readonly languageStorageKey = 'txapelketak:language';
   private readonly mobileBreakpoint = '(max-width: 640px)';
@@ -38,11 +40,11 @@ export class HeaderActions {
   themeLabel = computed(() => {
     switch (this.themeMode()) {
       case 'light':
-        return 'Clair';
+        return this.translocoService.translate('header.theme.light');
       case 'dark':
-        return 'Sombre';
+        return this.translocoService.translate('header.theme.dark');
       default:
-        return 'Auto';
+        return this.translocoService.translate('header.theme.auto');
     }
   });
 
@@ -57,23 +59,25 @@ export class HeaderActions {
     }
   });
 
-  languageLabel = computed(() => 'Français');
+  languageLabel = computed(() =>
+    this.translocoService.translate(`header.language.${this.language()}`),
+  );
 
   languageCode = computed(() => this.language().toUpperCase());
 
   themeItems = computed<MenuItem[]>(() => [
     {
-      label: 'Clair',
+      label: this.translocoService.translate('header.theme.light'),
       icon: 'pi pi-sun',
       command: () => this.setThemeMode('light'),
     },
     {
-      label: 'Sombre',
+      label: this.translocoService.translate('header.theme.dark'),
       icon: 'pi pi-moon',
       command: () => this.setThemeMode('dark'),
     },
     {
-      label: 'Auto',
+      label: this.translocoService.translate('header.theme.auto'),
       icon: 'pi pi-desktop',
       command: () => this.setThemeMode('auto'),
     },
@@ -81,9 +85,24 @@ export class HeaderActions {
 
   languageItems = computed<MenuItem[]>(() => [
     {
-      label: 'Français',
+      label: this.translocoService.translate('header.language.fr'),
       icon: 'pi pi-language',
       command: () => this.setLanguage('fr'),
+    },
+    {
+      label: this.translocoService.translate('header.language.eu'),
+      icon: 'pi pi-language',
+      command: () => this.setLanguage('eu'),
+    },
+    {
+      label: this.translocoService.translate('header.language.en'),
+      icon: 'pi pi-language',
+      command: () => this.setLanguage('en'),
+    },
+    {
+      label: this.translocoService.translate('header.language.es'),
+      icon: 'pi pi-language',
+      command: () => this.setLanguage('es'),
     },
   ]);
 
@@ -153,7 +172,9 @@ export class HeaderActions {
   }
 
   private applyLanguage(): void {
-    this.document.documentElement.lang = this.language();
+    const lang = this.language();
+    this.document.documentElement.lang = lang;
+    this.translocoService.setActiveLang(lang);
   }
 
   private readThemeMode(): ThemeMode {
@@ -163,7 +184,11 @@ export class HeaderActions {
   }
 
   private readLanguage(): LanguageCode {
-    return this.readStoredValue(this.languageStorageKey) === 'fr' ? 'fr' : 'fr';
+    const stored = this.readStoredValue(this.languageStorageKey);
+    if (stored === 'fr' || stored === 'eu' || stored === 'en' || stored === 'es') {
+      return stored;
+    }
+    return 'fr';
   }
 
   private readStoredValue(key: string): string | null {
@@ -182,3 +207,4 @@ export class HeaderActions {
     localStorage.setItem(key, value);
   }
 }
+

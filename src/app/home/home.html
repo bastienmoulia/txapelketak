@@ -2,8 +2,8 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <h1>Txapelketak</h1>
-    <p class="hero-subtitle">Gérez vos tournois simplement et efficacement</p>
-    <p-button label="Créer un tournoi" icon="pi pi-plus" routerLink="/tournaments/new" />
+    <p class="hero-subtitle">{{ 'home.hero.subtitle' | transloco }}</p>
+    <p-button [label]="'home.hero.createButton' | transloco" icon="pi pi-plus" routerLink="/tournaments/new" />
   </div>
 
   <app-header-actions />
@@ -45,14 +45,14 @@
 
   <!-- How it works -->
   <section class="features-section">
-    <h2>Comment ça marche ?</h2>
+    <h2>{{ 'home.features.title' | transloco }}</h2>
     <div class="features-grid">
-      @for (feature of features(); track feature.title) {
+      @for (feature of features(); track feature.titleKey) {
         <p-card class="feature-card">
           <div class="feature-content">
             <i [class]="feature.icon + ' feature-icon'"></i>
-            <h3>{{ feature.title }}</h3>
-            <p>{{ feature.description }}</p>
+            <h3>{{ feature.titleKey | transloco }}</h3>
+            <p>{{ feature.descriptionKey | transloco }}</p>
           </div>
         </p-card>
       }
@@ -62,9 +62,9 @@
   <!-- Tournament List -->
   <section class="tournaments-section">
     <div class="section-header">
-      <h2>Tournois</h2>
+      <h2>{{ 'home.tournaments.title' | transloco }}</h2>
       <p-button
-        label="Créer un tournoi"
+        [label]="'home.hero.createButton' | transloco"
         icon="pi pi-plus"
         severity="secondary"
         [outlined]="true"
@@ -78,7 +78,7 @@
     @if (recentTournaments().length > 0) {
       <div class="see-all-tournaments">
         <p-button
-          label="Voir tous les tournois"
+          [label]="'home.tournaments.seeAll' | transloco"
           icon="pi pi-list"
           severity="secondary"
           [outlined]="true"
@@ -88,3 +88,4 @@
     }
   </section>
 </div>
+

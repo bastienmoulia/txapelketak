@@ -1,10 +1,15 @@
+import { TestBed } from '@angular/core/testing';
 import { TournamentStatusLabelPipe } from './tournament-status-label.pipe';
+import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 describe('TournamentStatusLabelPipe', () => {
   let pipe: TournamentStatusLabelPipe;
 
   beforeEach(() => {
-    pipe = new TournamentStatusLabelPipe();
+    TestBed.configureTestingModule({
+      providers: [...provideTranslocoTesting()],
+    });
+    pipe = TestBed.runInInjectionContext(() => new TournamentStatusLabelPipe());
   });
 
   it('should create', () => {

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -16,6 +17,7 @@ import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severit
     TagModule,
     TournamentStatusLabelPipe,
     TournamentStatusSeverityPipe,
+    TranslocoModule,
   ],
   templateUrl: './tournaments-table.html',
   styleUrl: './tournaments-table.css',

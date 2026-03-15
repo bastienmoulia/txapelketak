@@ -2,15 +2,15 @@
   @if (loading()) {
     <div class="loading-state" data-testid="loading-state">
       <i class="pi pi-spin pi-spinner loading-spinner"></i>
-      <p>Chargement du tournoi...</p>
+      <p>{{ 'tournaments.detail.loading' | transloco }}</p>
     </div>
   } @else if (notFound()) {
     <div class="not-found-state" data-testid="not-found-state">
       <i class="pi pi-exclamation-triangle not-found-icon"></i>
-      <h2>Tournoi introuvable</h2>
-      <p>Ce tournoi n'existe pas ou a été supprimé.</p>
+      <h2>{{ 'tournaments.detail.notFound.title' | transloco }}</h2>
+      <p>{{ 'tournaments.detail.notFound.message' | transloco }}</p>
       <p-button
-        label="Retour à l'accueil"
+        [label]="'tournaments.detail.notFound.backHome' | transloco"
         icon="pi pi-home"
         severity="secondary"
         [outlined]="true"
@@ -45,8 +45,7 @@
             class="validation-message"
             data-testid="validation-message"
           >
-            L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre
-            patience.
+            {{ 'tournaments.detail.waitingValidation' | transloco }}
           </p-message>
         </div>
       } @else {

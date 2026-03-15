@@ -9,6 +9,6 @@
     <app-admin-poules-finale [tournamentData]="poulesFinaleData()" />
   }
   @default {
-    <p>Type de tournoi inconnu : {{ tournament().type }}</p>
+    <p>{{ 'admin.unknownType' | transloco }} : {{ tournament().type }}</p>
   }
 }

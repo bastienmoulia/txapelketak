@@ -1,21 +1,25 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import { TournamentStatus } from '../../home/tournament.interface';
 
 @Pipe({
   name: 'tournamentStatusLabel',
   standalone: true,
+  pure: false,
 })
 export class TournamentStatusLabelPipe implements PipeTransform {
+  private translocoService = inject(TranslocoService);
+
   transform(status: TournamentStatus): string {
     switch (status) {
       case 'ongoing':
-        return 'En cours';
+        return this.translocoService.translate('shared.status.ongoing');
       case 'paused':
-        return 'En pause';
+        return this.translocoService.translate('shared.status.paused');
       case 'archived':
-        return 'Archivé';
+        return this.translocoService.translate('shared.status.archived');
       case 'waitingValidation':
-        return 'En attente de validation';
+        return this.translocoService.translate('shared.status.waitingValidation');
       default:
         return status;
     }

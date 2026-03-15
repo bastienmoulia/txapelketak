@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 
 import { TournamentDetail } from './tournament-detail';
+import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 describe('TournamentDetail', () => {
   let component: TournamentDetail;
@@ -24,6 +25,7 @@ describe('TournamentDetail', () => {
             },
           },
         },
+        ...provideTranslocoTesting(),
       ],
     }).compileComponents();
 

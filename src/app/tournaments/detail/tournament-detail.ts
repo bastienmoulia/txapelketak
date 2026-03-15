@@ -8,6 +8,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
@@ -30,6 +31,7 @@ import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-stat
     Types,
     TournamentStatusLabelPipe,
     TournamentStatusSeverityPipe,
+    TranslocoModule,
   ],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',

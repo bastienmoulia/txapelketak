@@ -1,0 +1,142 @@
+{
+  "header": {
+    "theme": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "auto": "Auto"
+    },
+    "language": {
+      "fr": "Français",
+      "eu": "Euskara",
+      "en": "English",
+      "es": "Español"
+    }
+  },
+  "home": {
+    "hero": {
+      "subtitle": "Gérez vos tournois simplement et efficacement",
+      "createButton": "Créer un tournoi"
+    },
+    "features": {
+      "title": "Comment ça marche ?",
+      "createTournament": {
+        "title": "Créez votre tournoi",
+        "description": "Configurez facilement vos tournois : poules, phases finales, ou les deux."
+      },
+      "managePlayers": {
+        "title": "Gérez les joueurs",
+        "description": "Ajoutez vos participants et organisez-les en groupes ou en têtes de série."
+      },
+      "followScores": {
+        "title": "Suivez les scores",
+        "description": "Saisissez les résultats en temps réel et consultez les classements mis à jour automatiquement."
+      },
+      "urlAccess": {
+        "title": "Accès par URL",
+        "description": "Partagez votre tournoi simplement avec un lien. Pas d'inscription requise, aucune donnée personnelle."
+      },
+      "free": {
+        "title": "100% gratuit",
+        "description": "Créez et organisez autant de tournois que vous le souhaitez, complètement gratuitement."
+      },
+      "openSource": {
+        "title": "Libre et open source",
+        "description": "Code source ouvert, aucune publicité, aucune limitation. À vous de jouer."
+      }
+    },
+    "tournaments": {
+      "title": "Tournois",
+      "seeAll": "Voir tous les tournois"
+    }
+  },
+  "tournaments": {
+    "list": {
+      "title": "Tournois",
+      "create": "Créer un tournoi"
+    },
+    "new": {
+      "title": "Créer un tournoi",
+      "steps": {
+        "info": "Informations",
+        "creator": "Créateur"
+      },
+      "step1": {
+        "title": "Informations du tournoi",
+        "name": "Nom du tournoi *",
+        "nameRequired": "Le nom du tournoi est obligatoire.",
+        "description": "Description (optionnelle)",
+        "type": "Type de tournoi *"
+      },
+      "step2": {
+        "title": "Informations du créateur",
+        "description": "Ces informations permettront de vous identifier comme organisateur. Un lien de gestion unique vous sera attribué.",
+        "username": "Pseudo *",
+        "usernameRequired": "Le pseudo est obligatoire.",
+        "email": "Email *",
+        "emailRequired": "L'email est obligatoire.",
+        "emailInvalid": "L'adresse email n'est pas valide."
+      },
+      "nav": {
+        "previous": "Précédent",
+        "cancel": "Annuler",
+        "next": "Suivant",
+        "submit": "Créer le tournoi"
+      },
+      "success": {
+        "title": "Tournoi créé",
+        "message": "Votre tournoi est en attente de validation.",
+        "backHome": "Retour à l'accueil"
+      },
+      "type": {
+        "poules": "Poules",
+        "finale": "Phase finale",
+        "poulesFinale": "Poules + Phase finale"
+      }
+    },
+    "detail": {
+      "loading": "Chargement du tournoi...",
+      "notFound": {
+        "title": "Tournoi introuvable",
+        "message": "Ce tournoi n'existe pas ou a été supprimé.",
+        "backHome": "Retour à l'accueil"
+      },
+      "waitingValidation": "L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre patience."
+    },
+    "types": {
+      "unknown": "Type de tournoi inconnu"
+    }
+  },
+  "admin": {
+    "title": "Accès administration",
+    "loading": "Vérification des accès...",
+    "denied": "Accès refusé : lien invalide ou expiré.",
+    "backHome": "Retour à l'accueil",
+    "welcome": "Bienvenue {{ username }}",
+    "tournament": "Tournoi",
+    "email": "Email",
+    "rights": "Droits",
+    "archived": "Ce tournoi est archivé. Les modifications ne sont pas autorisées.",
+    "notFound": "Tournoi introuvable ou non spécifié.",
+    "validated": "Tournoi validé",
+    "validatedDetail": "Le tournoi a été validé et mis en pause. Passez-le à 'En cours' lorsque vous êtes prêt.",
+    "unknownType": "Type de tournoi inconnu"
+  },
+  "shared": {
+    "table": {
+      "columns": {
+        "name": "Nom",
+        "type": "Type",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "open": "Ouvrir",
+      "empty": "Aucun tournoi disponible"
+    },
+    "status": {
+      "ongoing": "En cours",
+      "paused": "En pause",
+      "archived": "Archivé",
+      "waitingValidation": "En attente de validation"
+    }
+  }
+}

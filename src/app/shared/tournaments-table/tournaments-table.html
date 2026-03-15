@@ -1,9 +1,9 @@
 <p-table [value]="tournaments()" class="p-datatable-striped">
   <ng-template #header>
     <tr>
-      <th>Nom</th>
-      <th>Type</th>
-      <th>Statut</th>
+      <th pSortableColumn="name">Nom <p-sortIcon field="name" /></th>
+      <th pSortableColumn="type">Type <p-sortIcon field="type" /></th>
+      <th pSortableColumn="status">Statut <p-sortIcon field="status" /></th>
       <th>Actions</th>
     </tr>
   </ng-template>

@@ -1,0 +1,142 @@
+{
+  "header": {
+    "theme": {
+      "light": "Argia",
+      "dark": "Iluna",
+      "auto": "Auto"
+    },
+    "language": {
+      "fr": "Français",
+      "eu": "Euskara",
+      "en": "English",
+      "es": "Español"
+    }
+  },
+  "home": {
+    "hero": {
+      "subtitle": "Kudeatu zure txapelketak modu erraz eta eraginkorrean",
+      "createButton": "Txapelketa sortu"
+    },
+    "features": {
+      "title": "Nola funtzionatzen du?",
+      "createTournament": {
+        "title": "Sortu zure txapelketa",
+        "description": "Konfiguratu erraz zure txapelketak: taldeak, kanporaketa faseak edo biak."
+      },
+      "managePlayers": {
+        "title": "Kudeatu jokaliariak",
+        "description": "Gehitu zure parte-hartzaileak eta antolatu taldetan edo sailkapen-buruetan."
+      },
+      "followScores": {
+        "title": "Jarraitu puntuazioak",
+        "description": "Sartu emaitzak denbora errealean eta ikusi sailkapenak automatikoki eguneratuta."
+      },
+      "urlAccess": {
+        "title": "URL bidezko sarbidea",
+        "description": "Partekatu zure txapelketa esteka batekin. Ez da erregistrorik behar, datu pertsonalik gabe."
+      },
+      "free": {
+        "title": "% 100 doakoa",
+        "description": "Sortu eta antolatu nahi adina txapelketa, guztiz doan."
+      },
+      "openSource": {
+        "title": "Libre eta kode irekia",
+        "description": "Kode irekia, iragarkiik gabe, mugarik gabe. Jolastu!"
+      }
+    },
+    "tournaments": {
+      "title": "Txapelketak",
+      "seeAll": "Ikusi txapelketa guztiak"
+    }
+  },
+  "tournaments": {
+    "list": {
+      "title": "Txapelketak",
+      "create": "Txapelketa sortu"
+    },
+    "new": {
+      "title": "Txapelketa sortu",
+      "steps": {
+        "info": "Informazioa",
+        "creator": "Sortzailea"
+      },
+      "step1": {
+        "title": "Txapelketaren informazioa",
+        "name": "Txapelketaren izena *",
+        "nameRequired": "Txapelketaren izena nahitaezkoa da.",
+        "description": "Deskribapena (aukerazkoa)",
+        "type": "Txapelketa mota *"
+      },
+      "step2": {
+        "title": "Sortzailearen informazioa",
+        "description": "Informazio honek antolatzaile gisa identifikatzen lagunduko zaitu. Kudeaketa esteka bakarra esleituko zaizu.",
+        "username": "Ezizena *",
+        "usernameRequired": "Ezizena nahitaezkoa da.",
+        "email": "Emaila *",
+        "emailRequired": "Emaila nahitaezkoa da.",
+        "emailInvalid": "Email helbidea ez da baliozkoa."
+      },
+      "nav": {
+        "previous": "Aurrekoa",
+        "cancel": "Utzi",
+        "next": "Hurrengoa",
+        "submit": "Txapelketa sortu"
+      },
+      "success": {
+        "title": "Txapelketa sortua",
+        "message": "Zure txapelketa balioztapen zain dago.",
+        "backHome": "Hasierara itzuli"
+      },
+      "type": {
+        "poules": "Taldeak",
+        "finale": "Kanporaketa fasea",
+        "poulesFinale": "Taldeak + Kanporaketa fasea"
+      }
+    },
+    "detail": {
+      "loading": "Txapelketa kargatzen...",
+      "notFound": {
+        "title": "Txapelketa ez da aurkitu",
+        "message": "Txapelketa hau ez da existitzen edo ezabatu egin da.",
+        "backHome": "Hasierara itzuli"
+      },
+      "waitingValidation": "Administratzaileak txapelketa hau balioztatu behar du ikusteko moduan egon aurretik. Eskerrik asko zure pazientziagatik."
+    },
+    "types": {
+      "unknown": "Txapelketa mota ezezaguna"
+    }
+  },
+  "admin": {
+    "title": "Administrazio sarbidea",
+    "loading": "Sarbideak egiaztatzen...",
+    "denied": "Sarbidea ukatua: esteka baliogabea edo iraungita.",
+    "backHome": "Hasierara itzuli",
+    "welcome": "Ongi etorri {{ username }}",
+    "tournament": "Txapelketa",
+    "email": "Emaila",
+    "rights": "Eskubideak",
+    "archived": "Txapelketa hau artxibatuta dago. Aldaketak ez daude baimenduta.",
+    "notFound": "Txapelketa ez da aurkitu edo ez da zehaztu.",
+    "validated": "Txapelketa balioztatua",
+    "validatedDetail": "Txapelketa balioztatua eta geldituta dago. Jarri 'Abian' prest zaudenean.",
+    "unknownType": "Txapelketa mota ezezaguna"
+  },
+  "shared": {
+    "table": {
+      "columns": {
+        "name": "Izena",
+        "type": "Mota",
+        "status": "Egoera",
+        "actions": "Ekintzak"
+      },
+      "open": "Ireki",
+      "empty": "Ez dago txapelketarik"
+    },
+    "status": {
+      "ongoing": "Abian",
+      "paused": "Geldituta",
+      "archived": "Artxibatuta",
+      "waitingValidation": "Balioztapen zain"
+    }
+  }
+}

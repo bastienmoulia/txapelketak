@@ -3,6 +3,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { Admin } from './admin';
+import { provideTranslocoTesting } from '../testing/transloco-testing.providers';
 
 describe('Admin', () => {
   let component: Admin;
@@ -29,6 +30,7 @@ describe('Admin', () => {
             },
           },
         },
+        ...provideTranslocoTesting(),
       ],
     }).compileComponents();
 

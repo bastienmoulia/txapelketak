@@ -1,6 +1,6 @@
 <div class="tournament-new-container">
   <div class="tournament-new-card">
-    <h1 class="tournament-new-title">Créer un tournoi</h1>
+    <h1 class="tournament-new-title">{{ 'tournaments.new.title' | transloco }}</h1>
 
     <p-steps
       [model]="steps"
@@ -14,7 +14,7 @@
         <!-- Step 1: Informations -->
         @if (currentStep() === 0) {
           <div class="form-step" data-testid="step-1">
-            <h2 class="step-title">Informations du tournoi</h2>
+            <h2 class="step-title">{{ 'tournaments.new.step1.title' | transloco }}</h2>
 
             <div class="field">
               <p-floatlabel variant="on">
@@ -25,11 +25,11 @@
                   class="w-full"
                   data-testid="field-name"
                 />
-                <label for="name">Nom du tournoi *</label>
+                <label for="name">{{ 'tournaments.new.step1.name' | transloco }}</label>
               </p-floatlabel>
               @if (form.get('name')?.invalid && form.get('name')?.touched) {
                 <p-message severity="error" class="field-error">
-                  Le nom du tournoi est obligatoire.
+                  {{ 'tournaments.new.step1.nameRequired' | transloco }}
                 </p-message>
               }
             </div>
@@ -44,12 +44,12 @@
                   class="w-full"
                   data-testid="field-description"
                 ></textarea>
-                <label for="description">Description (optionnelle)</label>
+                <label for="description">{{ 'tournaments.new.step1.description' | transloco }}</label>
               </p-floatlabel>
             </div>
 
             <div class="field">
-              <label class="field-label" for="type">Type de tournoi *</label>
+              <label class="field-label" for="type">{{ 'tournaments.new.step1.type' | transloco }}</label>
               <p-selectbutton
                 id="type"
                 formControlName="type"
@@ -65,10 +65,9 @@
         <!-- Step 2: Créateur -->
         @if (currentStep() === 1) {
           <div class="form-step" data-testid="step-2">
-            <h2 class="step-title">Informations du créateur</h2>
+            <h2 class="step-title">{{ 'tournaments.new.step2.title' | transloco }}</h2>
             <p class="step-description">
-              Ces informations permettront de vous identifier comme organisateur. Un lien de gestion
-              unique vous sera attribué.
+              {{ 'tournaments.new.step2.description' | transloco }}
             </p>
 
             <div class="field">
@@ -80,11 +79,11 @@
                   class="w-full"
                   data-testid="field-creator-username"
                 />
-                <label for="creatorUsername">Pseudo *</label>
+                <label for="creatorUsername">{{ 'tournaments.new.step2.username' | transloco }}</label>
               </p-floatlabel>
               @if (form.get('creatorUsername')?.invalid && form.get('creatorUsername')?.touched) {
                 <p-message severity="error" class="field-error">
-                  Le pseudo est obligatoire.
+                  {{ 'tournaments.new.step2.usernameRequired' | transloco }}
                 </p-message>
               }
             </div>
@@ -99,16 +98,16 @@
                   class="w-full"
                   data-testid="field-creator-email"
                 />
-                <label for="creatorEmail">Email *</label>
+                <label for="creatorEmail">{{ 'tournaments.new.step2.email' | transloco }}</label>
               </p-floatlabel>
               @if (form.get('creatorEmail')?.invalid && form.get('creatorEmail')?.touched) {
                 @if (form.get('creatorEmail')?.errors?.['required']) {
                   <p-message severity="error" class="field-error">
-                    L'email est obligatoire.
+                    {{ 'tournaments.new.step2.emailRequired' | transloco }}
                   </p-message>
                 } @else if (form.get('creatorEmail')?.errors?.['email']) {
                   <p-message severity="error" class="field-error">
-                    L'adresse email n'est pas valide.
+                    {{ 'tournaments.new.step2.emailInvalid' | transloco }}
                   </p-message>
                 }
               }
@@ -122,7 +121,7 @@
             @if (currentStep() > 0) {
               <p-button
                 type="button"
-                label="Précédent"
+                [label]="'tournaments.new.nav.previous' | transloco"
                 icon="pi pi-chevron-left"
                 severity="secondary"
                 (onClick)="previousStep()"
@@ -131,7 +130,7 @@
             } @else {
               <p-button
                 type="button"
-                label="Annuler"
+                [label]="'tournaments.new.nav.cancel' | transloco"
                 icon="pi pi-times"
                 severity="secondary"
                 [outlined]="true"
@@ -144,7 +143,7 @@
             @if (currentStep() < steps.length - 1) {
               <p-button
                 type="button"
-                label="Suivant"
+                [label]="'tournaments.new.nav.next' | transloco"
                 icon="pi pi-chevron-right"
                 iconPos="right"
                 [disabled]="currentStep() === 0 && !isStep1Valid()"
@@ -154,7 +153,7 @@
             } @else {
               <p-button
                 type="submit"
-                label="Créer le tournoi"
+                [label]="'tournaments.new.nav.submit' | transloco"
                 icon="pi pi-check"
                 iconPos="right"
                 [disabled]="!isStep2Valid()"
@@ -170,10 +169,10 @@
         <div class="success-icon">
           <i class="pi pi-check-circle"></i>
         </div>
-        <h2>Tournoi créé</h2>
-        <p>Votre tournoi est en attente de validation.</p>
+        <h2>{{ 'tournaments.new.success.title' | transloco }}</h2>
+        <p>{{ 'tournaments.new.success.message' | transloco }}</p>
         <p-button
-          label="Retour à l'accueil"
+          [label]="'tournaments.new.success.backHome' | transloco"
           icon="pi pi-home"
           severity="secondary"
           [outlined]="true"

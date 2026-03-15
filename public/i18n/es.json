@@ -1,0 +1,142 @@
+{
+  "header": {
+    "theme": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "auto": "Auto"
+    },
+    "language": {
+      "fr": "Français",
+      "eu": "Euskara",
+      "en": "English",
+      "es": "Español"
+    }
+  },
+  "home": {
+    "hero": {
+      "subtitle": "Gestiona tus torneos de forma simple y eficaz",
+      "createButton": "Crear un torneo"
+    },
+    "features": {
+      "title": "¿Cómo funciona?",
+      "createTournament": {
+        "title": "Crea tu torneo",
+        "description": "Configura fácilmente tus torneos: grupos, fases eliminatorias o ambas."
+      },
+      "managePlayers": {
+        "title": "Gestiona los jugadores",
+        "description": "Añade tus participantes y organízalos en grupos o cabezas de serie."
+      },
+      "followScores": {
+        "title": "Sigue los resultados",
+        "description": "Introduce los resultados en tiempo real y consulta las clasificaciones actualizadas automáticamente."
+      },
+      "urlAccess": {
+        "title": "Acceso por URL",
+        "description": "Comparte tu torneo fácilmente con un enlace. Sin registro, sin datos personales."
+      },
+      "free": {
+        "title": "100% gratuito",
+        "description": "Crea y organiza tantos torneos como quieras, completamente gratis."
+      },
+      "openSource": {
+        "title": "Libre y de código abierto",
+        "description": "Código abierto, sin publicidad, sin limitaciones. ¡A jugar!"
+      }
+    },
+    "tournaments": {
+      "title": "Torneos",
+      "seeAll": "Ver todos los torneos"
+    }
+  },
+  "tournaments": {
+    "list": {
+      "title": "Torneos",
+      "create": "Crear un torneo"
+    },
+    "new": {
+      "title": "Crear un torneo",
+      "steps": {
+        "info": "Información",
+        "creator": "Creador"
+      },
+      "step1": {
+        "title": "Información del torneo",
+        "name": "Nombre del torneo *",
+        "nameRequired": "El nombre del torneo es obligatorio.",
+        "description": "Descripción (opcional)",
+        "type": "Tipo de torneo *"
+      },
+      "step2": {
+        "title": "Información del creador",
+        "description": "Esta información le permitirá ser identificado como organizador. Se le asignará un enlace de gestión único.",
+        "username": "Nombre de usuario *",
+        "usernameRequired": "El nombre de usuario es obligatorio.",
+        "email": "Email *",
+        "emailRequired": "El email es obligatorio.",
+        "emailInvalid": "La dirección de email no es válida."
+      },
+      "nav": {
+        "previous": "Anterior",
+        "cancel": "Cancelar",
+        "next": "Siguiente",
+        "submit": "Crear torneo"
+      },
+      "success": {
+        "title": "Torneo creado",
+        "message": "Su torneo está a la espera de validación.",
+        "backHome": "Volver al inicio"
+      },
+      "type": {
+        "poules": "Grupos",
+        "finale": "Fase eliminatoria",
+        "poulesFinale": "Grupos + Fase eliminatoria"
+      }
+    },
+    "detail": {
+      "loading": "Cargando torneo...",
+      "notFound": {
+        "title": "Torneo no encontrado",
+        "message": "Este torneo no existe o ha sido eliminado.",
+        "backHome": "Volver al inicio"
+      },
+      "waitingValidation": "El administrador debe validar este torneo antes de que pueda ser visible. Gracias por su paciencia."
+    },
+    "types": {
+      "unknown": "Tipo de torneo desconocido"
+    }
+  },
+  "admin": {
+    "title": "Acceso administración",
+    "loading": "Verificando accesos...",
+    "denied": "Acceso denegado: enlace inválido o expirado.",
+    "backHome": "Volver al inicio",
+    "welcome": "Bienvenido {{ username }}",
+    "tournament": "Torneo",
+    "email": "Email",
+    "rights": "Derechos",
+    "archived": "Este torneo está archivado. No se permiten modificaciones.",
+    "notFound": "Torneo no encontrado o no especificado.",
+    "validated": "Torneo validado",
+    "validatedDetail": "El torneo ha sido validado y pausado. Cámbialo a 'En curso' cuando estés listo.",
+    "unknownType": "Tipo de torneo desconocido"
+  },
+  "shared": {
+    "table": {
+      "columns": {
+        "name": "Nombre",
+        "type": "Tipo",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "open": "Abrir",
+      "empty": "No hay torneos disponibles"
+    },
+    "status": {
+      "ongoing": "En curso",
+      "paused": "En pausa",
+      "archived": "Archivado",
+      "waitingValidation": "En espera de validación"
+    }
+  }
+}

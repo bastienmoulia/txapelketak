@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
 import { Home } from './home';
+import { provideTranslocoTesting } from '../testing/transloco-testing.providers';
 
 describe('Home', () => {
   let component: Home;
@@ -10,7 +11,7 @@ describe('Home', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Home],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), ...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Home);
@@ -29,11 +30,7 @@ describe('Home', () => {
 
   it('should display a link to create a tournament', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const buttons = compiled.querySelectorAll('p-button');
-    const hasCreateButton = Array.from(buttons).some((btn) =>
-      btn.getAttribute('label')?.includes('Créer un tournoi'),
-    );
-    expect(hasCreateButton).toBe(true);
+    expect(compiled.textContent).toContain('Créer un tournoi');
   });
 
   it('should display the list of tournaments', () => {

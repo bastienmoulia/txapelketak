@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { Tournament } from './tournament.interface';
@@ -10,13 +11,13 @@ import { HeaderActions } from '../shared/header-actions/header-actions';
 
 interface Feature {
   icon: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
 }
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions],
+  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,36 +50,33 @@ export class Home {
   features = signal<Feature[]>([
     {
       icon: 'pi pi-trophy',
-      title: 'Créez votre tournoi',
-      description: 'Configurez facilement vos tournois : poules, phases finales, ou les deux.',
+      titleKey: 'home.features.createTournament.title',
+      descriptionKey: 'home.features.createTournament.description',
     },
     {
       icon: 'pi pi-users',
-      title: 'Gérez les joueurs',
-      description: 'Ajoutez vos participants et organisez-les en groupes ou en têtes de série.',
+      titleKey: 'home.features.managePlayers.title',
+      descriptionKey: 'home.features.managePlayers.description',
     },
     {
       icon: 'pi pi-chart-bar',
-      title: 'Suivez les scores',
-      description:
-        'Saisissez les résultats en temps réel et consultez les classements mis à jour automatiquement.',
+      titleKey: 'home.features.followScores.title',
+      descriptionKey: 'home.features.followScores.description',
     },
     {
       icon: 'pi pi-link',
-      title: 'Accès par URL',
-      description:
-        "Partagez votre tournoi simplement avec un lien. Pas d'inscription requise, aucune donnée personnelle.",
+      titleKey: 'home.features.urlAccess.title',
+      descriptionKey: 'home.features.urlAccess.description',
     },
     {
       icon: 'pi pi-euro',
-      title: '100% gratuit',
-      description:
-        'Créez et organisez autant de tournois que vous le souhaitez, complètement gratuitement.',
+      titleKey: 'home.features.free.title',
+      descriptionKey: 'home.features.free.description',
     },
     {
       icon: 'pi pi-code',
-      title: 'Libre et open source',
-      description: 'Code source ouvert, aucune publicité, aucune limitation. À vous de jouer.',
+      titleKey: 'home.features.openSource.title',
+      descriptionKey: 'home.features.openSource.description',
     },
   ]);
 

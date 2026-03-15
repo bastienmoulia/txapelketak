@@ -1,5 +1,6 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
@@ -7,6 +8,8 @@ import Aura from '@primeuix/themes/aura';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { provideTransloco } from '@jsverse/transloco';
+import { TranslocoHttpLoader } from './transloco-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,6 +45,16 @@ export const appConfig: ApplicationConfig = {
       }
 
       return firestore;
+    }),
+    provideHttpClient(),
+    provideTransloco({
+      config: {
+        availableLangs: ['fr', 'eu', 'en', 'es'],
+        defaultLang: 'fr',
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
     }),
   ],
 };

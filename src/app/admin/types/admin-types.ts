@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { TranslocoModule } from '@jsverse/transloco';
 import { Tournament } from '../../home/tournament.interface';
 import { AdminFinale } from './admin-finale/admin-finale';
 import { AdminPoules } from './admin-poules/admin-poules';
@@ -9,7 +10,7 @@ import { PoulesFinaleData } from '../../tournaments/types/poules-finale/poules-f
 
 @Component({
   selector: 'app-admin-types',
-  imports: [AdminFinale, AdminPoules, AdminPoulesFinale],
+  imports: [AdminFinale, AdminPoules, AdminPoulesFinale, TranslocoModule],
   templateUrl: './admin-types.html',
   styleUrl: './admin-types.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

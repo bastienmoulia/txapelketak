@@ -1,0 +1,142 @@
+{
+  "header": {
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "language": {
+      "fr": "Français",
+      "eu": "Euskara",
+      "en": "English",
+      "es": "Español"
+    }
+  },
+  "home": {
+    "hero": {
+      "subtitle": "Manage your tournaments simply and efficiently",
+      "createButton": "Create a tournament"
+    },
+    "features": {
+      "title": "How does it work?",
+      "createTournament": {
+        "title": "Create your tournament",
+        "description": "Easily configure your tournaments: groups, knockout stages, or both."
+      },
+      "managePlayers": {
+        "title": "Manage players",
+        "description": "Add your participants and organize them into groups or seedings."
+      },
+      "followScores": {
+        "title": "Track scores",
+        "description": "Enter results in real time and view rankings updated automatically."
+      },
+      "urlAccess": {
+        "title": "URL access",
+        "description": "Share your tournament simply with a link. No registration required, no personal data."
+      },
+      "free": {
+        "title": "100% free",
+        "description": "Create and organize as many tournaments as you wish, completely free of charge."
+      },
+      "openSource": {
+        "title": "Free and open source",
+        "description": "Open source code, no ads, no limitations. Play away."
+      }
+    },
+    "tournaments": {
+      "title": "Tournaments",
+      "seeAll": "See all tournaments"
+    }
+  },
+  "tournaments": {
+    "list": {
+      "title": "Tournaments",
+      "create": "Create a tournament"
+    },
+    "new": {
+      "title": "Create a tournament",
+      "steps": {
+        "info": "Information",
+        "creator": "Creator"
+      },
+      "step1": {
+        "title": "Tournament information",
+        "name": "Tournament name *",
+        "nameRequired": "The tournament name is required.",
+        "description": "Description (optional)",
+        "type": "Tournament type *"
+      },
+      "step2": {
+        "title": "Creator information",
+        "description": "This information will allow you to be identified as the organizer. A unique management link will be assigned to you.",
+        "username": "Username *",
+        "usernameRequired": "The username is required.",
+        "email": "Email *",
+        "emailRequired": "Email is required.",
+        "emailInvalid": "The email address is not valid."
+      },
+      "nav": {
+        "previous": "Previous",
+        "cancel": "Cancel",
+        "next": "Next",
+        "submit": "Create tournament"
+      },
+      "success": {
+        "title": "Tournament created",
+        "message": "Your tournament is awaiting validation.",
+        "backHome": "Back to home"
+      },
+      "type": {
+        "poules": "Groups",
+        "finale": "Knockout stage",
+        "poulesFinale": "Groups + Knockout stage"
+      }
+    },
+    "detail": {
+      "loading": "Loading tournament...",
+      "notFound": {
+        "title": "Tournament not found",
+        "message": "This tournament does not exist or has been deleted.",
+        "backHome": "Back to home"
+      },
+      "waitingValidation": "The administrator must validate this tournament before it can be visible. Thank you for your patience."
+    },
+    "types": {
+      "unknown": "Unknown tournament type"
+    }
+  },
+  "admin": {
+    "title": "Administration access",
+    "loading": "Verifying access...",
+    "denied": "Access denied: invalid or expired link.",
+    "backHome": "Back to home",
+    "welcome": "Welcome {{ username }}",
+    "tournament": "Tournament",
+    "email": "Email",
+    "rights": "Rights",
+    "archived": "This tournament is archived. Modifications are not allowed.",
+    "notFound": "Tournament not found or not specified.",
+    "validated": "Tournament validated",
+    "validatedDetail": "The tournament has been validated and put on pause. Set it to 'In progress' when you are ready.",
+    "unknownType": "Unknown tournament type"
+  },
+  "shared": {
+    "table": {
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "open": "Open",
+      "empty": "No tournaments available"
+    },
+    "status": {
+      "ongoing": "In progress",
+      "paused": "Paused",
+      "archived": "Archived",
+      "waitingValidation": "Awaiting validation"
+    }
+  }
+}

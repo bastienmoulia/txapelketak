@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { Tournament } from '../../home/tournament.interface';
 
 import { TournamentsTable } from './tournaments-table';
+import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 describe('TournamentsTable', () => {
   let component: TournamentsTable;
@@ -14,7 +15,7 @@ describe('TournamentsTable', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TournamentsTable],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), ...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TournamentsTable);

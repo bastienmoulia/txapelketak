@@ -1,10 +1,10 @@
 <p-table [value]="tournaments()" class="p-datatable-striped">
   <ng-template #header>
     <tr>
-      <th pSortableColumn="name">Nom <p-sortIcon field="name" /></th>
-      <th pSortableColumn="type">Type <p-sortIcon field="type" /></th>
-      <th pSortableColumn="status">Statut <p-sortIcon field="status" /></th>
-      <th>Actions</th>
+      <th pSortableColumn="name">{{ 'shared.table.columns.name' | transloco }} <p-sortIcon field="name" /></th>
+      <th pSortableColumn="type">{{ 'shared.table.columns.type' | transloco }} <p-sortIcon field="type" /></th>
+      <th pSortableColumn="status">{{ 'shared.table.columns.status' | transloco }} <p-sortIcon field="status" /></th>
+      <th>{{ 'shared.table.columns.actions' | transloco }}</th>
     </tr>
   </ng-template>
   <ng-template #body let-tournament>
@@ -19,7 +19,7 @@
       </td>
       <td>
         <p-button
-          label="Ouvrir"
+          [label]="'shared.table.open' | transloco"
           [routerLink]="getTournamentLink()(tournament)"
           [disabled]="tournament.status === 'paused' || tournament.status === 'waitingValidation'"
         />
@@ -28,7 +28,7 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="4" class="text-center">Aucun tournoi disponible</td>
+      <td colspan="4" class="text-center">{{ 'shared.table.empty' | transloco }}</td>
     </tr>
   </ng-template>
 </p-table>

@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../home/tournament.interface';
 import { TournamentsTable } from '../../shared/tournaments-table/tournaments-table';
 
 @Component({
   selector: 'app-tournament-list',
-  imports: [RouterLink, ButtonModule, TournamentsTable],
+  imports: [RouterLink, ButtonModule, TournamentsTable, TranslocoModule],
   templateUrl: './tournament-list.html',
   styleUrl: './tournament-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

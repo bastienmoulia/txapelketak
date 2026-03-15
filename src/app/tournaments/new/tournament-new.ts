@@ -19,6 +19,7 @@ import {
   query,
 } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Steps } from 'primeng/steps';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
@@ -41,6 +42,7 @@ import { Tournament, TournamentType, User } from '../../home/tournament.interfac
     Button,
     FloatLabel,
     MessageModule,
+    TranslocoModule,
   ],
   templateUrl: './tournament-new.html',
   styleUrl: './tournament-new.css',
@@ -49,16 +51,27 @@ import { Tournament, TournamentType, User } from '../../home/tournament.interfac
 export class TournamentNew {
   firestore = inject(Firestore, { optional: true });
   environmentInjector = inject(EnvironmentInjector);
+  private translocoService = inject(TranslocoService);
 
   currentStep = signal(0);
 
-  steps = [{ label: 'Informations' }, { label: 'Créateur' }];
+  get steps() {
+    return [
+      { label: this.translocoService.translate('tournaments.new.steps.info') },
+      { label: this.translocoService.translate('tournaments.new.steps.creator') },
+    ];
+  }
 
-  typeOptions: { label: string; value: TournamentType }[] = [
-    { label: 'Poules', value: 'poules' },
-    { label: 'Phase finale', value: 'finale' },
-    { label: 'Poules + Phase finale', value: 'poules_finale' },
-  ];
+  get typeOptions(): { label: string; value: TournamentType }[] {
+    return [
+      { label: this.translocoService.translate('tournaments.new.type.poules'), value: 'poules' },
+      { label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
+      {
+        label: this.translocoService.translate('tournaments.new.type.poulesFinale'),
+        value: 'poules_finale',
+      },
+    ];
+  }
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),

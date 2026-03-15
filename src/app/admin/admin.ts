@@ -18,6 +18,8 @@ import {
 import { Tournament, User } from '../home/tournament.interface';
 import { RouterLink } from '@angular/router';
 import { injectParams } from 'ngxtension/inject-params';
+import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -38,6 +40,7 @@ import { AdminTypes } from './types/admin-types';
     TagModule,
     ToastModule,
     AdminTypes,
+    TranslocoModule,
   ],
   providers: [MessageService],
   templateUrl: './admin.html',
@@ -48,6 +51,7 @@ export class Admin {
   firestore = inject(Firestore, { optional: true });
   environmentInjector = inject(EnvironmentInjector);
   messageService = inject(MessageService);
+  private translocoService = inject(TranslocoService);
 
   tournamentId = injectParams('tournamentId');
   token = injectParams('token');
@@ -122,9 +126,8 @@ export class Admin {
             this.tournament.set({ ...tournamentData, status: 'paused' });
             this.messageService.add({
               severity: 'success',
-              summary: 'Tournoi validé',
-              detail:
-                "Le tournoi a été validé et mis en pause. Passez-le à 'En cours' lorsque vous êtes prêt.",
+              summary: this.translocoService.translate('admin.validated'),
+              detail: this.translocoService.translate('admin.validatedDetail'),
               life: 10000,
             });
             return;

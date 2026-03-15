@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 
 import { TournamentNew } from "./tournament-new";
+import { provideTranslocoTesting } from "../../testing/transloco-testing.providers";
 
 describe("TournamentNew", () => {
   let component: TournamentNew;
@@ -10,7 +11,7 @@ describe("TournamentNew", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TournamentNew],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), ...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TournamentNew);

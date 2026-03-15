@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 import { HeaderActions } from './header-actions';
 
@@ -19,6 +20,7 @@ describe('HeaderActions', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeaderActions],
+      providers: [...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderActions);

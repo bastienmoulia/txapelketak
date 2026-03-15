@@ -15,8 +15,4 @@
   .header-actions :is(.p-button) {
     width: 100%;
   }
-
-  .header-actions :is(.theme-button)::ng-deep .p-button-label {
-    display: none;
-  }
 }

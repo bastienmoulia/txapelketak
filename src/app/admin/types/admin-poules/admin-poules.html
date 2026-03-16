@@ -1,1 +1,15 @@
-<p>admin-poules works!</p>
+<p-tabs value="poules">
+  <p-tablist>
+    <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
+    <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+  </p-tablist>
+
+  <p-tabpanels>
+    <p-tabpanel value="poules">
+      <p>admin-poules works!</p>
+    </p-tabpanel>
+    <p-tabpanel value="teams">
+      <app-admin-teams [teams]="[]" />
+    </p-tabpanel>
+  </p-tabpanels>
+</p-tabs>

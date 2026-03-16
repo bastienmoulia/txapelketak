@@ -1,9 +1,3 @@
-.tournament-detail-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
 .loading-state,
 .not-found-state {
   display: flex;

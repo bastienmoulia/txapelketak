@@ -119,7 +119,14 @@
     "notFound": "Tournament not found or not specified.",
     "validated": "Tournament validated",
     "validatedDetail": "The tournament has been validated and put on pause. Set it to 'In progress' when you are ready.",
-    "unknownType": "Unknown tournament type"
+    "unknownType": "Unknown tournament type",
+    "tabs": {
+      "poules": "Groups",
+      "teams": "Teams"
+    },
+    "teams": {
+      "empty": "No teams"
+    }
   },
   "shared": {
     "table": {

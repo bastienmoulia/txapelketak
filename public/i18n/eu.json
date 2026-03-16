@@ -119,7 +119,14 @@
     "notFound": "Txapelketa ez da aurkitu edo ez da zehaztu.",
     "validated": "Txapelketa balioztatua",
     "validatedDetail": "Txapelketa balioztatua eta geldituta dago. Jarri 'Abian' prest zaudenean.",
-    "unknownType": "Txapelketa mota ezezaguna"
+    "unknownType": "Txapelketa mota ezezaguna",
+    "tabs": {
+      "poules": "Taldeak",
+      "teams": "Taldeak"
+    },
+    "teams": {
+      "empty": "Ez dago talderik"
+    }
   },
   "shared": {
     "table": {

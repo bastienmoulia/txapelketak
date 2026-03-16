@@ -1,78 +1,32 @@
-<section class="admin-page">
-  <p-toast position="top-right" />
-
-  <p-card class="admin-card">
-    <ng-template #title>
-      <div class="admin-title">
-        <i class="pi pi-shield"></i>
-        <span>{{ 'admin.title' | transloco }}</span>
-      </div>
-    </ng-template>
-
-    @if (loading()) {
-      <div class="state state-loading" data-testid="admin-loading">
-        <p-progress-spinner
-          strokeWidth="4"
-          fill="transparent"
-          animationDuration=".8s"
-          [style]="{ width: '2.5rem', height: '2.5rem' }"
-        />
-        <p-message severity="info" variant="simple">{{ 'admin.loading' | transloco }}</p-message>
-      </div>
-    } @else if (accessDenied()) {
-      <div class="state" data-testid="admin-denied">
-        <p-message severity="error" icon="pi pi-lock">
-          {{ 'admin.denied' | transloco }}
-        </p-message>
-        <p-button
-          [label]="'admin.backHome' | transloco"
-          icon="pi pi-home"
-          severity="secondary"
-          [outlined]="true"
-          routerLink="/"
-        />
-      </div>
-    } @else if (user(); as adminUser) {
-      <div class="state" data-testid="admin-authorized">
-        <p-message severity="success" icon="pi pi-check-circle">
-          {{ 'admin.welcome' | transloco: { username: adminUser.username } }}
-        </p-message>
-
-        <div class="admin-meta">
-          <div class="meta-row">
-            <span class="meta-label">{{ 'admin.tournament' | transloco }}</span>
-            <p-tag [value]="tournamentId() ?? ''" severity="info" />
-          </div>
-
-          <div class="meta-row">
-            <span class="meta-label">{{ 'admin.email' | transloco }}</span>
-            <span class="meta-value">{{ adminUser.email }}</span>
-          </div>
-
-          <div class="meta-row">
-            <span class="meta-label">{{ 'admin.rights' | transloco }}</span>
-            <div class="rights-list">
-              @for (right of adminUser.rights; track right) {
-                <p-tag [value]="right" severity="contrast" />
-              }
-            </div>
-          </div>
-        </div>
-
-        @if (tournament(); as t) {
-          @if (t.status === 'archived') {
-            <p-message severity="warn" icon="pi pi-exclamation-triangle">
-              {{ 'admin.archived' | transloco }}
-            </p-message>
-          } @else {
-            <app-admin-types [tournament]="t" />
-          }
-        } @else {
-          <p-message severity="warn" icon="pi pi-exclamation-triangle">
-            {{ 'admin.notFound' | transloco }}
-          </p-message>
-        }
-      </div>
-    }
-  </p-card>
-</section>
+<p-toast />
+@if (loading()) {
+  <div class="state state-loading" data-testid="admin-loading">
+    <p-progress-spinner
+      strokeWidth="4"
+      fill="transparent"
+      animationDuration=".8s"
+      [style]="{ width: '2.5rem', height: '2.5rem' }"
+    />
+    <p-message severity="info" variant="simple">{{ 'admin.loading' | transloco }}</p-message>
+  </div>
+} @else if (accessDenied()) {
+  <div class="state" data-testid="admin-denied">
+    <p-message severity="error" icon="pi pi-lock">
+      {{ 'admin.denied' | transloco }}
+    </p-message>
+    <p-button
+      [label]="'admin.backHome' | transloco"
+      icon="pi pi-home"
+      severity="secondary"
+      [outlined]="true"
+      routerLink="/"
+    />
+  </div>
+} @else if (tournament() && user()) {
+  <app-tournament-header [tournament]="tournament()!" [admin]="true" />
+  <app-admin-types [tournament]="tournament()!" />
+} @else {
+  <p-message severity="warn" icon="pi pi-exclamation-triangle">
+    {{ 'admin.notFound' | transloco }}
+  </p-message>
+}

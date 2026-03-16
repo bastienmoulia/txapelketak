@@ -16,8 +16,7 @@ import { TagModule } from 'primeng/tag';
 import { Tournament } from '../../home/tournament.interface';
 import { Types } from '../types/types';
 import { injectParams } from 'ngxtension/inject-params';
-import { TournamentStatusLabelPipe } from '../../shared/pipes/tournament-status-label.pipe';
-import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-status-severity.pipe';
+import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -29,9 +28,8 @@ import { TournamentStatusSeverityPipe } from '../../shared/pipes/tournament-stat
     MessageModule,
     TagModule,
     Types,
-    TournamentStatusLabelPipe,
-    TournamentStatusSeverityPipe,
     TranslocoModule,
+    TournamentHeader,
   ],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',

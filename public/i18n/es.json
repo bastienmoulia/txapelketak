@@ -119,7 +119,14 @@
     "notFound": "Torneo no encontrado o no especificado.",
     "validated": "Torneo validado",
     "validatedDetail": "El torneo ha sido validado y pausado. Cámbialo a 'En curso' cuando estés listo.",
-    "unknownType": "Tipo de torneo desconocido"
+    "unknownType": "Tipo de torneo desconocido",
+    "tabs": {
+      "poules": "Grupos",
+      "teams": "Equipos"
+    },
+    "teams": {
+      "empty": "No hay equipos"
+    }
   },
   "shared": {
     "table": {

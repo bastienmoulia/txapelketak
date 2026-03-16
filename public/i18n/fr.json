@@ -119,7 +119,14 @@
     "notFound": "Tournoi introuvable ou non spécifié.",
     "validated": "Tournoi validé",
     "validatedDetail": "Le tournoi a été validé et mis en pause. Passez-le à 'En cours' lorsque vous êtes prêt.",
-    "unknownType": "Type de tournoi inconnu"
+    "unknownType": "Type de tournoi inconnu",
+    "tabs": {
+      "poules": "Poules",
+      "teams": "Équipes"
+    },
+    "teams": {
+      "empty": "Aucune équipe"
+    }
   },
   "shared": {
     "table": {

@@ -1,56 +1,39 @@
-<div class="tournament-detail-container">
-  @if (loading()) {
-    <div class="loading-state" data-testid="loading-state">
-      <i class="pi pi-spin pi-spinner loading-spinner"></i>
-      <p>{{ 'tournaments.detail.loading' | transloco }}</p>
-    </div>
-  } @else if (notFound()) {
-    <div class="not-found-state" data-testid="not-found-state">
-      <i class="pi pi-exclamation-triangle not-found-icon"></i>
-      <h2>{{ 'tournaments.detail.notFound.title' | transloco }}</h2>
-      <p>{{ 'tournaments.detail.notFound.message' | transloco }}</p>
-      <p-button
-        [label]="'tournaments.detail.notFound.backHome' | transloco"
-        icon="pi pi-home"
-        severity="secondary"
-        [outlined]="true"
-        routerLink="/"
-        data-testid="btn-home"
-      />
-    </div>
-  } @else if (tournament(); as t) {
-    <div class="tournament-content">
-      <!-- Header -->
-      <div class="tournament-header">
-        <div class="tournament-title-row">
-          <h1 data-testid="tournament-name">{{ t.name }}</h1>
-          <p-tag
-            [value]="t.status | tournamentStatusLabel"
-            [severity]="t.status | tournamentStatusSeverity"
-          />
-        </div>
-        @if (t.description) {
-          <p class="tournament-description" data-testid="tournament-description">
-            {{ t.description }}
-          </p>
-        }
+@if (loading()) {
+  <div class="loading-state" data-testid="loading-state">
+    <i class="pi pi-spin pi-spinner loading-spinner"></i>
+    <p>{{ 'tournaments.detail.loading' | transloco }}</p>
+  </div>
+} @else if (notFound()) {
+  <div class="not-found-state" data-testid="not-found-state">
+    <i class="pi pi-exclamation-triangle not-found-icon"></i>
+    <h2>{{ 'tournaments.detail.notFound.title' | transloco }}</h2>
+    <p>{{ 'tournaments.detail.notFound.message' | transloco }}</p>
+    <p-button
+      [label]="'tournaments.detail.notFound.backHome' | transloco"
+      icon="pi pi-home"
+      severity="secondary"
+      [outlined]="true"
+      routerLink="/"
+      data-testid="btn-home"
+    />
+  </div>
+} @else if (tournament(); as t) {
+  <app-tournament-header [tournament]="t" />
+  <div class="tournament-content">
+    <!-- Waiting validation message -->
+    @if (t.status === 'waitingValidation') {
+      <div class="validation-section" data-testid="validation-section">
+        <p-message
+          severity="warn"
+          icon="pi pi-clock"
+          class="validation-message"
+          data-testid="validation-message"
+        >
+          {{ 'tournaments.detail.waitingValidation' | transloco }}
+        </p-message>
       </div>
-
-      <!-- Waiting validation message -->
-      @if (t.status === 'waitingValidation') {
-        <div class="validation-section" data-testid="validation-section">
-          <p-message
-            severity="warn"
-            icon="pi pi-clock"
-            class="validation-message"
-            data-testid="validation-message"
-          >
-            {{ 'tournaments.detail.waitingValidation' | transloco }}
-          </p-message>
-        </div>
-      } @else {
-        <app-types [tournament]="t" />
-      }
-    </div>
-  }
-</div>
+    } @else {
+      <app-types [tournament]="t" />
+    }
+  </div>
+}

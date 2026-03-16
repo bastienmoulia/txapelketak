@@ -1,0 +1,21 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TranslocoModule } from '@jsverse/transloco';
+import { MessageModule } from 'primeng/message';
+import { TableModule } from 'primeng/table';
+
+export interface Team {
+  id: string;
+  name: string;
+  players: string[];
+}
+
+@Component({
+  selector: 'app-teams',
+  imports: [TableModule, TranslocoModule, MessageModule],
+  templateUrl: './teams.html',
+  styleUrl: './teams.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class Teams {
+  teams = input.required<Team[]>();
+}

@@ -1,0 +1,57 @@
+<p-toast />
+<section class="tournament-header">
+  <div class="tournament-header-main">
+    <h2 class="tournament-title">
+      {{ tournament().name }}
+      @if (admin()) {
+        <p-badge
+          class="admin-badge"
+          severity="contrast"
+          [value]="'admin.label' | transloco"
+          data-testid="admin-badge"
+        />
+      }
+    </h2>
+
+    <div class="tournament-actions">
+      @if (admin()) {
+        <p-button
+          type="button"
+          severity="primary"
+          icon="pi pi-pencil"
+          label="Modifier"
+          ariaLabel="Modifier le tournoi"
+          data-testid="edit-tournament-button"
+          (onClick)="edit()"
+        />
+      }
+
+      <p-button
+        type="button"
+        severity="secondary"
+        [outlined]="true"
+        [icon]="detailsExpanded() ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+        [label]="detailsExpanded() ? 'Masquer les détails' : 'Afficher les détails'"
+        [ariaLabel]="
+          detailsExpanded() ? 'Masquer les détails du tournoi' : 'Afficher les détails du tournoi'
+        "
+        (onClick)="toggleDetails()"
+      />
+    </div>
+  </div>
+
+  @if (detailsExpanded()) {
+    <div class="tournament-details">
+      <div class="details-meta-line">
+        <p-tag
+          [value]="tournament().status | tournamentStatusLabel"
+          [severity]="tournament().status | tournamentStatusSeverity"
+        />
+
+        <p class="details-creator"><strong>Créateur :</strong> {{ creator() }}</p>
+      </div>
+
+      <p class="details-description">{{ tournament().description || 'Aucune description.' }}</p>
+    </div>
+  }
+</section>

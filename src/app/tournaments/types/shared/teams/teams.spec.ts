@@ -1,23 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
+import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 
-import { Poules } from './poules';
+import { Teams } from './teams';
 
-describe('Poules', () => {
-  let component: Poules;
-  let fixture: ComponentFixture<Poules>;
+describe('Teams', () => {
+  let component: Teams;
+  let fixture: ComponentFixture<Teams>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Poules],
+      imports: [Teams],
       providers: [...provideTranslocoTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Poules);
-    fixture.componentRef.setInput('tournamentData', {
-      teams: [],
-      series: [],
-    });
+    fixture = TestBed.createComponent(Teams);
+    fixture.componentRef.setInput('teams', []);
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();

@@ -1,0 +1,19 @@
+@if (teams().length > 0) {
+  <p-table [value]="teams()" class="p-datatable-striped">
+    <ng-template #header>
+      <tr>
+        <th>{{ 'shared.table.columns.name' | transloco }}</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-team>
+      <tr>
+        <td>{{ team.name }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+} @else {
+  <p-message severity="info" variant="simple" class="mt-4">
+    {{ 'admin.teams.empty' | transloco }}
+  </p-message>
+}

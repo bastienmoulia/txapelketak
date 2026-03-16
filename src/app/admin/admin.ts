@@ -1,20 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EnvironmentInjector,
-  inject,
-  runInInjectionContext,
-  signal,
-} from '@angular/core';
-import {
-  Firestore,
-  collection,
-  getDocs,
-  limit,
-  query,
-  updateDoc,
-  where,
-} from '@angular/fire/firestore';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Tournament, User } from '../home/tournament.interface';
 import { RouterLink } from '@angular/router';
 import { injectParams } from 'ngxtension/inject-params';
@@ -28,6 +12,7 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { AdminTypes } from './types/admin-types';
 import { TournamentHeader } from '../shared/tournament-header/tournament-header';
+import { FirebaseService } from '../shared/services/firebase.service';
 
 @Component({
   selector: 'app-admin',
@@ -48,8 +33,7 @@ import { TournamentHeader } from '../shared/tournament-header/tournament-header'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Admin {
-  firestore = inject(Firestore, { optional: true });
-  environmentInjector = inject(EnvironmentInjector);
+  firebaseService = inject(FirebaseService);
   messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
 
@@ -66,34 +50,23 @@ export class Admin {
   }
 
   private async loadUser(): Promise<void> {
-    const firestore = this.firestore;
     const tournamentId = Number(this.tournamentId());
     const token = this.token();
 
-    if (!firestore || !Number.isFinite(tournamentId) || !token) {
+    if (!this.firebaseService.isAvailable() || !Number.isFinite(tournamentId) || !token) {
       this.accessDenied.set(true);
       this.loading.set(false);
       return;
     }
 
     try {
-      const usersQuery = query(
-        collection(firestore, 'users'),
-        where('tournamentId', '==', tournamentId),
-        where('token', '==', token),
-        limit(1),
-      );
-
-      const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
-        return getDocs(usersQuery);
-      });
-
-      if (snapshot.empty) {
+      const user = await this.firebaseService.getUserByTournamentAndToken(tournamentId, token);
+      if (!user) {
         this.accessDenied.set(true);
         return;
       }
 
-      this.user.set(snapshot.docs[0].data() as User);
+      this.user.set(user as User);
       this.accessDenied.set(false);
       this.loadTournament();
     } catch (error) {
@@ -104,40 +77,38 @@ export class Admin {
     }
   }
 
-  loadTournament(): void {
-    const firestore = this.firestore;
+  async loadTournament(): Promise<void> {
     const tournamentId = Number(this.tournamentId());
 
-    if (!firestore || !Number.isFinite(tournamentId)) {
+    if (!this.firebaseService.isAvailable() || !Number.isFinite(tournamentId)) {
       return;
     }
 
-    const tournamentDocRef = collection(firestore, 'tournaments');
-    getDocs(query(tournamentDocRef, where('id', '==', tournamentId), limit(1)))
-      .then(async (snapshot) => {
-        if (!snapshot.empty) {
-          const tournamentDoc = snapshot.docs[0];
-          const tournamentData = tournamentDoc.data() as Tournament;
+    try {
+      const result = await this.firebaseService.getTournamentByIdWithRef(tournamentId);
+      if (!result) {
+        return;
+      }
 
-          console.log('Loaded tournament:', tournamentData);
-          if (tournamentData.status == 'waitingValidation') {
-            console.log('Tournament is waiting validation, updating status to paused');
-            await updateDoc(tournamentDoc.ref, { status: 'paused' });
-            this.tournament.set({ ...tournamentData, status: 'paused' });
-            this.messageService.add({
-              severity: 'success',
-              summary: this.translocoService.translate('admin.validated'),
-              detail: this.translocoService.translate('admin.validatedDetail'),
-              life: 10000,
-            });
-            return;
-          } else {
-            this.tournament.set(tournamentData);
-          }
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to load tournament', error);
-      });
+      const { tournament, ref } = result;
+      console.log('Loaded tournament:', tournament);
+
+      if (tournament.status == 'waitingValidation') {
+        console.log('Tournament is waiting validation, updating status to paused');
+        await this.firebaseService.updateTournamentStatus(ref, 'paused');
+        this.tournament.set({ ...tournament, status: 'paused' });
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate('admin.validated'),
+          detail: this.translocoService.translate('admin.validatedDetail'),
+          life: 10000,
+        });
+        return;
+      }
+
+      this.tournament.set(tournament);
+    } catch (error) {
+      console.error('Failed to load tournament', error);
+    }
   }
 }

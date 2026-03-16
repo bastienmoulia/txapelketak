@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../home/tournament.interface';
 import { TournamentsTable } from '../../shared/tournaments-table/tournaments-table';
+import { FirebaseService } from '../../shared/services/firebase.service';
 
 @Component({
   selector: 'app-tournament-list',
@@ -15,18 +15,16 @@ import { TournamentsTable } from '../../shared/tournaments-table/tournaments-tab
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentList {
-  firestore = inject(Firestore, { optional: true });
+  firebaseService = inject(FirebaseService);
   tournaments = signal<Tournament[]>([]);
 
   constructor() {
-    if (this.firestore) {
-      const tournamentsCollection = collection(this.firestore, 'tournaments');
-      collectionData(tournamentsCollection)
-        .pipe(takeUntilDestroyed())
-        .subscribe((data) => {
-          this.tournaments.set(data as Tournament[]);
-        });
-    }
+    this.firebaseService
+      .watchTournaments()
+      .pipe(takeUntilDestroyed())
+      .subscribe((data) => {
+        this.tournaments.set(data);
+      });
   }
 
   getTournamentLink(tournament: Tournament): string {

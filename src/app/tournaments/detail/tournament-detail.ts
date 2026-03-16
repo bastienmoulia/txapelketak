@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EnvironmentInjector,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -17,6 +10,7 @@ import { Tournament } from '../../home/tournament.interface';
 import { Types } from '../types/types';
 import { injectParams } from 'ngxtension/inject-params';
 import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
+import { FirebaseService } from '../../shared/services/firebase.service';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -36,8 +30,7 @@ import { TournamentHeader } from '../../shared/tournament-header/tournament-head
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDetail {
-  firestore = inject(Firestore, { optional: true });
-  environmentInjector = inject(EnvironmentInjector);
+  firebaseService = inject(FirebaseService);
 
   tournamentId = injectParams('tournamentId');
   tournament = signal<Tournament | null>(null);
@@ -54,21 +47,21 @@ export class TournamentDetail {
   managerAddSuccess = signal(false);
 
   constructor() {
-    if (this.firestore) {
-      const tournamentsCollection = collection(this.firestore, 'tournaments');
-      collectionData(tournamentsCollection).subscribe((data) => {
-        const all = data as Tournament[];
-        const found = all.find((t) => String(t.id) === this.tournamentId());
-        if (found) {
-          this.tournament.set(found);
-        } else {
-          this.notFound.set(true);
-        }
-        this.loading.set(false);
-      });
-    } else {
+    if (!this.firebaseService.isAvailable()) {
       this.loading.set(false);
       this.notFound.set(true);
+      return;
     }
+
+    this.firebaseService.watchTournaments().subscribe((all) => {
+      const found = all.find((t) => String(t.id) === this.tournamentId());
+      if (found) {
+        this.tournament.set(found);
+        this.notFound.set(false);
+      } else {
+        this.notFound.set(true);
+      }
+      this.loading.set(false);
+    });
   }
 }

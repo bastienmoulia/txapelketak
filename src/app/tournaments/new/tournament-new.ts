@@ -1,23 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EnvironmentInjector,
-  computed,
-  inject,
-  runInInjectionContext,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import {
-  Firestore,
-  addDoc,
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-} from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Steps } from 'primeng/steps';
@@ -29,6 +12,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { MessageModule } from 'primeng/message';
 import { startWith } from 'rxjs';
 import { Tournament, TournamentType, User } from '../../home/tournament.interface';
+import { FirebaseService } from '../../shared/services/firebase.service';
 
 @Component({
   selector: 'app-tournament-new',
@@ -49,8 +33,7 @@ import { Tournament, TournamentType, User } from '../../home/tournament.interfac
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentNew {
-  firestore = inject(Firestore, { optional: true });
-  environmentInjector = inject(EnvironmentInjector);
+  firebaseService = inject(FirebaseService);
   private translocoService = inject(TranslocoService);
 
   currentStep = signal(0);
@@ -121,7 +104,7 @@ export class TournamentNew {
     if (this.form.valid) {
       this.submitted.set(true);
 
-      if (!this.firestore) {
+      if (!this.firebaseService.isAvailable()) {
         return;
       }
 
@@ -130,20 +113,7 @@ export class TournamentNew {
       const creatorUsername = (value.creatorUsername ?? '').trim();
       const creatorEmail = (value.creatorEmail ?? '').trim();
 
-      const tournamentsCollection = collection(this.firestore, 'tournaments');
-      const usersCollection = collection(this.firestore, 'users');
-
-      const tournamentId = await runInInjectionContext(this.environmentInjector, async () => {
-        const latestTournamentQuery = query(tournamentsCollection, orderBy('id', 'desc'), limit(1));
-        const latestTournamentSnapshot = await getDocs(latestTournamentQuery);
-        const latestTournament = latestTournamentSnapshot.docs[0]?.data() as {
-          id?: number;
-        };
-        const latestTournamentId =
-          typeof latestTournament?.id === 'number' ? latestTournament.id : 0;
-
-        return latestTournamentId + 1;
-      });
+      const tournamentId = await this.firebaseService.getNextTournamentId();
 
       const tournament: Tournament = {
         id: tournamentId,
@@ -161,29 +131,22 @@ export class TournamentNew {
         rights: ['admin'],
       };
 
-      await runInInjectionContext(this.environmentInjector, async () => {
-        await addDoc(tournamentsCollection, tournament);
-        await addDoc(usersCollection, user);
-      });
+      await this.firebaseService.createTournament(tournament);
+      await this.firebaseService.createUser(user);
 
       const adminUrl = `${window.location.origin}/tournaments/${tournament.id}/${user.token}`;
 
-      // Write to 'mail' collection for Firebase Extension to send email
-      await runInInjectionContext(this.environmentInjector, async () => {
-        await addDoc(collection(this.firestore!, 'mail'), {
-          to: creatorEmail,
-          message: {
-            subject: `Accès admin - ${tournamentName}`,
-            html: `
-              <p>Bonjour ${creatorUsername},</p>
-              <p>Votre tournoi <strong>${tournamentName}</strong> a été créé.</p>
-              <p>Voici votre lien d'administration :</p>
-              <p><a href="${adminUrl}">${adminUrl}</a></p>
-              <p>Conservez ce lien de manière privée.</p>
-            `,
-          },
-        });
-      });
+      await this.firebaseService.queueMail(
+        creatorEmail,
+        `Accès admin - ${tournamentName}`,
+        `
+          <p>Bonjour ${creatorUsername},</p>
+          <p>Votre tournoi <strong>${tournamentName}</strong> a été créé.</p>
+          <p>Voici votre lien d'administration :</p>
+          <p><a href="${adminUrl}">${adminUrl}</a></p>
+          <p>Conservez ce lien de manière privée.</p>
+        `,
+      );
     }
   }
 }

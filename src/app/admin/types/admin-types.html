@@ -1,6 +1,6 @@
 @switch (tournament().type) {
   @case ('poules') {
-    <app-admin-poules [tournamentData]="poulesData()" />
+    <app-admin-poules [tournament]="tournament()" />
   }
   @case ('finale') {
     <app-admin-finale [tournamentData]="finaleData()" />

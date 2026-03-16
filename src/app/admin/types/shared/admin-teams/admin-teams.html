@@ -7,19 +7,55 @@
     (onClick)="onAddTeam()"
     data-testid="add-team-button"
   />
+  <p-button
+    type="button"
+    icon="pi pi-plus-circle"
+    label="Ajouter plusieurs équipes"
+    severity="secondary"
+    ariaLabel="Ajouter plusieurs équipes en masse"
+    (onClick)="onAddTeams()"
+    data-testid="add-teams-bulk-button"
+  />
   <p-dialog header="Ajouter une équipe" [modal]="true" [(visible)]="visible">
-    <div class="flex items-center gap-4 mb-4">
-      <label for="name" class="font-semibold w-24">Nom</label>
-      <input pInputText id="name" class="flex-auto" autocomplete="off" />
-    </div>
-    <div class="flex items-center gap-4 mb-8">
-      <label for="email" class="font-semibold w-24">Email</label>
-      <input pInputText id="email" class="flex-auto" autocomplete="off" />
-    </div>
-    <div class="flex justify-end gap-2">
-      <p-button label="Cancel" severity="secondary" (click)="visible.set(false)" />
-      <p-button label="Save" (click)="visible.set(false)" />
-    </div>
+    <form (submit)="$event.preventDefault(); onSaveTeam()">
+      <div class="mb-4">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            [formField]="teamForm.name"
+            id="name"
+            class="w-full"
+            autocomplete="off"
+          />
+          <label for="name">Nom</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex justify-end gap-2">
+        <p-button label="Cancel" severity="secondary" (click)="visible.set(false)" />
+        <p-button type="submit" label="Save" />
+      </div>
+    </form>
+  </p-dialog>
+
+  <p-dialog header="Ajouter plusieurs équipes" [modal]="true" [(visible)]="visibleBulk">
+    <form (submit)="$event.preventDefault(); onSaveTeams()">
+      <div class="mb-4">
+        <p-floatlabel variant="on">
+          <textarea
+            pTextarea
+            id="bulk-names"
+            class="w-full"
+            rows="6"
+            placeholder="Équipe 1&#10;Équipe 2&#10;Équipe 3"
+          ></textarea>
+          <label for="bulk-names">Noms des équipes (un par ligne)</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex justify-end gap-2">
+        <p-button label="Cancel" severity="secondary" (click)="visibleBulk.set(false)" />
+        <p-button type="submit" label="Save" (click)="visibleBulk.set(false)" />
+      </div>
+    </form>
   </p-dialog>
 </div>
 

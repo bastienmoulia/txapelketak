@@ -6,7 +6,6 @@ import { TableModule } from 'primeng/table';
 export interface Team {
   id: string;
   name: string;
-  players: string[];
 }
 
 @Component({

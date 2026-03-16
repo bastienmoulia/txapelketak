@@ -14,7 +14,15 @@ describe('AdminPoules', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminPoules);
-    fixture.componentRef.setInput('tournamentData', {});
+    fixture.componentRef.setInput('tournament', {
+      id: 1,
+      name: 'Tournoi test',
+      description: '',
+      type: 'poules',
+      status: 'paused',
+      createdAt: new Date().toISOString(),
+      data: { teams: [] },
+    });
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();

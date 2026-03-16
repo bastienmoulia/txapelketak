@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -8,6 +7,7 @@ import { CardModule } from 'primeng/card';
 import { Tournament } from './tournament.interface';
 import { TournamentsTable } from '../shared/tournaments-table/tournaments-table';
 import { HeaderActions } from '../shared/header-actions/header-actions';
+import { FirebaseService } from '../shared/services/firebase.service';
 
 interface Feature {
   icon: string;
@@ -23,7 +23,7 @@ interface Feature {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
-  firestore = inject(Firestore, { optional: true });
+  firebaseService = inject(FirebaseService);
   tournaments = signal<Tournament[]>([]);
 
   recentTournaments = computed(() =>
@@ -37,14 +37,12 @@ export class Home {
   );
 
   constructor() {
-    if (this.firestore) {
-      const tournamentsCollection = collection(this.firestore, 'tournaments');
-      collectionData(tournamentsCollection)
-        .pipe(takeUntilDestroyed())
-        .subscribe((data) => {
-          this.tournaments.set(data as Tournament[]);
-        });
-    }
+    this.firebaseService
+      .watchTournaments()
+      .pipe(takeUntilDestroyed())
+      .subscribe((data) => {
+        this.tournaments.set(data);
+      });
   }
 
   features = signal<Feature[]>([

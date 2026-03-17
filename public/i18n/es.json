@@ -136,7 +136,13 @@
       "bulkLabel": "Nombres de equipos",
       "bulkPlaceholder": "Un equipo por línea",
       "editAria": "Editar este equipo",
-      "deleteAria": "Eliminar este equipo"
+      "deleteAria": "Eliminar este equipo",
+      "added": "Equipo añadido",
+      "addedDetail": "El equipo ha sido añadido con éxito.",
+      "edited": "Equipo actualizado",
+      "editedDetail": "El equipo ha sido actualizado con éxito.",
+      "deleted": "Equipo eliminado",
+      "deletedDetail": "El equipo ha sido eliminado con éxito."
     }
   },
   "shared": {

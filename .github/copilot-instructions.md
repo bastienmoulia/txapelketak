@@ -134,6 +134,12 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 - Tests d'intégration pour création tournoi et sauvegarde.
 - Jeux de données de test (petit, moyen, grand).
 
+## Traductions et internationalisation
+
+- Les variables typescript doivent être en anglais, mais les textes affichés à l'utilisateur doivent être traduits.
+- Les langues supportées sont le français (fr), le basque (eu), l'anglais (en) et l'espagnol (es).
+- Les traductions doivent être gérées via des fichiers JSON dans le dossier `public/i18n/` avec une structure claire et cohérente.
+
 ## Identité et naming
 
 - Le nom de l'application doit rester générique, simple, et compréhensible pour tous les publics.

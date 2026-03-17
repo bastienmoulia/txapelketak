@@ -136,7 +136,13 @@
       "bulkLabel": "Team names",
       "bulkPlaceholder": "One team per line",
       "editAria": "Edit this team",
-      "deleteAria": "Delete this team"
+      "deleteAria": "Delete this team",
+      "added": "Team added",
+      "addedDetail": "The team has been successfully added.",
+      "edited": "Team updated",
+      "editedDetail": "The team has been successfully updated.",
+      "deleted": "Team deleted",
+      "deletedDetail": "The team has been successfully deleted."
     }
   },
   "shared": {

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
 import { AdminTeams } from '../shared/admin-teams/admin-teams';
 import { Team } from '../../../tournaments/types/shared/teams/teams';
@@ -16,6 +17,8 @@ import { DocumentReference } from '@angular/fire/firestore';
 })
 export class AdminPoules {
   private firebaseService = inject(FirebaseService);
+  private messageService = inject(MessageService);
+  private translocoService = inject(TranslocoService);
 
   tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
@@ -54,16 +57,36 @@ export class AdminPoules {
     if (!ref) {
       if (team.id) {
         this.teams.update((teams) => teams.map((t) => (t.id === team.id ? team : t)));
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate('admin.teams.edited'),
+          detail: this.translocoService.translate('admin.teams.editedDetail'),
+        });
       } else {
         this.teams.update((teams) => [...teams, { ...team, id: crypto.randomUUID() }]);
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate('admin.teams.added'),
+          detail: this.translocoService.translate('admin.teams.addedDetail'),
+        });
       }
       return;
     }
 
     if (team.id) {
       await this.firebaseService.updateTeamInTournament(ref, team);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.teams.edited'),
+        detail: this.translocoService.translate('admin.teams.editedDetail'),
+      });
     } else {
       await this.firebaseService.addTeamToTournament(ref, team.name);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.teams.added'),
+        detail: this.translocoService.translate('admin.teams.addedDetail'),
+      });
     }
     await this.loadTeams(this.tournament().id);
   }
@@ -73,6 +96,11 @@ export class AdminPoules {
     if (!ref) {
       const newTeams = teams.map((t) => ({ ...t, id: crypto.randomUUID() }));
       this.teams.update((existing) => [...existing, ...newTeams]);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.teams.added'),
+        detail: this.translocoService.translate('admin.teams.addedDetail'),
+      });
       return;
     }
 
@@ -80,16 +108,31 @@ export class AdminPoules {
       await this.firebaseService.addTeamToTournament(ref, team.name);
     }
     await this.loadTeams(this.tournament().id);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.teams.added'),
+      detail: this.translocoService.translate('admin.teams.addedDetail'),
+    });
   }
 
   async onDeleteTeam(team: Team): Promise<void> {
     const ref = this.tournamentRef();
     if (!ref) {
       this.teams.update((teams) => teams.filter((t) => t.id !== team.id));
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.teams.deleted'),
+        detail: this.translocoService.translate('admin.teams.deletedDetail'),
+      });
       return;
     }
 
     await this.firebaseService.deleteTeamFromTournament(ref, team.id);
     await this.loadTeams(this.tournament().id);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.teams.deleted'),
+      detail: this.translocoService.translate('admin.teams.deletedDetail'),
+    });
   }
 }

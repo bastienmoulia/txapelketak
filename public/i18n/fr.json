@@ -136,7 +136,13 @@
       "bulkLabel": "Noms des équipes",
       "bulkPlaceholder": "Une équipe par ligne",
       "editAria": "Modifier cette équipe",
-      "deleteAria": "Supprimer cette équipe"
+      "deleteAria": "Supprimer cette équipe",
+      "added": "Équipe ajoutée",
+      "addedDetail": "L'équipe a été ajoutée avec succès.",
+      "edited": "Équipe modifiée",
+      "editedDetail": "L'équipe a été modifiée avec succès.",
+      "deleted": "Équipe supprimée",
+      "deletedDetail": "L'équipe a été supprimée avec succès."
     }
   },
   "shared": {

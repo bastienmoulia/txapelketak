@@ -136,7 +136,13 @@
       "bulkLabel": "Taldeen izenak",
       "bulkPlaceholder": "Talde bat lerro bakoitzeko",
       "editAria": "Talde hau editatu",
-      "deleteAria": "Talde hau ezabatu"
+      "deleteAria": "Talde hau ezabatu",
+      "added": "Taldea gehitu da",
+      "addedDetail": "Taldea arrakastaz gehitu da.",
+      "edited": "Taldea eguneratu da",
+      "editedDetail": "Taldea arrakastaz eguneratu da.",
+      "deleted": "Taldea ezabatu da",
+      "deletedDetail": "Taldea arrakastaz ezabatu da."
     }
   },
   "shared": {

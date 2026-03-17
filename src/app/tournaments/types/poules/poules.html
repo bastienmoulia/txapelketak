@@ -6,7 +6,7 @@
 
   <p-tabpanels>
     <p-tabpanel value="poules">
-      <p>poules works!</p>
+      <app-poules-tab [series]="series()" [poules]="poules()" [teams]="teams()" />
     </p-tabpanel>
     <p-tabpanel value="teams">
       <app-teams [teams]="teams()" />

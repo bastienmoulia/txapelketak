@@ -16,7 +16,7 @@
     (onClick)="onAddTeams()"
     data-testid="add-teams-bulk-button"
   />
-  <p-dialog [header]="'admin.teams.dialogAdd' | transloco" [modal]="true" [(visible)]="visible">
+  <p-dialog [header]="(isEditing() ? 'admin.teams.dialogEdit' : 'admin.teams.dialogAdd') | transloco" [modal]="true" [(visible)]="visible">
     <form (submit)="$event.preventDefault(); onSaveTeam()">
       <div class="mb-4">
         <p-floatlabel variant="on">
@@ -55,6 +55,9 @@
             class="w-full"
             rows="6"
             [placeholder]="'admin.teams.bulkPlaceholder' | transloco"
+            name="bulk-names"
+            [ngModel]="bulkText()"
+            (ngModelChange)="bulkText.set($event)"
           ></textarea>
           <label for="bulk-names">{{ 'admin.teams.bulkLabel' | transloco }}</label>
         </p-floatlabel>
@@ -68,7 +71,6 @@
         <p-button
           type="submit"
           [label]="'shared.actions.save' | transloco"
-          (click)="visibleBulk.set(false)"
         />
       </div>
     </form>

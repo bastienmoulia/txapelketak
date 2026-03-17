@@ -125,7 +125,17 @@
       "teams": "Teams"
     },
     "teams": {
-      "empty": "No teams"
+      "empty": "No teams",
+      "add": "Add a team",
+      "addBulk": "Add multiple teams",
+      "addBulkAria": "Add multiple teams at once",
+      "dialogAdd": "Add a team",
+      "dialogEdit": "Edit team",
+      "dialogAddBulk": "Add multiple teams",
+      "bulkLabel": "Team names",
+      "bulkPlaceholder": "One team per line",
+      "editAria": "Edit this team",
+      "deleteAria": "Delete this team"
     }
   },
   "shared": {
@@ -138,6 +148,12 @@
       },
       "open": "Open",
       "empty": "No tournaments available"
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete"
     },
     "status": {
       "ongoing": "In progress",

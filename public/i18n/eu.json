@@ -125,7 +125,17 @@
       "teams": "Taldeak"
     },
     "teams": {
-      "empty": "Ez dago talderik"
+      "empty": "Ez dago talderik",
+      "add": "Taldea gehitu",
+      "addBulk": "Hainbat talde gehitu",
+      "addBulkAria": "Hainbat talde aldi berean gehitu",
+      "dialogAdd": "Taldea gehitu",
+      "dialogEdit": "Taldea editatu",
+      "dialogAddBulk": "Hainbat talde gehitu",
+      "bulkLabel": "Taldeen izenak",
+      "bulkPlaceholder": "Talde bat lerro bakoitzeko",
+      "editAria": "Talde hau editatu",
+      "deleteAria": "Talde hau ezabatu"
     }
   },
   "shared": {
@@ -138,6 +148,12 @@
       },
       "open": "Ireki",
       "empty": "Ez dago txapelketarik"
+    },
+    "actions": {
+      "save": "Gorde",
+      "cancel": "Utzi",
+      "edit": "Editatu",
+      "delete": "Ezabatu"
     },
     "status": {
       "ongoing": "Abian",

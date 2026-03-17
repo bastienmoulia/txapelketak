@@ -6,8 +6,8 @@
       @if (admin()) {
         <p-badge
           class="admin-badge"
-          severity="contrast"
-          [value]="'admin.label' | transloco"
+          severity="danger"
+          [value]="'shared.tournamentHeader.admin' | transloco"
           data-testid="admin-badge"
         />
       }
@@ -53,10 +53,6 @@
           [value]="tournament().status | tournamentStatusLabel"
           [severity]="tournament().status | tournamentStatusSeverity"
         />
-
-        <p class="details-creator">
-          <strong>{{ 'shared.tournamentHeader.creator' | transloco }}:</strong> {{ creator() }}
-        </p>
       </div>
 
       <p class="details-description">

@@ -171,6 +171,19 @@
       "paused": "Paused",
       "archived": "Archived",
       "waitingValidation": "Awaiting validation"
+    },
+    "tournamentHeader": {
+      "admin": "Admin",
+      "edit": "Edit tournament",
+      "editAria": "Edit this tournament",
+      "hideDetails": "Hide details",
+      "showDetails": "Show details",
+      "hideDetailsAria": "Hide tournament details",
+      "showDetailsAria": "Show tournament details",
+      "creator": "Creator",
+      "noDescription": "No description",
+      "editSummary": "Tournament edit",
+      "editDetail": "Tournament editing will be available soon"
     }
   }
 }

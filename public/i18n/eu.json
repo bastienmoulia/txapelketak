@@ -171,6 +171,19 @@
       "paused": "Geldituta",
       "archived": "Artxibatuta",
       "waitingValidation": "Balioztapen zain"
+    },
+    "tournamentHeader": {
+      "admin": "Administraria",
+      "edit": "Txapelketa editatu",
+      "editAria": "Txapelketa hau editatu",
+      "hideDetails": "Xehetasunak izkutatu",
+      "showDetails": "Xehetasunak erakutsi",
+      "hideDetailsAria": "Txapelketaren xehetasunak izkutatu",
+      "showDetailsAria": "Txapelketaren xehetasunak erakutsi",
+      "creator": "Sortzailea",
+      "noDescription": "Deskripziorik ez",
+      "editSummary": "Txapelketa editatu",
+      "editDetail": "Txapelketa editatzea laster eskuragarri izango da"
     }
   }
 }

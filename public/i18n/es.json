@@ -171,6 +171,19 @@
       "paused": "En pausa",
       "archived": "Archivado",
       "waitingValidation": "En espera de validación"
+    },
+    "tournamentHeader": {
+      "admin": "Admin",
+      "edit": "Editar torneo",
+      "editAria": "Editar este torneo",
+      "hideDetails": "Ocultar detalles",
+      "showDetails": "Mostrar detalles",
+      "hideDetailsAria": "Ocultar detalles del torneo",
+      "showDetailsAria": "Mostrar detalles del torneo",
+      "creator": "Creador",
+      "noDescription": "Sin descripción",
+      "editSummary": "Edición del torneo",
+      "editDetail": "La edición del torneo estará disponible pronto"
     }
   }
 }

@@ -19,8 +19,8 @@
           type="button"
           severity="primary"
           icon="pi pi-pencil"
-          label="Modifier"
-          ariaLabel="Modifier le tournoi"
+          [label]="'shared.tournamentHeader.edit' | transloco"
+          [ariaLabel]="'shared.tournamentHeader.editAria' | transloco"
           data-testid="edit-tournament-button"
           (onClick)="edit()"
         />
@@ -31,9 +31,15 @@
         severity="secondary"
         [outlined]="true"
         [icon]="detailsExpanded() ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
-        [label]="detailsExpanded() ? 'Masquer les détails' : 'Afficher les détails'"
+        [label]="
+          detailsExpanded()
+            ? ('shared.tournamentHeader.hideDetails' | transloco)
+            : ('shared.tournamentHeader.showDetails' | transloco)
+        "
         [ariaLabel]="
-          detailsExpanded() ? 'Masquer les détails du tournoi' : 'Afficher les détails du tournoi'
+          detailsExpanded()
+            ? ('shared.tournamentHeader.hideDetailsAria' | transloco)
+            : ('shared.tournamentHeader.showDetailsAria' | transloco)
         "
         (onClick)="toggleDetails()"
       />
@@ -48,10 +54,14 @@
           [severity]="tournament().status | tournamentStatusSeverity"
         />
 
-        <p class="details-creator"><strong>Créateur :</strong> {{ creator() }}</p>
+        <p class="details-creator">
+          <strong>{{ 'shared.tournamentHeader.creator' | transloco }}:</strong> {{ creator() }}
+        </p>
       </div>
 
-      <p class="details-description">{{ tournament().description || 'Aucune description.' }}</p>
+      <p class="details-description">
+        {{ tournament().description || ('shared.tournamentHeader.noDescription' | transloco) }}
+      </p>
     </div>
   }
 </section>

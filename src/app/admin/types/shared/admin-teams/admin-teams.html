@@ -2,21 +2,21 @@
   <p-button
     type="button"
     icon="pi pi-plus"
-    label="Ajouter une équipe"
-    ariaLabel="Ajouter une équipe"
+    [label]="'admin.teams.add' | transloco"
+    [ariaLabel]="'admin.teams.add' | transloco"
     (onClick)="onAddTeam()"
     data-testid="add-team-button"
   />
   <p-button
     type="button"
     icon="pi pi-plus-circle"
-    label="Ajouter plusieurs équipes"
+    [label]="'admin.teams.addBulk' | transloco"
     severity="secondary"
-    ariaLabel="Ajouter plusieurs équipes en masse"
+    [ariaLabel]="'admin.teams.addBulkAria' | transloco"
     (onClick)="onAddTeams()"
     data-testid="add-teams-bulk-button"
   />
-  <p-dialog header="Ajouter une équipe" [modal]="true" [(visible)]="visible">
+  <p-dialog [header]="'admin.teams.dialogAdd' | transloco" [modal]="true" [(visible)]="visible">
     <form (submit)="$event.preventDefault(); onSaveTeam()">
       <div class="mb-4">
         <p-floatlabel variant="on">
@@ -27,17 +27,25 @@
             class="w-full"
             autocomplete="off"
           />
-          <label for="name">Nom</label>
+          <label for="name">{{ 'shared.table.columns.name' | transloco }}</label>
         </p-floatlabel>
       </div>
       <div class="flex justify-end gap-2">
-        <p-button label="Cancel" severity="secondary" (click)="visible.set(false)" />
-        <p-button type="submit" label="Save" />
+        <p-button
+          [label]="'shared.actions.cancel' | transloco"
+          severity="secondary"
+          (click)="visible.set(false)"
+        />
+        <p-button type="submit" [label]="'shared.actions.save' | transloco" />
       </div>
     </form>
   </p-dialog>
 
-  <p-dialog header="Ajouter plusieurs équipes" [modal]="true" [(visible)]="visibleBulk">
+  <p-dialog
+    [header]="'admin.teams.dialogAddBulk' | transloco"
+    [modal]="true"
+    [(visible)]="visibleBulk"
+  >
     <form (submit)="$event.preventDefault(); onSaveTeams()">
       <div class="mb-4">
         <p-floatlabel variant="on">
@@ -46,14 +54,22 @@
             id="bulk-names"
             class="w-full"
             rows="6"
-            placeholder="Équipe 1&#10;Équipe 2&#10;Équipe 3"
+            [placeholder]="'admin.teams.bulkPlaceholder' | transloco"
           ></textarea>
-          <label for="bulk-names">Noms des équipes (un par ligne)</label>
+          <label for="bulk-names">{{ 'admin.teams.bulkLabel' | transloco }}</label>
         </p-floatlabel>
       </div>
       <div class="flex justify-end gap-2">
-        <p-button label="Cancel" severity="secondary" (click)="visibleBulk.set(false)" />
-        <p-button type="submit" label="Save" (click)="visibleBulk.set(false)" />
+        <p-button
+          [label]="'shared.actions.cancel' | transloco"
+          severity="secondary"
+          (click)="visibleBulk.set(false)"
+        />
+        <p-button
+          type="submit"
+          [label]="'shared.actions.save' | transloco"
+          (click)="visibleBulk.set(false)"
+        />
       </div>
     </form>
   </p-dialog>
@@ -64,7 +80,7 @@
     <ng-template #header>
       <tr>
         <th>{{ 'shared.table.columns.name' | transloco }}</th>
-        <th class="actions-column">Actions</th>
+        <th class="actions-column">{{ 'shared.table.columns.actions' | transloco }}</th>
       </tr>
     </ng-template>
 
@@ -79,8 +95,8 @@
               severity="secondary"
               [outlined]="true"
               icon="pi pi-pencil"
-              label="Modifier"
-              ariaLabel="Modifier l'équipe"
+              [label]="'shared.actions.edit' | transloco"
+              [ariaLabel]="'admin.teams.editAria' | transloco"
               (onClick)="onEditTeam(team)"
               data-testid="edit-team-button"
             />
@@ -90,8 +106,8 @@
               severity="danger"
               [outlined]="true"
               icon="pi pi-trash"
-              label="Supprimer"
-              ariaLabel="Supprimer l'équipe"
+              [label]="'shared.actions.delete' | transloco"
+              [ariaLabel]="'admin.teams.deleteAria' | transloco"
               (onClick)="onDeleteTeam(team)"
               data-testid="delete-team-button"
             />

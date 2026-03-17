@@ -5,7 +5,7 @@ import { TagModule } from 'primeng/tag';
 import { Tournament } from '../../home/tournament.interface';
 import { TournamentStatusLabelPipe } from '../pipes/tournament-status-label.pipe';
 import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severity.pipe';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
@@ -27,6 +27,7 @@ import { MessageService } from 'primeng/api';
 })
 export class TournamentHeader {
   #messageService = inject(MessageService);
+  #translocoService = inject(TranslocoService);
 
   tournament = input.required<Tournament>();
   admin = input<boolean>(false);
@@ -41,8 +42,8 @@ export class TournamentHeader {
   edit(): void {
     this.#messageService.add({
       severity: 'info',
-      summary: 'Modifier le tournoi',
-      detail: "La fonctionnalité de modification n'est pas encore implémentée.",
+      summary: this.#translocoService.translate('shared.tournamentHeader.editSummary'),
+      detail: this.#translocoService.translate('shared.tournamentHeader.editDetail'),
     });
   }
 

@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
 import { TournamentDetail } from './tournament-detail';
+import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
 import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 describe('TournamentDetail', () => {
@@ -58,6 +60,11 @@ describe('TournamentDetail', () => {
       createdAt: new Date().toISOString(),
     });
 
+    fixture.detectChanges();
+
+    // Expand tournament header details to make the status p-tag visible
+    const headerEl = fixture.debugElement.query(By.directive(TournamentHeader));
+    (headerEl.componentInstance as TournamentHeader).toggleDetails();
     fixture.detectChanges();
 
     const statusTag = fixture.nativeElement.querySelector('p-tag');

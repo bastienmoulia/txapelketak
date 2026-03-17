@@ -85,7 +85,8 @@
       "success": {
         "title": "Tournoi créé",
         "message": "Votre tournoi est en attente de validation.",
-        "backHome": "Retour à l'accueil"
+        "backHome": "Retour à l'accueil",
+        "openAdmin": "Ouvrir l'administration"
       },
       "type": {
         "poules": "Poules",

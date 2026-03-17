@@ -44,12 +44,16 @@
                   class="w-full"
                   data-testid="field-description"
                 ></textarea>
-                <label for="description">{{ 'tournaments.new.step1.description' | transloco }}</label>
+                <label for="description">{{
+                  'tournaments.new.step1.description' | transloco
+                }}</label>
               </p-floatlabel>
             </div>
 
             <div class="field">
-              <label class="field-label" for="type">{{ 'tournaments.new.step1.type' | transloco }}</label>
+              <label class="field-label" for="type">{{
+                'tournaments.new.step1.type' | transloco
+              }}</label>
               <p-selectbutton
                 id="type"
                 formControlName="type"
@@ -79,7 +83,9 @@
                   class="w-full"
                   data-testid="field-creator-username"
                 />
-                <label for="creatorUsername">{{ 'tournaments.new.step2.username' | transloco }}</label>
+                <label for="creatorUsername">{{
+                  'tournaments.new.step2.username' | transloco
+                }}</label>
               </p-floatlabel>
               @if (form.get('creatorUsername')?.invalid && form.get('creatorUsername')?.touched) {
                 <p-message severity="error" class="field-error">
@@ -171,14 +177,27 @@
         </div>
         <h2>{{ 'tournaments.new.success.title' | transloco }}</h2>
         <p>{{ 'tournaments.new.success.message' | transloco }}</p>
-        <p-button
-          [label]="'tournaments.new.success.backHome' | transloco"
-          icon="pi pi-home"
-          severity="secondary"
-          [outlined]="true"
-          routerLink="/"
-          data-testid="btn-home"
-        />
+
+        <div class="success-actions">
+          <p-button
+            [label]="'tournaments.new.success.backHome' | transloco"
+            icon="pi pi-home"
+            severity="secondary"
+            [outlined]="true"
+            routerLink="/"
+            data-testid="btn-home"
+          />
+
+          <p-button
+            type="button"
+            [label]="'tournaments.new.success.openAdmin' | transloco"
+            icon="pi pi-cog"
+            [outlined]="true"
+            [disabled]="!adminUrl()"
+            (onClick)="openAdmin()"
+            data-testid="btn-admin"
+          />
+        </div>
       </div>
     }
   </div>

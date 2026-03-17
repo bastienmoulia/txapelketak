@@ -85,7 +85,8 @@
       "success": {
         "title": "Torneo creado",
         "message": "Su torneo está a la espera de validación.",
-        "backHome": "Volver al inicio"
+        "backHome": "Volver al inicio",
+        "openAdmin": "Abrir administración"
       },
       "type": {
         "poules": "Grupos",

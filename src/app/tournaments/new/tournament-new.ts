@@ -65,6 +65,7 @@ export class TournamentNew {
   });
 
   submitted = signal(false);
+  adminUrl = signal('');
 
   private formValue = toSignal(this.form.valueChanges.pipe(startWith(this.form.getRawValue())), {
     initialValue: this.form.getRawValue(),
@@ -95,6 +96,14 @@ export class TournamentNew {
     if (this.currentStep() > 0) {
       this.currentStep.update((s) => s - 1);
     }
+  }
+
+  openAdmin(): void {
+    const url = this.adminUrl();
+    if (!url) {
+      return;
+    }
+    window.location.href = url;
   }
 
   async onSubmit(): Promise<void> {
@@ -134,9 +143,9 @@ export class TournamentNew {
       await this.firebaseService.createTournament(tournament);
       await this.firebaseService.createUser(user);
 
-      const adminUrl = `${window.location.origin}/tournaments/${tournament.id}/${user.token}`;
+      this.adminUrl.set(`${window.location.origin}/tournaments/${tournament.id}/${user.token}`);
 
-      await this.firebaseService.queueMail(
+      /*await this.firebaseService.queueMail(
         creatorEmail,
         `Accès admin - ${tournamentName}`,
         `
@@ -146,7 +155,7 @@ export class TournamentNew {
           <p><a href="${adminUrl}">${adminUrl}</a></p>
           <p>Conservez ce lien de manière privée.</p>
         `,
-      );
+      );*/
     }
   }
 }

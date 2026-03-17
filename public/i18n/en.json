@@ -85,7 +85,8 @@
       "success": {
         "title": "Tournament created",
         "message": "Your tournament is awaiting validation.",
-        "backHome": "Back to home"
+        "backHome": "Back to home",
+        "openAdmin": "Open admin page"
       },
       "type": {
         "poules": "Groups",

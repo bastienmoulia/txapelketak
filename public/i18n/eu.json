@@ -85,7 +85,8 @@
       "success": {
         "title": "Txapelketa sortua",
         "message": "Zure txapelketa balioztapen zain dago.",
-        "backHome": "Hasierara itzuli"
+        "backHome": "Hasierara itzuli",
+        "openAdmin": "Ireki administrazioa"
       },
       "type": {
         "poules": "Taldeak",

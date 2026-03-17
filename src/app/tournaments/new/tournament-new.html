@@ -177,6 +177,9 @@
         </div>
         <h2>{{ 'tournaments.new.success.title' | transloco }}</h2>
         <p>{{ 'tournaments.new.success.message' | transloco }}</p>
+        <a href="{{ adminUrl() }}" target="_blank" rel="noopener" data-testid="admin-link">
+          {{ adminUrl() }}
+        </a>
 
         <div class="success-actions">
           <p-button
@@ -186,16 +189,6 @@
             [outlined]="true"
             routerLink="/"
             data-testid="btn-home"
-          />
-
-          <p-button
-            type="button"
-            [label]="'tournaments.new.success.openAdmin' | transloco"
-            icon="pi pi-cog"
-            [outlined]="true"
-            [disabled]="!adminUrl()"
-            (onClick)="openAdmin()"
-            data-testid="btn-admin"
           />
         </div>
       </div>

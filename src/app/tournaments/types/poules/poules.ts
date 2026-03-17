@@ -6,6 +6,7 @@ import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
+import { DocumentReference } from '@angular/fire/firestore';
 
 export interface PoulesData {
   teams?: Team[];
@@ -40,7 +41,7 @@ export class Poules {
   private loadedTournamentId = signal<number | null>(null);
 
   constructor() {
-    effect(() => {
+    effect(async () => {
       const tournament = this.tournament();
       this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
 
@@ -53,23 +54,31 @@ export class Poules {
       }
 
       this.loadedTournamentId.set(tournament.id);
-      void this.loadTeams(tournament.id);
-      void this.loadSeries(tournament.id);
+      this.teams.set(await this.loadTeams(tournament.id));
+      this.series.set(await this.loadSeries(tournament.id));
     });
   }
 
-  private async loadTeams(tournamentId: number): Promise<void> {
-    const result = await this.firebaseService.getTournamentWithCollectionyId(tournamentId, 'teams');
-    const teams = (result?.tournament.data as PoulesData | undefined)?.teams ?? [];
-    this.teams.set(teams);
+  private async loadTeams(tournamentId: number): Promise<Team[]> {
+    const result = await this.firebaseService.getTournamentCollection(tournamentId, 'teams');
+    const teams = result?.map((item) => item.data as Team) ?? [];
+    return teams;
   }
 
-  private async loadSeries(tournamentId: number): Promise<void> {
-    const result = await this.firebaseService.getTournamentWithCollectionyId(
-      tournamentId,
-      'series',
-    );
-    const series = (result?.tournament.data as PoulesData | undefined)?.series ?? [];
-    this.series.set(series);
+  private async loadSeries(tournamentId: number): Promise<Serie[]> {
+    const result = await this.firebaseService.getTournamentCollection(tournamentId, 'series');
+    const series = (result?.map((item) => item.data as Serie) ?? []) as Serie[];
+    const seriesRef = result?.map((item) => item.ref) ?? [];
+
+    series.forEach((serie, index) => {
+      serie.poules = this.loadPoules(seriesRef[index]) as unknown as Poule[];
+    });
+    return series;
+  }
+
+  private async loadPoules(serieRef: DocumentReference): Promise<Poule[]> {
+    const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'poules');
+    const poules = (result?.map((item) => item.data as Poule) ?? []) as Poule[];
+    return poules;
   }
 }

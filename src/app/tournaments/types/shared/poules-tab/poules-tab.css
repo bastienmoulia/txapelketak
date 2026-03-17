@@ -1,0 +1,18 @@
+.series-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.poules-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.teams-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.teams-list li {
+  margin-bottom: 0.25rem;
+}

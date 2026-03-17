@@ -123,7 +123,7 @@ export class FirebaseService {
     const collectionSnapshot = await runInInjectionContext(this.environmentInjector, async () => {
       return getDocs(collection(tournamentWithRef.ref, collenctionName));
     });
-    const collectionData = collectionSnapshot.docs.map((doc) => doc.data() as Team);
+    const collectionData = collectionSnapshot.docs.map((doc) => doc.data() as unknown);
 
     return {
       ref: tournamentWithRef.ref,
@@ -135,6 +135,44 @@ export class FirebaseService {
         },
       } as Tournament,
     };
+  }
+
+  async getTournamentCollection(
+    tournamentId: number,
+    collenctionName: string,
+  ): Promise<
+    | {
+        data: unknown;
+        ref: DocumentReference;
+      }[]
+    | null
+  > {
+    const tournamentWithRef = await this.getTournamentByIdWithRef(tournamentId);
+    if (!tournamentWithRef) {
+      return null;
+    }
+
+    return await this.getCollectionFromDocumentRef(tournamentWithRef.ref, collenctionName);
+  }
+
+  async getCollectionFromDocumentRef(
+    ref: DocumentReference,
+    collectionName: string,
+  ): Promise<
+    {
+      data: unknown;
+      ref: DocumentReference;
+    }[]
+  > {
+    const collectionSnapshot = await runInInjectionContext(this.environmentInjector, async () => {
+      return getDocs(collection(ref, collectionName));
+    });
+    const collectionData = collectionSnapshot.docs.map((doc) => ({
+      data: doc.data() as unknown,
+      ref: doc.ref,
+    }));
+
+    return collectionData;
   }
 
   async updateTournamentStatus(ref: DocumentReference, status: TournamentStatus): Promise<void> {

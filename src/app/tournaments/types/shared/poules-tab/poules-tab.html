@@ -1,1 +1,17 @@
-<p>poules-tab works!</p>
+<div class="series-list">
+  @for (series of seriesComputed(); track series.id) {
+    <p-card [header]="series.name" class="series-card">
+      <div class="poules-list">
+        @for (poule of series.poules; track poule.id) {
+          <p-card [header]="poule.name" class="poule-card">
+            <ul class="teams-list">
+              @for (team of poule.teams; track team?.id ?? $index) {
+                <li>{{ team?.name }}</li>
+              }
+            </ul>
+          </p-card>
+        }
+      </div>
+    </p-card>
+  }
+</div>

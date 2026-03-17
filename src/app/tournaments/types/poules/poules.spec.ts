@@ -14,9 +14,14 @@ describe('Poules', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(Poules);
-    fixture.componentRef.setInput('tournamentData', {
-      teams: [],
-      series: [],
+    fixture.componentRef.setInput('tournament', {
+      id: 1,
+      name: 'Test Tournoi',
+      description: '',
+      type: 'poules',
+      status: 'ongoing',
+      createdAt: new Date().toISOString(),
+      data: { teams: [], series: [] },
     });
     fixture.detectChanges();
     component = fixture.componentInstance;

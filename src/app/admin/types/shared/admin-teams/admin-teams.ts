@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
@@ -22,6 +23,7 @@ import { form, FormField, required } from '@angular/forms/signals';
     FloatLabel,
     Textarea,
     FormField,
+    FormsModule,
   ],
   templateUrl: './admin-teams.html',
   styleUrl: './admin-teams.css',
@@ -30,12 +32,15 @@ import { form, FormField, required } from '@angular/forms/signals';
 export class AdminTeams {
   teams = input.required<Team[]>();
 
-  addTeam = output<void>();
-  editTeam = output<Team>();
+  saveTeam = output<Team>();
+  saveTeams = output<Team[]>();
   deleteTeam = output<Team>();
 
   visible = signal(false);
   visibleBulk = signal(false);
+  isEditing = signal(false);
+
+  bulkText = signal('');
 
   team = signal<Team>({ id: '', name: '' });
   teamForm = form(this.team, (path) => {
@@ -43,29 +48,37 @@ export class AdminTeams {
   });
 
   onAddTeam(): void {
+    this.isEditing.set(false);
+    this.team.set({ id: '', name: '' });
     this.visible.set(true);
-
-    this.addTeam.emit();
   }
 
   onAddTeams(): void {
+    this.bulkText.set('');
     this.visibleBulk.set(true);
   }
 
   onSaveTeam(): void {
-    console.log('Saving team:', this.team());
     if (this.teamForm().valid()) {
+      this.saveTeam.emit(this.team());
       this.visible.set(false);
     }
   }
 
   onSaveTeams(): void {
-    console.log('Saving multiple teams');
+    const names = this.bulkText()
+      .split('\n')
+      .map((n) => n.trim())
+      .filter((n) => n.length > 0);
+    const newTeams: Team[] = names.map((name) => ({ id: '', name }));
+    this.saveTeams.emit(newTeams);
     this.visibleBulk.set(false);
   }
 
   onEditTeam(team: Team): void {
-    this.editTeam.emit(team);
+    this.isEditing.set(true);
+    this.team.set({ ...team });
+    this.visible.set(true);
   }
 
   onDeleteTeam(team: Team): void {

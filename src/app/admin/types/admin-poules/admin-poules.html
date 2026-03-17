@@ -9,7 +9,12 @@
       <p>admin-poules works!</p>
     </p-tabpanel>
     <p-tabpanel value="teams">
-      <app-admin-teams [teams]="teams()" />
+      <app-admin-teams
+        [teams]="teams()"
+        (saveTeam)="onSaveTeam($event)"
+        (saveTeams)="onSaveTeams($event)"
+        (deleteTeam)="onDeleteTeam($event)"
+      />
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

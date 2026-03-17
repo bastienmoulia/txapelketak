@@ -126,7 +126,17 @@
       "teams": "Equipos"
     },
     "teams": {
-      "empty": "No hay equipos"
+      "empty": "No hay equipos",
+      "add": "Añadir un equipo",
+      "addBulk": "Añadir varios equipos",
+      "addBulkAria": "Añadir varios equipos a la vez",
+      "dialogAdd": "Añadir un equipo",
+      "dialogEdit": "Editar equipo",
+      "dialogAddBulk": "Añadir varios equipos",
+      "bulkLabel": "Nombres de equipos",
+      "bulkPlaceholder": "Un equipo por línea",
+      "editAria": "Editar este equipo",
+      "deleteAria": "Eliminar este equipo"
     }
   },
   "shared": {
@@ -139,6 +149,12 @@
       },
       "open": "Abrir",
       "empty": "No hay torneos disponibles"
+    },
+    "actions": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar"
     },
     "status": {
       "ongoing": "En curso",

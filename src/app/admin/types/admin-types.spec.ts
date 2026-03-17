@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdminTypes } from './admin-types';
+import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 describe('AdminTypes', () => {
   let component: AdminTypes;
@@ -9,6 +10,7 @@ describe('AdminTypes', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminTypes],
+      providers: [...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTypes);
@@ -17,7 +19,7 @@ describe('AdminTypes', () => {
       name: 'Test Tournoi',
       description: '',
       type: 'poules',
-      status: 'upcoming',
+      status: 'paused',
       createdAt: '2024-01-01',
     });
     component = fixture.componentInstance;

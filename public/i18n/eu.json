@@ -44,6 +44,10 @@
         "description": "Kode irekia, iragarkiik gabe, mugarik gabe. Jolastu!"
       }
     },
+    "createSoonAvailable": {
+      "title": "Laster eskuragarri",
+      "detail": "Txapelketen sorrera oso laster eskuragarri egingo da"
+    },
     "tournaments": {
       "title": "Txapelketak",
       "seeAll": "Ikusi txapelketa guztiak"

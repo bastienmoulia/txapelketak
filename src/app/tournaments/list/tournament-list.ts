@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../home/tournament.interface';
@@ -9,7 +8,7 @@ import { FirebaseService } from '../../shared/services/firebase.service';
 
 @Component({
   selector: 'app-tournament-list',
-  imports: [RouterLink, ButtonModule, TournamentsTable, TranslocoModule],
+  imports: [ButtonModule, TournamentsTable, TranslocoModule],
   templateUrl: './tournament-list.html',
   styleUrl: './tournament-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,4 +29,6 @@ export class TournamentList {
   getTournamentLink(tournament: Tournament): string {
     return `/tournaments/${tournament.id}`;
   }
+
+  createSoonAvailable(): void {}
 }

@@ -44,6 +44,10 @@
         "description": "Code source ouvert, aucune publicité, aucune limitation. À vous de jouer."
       }
     },
+    "createSoonAvailable": {
+      "title": "Bientôt disponible",
+      "detail": "La création de tournoi sera disponible très bientôt"
+    },
     "tournaments": {
       "title": "Tournois",
       "seeAll": "Voir tous les tournois"

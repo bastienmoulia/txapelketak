@@ -44,6 +44,10 @@
         "description": "Open source code, no ads, no limitations. Play away."
       }
     },
+    "createSoonAvailable": {
+      "title": "Coming Soon",
+      "detail": "Tournament creation will be available very soon"
+    },
     "tournaments": {
       "title": "Tournaments",
       "seeAll": "See all tournaments"

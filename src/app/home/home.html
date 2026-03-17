@@ -1,9 +1,14 @@
 <div class="home-container">
+  <p-toast />
   <!-- Hero Section -->
   <div class="hero-section">
     <h1>Txapelketak</h1>
     <p class="hero-subtitle">{{ 'home.hero.subtitle' | transloco }}</p>
-    <p-button [label]="'home.hero.createButton' | transloco" icon="pi pi-plus" routerLink="/tournaments/new" />
+    <p-button
+      [label]="'home.hero.createButton' | transloco"
+      icon="pi pi-plus"
+      (onClick)="createSoonAvailable()"
+    />
   </div>
 
   <app-header-actions />
@@ -68,7 +73,7 @@
         icon="pi pi-plus"
         severity="secondary"
         [outlined]="true"
-        routerLink="/tournaments/new"
+        (onClick)="createSoonAvailable()"
       />
     </div>
     <app-tournaments-table
@@ -88,4 +93,3 @@
     }
   </section>
 </div>
-

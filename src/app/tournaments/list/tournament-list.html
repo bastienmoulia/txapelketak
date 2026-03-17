@@ -6,7 +6,7 @@
       icon="pi pi-plus"
       severity="secondary"
       [outlined]="true"
-      routerLink="/tournaments/new"
+      (onClick)="createSoonAvailable()"
     />
   </div>
   <app-tournaments-table [tournaments]="tournaments()" [getTournamentLink]="getTournamentLink" />

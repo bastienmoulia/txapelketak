@@ -129,6 +129,12 @@
       "poules": "Taldeak",
       "teams": "Taldeak"
     },
+    "poules": {
+      "addSerie": "Serie bat gehitu",
+      "addPoule": "Multzo bat gehitu",
+      "addTeam": "Talde bat gehitu",
+      "noSeriesOrPoules": "Ez dago serie edo multzorik eskuragarri"
+    },
     "teams": {
       "empty": "Ez dago talderik",
       "add": "Taldea gehitu",

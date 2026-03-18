@@ -16,7 +16,11 @@
     (onClick)="onAddTeams()"
     data-testid="add-teams-bulk-button"
   />
-  <p-dialog [header]="(isEditing() ? 'admin.teams.dialogEdit' : 'admin.teams.dialogAdd') | transloco" [modal]="true" [(visible)]="visible">
+  <p-dialog
+    [header]="(isEditing() ? 'admin.teams.dialogEdit' : 'admin.teams.dialogAdd') | transloco"
+    [modal]="true"
+    [(visible)]="visible"
+  >
     <form (submit)="$event.preventDefault(); onSaveTeam()">
       <div class="mb-4">
         <p-floatlabel variant="on">
@@ -68,10 +72,7 @@
           severity="secondary"
           (click)="visibleBulk.set(false)"
         />
-        <p-button
-          type="submit"
-          [label]="'shared.actions.save' | transloco"
-        />
+        <p-button type="submit" [label]="'shared.actions.save' | transloco" />
       </div>
     </form>
   </p-dialog>
@@ -117,15 +118,9 @@
         </td>
       </tr>
     </ng-template>
-
-    <ng-template #emptymessage>
-      <tr>
-        <td class="text-center">{{ 'admin.teams.empty' | transloco }}</td>
-      </tr>
-    </ng-template>
   </p-table>
 } @else {
-  <p-message severity="info" variant="simple" class="mt-4">
+  <p-message severity="warn" class="mt-4">
     {{ 'admin.teams.empty' | transloco }}
   </p-message>
 }

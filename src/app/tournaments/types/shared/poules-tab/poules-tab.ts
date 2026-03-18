@@ -7,10 +7,11 @@ import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { Message } from 'primeng/message';
 
 @Component({
   selector: 'app-poules-tab',
-  imports: [CardModule, NgTemplateOutlet, ApplyPipe, Button, TranslocoPipe],
+  imports: [CardModule, NgTemplateOutlet, ApplyPipe, Button, TranslocoPipe, Message],
   templateUrl: './poules-tab.html',
   styleUrl: './poules-tab.css',
 })

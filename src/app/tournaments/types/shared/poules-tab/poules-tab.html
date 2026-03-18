@@ -16,6 +16,10 @@
       <ng-container *ngTemplateOutlet="poules; context: { $implicit: serie.poules }"></ng-container>
     </p-card>
   }
+} @else {
+  <p-message severity="warn" class="mt-4">
+    {{ 'admin.poules.noSeriesOrPoules' | transloco }}
+  </p-message>
 }
 
 <ng-template #poules let-poules>

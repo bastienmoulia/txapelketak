@@ -129,6 +129,12 @@
       "poules": "Groups",
       "teams": "Teams"
     },
+    "poules": {
+      "addSerie": "Add a series",
+      "addPoule": "Add a group",
+      "addTeam": "Add a team",
+      "noSeriesOrPoules": "No series or groups available"
+    },
     "teams": {
       "empty": "No teams",
       "add": "Add a team",

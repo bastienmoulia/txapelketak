@@ -1,20 +1,23 @@
-import { Component, effect, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
 import { Serie } from '../../poules/poules';
-import { JsonPipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
+import { Button } from 'primeng/button';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-poules-tab',
-  imports: [CardModule, JsonPipe, ApplyPipe],
+  imports: [CardModule, NgTemplateOutlet, ApplyPipe, Button, TranslocoPipe],
   templateUrl: './poules-tab.html',
   styleUrl: './poules-tab.css',
 })
 export class PoulesTab {
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
+  admin = input(false);
 
   getTeamName(ref: DocumentReference, teams: Team[]): string {
     if (!ref) {

@@ -43,14 +43,13 @@ export class FirebaseService {
       return null;
     }
 
-    const usersQuery = query(
-      collection(this.firestore, 'users'),
-      where('tournamentId', '==', tournamentId),
-      where('token', '==', token),
-      limit(1),
-    );
-
     const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
+      const usersQuery = query(
+        collection(this.firestore!, 'users'),
+        where('tournamentId', '==', tournamentId),
+        where('token', '==', token),
+        limit(1),
+      );
       return getDocs(usersQuery);
     });
 
@@ -66,13 +65,12 @@ export class FirebaseService {
       return null;
     }
 
-    const tournamentsQuery = query(
-      collection(this.firestore, 'tournaments'),
-      where('id', '==', tournamentId),
-      limit(1),
-    );
-
     const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
+      const tournamentsQuery = query(
+        collection(this.firestore!, 'tournaments'),
+        where('id', '==', tournamentId),
+        limit(1),
+      );
       return getDocs(tournamentsQuery);
     });
 
@@ -90,13 +88,12 @@ export class FirebaseService {
       return null;
     }
 
-    const tournamentsQuery = query(
-      collection(this.firestore, 'tournaments'),
-      where('id', '==', tournamentId),
-      limit(1),
-    );
-
     const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
+      const tournamentsQuery = query(
+        collection(this.firestore!, 'tournaments'),
+        where('id', '==', tournamentId),
+        limit(1),
+      );
       return getDocs(tournamentsQuery);
     });
 
@@ -186,15 +183,14 @@ export class FirebaseService {
       return 1;
     }
 
-    const latestTournamentQuery = query(
-      collection(this.firestore, 'tournaments'),
-      orderBy('id', 'desc'),
-      limit(1),
-    );
-
     const latestTournamentSnapshot = await runInInjectionContext(
       this.environmentInjector,
       async () => {
+        const latestTournamentQuery = query(
+          collection(this.firestore!, 'tournaments'),
+          orderBy('id', 'desc'),
+          limit(1),
+        );
         return getDocs(latestTournamentQuery);
       },
     );

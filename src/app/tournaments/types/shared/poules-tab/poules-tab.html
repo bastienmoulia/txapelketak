@@ -1,15 +1,47 @@
-<div class="series-list">
+@if (admin()) {
+  <p-button
+    type="button"
+    severity="success"
+    icon="pi pi-plus"
+    [label]="'admin.poules.addSerie' | transloco"
+  />
+}
+@if (series().length === 1) {
+  <ng-container
+    *ngTemplateOutlet="poules; context: { $implicit: series()[0].poules }"
+  ></ng-container>
+} @else if (series().length > 1) {
   @for (serie of series(); track $index) {
-    <p-card [header]="serie.name" class="series-card">
-      @for (poule of serie.poules; track $index) {
-        <p-card [header]="poule.name" class="poule-card">
-          <ul class="teams-list">
-            @for (refTeam of poule.refTeams; track $index) {
-              <li class="team-item">{{ getTeamName | apply: refTeam : teams() }}</li>
-            }
-          </ul>
-        </p-card>
-      }
+    <p-card [header]="serie.name">
+      <ng-container *ngTemplateOutlet="poules; context: { $implicit: serie.poules }"></ng-container>
     </p-card>
   }
-</div>
+}
+
+<ng-template #poules let-poules>
+  @if (admin()) {
+    <p-button
+      type="button"
+      severity="success"
+      icon="pi pi-plus"
+      [label]="'admin.poules.addPoule' | transloco"
+    />
+  }
+  @for (poule of poules; track $index) {
+    <p-card [header]="poule.name">
+      @if (admin()) {
+        <p-button
+          type="button"
+          severity="success"
+          icon="pi pi-plus"
+          [label]="'admin.poules.addTeam' | transloco"
+        />
+      }
+      <ul class="teams-list">
+        @for (refTeam of poule.refTeams; track $index) {
+          <li class="team-item">{{ getTeamName | apply: refTeam : teams() }}</li>
+        }
+      </ul>
+    </p-card>
+  }
+</ng-template>

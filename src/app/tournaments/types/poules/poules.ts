@@ -80,10 +80,16 @@ export class Poules {
       } as Serie;
     }) ?? []) as Serie[];
 
-    series.forEach(async (serie, index) => {
-      serie.poules = (await this.loadPoules(series[index].ref)) as unknown as Poule[];
-    });
-    return series;
+    const seriesWithPoules = await Promise.all(
+      series.map(async (serie) => {
+        return {
+          ...serie,
+          poules: await this.loadPoules(serie.ref),
+        } as Serie;
+      }),
+    );
+
+    return seriesWithPoules;
   }
 
   private async loadPoules(serieRef: DocumentReference): Promise<Poule[]> {

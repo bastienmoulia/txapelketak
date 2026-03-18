@@ -7,8 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslocoService } from '@jsverse/transloco';
+import { translateSignal, TranslocoService } from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
@@ -37,23 +36,22 @@ export class HeaderActions {
   themeMode = signal<ThemeMode>(this.readThemeMode());
   language = signal<LanguageCode>(this.readLanguage());
   isMobile = signal<boolean>(false);
-
-  // Reactive signal: emits the translated 'header' object once translations are loaded
-  // and re-emits on every language change. This makes all dependent computed() signals
-  // re-evaluate after the async HTTP translation file is fetched.
-  private headerTranslations = toSignal(this.translocoService.selectTranslateObject('header'), {
-    initialValue: null,
-  });
+  themeLabels = translateSignal(['header.theme.light', 'header.theme.dark', 'header.theme.auto']);
+  languageLabels = translateSignal([
+    'header.language.fr',
+    'header.language.eu',
+    'header.language.en',
+    'header.language.es',
+  ]);
 
   themeLabel = computed(() => {
-    this.headerTranslations();
     switch (this.themeMode()) {
       case 'light':
-        return this.translocoService.translate('header.theme.light');
+        return this.themeLabels()[0];
       case 'dark':
-        return this.translocoService.translate('header.theme.dark');
+        return this.themeLabels()[1];
       default:
-        return this.translocoService.translate('header.theme.auto');
+        return this.themeLabels()[2];
     }
   });
 
@@ -69,27 +67,34 @@ export class HeaderActions {
   });
 
   languageLabel = computed(() => {
-    this.headerTranslations();
-    return this.translocoService.translate(`header.language.${this.language()}`);
+    switch (this.language()) {
+      case 'fr':
+        return this.languageLabels()[0];
+      case 'eu':
+        return this.languageLabels()[1];
+      case 'en':
+        return this.languageLabels()[2];
+      case 'es':
+        return this.languageLabels()[3];
+    }
   });
 
   languageCode = computed(() => this.language().toUpperCase());
 
   themeItems = computed<MenuItem[]>(() => {
-    this.headerTranslations();
     return [
       {
-        label: this.translocoService.translate('header.theme.light'),
+        label: this.themeLabels()[0],
         icon: 'pi pi-sun',
         command: () => this.setThemeMode('light'),
       },
       {
-        label: this.translocoService.translate('header.theme.dark'),
+        label: this.themeLabels()[1],
         icon: 'pi pi-moon',
         command: () => this.setThemeMode('dark'),
       },
       {
-        label: this.translocoService.translate('header.theme.auto'),
+        label: this.themeLabels()[2],
         icon: 'pi pi-desktop',
         command: () => this.setThemeMode('auto'),
       },
@@ -97,25 +102,24 @@ export class HeaderActions {
   });
 
   languageItems = computed<MenuItem[]>(() => {
-    this.headerTranslations();
     return [
       {
-        label: this.translocoService.translate('header.language.fr'),
+        label: this.languageLabels()[0],
         icon: 'pi pi-language',
         command: () => this.setLanguage('fr'),
       },
       {
-        label: this.translocoService.translate('header.language.eu'),
+        label: this.languageLabels()[1],
         icon: 'pi pi-language',
         command: () => this.setLanguage('eu'),
       },
       {
-        label: this.translocoService.translate('header.language.en'),
+        label: this.languageLabels()[2],
         icon: 'pi pi-language',
         command: () => this.setLanguage('en'),
       },
       {
-        label: this.translocoService.translate('header.language.es'),
+        label: this.languageLabels()[3],
         icon: 'pi pi-language',
         command: () => this.setLanguage('es'),
       },
@@ -223,4 +227,3 @@ export class HeaderActions {
     localStorage.setItem(key, value);
   }
 }
-

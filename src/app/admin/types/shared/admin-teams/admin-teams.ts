@@ -42,14 +42,14 @@ export class AdminTeams {
 
   bulkText = signal('');
 
-  team = signal<Team>({ id: '', name: '' });
+  team = signal<Team>({ ref: null!, name: '' });
   teamForm = form(this.team, (path) => {
     required(path.name);
   });
 
   onAddTeam(): void {
     this.isEditing.set(false);
-    this.team.set({ id: '', name: '' });
+    this.team.set({ ref: null!, name: '' });
     this.visible.set(true);
   }
 
@@ -70,7 +70,7 @@ export class AdminTeams {
       .split('\n')
       .map((n) => n.trim())
       .filter((n) => n.length > 0);
-    const newTeams: Team[] = names.map((name) => ({ id: '', name }));
+    const newTeams: Team[] = names.map((name) => ({ ref: null!, name }));
     this.saveTeams.emit(newTeams);
     this.visibleBulk.set(false);
   }

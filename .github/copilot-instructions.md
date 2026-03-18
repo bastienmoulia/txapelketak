@@ -23,13 +23,13 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 - Gestion des joueurs et des équipes (si applicable).
 - Gestion des matchs (planification, scores, état).
 - Classements et statistiques.
-- Export/import de données.
-- Améliorations UX/UI et accessibilité.
+- Export/import de données au format YAML.
+- Bonne UX/UI et accessibilité.
 - Journalisation et audit des modifications.
 
 ### Hors périmètre
 
-- Authentification classique (compte utilisateur) : accès via URL avec jeton sécurisé.
+- Authentification classique (compte utilisateur).
 - Paiements, inscriptions publiques en ligne.
 - Système de messagerie interne.
 - Gestion de billetterie.
@@ -46,16 +46,17 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 
 - Créer un tournoi avec : nom, description, type (poules, phase finale, poules + phase finale), nb de joueurs/équipes, règles.
 - Définir explicitement le type de tournoi et les phases actives associées.
-- Dupliquer un tournoi existant comme modèle.
 - Archiver un tournoi et le rendre consultable en lecture seule.
-- Gestion des phases (groupes, quart/demi/finale).
+
+#### Types de tournois
+
+- Poules : joueurs répartis en poules, matchs au sein des poules, classement par poule. Possibilité d'avoir plusieurs séries de poules.
+- Phase finale : tournoi à élimination directe, avec possibilité de consolante.
+- Poules + phase finale : combinaison des deux, avec qualification des meilleurs joueurs de chaque groupe pour la phase finale.
 
 ### Joueurs et équipes
 
-- Ajout, édition, suppression (avec contrôle d'impact sur matchs existants).
-- Importer une liste de joueurs depuis CSV.
-- Attribuer des seeds (têtes de série) et des groupes.
-- Gestion des absences/forfaits.
+- Ajout, ajout multiple, édition, suppression (avec contrôle d'impact sur matchs existants).
 
 ### Matchs et scores
 
@@ -79,8 +80,8 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 ### Import et export
 
 - Export PDF des classements et résultats (si possible).
-- Export complet JSON pour sauvegarde.
-- Import JSON pour restauration.
+- Export complet YAML pour sauvegarde.
+- Import YAML pour restauration.
 
 ### Journalisation et audit
 
@@ -93,7 +94,7 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 - Fiabilité : transactions lors des écritures critiques.
 - UX : navigation rapide, raccourcis clavier pour saisie des scores.
 - Accessibilité : contrastes suffisants, navigation clavier.
-- Internationalisation : structure permettant FR/EU.
+- Internationalisation : structure permettant FR/EU/EN/ES.
 - Sécurité : contrôle des accès par rôle.
 
 ## Expérience utilisateur
@@ -120,11 +121,9 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 - Backend : Firebase (BaaS) avec :
   - Hosting pour le déploiement.
   - Base de données en temps réel pour les données de tournoi.
-  - Authentification (email/mot de passe + éventuels providers).
 - Synchronisation temps réel pour l'affichage live des scores et classements.
 - Règles de sécurité Firebase basées sur les rôles (admin, organisateur, observateur).
-- Accès organisateurs via URL avec jeton complexe (sans inscription), avec expiration configurable.
-- Accès admins via compte (email/mdp) ou providers externes (Google, autre à définir).
+- Accès admin via URL avec jeton complexe (sans inscription).
 - Environnements : dev/prod, avec configuration par environment Angular.
 - Journalisation des actions critiques stockée dans la base (collection ou nœud dédié).
 

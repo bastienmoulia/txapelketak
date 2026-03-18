@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { DocumentReference } from '@firebase/firestore';
 import { TranslocoModule } from '@jsverse/transloco';
 import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 
 export interface Team {
-  id: string;
+  ref: DocumentReference;
   name: string;
 }
 

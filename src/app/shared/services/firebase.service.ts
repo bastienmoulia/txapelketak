@@ -229,7 +229,7 @@ export class FirebaseService {
 
   async addTeamToTournament(tournamentRef: DocumentReference, teamName: string): Promise<Team> {
     const teamDocRef = doc(collection(tournamentRef, 'teams'));
-    const team: Team = { id: teamDocRef.id, name: teamName };
+    const team: Team = { ref: teamDocRef, name: teamName };
     await runInInjectionContext(this.environmentInjector, async () => {
       await setDoc(teamDocRef, team);
     });
@@ -237,14 +237,14 @@ export class FirebaseService {
   }
 
   async updateTeamInTournament(tournamentRef: DocumentReference, team: Team): Promise<void> {
-    const teamDocRef = doc(collection(tournamentRef, 'teams'), team.id);
+    const teamDocRef = doc(collection(tournamentRef, 'teams'), team.ref.id);
     await runInInjectionContext(this.environmentInjector, async () => {
       await updateDoc(teamDocRef, { name: team.name });
     });
   }
 
-  async deleteTeamFromTournament(tournamentRef: DocumentReference, teamId: string): Promise<void> {
-    const teamDocRef = doc(collection(tournamentRef, 'teams'), teamId);
+  async deleteTeamFromTournament(tournamentRef: DocumentReference, teamRef: string): Promise<void> {
+    const teamDocRef = doc(collection(tournamentRef, 'teams'), teamRef);
     await runInInjectionContext(this.environmentInjector, async () => {
       await deleteDoc(teamDocRef);
     });

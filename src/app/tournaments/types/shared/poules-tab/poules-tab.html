@@ -1,17 +1,15 @@
 <div class="series-list">
-  @for (series of seriesComputed(); track series.id) {
-    <p-card [header]="series.name" class="series-card">
-      <div class="poules-list">
-        @for (poule of series.poules; track poule.id) {
-          <p-card [header]="poule.name" class="poule-card">
-            <ul class="teams-list">
-              @for (team of poule.teams; track team?.id ?? $index) {
-                <li>{{ team?.name }}</li>
-              }
-            </ul>
-          </p-card>
-        }
-      </div>
+  @for (serie of series(); track $index) {
+    <p-card [header]="serie.name" class="series-card">
+      @for (poule of serie.poules; track $index) {
+        <p-card [header]="poule.name" class="poule-card">
+          <ul class="teams-list">
+            @for (refTeam of poule.refTeams; track $index) {
+              <li class="team-item">{{ getTeamName | apply: refTeam : teams() }}</li>
+            }
+          </ul>
+        </p-card>
+      }
     </p-card>
   }
 </div>

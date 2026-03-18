@@ -14,15 +14,15 @@ export interface PoulesData {
 }
 
 export interface Serie {
-  id: string;
+  ref: DocumentReference;
   name: string;
   poules: Poule[];
 }
 
 export interface Poule {
-  id: string;
+  ref: DocumentReference;
   name: string;
-  idTeams: string[];
+  refTeams: DocumentReference[];
 }
 
 @Component({
@@ -35,7 +35,7 @@ export interface Poule {
 export class Poules {
   private firebaseService = inject(FirebaseService);
 
-  tournament = input.required<Tournament<'poules'>>();
+  tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
   private loadedTournamentId = signal<number | null>(null);
@@ -61,24 +61,39 @@ export class Poules {
 
   private async loadTeams(tournamentId: number): Promise<Team[]> {
     const result = await this.firebaseService.getTournamentCollection(tournamentId, 'teams');
-    const teams = result?.map((item) => item.data as Team) ?? [];
+    const teams =
+      result?.map((item, index) => {
+        return {
+          ...(item.data as Partial<Team>),
+          ref: result[index].ref,
+        } as Team;
+      }) ?? [];
     return teams;
   }
 
   private async loadSeries(tournamentId: number): Promise<Serie[]> {
     const result = await this.firebaseService.getTournamentCollection(tournamentId, 'series');
-    const series = (result?.map((item) => item.data as Serie) ?? []) as Serie[];
-    const seriesRef = result?.map((item) => item.ref) ?? [];
+    const series = (result?.map((item, index) => {
+      return {
+        ...(item.data as Partial<Serie>),
+        ref: result[index].ref,
+      } as Serie;
+    }) ?? []) as Serie[];
 
-    series.forEach((serie, index) => {
-      serie.poules = this.loadPoules(seriesRef[index]) as unknown as Poule[];
+    series.forEach(async (serie, index) => {
+      serie.poules = (await this.loadPoules(series[index].ref)) as unknown as Poule[];
     });
     return series;
   }
 
   private async loadPoules(serieRef: DocumentReference): Promise<Poule[]> {
     const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'poules');
-    const poules = (result?.map((item) => item.data as Poule) ?? []) as Poule[];
+    const poules = (result?.map((item, index) => {
+      return {
+        ...(item.data as Partial<Poule>),
+        ref: result[index].ref,
+      } as Poule;
+    }) ?? []) as Poule[];
     return poules;
   }
 }

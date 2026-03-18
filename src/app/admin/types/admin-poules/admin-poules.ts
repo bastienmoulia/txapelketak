@@ -55,15 +55,15 @@ export class AdminPoules {
   async onSaveTeam(team: Team): Promise<void> {
     const ref = this.tournamentRef();
     if (!ref) {
-      if (team.id) {
-        this.teams.update((teams) => teams.map((t) => (t.id === team.id ? team : t)));
+      if (team.ref) {
+        this.teams.update((teams) => teams.map((t) => (t.ref === team.ref ? team : t)));
         this.messageService.add({
           severity: 'success',
           summary: this.translocoService.translate('admin.teams.edited'),
           detail: this.translocoService.translate('admin.teams.editedDetail'),
         });
       } else {
-        this.teams.update((teams) => [...teams, { ...team, id: crypto.randomUUID() }]);
+        this.teams.update((teams) => [...teams, { ...team, ref: null! }]);
         this.messageService.add({
           severity: 'success',
           summary: this.translocoService.translate('admin.teams.added'),
@@ -73,7 +73,7 @@ export class AdminPoules {
       return;
     }
 
-    if (team.id) {
+    if (team.ref) {
       await this.firebaseService.updateTeamInTournament(ref, team);
       this.messageService.add({
         severity: 'success',
@@ -118,7 +118,7 @@ export class AdminPoules {
   async onDeleteTeam(team: Team): Promise<void> {
     const ref = this.tournamentRef();
     if (!ref) {
-      this.teams.update((teams) => teams.filter((t) => t.id !== team.id));
+      this.teams.update((teams) => teams.filter((t) => t.ref.id !== team.ref.id));
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.teams.deleted'),
@@ -127,7 +127,7 @@ export class AdminPoules {
       return;
     }
 
-    await this.firebaseService.deleteTeamFromTournament(ref, team.id);
+    await this.firebaseService.deleteTeamFromTournament(ref, team.ref.id);
     await this.loadTeams(this.tournament().id);
     this.messageService.add({
       severity: 'success',

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MessageService } from 'primeng/api';
 
 import { AdminPoules } from './admin-poules';
 import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
@@ -10,7 +11,7 @@ describe('AdminPoules', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminPoules],
-      providers: [...provideTranslocoTesting()],
+      providers: [MessageService, ...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminPoules);

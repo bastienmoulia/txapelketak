@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MessageService } from 'primeng/api';
 
 import { AdminTypes } from './admin-types';
 import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
@@ -10,7 +11,7 @@ describe('AdminTypes', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminTypes],
-      providers: [...provideTranslocoTesting()],
+      providers: [MessageService, ...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTypes);
@@ -22,6 +23,7 @@ describe('AdminTypes', () => {
       status: 'paused',
       createdAt: '2024-01-01',
     });
+    fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

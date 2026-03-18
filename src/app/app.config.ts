@@ -15,17 +15,17 @@ import { TranslocoHttpLoader } from './transloco-loader';
 const TxapelketaTheme = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '{orange.50}',
-      100: '{orange.100}',
-      200: '{orange.200}',
-      300: '{orange.300}',
-      400: '{orange.400}',
-      500: '{orange.500}',
-      600: '{orange.600}',
-      700: '{orange.700}',
-      800: '{orange.800}',
-      900: '{orange.900}',
-      950: '{orange.950}',
+      50: '#fcf4f0',
+      100: '#f7e1d8',
+      200: '#efc3af',
+      300: '#e59d82',
+      400: '#d77254',
+      500: '#c05538',
+      600: '#a3452f',
+      700: '#863926',
+      800: '#6d3021',
+      900: '#5a2a1f',
+      950: '#32150f',
     },
   },
 });

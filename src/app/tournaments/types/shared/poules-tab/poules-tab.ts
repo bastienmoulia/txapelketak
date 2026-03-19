@@ -12,7 +12,7 @@ import { Message } from 'primeng/message';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
-import { SelectModule } from 'primeng/select';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 
 export interface SaveSerieEvent {
@@ -49,7 +49,7 @@ export interface TeamInPouleEvent {
     DialogModule,
     InputTextModule,
     FloatLabel,
-    SelectModule,
+    MultiSelectModule,
     FormsModule,
   ],
   templateUrl: './poules-tab.html',
@@ -102,7 +102,7 @@ export class PoulesTab {
   // Team in poule dialog state
   teamPouleDialogVisible = signal(false);
   teamPouleTarget = signal<Poule | null>(null);
-  selectedTeamRef = signal<DocumentReference | null>(null);
+  selectedTeamRefs = signal<DocumentReference[]>([]);
   readonly emptyPoule: Poule = { ref: null!, name: '', refTeams: [] };
 
   getTeamName(ref: DocumentReference, teams: Team[]): string {
@@ -176,15 +176,19 @@ export class PoulesTab {
 
   onAddTeamToPoule(poule: Poule): void {
     this.teamPouleTarget.set(poule);
-    this.selectedTeamRef.set(null);
+    this.selectedTeamRefs.set([]);
     this.teamPouleDialogVisible.set(true);
   }
 
   onSaveTeamToPoule(): void {
     const poule = this.teamPouleTarget();
-    const teamRef = this.selectedTeamRef();
-    if (!poule || !teamRef) return;
-    this.addTeamToPoule.emit({ poule, teamRef });
+    const teamRefs = this.selectedTeamRefs();
+    if (!poule || teamRefs.length === 0) return;
+
+    for (const teamRef of teamRefs) {
+      this.addTeamToPoule.emit({ poule, teamRef });
+    }
+
     this.teamPouleDialogVisible.set(false);
   }
 

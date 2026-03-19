@@ -214,16 +214,18 @@
 >
   <form (submit)="$event.preventDefault(); onSaveTeamToPoule()">
     <div class="mb-4">
-      <p-select
+      <p-multiselect
         [options]="getAvailableTeams | apply: (teamPouleTarget() ?? emptyPoule) : teams()"
         optionLabel="name"
         optionValue="ref"
         [placeholder]="'admin.poules.selectTeam' | transloco"
-        [ngModel]="selectedTeamRef()"
-        (ngModelChange)="selectedTeamRef.set($event)"
+        [ngModel]="selectedTeamRefs()"
+        (ngModelChange)="selectedTeamRefs.set($event)"
         name="team-select"
         class="w-full"
         appendTo="body"
+        [showToggleAll]="false"
+        [filter]="true"
       />
     </div>
     <div class="flex justify-end gap-2">

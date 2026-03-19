@@ -203,6 +203,12 @@
       "edit": "Editar",
       "delete": "Eliminar"
     },
+    "confirm": {
+      "deleteHeader": "Confirmar eliminación",
+      "deleteMessage": "¿Estás seguro de que quieres eliminar «{{name}}»? Esta acción es irreversible.",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
     "status": {
       "ongoing": "En curso",
       "paused": "En pausa",

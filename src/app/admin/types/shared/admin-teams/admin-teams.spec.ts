@@ -76,15 +76,36 @@ describe('AdminTeams', () => {
     expect(component.visible()).toBe(false);
   });
 
-  it('should emit deleteTeam event when delete is called', () => {
+  it('should show confirmation dialog when delete is called and emit event on confirm', () => {
     const emitted: { id: string; name: string }[] = [];
     component.deleteTeam.subscribe((t) => emitted.push(t));
 
     const team = { id: '1', name: 'Équipe A' };
     component.onDeleteTeam(team);
 
+    expect(component.deleteConfirmVisible()).toBe(true);
+    expect(component.pendingDeleteTeam()).toEqual(team);
+    expect(emitted.length).toBe(0);
+
+    component.onConfirmDeleteTeam();
+
     expect(emitted.length).toBe(1);
     expect(emitted[0]).toEqual(team);
+    expect(component.deleteConfirmVisible()).toBe(false);
+    expect(component.pendingDeleteTeam()).toBeNull();
+  });
+
+  it('should cancel deletion and not emit event when cancel is called', () => {
+    const emitted: { id: string; name: string }[] = [];
+    component.deleteTeam.subscribe((t) => emitted.push(t));
+
+    const team = { id: '1', name: 'Équipe A' };
+    component.onDeleteTeam(team);
+    component.onCancelDeleteTeam();
+
+    expect(emitted.length).toBe(0);
+    expect(component.deleteConfirmVisible()).toBe(false);
+    expect(component.pendingDeleteTeam()).toBeNull();
   });
 
   it('should emit saveTeams event with parsed names from bulk text', () => {

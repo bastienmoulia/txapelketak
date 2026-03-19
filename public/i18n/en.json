@@ -203,6 +203,12 @@
       "edit": "Edit",
       "delete": "Delete"
     },
+    "confirm": {
+      "deleteHeader": "Confirm deletion",
+      "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
     "status": {
       "ongoing": "In progress",
       "paused": "Paused",

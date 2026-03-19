@@ -203,6 +203,12 @@
       "edit": "Editatu",
       "delete": "Ezabatu"
     },
+    "confirm": {
+      "deleteHeader": "Ezabatzea baieztatu",
+      "deleteMessage": "Ziur zaude «{{name}}» ezabatu nahi duzula? Ekintza hau ezin da desegin.",
+      "confirm": "Ezabatu",
+      "cancel": "Utzi"
+    },
     "status": {
       "ongoing": "Abian",
       "paused": "Geldituta",

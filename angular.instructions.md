@@ -57,3 +57,10 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## UX Best Practices
+
+- Always show a confirmation modal (`p-dialog`) before any deletion operation. The modal must:
+  - Display the name of the item to be deleted using the `shared.confirm.deleteMessage` translation key.
+  - Have a "Cancel" button (`severity="secondary"`) and a "Delete" button (`severity="danger"`).
+  - Use the `shared.confirm.deleteHeader` key for the dialog header.

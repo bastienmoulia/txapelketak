@@ -115,7 +115,7 @@ export class AdminPoules {
       } else {
         this.series.update((series) => [
           ...series,
-          { name: event.name, poules: [], ref: null! },
+          { name: event.name, poules: [], ref: null as unknown as DocumentReference },
         ]);
         this.messageService.add({
           severity: 'success',

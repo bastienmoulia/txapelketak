@@ -82,6 +82,7 @@ export class PoulesTab {
   teamPouleDialogVisible = signal(false);
   teamPouleTarget = signal<Poule | null>(null);
   selectedTeamRef = signal<DocumentReference | null>(null);
+  readonly emptyPoule: Poule = { ref: null!, name: '', refTeams: [] };
 
   getTeamName(ref: DocumentReference, teams: Team[]): string {
     if (!ref) {

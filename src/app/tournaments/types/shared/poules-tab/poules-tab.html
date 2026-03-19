@@ -213,7 +213,7 @@
   <form (submit)="$event.preventDefault(); onSaveTeamToPoule()">
     <div class="mb-4">
       <p-select
-        [options]="getAvailableTeams | apply: teamPouleTarget()! : teams()"
+        [options]="getAvailableTeams | apply: (teamPouleTarget() ?? emptyPoule) : teams()"
         optionLabel="name"
         optionValue="ref"
         [placeholder]="'admin.poules.selectTeam' | transloco"

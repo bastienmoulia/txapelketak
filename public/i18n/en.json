@@ -190,7 +190,9 @@
         "name": "Name",
         "type": "Type",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "serie": "Series",
+        "poule": "Pool"
       },
       "open": "Open",
       "empty": "No tournaments available"

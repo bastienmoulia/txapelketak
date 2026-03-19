@@ -2,13 +2,17 @@
   <p-table [value]="teams()" class="p-datatable-striped">
     <ng-template #header>
       <tr>
-        <th>{{ 'shared.table.columns.name' | transloco }}</th>
+        <th pSortableColumn="name">{{ 'shared.table.columns.name' | transloco }} <p-sortIcon field="name" /></th>
+        <th pSortableColumn="serieName">{{ 'shared.table.columns.serie' | transloco }} <p-sortIcon field="serieName" /></th>
+        <th pSortableColumn="pouleName">{{ 'shared.table.columns.poule' | transloco }} <p-sortIcon field="pouleName" /></th>
       </tr>
     </ng-template>
 
     <ng-template #body let-team>
       <tr>
         <td>{{ team.name }}</td>
+        <td>{{ team.serieName }}</td>
+        <td>{{ team.pouleName }}</td>
       </tr>
     </ng-template>
   </p-table>

@@ -10,7 +10,7 @@
       <app-poules-tab [series]="series()" [teams]="teams()" />
     </p-tabpanel>
     <p-tabpanel value="teams">
-      <app-teams [teams]="teams()" />
+      <app-teams [teams]="teamsWithContext()" />
     </p-tabpanel>
     <p-tabpanel value="scores">
       <app-scores [series]="series()" [teams]="teams()" />

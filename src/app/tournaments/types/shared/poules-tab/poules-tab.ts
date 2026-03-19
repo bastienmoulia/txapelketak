@@ -1,4 +1,5 @@
 import { Component, computed, input, output, signal } from '@angular/core';
+import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
 import { Poule, Serie } from '../../poules/poules';
@@ -38,6 +39,7 @@ export interface TeamInPouleEvent {
 @Component({
   selector: 'app-poules-tab',
   imports: [
+    AccordionModule,
     CardModule,
     NgTemplateOutlet,
     ApplyPipe,

@@ -10,47 +10,49 @@
     />
   </div>
 }
-@if (sortedSeries().length === 1) {
-  <ng-container
-    *ngTemplateOutlet="poules; context: { $implicit: sortedSeries()[0].poules, serieRef: sortedSeries()[0].ref, serie: sortedSeries()[0] }"
-  ></ng-container>
-} @else if (sortedSeries().length > 1) {
-  @for (serie of sortedSeries(); track $index) {
-    <p-card class="mb-3">
-      <ng-template #header>
-        <div class="flex align-items-center justify-content-between px-3 pt-3">
-          <span class="font-bold">{{ serie.name }}</span>
-          @if (admin()) {
-            <div class="flex gap-2">
-              <p-button
-                type="button"
-                size="small"
-                severity="secondary"
-                [outlined]="true"
-                icon="pi pi-pencil"
-                [label]="'shared.actions.edit' | transloco"
-                [ariaLabel]="'admin.poules.editSerieAria' | transloco"
-                (onClick)="onEditSerie(serie)"
-                data-testid="edit-serie-button"
-              />
-              <p-button
-                type="button"
-                size="small"
-                severity="danger"
-                [outlined]="true"
-                icon="pi pi-trash"
-                [label]="'shared.actions.delete' | transloco"
-                [ariaLabel]="'admin.poules.deleteSerieAria' | transloco"
-                (onClick)="onDeleteSerie(serie)"
-                data-testid="delete-serie-button"
-              />
-            </div>
-          }
-        </div>
-      </ng-template>
-      <ng-container *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serieRef: serie.ref, serie: serie }"></ng-container>
-    </p-card>
-  }
+@if (sortedSeries().length > 0) {
+  <p-accordion [multiple]="true" class="mb-3">
+    @for (serie of sortedSeries(); track serie.ref.id) {
+      <p-accordion-panel [value]="serie.ref.id">
+        <p-accordion-header>
+          <div class="flex align-items-center justify-content-between w-full pr-2">
+            <span class="font-bold">{{ serie.name }}</span>
+            @if (admin()) {
+              <div class="flex gap-2">
+                <p-button
+                  type="button"
+                  size="small"
+                  severity="secondary"
+                  [outlined]="true"
+                  icon="pi pi-pencil"
+                  [label]="'shared.actions.edit' | transloco"
+                  [ariaLabel]="'admin.poules.editSerieAria' | transloco"
+                  (onClick)="$event.stopPropagation(); onEditSerie(serie)"
+                  data-testid="edit-serie-button"
+                />
+                <p-button
+                  type="button"
+                  size="small"
+                  severity="danger"
+                  [outlined]="true"
+                  icon="pi pi-trash"
+                  [label]="'shared.actions.delete' | transloco"
+                  [ariaLabel]="'admin.poules.deleteSerieAria' | transloco"
+                  (onClick)="$event.stopPropagation(); onDeleteSerie(serie)"
+                  data-testid="delete-serie-button"
+                />
+              </div>
+            }
+          </div>
+        </p-accordion-header>
+        <p-accordion-content>
+          <ng-container
+            *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serieRef: serie.ref, serie: serie }"
+          ></ng-container>
+        </p-accordion-content>
+      </p-accordion-panel>
+    }
+  </p-accordion>
 } @else {
   <p-message severity="warn" class="mt-4">
     {{ 'admin.poules.noSeriesOrPoules' | transloco }}
@@ -116,7 +118,7 @@
         </div>
       }
       <ul class="teams-list">
-        @for (refTeam of poule.refTeams; track $index) {
+        @for (refTeam of poule.refTeams; track refTeam.id) {
           <li class="team-item">
             {{ getTeamName | apply: refTeam : teams() }}
             @if (admin()) {

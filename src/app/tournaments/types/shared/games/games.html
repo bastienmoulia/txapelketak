@@ -32,7 +32,9 @@
           <span class="font-bold">{{ poule.name }}</span>
         </div>
       </ng-template>
-      TODO: display games when game management is implemented
+      @for (game of poule.games; track $index) {
+        {{ game.refTeam1?.id }} vs {{ game.refTeam2?.id }} on {{ game.date | date: 'short' }}
+      }
     </p-card>
   }
 </ng-template>

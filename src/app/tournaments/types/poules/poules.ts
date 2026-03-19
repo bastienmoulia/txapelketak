@@ -26,13 +26,13 @@ export interface Serie {
   ref: DocumentReference;
   name: string;
   poules: Poule[];
-  games?: Game[];
 }
 
 export interface Poule {
   ref: DocumentReference;
   name: string;
   refTeams: DocumentReference[];
+  games?: Game[];
 }
 
 export interface Game {

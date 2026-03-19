@@ -3,13 +3,13 @@ import { Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
 import { AccordionModule } from 'primeng/accordion';
 import { Message } from 'primeng/message';
-import { NgTemplateOutlet } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-games',
-  imports: [AccordionModule, Message, NgTemplateOutlet, TranslocoPipe, Card],
+  imports: [AccordionModule, Message, NgTemplateOutlet, TranslocoPipe, Card, DatePipe],
   templateUrl: './games.html',
   styleUrl: './games.css',
 })
@@ -27,11 +27,10 @@ export class Games {
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((poule) => ({
             ...poule,
-            refTeams: [...(poule.refTeams ?? [])].sort((a, b) => {
-              const teams = this.teams();
-              const nameA = teams.find((t) => t.ref.id === a.id)?.name ?? '';
-              const nameB = teams.find((t) => t.ref.id === b.id)?.name ?? '';
-              return nameA.localeCompare(nameB);
+            games: [...(poule.games ?? [])].sort((a, b) => {
+              const aDate = a.date ? new Date(a.date).getTime() : 0;
+              const bDate = b.date ? new Date(b.date).getTime() : 0;
+              return aDate - bDate;
             }),
           })),
       })),

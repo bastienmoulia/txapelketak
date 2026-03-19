@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
 import { Poule, Serie } from '../../poules/poules';
@@ -65,6 +65,25 @@ export class PoulesTab {
   addTeamToPoule = output<TeamInPouleEvent>();
   removeTeamFromPoule = output<TeamInPouleEvent>();
 
+  sortedSeries = computed(() =>
+    [...this.series()]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((serie) => ({
+        ...serie,
+        poules: [...serie.poules]
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((poule) => ({
+            ...poule,
+            refTeams: [...(poule.refTeams ?? [])].sort((a, b) => {
+              const teams = this.teams();
+              const nameA = teams.find((t) => t.ref.id === a.id)?.name ?? '';
+              const nameB = teams.find((t) => t.ref.id === b.id)?.name ?? '';
+              return nameA.localeCompare(nameB);
+            }),
+          })),
+      })),
+  );
+
   // Serie dialog state
   serieDialogVisible = signal(false);
   isEditingSerie = signal(false);
@@ -93,7 +112,9 @@ export class PoulesTab {
   }
 
   getAvailableTeams(poule: Poule, teams: Team[]): Team[] {
-    return teams.filter((t) => !poule.refTeams?.some((ref) => ref.id === t.ref.id));
+    return teams
+      .filter((t) => !poule.refTeams?.some((ref) => ref.id === t.ref.id))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   onAddSerie(): void {

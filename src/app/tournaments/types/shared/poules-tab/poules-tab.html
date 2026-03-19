@@ -10,12 +10,12 @@
     />
   </div>
 }
-@if (series().length === 1) {
+@if (sortedSeries().length === 1) {
   <ng-container
-    *ngTemplateOutlet="poules; context: { $implicit: series()[0].poules, serieRef: series()[0].ref, serie: series()[0] }"
+    *ngTemplateOutlet="poules; context: { $implicit: sortedSeries()[0].poules, serieRef: sortedSeries()[0].ref, serie: sortedSeries()[0] }"
   ></ng-container>
-} @else if (series().length > 1) {
-  @for (serie of series(); track $index) {
+} @else if (sortedSeries().length > 1) {
+  @for (serie of sortedSeries(); track $index) {
     <p-card class="mb-3">
       <ng-template #header>
         <div class="flex align-items-center justify-content-between px-3 pt-3">

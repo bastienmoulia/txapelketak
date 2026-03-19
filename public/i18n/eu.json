@@ -93,9 +93,9 @@
         "openAdmin": "Ireki administrazioa"
       },
       "type": {
-        "poules": "Taldeak",
+        "poules": "Multzoak",
         "finale": "Kanporaketa fasea",
-        "poulesFinale": "Taldeak + Kanporaketa fasea"
+        "poulesFinale": "Multzoak + Kanporaketa fasea"
       }
     },
     "detail": {
@@ -126,7 +126,7 @@
     "validatedDetail": "Txapelketa balioztatua eta geldituta dago. Jarri 'Abian' prest zaudenean.",
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
-      "poules": "Taldeak",
+      "poules": "Multzoak",
       "teams": "Taldeak"
     },
     "poules": {

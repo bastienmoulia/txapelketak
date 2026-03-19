@@ -190,7 +190,9 @@
         "name": "Izena",
         "type": "Mota",
         "status": "Egoera",
-        "actions": "Ekintzak"
+        "actions": "Ekintzak",
+        "serie": "Seriea",
+        "poule": "Taldea"
       },
       "open": "Ireki",
       "empty": "Ez dago txapelketarik"

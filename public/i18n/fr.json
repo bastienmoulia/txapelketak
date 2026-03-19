@@ -190,7 +190,9 @@
         "name": "Nom",
         "type": "Type",
         "status": "Statut",
-        "actions": "Actions"
+        "actions": "Actions",
+        "serie": "Série",
+        "poule": "Poule"
       },
       "open": "Ouvrir",
       "empty": "Aucun tournoi disponible"

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TabsModule } from 'primeng/tabs';
 import { Team } from '../shared/teams/teams';
@@ -39,6 +39,23 @@ export class Poules {
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
   private loadedTournamentId = signal<number | null>(null);
+
+  teamsWithContext = computed(() => {
+    const teams = this.teams();
+    const series = this.series();
+    const contextMap = new Map<string, { serieName: string; pouleName: string }>();
+    for (const serie of series) {
+      for (const poule of serie.poules ?? []) {
+        for (const ref of poule.refTeams ?? []) {
+          contextMap.set(ref.id, { serieName: serie.name, pouleName: poule.name });
+        }
+      }
+    }
+    return teams.map((team) => {
+      const context = team.ref?.id ? contextMap.get(team.ref.id) : undefined;
+      return context ? { ...team, ...context } : team;
+    });
+  });
 
   constructor() {
     effect(async () => {

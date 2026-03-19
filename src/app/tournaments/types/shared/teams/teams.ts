@@ -7,6 +7,8 @@ import { TableModule } from 'primeng/table';
 export interface Team {
   ref: DocumentReference;
   name: string;
+  serieName?: string;
+  pouleName?: string;
 }
 
 @Component({

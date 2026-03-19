@@ -39,6 +39,8 @@ export class AdminTeams {
   visible = signal(false);
   visibleBulk = signal(false);
   isEditing = signal(false);
+  deleteConfirmVisible = signal(false);
+  pendingDeleteTeam = signal<Team | null>(null);
 
   bulkText = signal('');
 
@@ -82,6 +84,21 @@ export class AdminTeams {
   }
 
   onDeleteTeam(team: Team): void {
-    this.deleteTeam.emit(team);
+    this.pendingDeleteTeam.set(team);
+    this.deleteConfirmVisible.set(true);
+  }
+
+  onConfirmDeleteTeam(): void {
+    const team = this.pendingDeleteTeam();
+    if (team) {
+      this.deleteTeam.emit(team);
+      this.pendingDeleteTeam.set(null);
+    }
+    this.deleteConfirmVisible.set(false);
+  }
+
+  onCancelDeleteTeam(): void {
+    this.pendingDeleteTeam.set(null);
+    this.deleteConfirmVisible.set(false);
   }
 }

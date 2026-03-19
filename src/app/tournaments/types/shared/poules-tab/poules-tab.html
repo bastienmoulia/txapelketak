@@ -246,3 +246,28 @@
     </div>
   </form>
 </p-dialog>
+
+<!-- Delete confirmation dialog -->
+<p-dialog
+  [header]="'shared.confirm.deleteHeader' | transloco"
+  [modal]="true"
+  [(visible)]="deleteConfirmVisible"
+>
+  <p>{{ 'shared.confirm.deleteMessage' | transloco: { name: deleteConfirmName() } }}</p>
+  <div class="flex justify-end gap-2 mt-4">
+    <p-button
+      [label]="'shared.confirm.cancel' | transloco"
+      severity="secondary"
+      type="button"
+      (click)="onCancelDelete()"
+      data-testid="delete-cancel-button"
+    />
+    <p-button
+      [label]="'shared.confirm.confirm' | transloco"
+      severity="danger"
+      type="button"
+      (click)="onConfirmDelete()"
+      data-testid="delete-confirm-button"
+    />
+  </div>
+</p-dialog>

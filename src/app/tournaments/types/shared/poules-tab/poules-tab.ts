@@ -105,6 +105,11 @@ export class PoulesTab {
   selectedTeamRefs = signal<DocumentReference[]>([]);
   readonly emptyPoule: Poule = { ref: null!, name: '', refTeams: [] };
 
+  // Delete confirmation dialog state
+  deleteConfirmVisible = signal(false);
+  deleteConfirmName = signal('');
+  private pendingDeleteAction: (() => void) | null = null;
+
   getTeamName(ref: DocumentReference, teams: Team[]): string {
     if (!ref) {
       return 'Unknown Team';
@@ -142,7 +147,9 @@ export class PoulesTab {
   }
 
   onDeleteSerie(serie: Serie): void {
-    this.deleteSerie.emit(serie);
+    this.deleteConfirmName.set(serie.name);
+    this.pendingDeleteAction = () => this.deleteSerie.emit(serie);
+    this.deleteConfirmVisible.set(true);
   }
 
   onAddPoule(serieRef: DocumentReference): void {
@@ -171,7 +178,9 @@ export class PoulesTab {
   }
 
   onDeletePoule(serieRef: DocumentReference, poule: Poule): void {
-    this.deletePoule.emit({ serieRef, poule });
+    this.deleteConfirmName.set(poule.name);
+    this.pendingDeleteAction = () => this.deletePoule.emit({ serieRef, poule });
+    this.deleteConfirmVisible.set(true);
   }
 
   onAddTeamToPoule(poule: Poule): void {
@@ -193,6 +202,20 @@ export class PoulesTab {
   }
 
   onRemoveTeamFromPoule(poule: Poule, teamRef: DocumentReference): void {
-    this.removeTeamFromPoule.emit({ poule, teamRef });
+    const teamName = this.getTeamName(teamRef, this.teams());
+    this.deleteConfirmName.set(teamName);
+    this.pendingDeleteAction = () => this.removeTeamFromPoule.emit({ poule, teamRef });
+    this.deleteConfirmVisible.set(true);
+  }
+
+  onConfirmDelete(): void {
+    this.pendingDeleteAction?.();
+    this.pendingDeleteAction = null;
+    this.deleteConfirmVisible.set(false);
+  }
+
+  onCancelDelete(): void {
+    this.pendingDeleteAction = null;
+    this.deleteConfirmVisible.set(false);
   }
 }

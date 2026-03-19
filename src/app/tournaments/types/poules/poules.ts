@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TabsModule } from 'primeng/tabs';
 import { Team } from '../shared/teams/teams';
@@ -7,7 +15,7 @@ import { Tournament } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
 import { DocumentReference } from '@angular/fire/firestore';
-import { Scores } from '../shared/scores/scores';
+import { Games } from '../shared/games/games';
 
 export interface PoulesData {
   teams?: Team[];
@@ -24,11 +32,21 @@ export interface Poule {
   ref: DocumentReference;
   name: string;
   refTeams: DocumentReference[];
+  games?: Game[];
+}
+
+export interface Game {
+  ref: DocumentReference;
+  refTeam1: DocumentReference;
+  refTeam2: DocumentReference;
+  scoreTeam1?: number;
+  scoreTeam2?: number;
+  date?: Date;
 }
 
 @Component({
   selector: 'app-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Scores],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,6 +121,7 @@ export class Poules {
         return {
           ...serie,
           poules: await this.loadPoules(serie.ref),
+          games: await this.loadGames(serie.ref),
         } as Serie;
       }),
     );
@@ -119,5 +138,16 @@ export class Poules {
       } as Poule;
     }) ?? []) as Poule[];
     return poules;
+  }
+
+  private async loadGames(serieRef: DocumentReference): Promise<Game[]> {
+    const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'games');
+    const games = (result?.map((item, index) => {
+      return {
+        ...(item.data as Partial<Game>),
+        ref: result[index].ref,
+      } as Game;
+    }) ?? []) as Game[];
+    return games;
   }
 }

@@ -15,11 +15,11 @@ import {
   TeamInPouleEvent,
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
 import { Poule, Serie } from '../../../tournaments/types/poules/poules';
-import { Scores } from '../../../tournaments/types/shared/scores/scores';
+import { Games } from '../../../tournaments/types/shared/games/games';
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Scores],
+  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Games],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

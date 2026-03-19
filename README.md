@@ -1,59 +1,107 @@
 # Txapelketak
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.1.
+Application web de gestion de tournois et de scores, pensée pour des organisateurs, administrateurs et observateurs, avec synchronisation temps réel via Firebase.
 
-## Development server
+## Objectif
 
-To start a local development server, run:
+Txapelketak permet de :
 
-```bash
-ng serve
-```
+- créer et configurer des tournois ;
+- gérer joueurs, matchs, états et scores ;
+- visualiser classements et résultats ;
+- préparer un affichage live des informations tournoi ;
+- structurer les données pour export/import et audit.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Stack technique
 
-## Code scaffolding
+- Angular 21 (standalone + routing lazy load)
+- PrimeNG 21 (UI)
+- Transloco (i18n)
+- Firebase Hosting + Firestore (émulateur local en dev)
+- ESLint + Vitest (qualité)
+- GitHub Actions (CI lint/test/build + déploiement preview/live)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Structure fonctionnelle (actuelle)
 
-```bash
-ng generate component component-name
-```
+- `src/app/home` : page d'accueil
+- `src/app/tournaments` : liste, création et détail de tournoi
+- `src/app/admin` : espace admin via route à jeton `/:tournamentId/:token`
+- `src/app/shared` : composants partagés (header, tableaux, pipes, services)
+- `public/i18n` : traductions `fr`, `eu`, `en`, `es`
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Prérequis
 
-```bash
-ng generate --help
-```
+- Node.js (version LTS recommandée)
+- npm
+- Firebase CLI (optionnel mais conseillé pour l'émulation locale)
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Installation
 
 ```bash
-ng test
+npm ci
 ```
 
-## Running end-to-end tests
+## Lancement en local
 
-For end-to-end (e2e) testing, run:
+### Frontend seul
 
 ```bash
-ng e2e
+npm run serve
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Frontend + Firestore Emulator
 
-## Additional Resources
+```bash
+npm start
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Cela lance :
+
+- l'application Angular sur `http://localhost:4200`
+- l'émulateur Firestore avec import/export local de données
+
+## Scripts utiles
+
+- `npm run serve` : démarre l'app Angular
+- `npm run build` : build de production
+- `npm run test` : tests unitaires
+- `npm run lint` : linting
+- `npm run watch` : build en mode watch
+- `npm run emulators` : démarre Firestore Emulator
+- `npm run emulators:stop` : stoppe les émulateurs
+- `npm run emulators:reset` : redémarre les émulateurs
+
+## Qualité & CI/CD
+
+### Pull Requests
+
+- `.github/workflows/pr-lint-test.yml` : exécute `lint` + `test`
+- `.github/workflows/firebase-hosting-pull-request.yml` : build + déploiement preview Firebase
+
+### Merge sur `main`
+
+- `.github/workflows/firebase-hosting-merge.yml` : lint + test + build + déploiement live Firebase
+
+## Internationalisation
+
+Les textes UI sont traduits via les fichiers JSON dans `public/i18n` :
+
+- `fr.json`
+- `eu.json`
+- `en.json`
+- `es.json`
+
+Convention projet : variables TypeScript en anglais, textes utilisateur traduits.
+
+## Données & Firebase
+
+- Hébergement : Firebase Hosting
+- Données : Firestore (émulé en local)
+- Configuration principale : `firebase.json`
+
+## Ressources
+
+- Angular CLI : https://angular.dev/tools/cli
+- Firebase : https://firebase.google.com/docs
+- Transloco : https://jsverse.gitbook.io/transloco
+- PrimeNG : https://www.primefaces.org/primeng

@@ -2,6 +2,7 @@
   <p-tablist>
     <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    <p-tab value="scores">{{ 'admin.tabs.scores' | transloco }}</p-tab>
   </p-tablist>
 
   <p-tabpanels>
@@ -10,6 +11,9 @@
     </p-tabpanel>
     <p-tabpanel value="teams">
       <app-teams [teams]="teams()" />
+    </p-tabpanel>
+    <p-tabpanel value="scores">
+      <app-scores [series]="series()" [teams]="teams()" />
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

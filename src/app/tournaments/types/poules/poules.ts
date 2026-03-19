@@ -7,6 +7,7 @@ import { Tournament } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
 import { DocumentReference } from '@angular/fire/firestore';
+import { Scores } from '../shared/scores/scores';
 
 export interface PoulesData {
   teams?: Team[];
@@ -27,7 +28,7 @@ export interface Poule {
 
 @Component({
   selector: 'app-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Scores],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

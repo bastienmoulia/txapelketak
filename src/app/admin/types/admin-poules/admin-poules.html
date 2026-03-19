@@ -26,5 +26,8 @@
         (deleteTeam)="onDeleteTeam($event)"
       />
     </p-tabpanel>
+    <p-tabpanel value="scores">
+      <app-scores [series]="series()" [teams]="teams()" [admin]="true" />
+    </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

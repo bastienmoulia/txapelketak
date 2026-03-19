@@ -1,19 +1,54 @@
 @if (admin()) {
-  <p-button
-    type="button"
-    severity="success"
-    icon="pi pi-plus"
-    [label]="'admin.poules.addSerie' | transloco"
-  />
+  <div class="mb-3">
+    <p-button
+      type="button"
+      severity="success"
+      icon="pi pi-plus"
+      [label]="'admin.poules.addSerie' | transloco"
+      (onClick)="onAddSerie()"
+      data-testid="add-serie-button"
+    />
+  </div>
 }
 @if (series().length === 1) {
   <ng-container
-    *ngTemplateOutlet="poules; context: { $implicit: series()[0].poules }"
+    *ngTemplateOutlet="poules; context: { $implicit: series()[0].poules, serieRef: series()[0].ref, serie: series()[0] }"
   ></ng-container>
 } @else if (series().length > 1) {
   @for (serie of series(); track $index) {
-    <p-card [header]="serie.name">
-      <ng-container *ngTemplateOutlet="poules; context: { $implicit: serie.poules }"></ng-container>
+    <p-card class="mb-3">
+      <ng-template #header>
+        <div class="flex align-items-center justify-content-between px-3 pt-3">
+          <span class="font-bold">{{ serie.name }}</span>
+          @if (admin()) {
+            <div class="flex gap-2">
+              <p-button
+                type="button"
+                size="small"
+                severity="secondary"
+                [outlined]="true"
+                icon="pi pi-pencil"
+                [label]="'shared.actions.edit' | transloco"
+                [ariaLabel]="'admin.poules.editSerieAria' | transloco"
+                (onClick)="onEditSerie(serie)"
+                data-testid="edit-serie-button"
+              />
+              <p-button
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                icon="pi pi-trash"
+                [label]="'shared.actions.delete' | transloco"
+                [ariaLabel]="'admin.poules.deleteSerieAria' | transloco"
+                (onClick)="onDeleteSerie(serie)"
+                data-testid="delete-serie-button"
+              />
+            </div>
+          }
+        </div>
+      </ng-template>
+      <ng-container *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serieRef: serie.ref, serie: serie }"></ng-container>
     </p-card>
   }
 } @else {
@@ -22,30 +57,181 @@
   </p-message>
 }
 
-<ng-template #poules let-poules>
+<ng-template #poules let-poules let-serieRef="serieRef">
   @if (admin()) {
-    <p-button
-      type="button"
-      severity="success"
-      icon="pi pi-plus"
-      [label]="'admin.poules.addPoule' | transloco"
-    />
+    <div class="mb-2">
+      <p-button
+        type="button"
+        severity="success"
+        icon="pi pi-plus"
+        [label]="'admin.poules.addPoule' | transloco"
+        (onClick)="onAddPoule(serieRef)"
+        data-testid="add-poule-button"
+      />
+    </div>
   }
   @for (poule of poules; track $index) {
-    <p-card [header]="poule.name">
+    <p-card class="mb-2">
+      <ng-template #header>
+        <div class="flex align-items-center justify-content-between px-3 pt-3">
+          <span class="font-bold">{{ poule.name }}</span>
+          @if (admin()) {
+            <div class="flex gap-2">
+              <p-button
+                type="button"
+                size="small"
+                severity="secondary"
+                [outlined]="true"
+                icon="pi pi-pencil"
+                [label]="'shared.actions.edit' | transloco"
+                [ariaLabel]="'admin.poules.editPouleAria' | transloco"
+                (onClick)="onEditPoule(serieRef, poule)"
+                data-testid="edit-poule-button"
+              />
+              <p-button
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                icon="pi pi-trash"
+                [label]="'shared.actions.delete' | transloco"
+                [ariaLabel]="'admin.poules.deletePouleAria' | transloco"
+                (onClick)="onDeletePoule(serieRef, poule)"
+                data-testid="delete-poule-button"
+              />
+            </div>
+          }
+        </div>
+      </ng-template>
       @if (admin()) {
-        <p-button
-          type="button"
-          severity="success"
-          icon="pi pi-plus"
-          [label]="'admin.poules.addTeam' | transloco"
-        />
+        <div class="mb-2">
+          <p-button
+            type="button"
+            severity="success"
+            icon="pi pi-plus"
+            [label]="'admin.poules.addTeam' | transloco"
+            (onClick)="onAddTeamToPoule(poule)"
+            data-testid="add-team-to-poule-button"
+          />
+        </div>
       }
       <ul class="teams-list">
         @for (refTeam of poule.refTeams; track $index) {
-          <li class="team-item">{{ getTeamName | apply: refTeam : teams() }}</li>
+          <li class="team-item">
+            {{ getTeamName | apply: refTeam : teams() }}
+            @if (admin()) {
+              <p-button
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                icon="pi pi-times"
+                [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
+                (onClick)="onRemoveTeamFromPoule(poule, refTeam)"
+                data-testid="remove-team-from-poule-button"
+              />
+            }
+          </li>
         }
       </ul>
     </p-card>
   }
 </ng-template>
+
+<!-- Serie dialog -->
+<p-dialog
+  [header]="(isEditingSerie() ? 'admin.poules.dialogEditSerie' : 'admin.poules.dialogAddSerie') | transloco"
+  [modal]="true"
+  [(visible)]="serieDialogVisible"
+>
+  <form (submit)="$event.preventDefault(); onSaveSerie()">
+    <div class="mb-4">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="serie-name"
+          class="w-full"
+          autocomplete="off"
+          [ngModel]="serieName()"
+          (ngModelChange)="serieName.set($event)"
+          name="serie-name"
+        />
+        <label for="serie-name">{{ 'admin.poules.serieName' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.actions.cancel' | transloco"
+        severity="secondary"
+        type="button"
+        (click)="serieDialogVisible.set(false)"
+      />
+      <p-button type="submit" [label]="'shared.actions.save' | transloco" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Poule dialog -->
+<p-dialog
+  [header]="(isEditingPoule() ? 'admin.poules.dialogEditPoule' : 'admin.poules.dialogAddPoule') | transloco"
+  [modal]="true"
+  [(visible)]="pouleDialogVisible"
+>
+  <form (submit)="$event.preventDefault(); onSavePoule()">
+    <div class="mb-4">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="poule-name"
+          class="w-full"
+          autocomplete="off"
+          [ngModel]="pouleName()"
+          (ngModelChange)="pouleName.set($event)"
+          name="poule-name"
+        />
+        <label for="poule-name">{{ 'admin.poules.pouleName' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.actions.cancel' | transloco"
+        severity="secondary"
+        type="button"
+        (click)="pouleDialogVisible.set(false)"
+      />
+      <p-button type="submit" [label]="'shared.actions.save' | transloco" />
+    </div>
+  </form>
+</p-dialog>
+
+<!-- Team in poule dialog -->
+<p-dialog
+  [header]="'admin.poules.dialogAddTeam' | transloco"
+  [modal]="true"
+  [(visible)]="teamPouleDialogVisible"
+>
+  <form (submit)="$event.preventDefault(); onSaveTeamToPoule()">
+    <div class="mb-4">
+      <p-select
+        [options]="getAvailableTeams | apply: (teamPouleTarget() ?? emptyPoule) : teams()"
+        optionLabel="name"
+        optionValue="ref"
+        [placeholder]="'admin.poules.selectTeam' | transloco"
+        [ngModel]="selectedTeamRef()"
+        (ngModelChange)="selectedTeamRef.set($event)"
+        name="team-select"
+        class="w-full"
+      />
+    </div>
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.actions.cancel' | transloco"
+        severity="secondary"
+        type="button"
+        (click)="teamPouleDialogVisible.set(false)"
+      />
+      <p-button type="submit" [label]="'shared.actions.save' | transloco" />
+    </div>
+  </form>
+</p-dialog>
+

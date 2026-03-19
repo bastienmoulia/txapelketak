@@ -7,7 +7,13 @@ import { Team } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { DocumentReference } from '@angular/fire/firestore';
-import { PoulesTab } from '../../../tournaments/types/shared/poules-tab/poules-tab';
+import {
+  DeletePouleEvent,
+  PoulesTab,
+  SavePouleEvent,
+  SaveSerieEvent,
+  TeamInPouleEvent,
+} from '../../../tournaments/types/shared/poules-tab/poules-tab';
 import { Poule, Serie } from '../../../tournaments/types/poules/poules';
 
 @Component({
@@ -43,6 +49,8 @@ export class AdminPoules {
       }
 
       this.loadedTournamentId.set(tournament.id);
+      const refResult = await this.firebaseService.getTournamentByIdWithRef(tournament.id);
+      this.tournamentRef.set(refResult?.ref ?? null);
       this.teams.set(await this.loadTeams(tournament.id));
       this.series.set(await this.loadSeries(tournament.id));
     });
@@ -90,6 +98,120 @@ export class AdminPoules {
       } as Poule;
     }) ?? []) as Poule[];
     return poules;
+  }
+
+  async onSaveSerie(event: SaveSerieEvent): Promise<void> {
+    const tournamentRef = this.tournamentRef();
+    if (!tournamentRef) {
+      if (event.ref) {
+        this.series.update((series) =>
+          series.map((s) => (s.ref === event.ref ? { ...s, name: event.name } : s)),
+        );
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate('admin.poules.serieEdited'),
+          detail: this.translocoService.translate('admin.poules.serieEditedDetail'),
+        });
+      } else {
+        this.series.update((series) => [
+          ...series,
+          { name: event.name, poules: [], ref: null as unknown as DocumentReference },
+        ]);
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate('admin.poules.serieAdded'),
+          detail: this.translocoService.translate('admin.poules.serieAddedDetail'),
+        });
+      }
+      return;
+    }
+
+    if (event.ref) {
+      await this.firebaseService.updateSerieInTournament(event.ref, event.name);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.serieEdited'),
+        detail: this.translocoService.translate('admin.poules.serieEditedDetail'),
+      });
+    } else {
+      await this.firebaseService.addSeriesToTournament(tournamentRef, event.name);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.serieAdded'),
+        detail: this.translocoService.translate('admin.poules.serieAddedDetail'),
+      });
+    }
+    this.series.set(await this.loadSeries(this.tournament().id));
+  }
+
+  async onDeleteSerie(serie: Serie): Promise<void> {
+    const tournamentRef = this.tournamentRef();
+    if (!tournamentRef) {
+      this.series.update((series) => series.filter((s) => s.ref !== serie.ref));
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.serieDeleted'),
+        detail: this.translocoService.translate('admin.poules.serieDeletedDetail'),
+      });
+      return;
+    }
+
+    await this.firebaseService.deleteSerieFromTournament(serie.ref);
+    this.series.set(await this.loadSeries(this.tournament().id));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.serieDeleted'),
+      detail: this.translocoService.translate('admin.poules.serieDeletedDetail'),
+    });
+  }
+
+  async onSavePoule(event: SavePouleEvent): Promise<void> {
+    if (event.ref) {
+      await this.firebaseService.updatePouleInSerie(event.ref, event.name);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.pouleEdited'),
+        detail: this.translocoService.translate('admin.poules.pouleEditedDetail'),
+      });
+    } else {
+      await this.firebaseService.addPouleToSerie(event.serieRef, event.name);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.pouleAdded'),
+        detail: this.translocoService.translate('admin.poules.pouleAddedDetail'),
+      });
+    }
+    this.series.set(await this.loadSeries(this.tournament().id));
+  }
+
+  async onDeletePoule(event: DeletePouleEvent): Promise<void> {
+    await this.firebaseService.deletePouleFromSerie(event.poule.ref);
+    this.series.set(await this.loadSeries(this.tournament().id));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.pouleDeleted'),
+      detail: this.translocoService.translate('admin.poules.pouleDeletedDetail'),
+    });
+  }
+
+  async onAddTeamToPoule(event: TeamInPouleEvent): Promise<void> {
+    await this.firebaseService.addTeamRefToPoule(event.poule.ref, event.teamRef);
+    this.series.set(await this.loadSeries(this.tournament().id));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.teamAdded'),
+      detail: this.translocoService.translate('admin.poules.teamAddedDetail'),
+    });
+  }
+
+  async onRemoveTeamFromPoule(event: TeamInPouleEvent): Promise<void> {
+    await this.firebaseService.removeTeamRefFromPoule(event.poule.ref, event.teamRef);
+    this.series.set(await this.loadSeries(this.tournament().id));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.teamRemoved'),
+      detail: this.translocoService.translate('admin.poules.teamRemovedDetail'),
+    });
   }
 
   async onSaveTeam(team: Team): Promise<void> {

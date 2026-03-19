@@ -6,7 +6,17 @@
 
   <p-tabpanels>
     <p-tabpanel value="poules">
-      <app-poules-tab [series]="series()" [teams]="teams()" [admin]="true" />
+      <app-poules-tab
+        [series]="series()"
+        [teams]="teams()"
+        [admin]="true"
+        (saveSerie)="onSaveSerie($event)"
+        (deleteSerie)="onDeleteSerie($event)"
+        (savePoule)="onSavePoule($event)"
+        (deletePoule)="onDeletePoule($event)"
+        (addTeamToPoule)="onAddTeamToPoule($event)"
+        (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
+      />
     </p-tabpanel>
     <p-tabpanel value="teams">
       <app-admin-teams

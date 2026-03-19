@@ -1,5 +1,7 @@
 import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from '@angular/core';
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   collectionData,
   deleteDoc,
@@ -259,6 +261,64 @@ export class FirebaseService {
           html,
         },
       });
+    });
+  }
+
+  async addSeriesToTournament(tournamentRef: DocumentReference, name: string): Promise<DocumentReference> {
+    const serieDocRef = doc(collection(tournamentRef, 'series'));
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await setDoc(serieDocRef, { name });
+    });
+    return serieDocRef;
+  }
+
+  async updateSerieInTournament(serieRef: DocumentReference, name: string): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(serieRef, { name });
+    });
+  }
+
+  async deleteSerieFromTournament(serieRef: DocumentReference): Promise<void> {
+    const pouleDocs = await this.getCollectionFromDocumentRef(serieRef, 'poules');
+    for (const pouleDoc of pouleDocs) {
+      await runInInjectionContext(this.environmentInjector, async () => {
+        await deleteDoc(pouleDoc.ref);
+      });
+    }
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await deleteDoc(serieRef);
+    });
+  }
+
+  async addPouleToSerie(serieRef: DocumentReference, name: string): Promise<DocumentReference> {
+    const pouleDocRef = doc(collection(serieRef, 'poules'));
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await setDoc(pouleDocRef, { name, refTeams: [] });
+    });
+    return pouleDocRef;
+  }
+
+  async updatePouleInSerie(pouleRef: DocumentReference, name: string): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(pouleRef, { name });
+    });
+  }
+
+  async deletePouleFromSerie(pouleRef: DocumentReference): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await deleteDoc(pouleRef);
+    });
+  }
+
+  async addTeamRefToPoule(pouleRef: DocumentReference, teamRef: DocumentReference): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(pouleRef, { refTeams: arrayUnion(teamRef) });
+    });
+  }
+
+  async removeTeamRefFromPoule(pouleRef: DocumentReference, teamRef: DocumentReference): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(pouleRef, { refTeams: arrayRemove(teamRef) });
     });
   }
 }

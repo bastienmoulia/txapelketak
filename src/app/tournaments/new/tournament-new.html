@@ -1,22 +1,22 @@
-<div class="tournament-new-container">
-  <div class="tournament-new-card">
-    <h1 class="tournament-new-title">{{ 'tournaments.new.title' | transloco }}</h1>
+<div class="flex justify-center py-8 px-4 min-h-[calc(100vh-4rem)] bg-[var(--p-surface-ground)]">
+  <div class="w-full max-w-[640px] bg-[var(--p-surface-card)] rounded-[var(--p-border-radius-xl)] p-8 shadow-[var(--p-card-shadow)]">
+    <h1 class="text-[1.75rem] font-bold mt-0 mb-6 text-[var(--p-text-color)]">{{ 'tournaments.new.title' | transloco }}</h1>
 
     <p-steps
       [model]="steps"
       [activeIndex]="currentStep()"
       [readonly]="true"
-      class="tournament-steps"
+      class="block mb-8"
     />
 
     @if (!submitted()) {
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tournament-form">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
         <!-- Step 1: Informations -->
         @if (currentStep() === 0) {
-          <div class="form-step" data-testid="step-1">
-            <h2 class="step-title">{{ 'tournaments.new.step1.title' | transloco }}</h2>
+          <div class="flex flex-col gap-5" data-testid="step-1">
+            <h2 class="text-xl font-semibold m-0 text-[var(--p-text-color)]">{{ 'tournaments.new.step1.title' | transloco }}</h2>
 
-            <div class="field">
+            <div class="flex flex-col gap-2">
               <p-floatlabel variant="on">
                 <input
                   pInputText
@@ -34,7 +34,7 @@
               }
             </div>
 
-            <div class="field">
+            <div class="flex flex-col gap-2">
               <p-floatlabel variant="on">
                 <textarea
                   pTextarea
@@ -50,8 +50,8 @@
               </p-floatlabel>
             </div>
 
-            <div class="field">
-              <label class="field-label" for="type">{{
+            <div class="field flex flex-col gap-2">
+              <label class="text-sm font-medium text-[var(--p-text-color)]" for="type">{{
                 'tournaments.new.step1.type' | transloco
               }}</label>
               <p-selectbutton
@@ -68,13 +68,13 @@
 
         <!-- Step 2: Créateur -->
         @if (currentStep() === 1) {
-          <div class="form-step" data-testid="step-2">
-            <h2 class="step-title">{{ 'tournaments.new.step2.title' | transloco }}</h2>
-            <p class="step-description">
+          <div class="flex flex-col gap-5" data-testid="step-2">
+            <h2 class="text-xl font-semibold m-0 text-[var(--p-text-color)]">{{ 'tournaments.new.step2.title' | transloco }}</h2>
+            <p class="m-0 text-[var(--p-text-muted-color)] text-[0.9rem]">
               {{ 'tournaments.new.step2.description' | transloco }}
             </p>
 
-            <div class="field">
+            <div class="flex flex-col gap-2">
               <p-floatlabel variant="on">
                 <input
                   pInputText
@@ -94,7 +94,7 @@
               }
             </div>
 
-            <div class="field">
+            <div class="flex flex-col gap-2">
               <p-floatlabel variant="on">
                 <input
                   pInputText
@@ -122,8 +122,8 @@
         }
 
         <!-- Navigation -->
-        <div class="form-navigation">
-          <div class="nav-left">
+        <div class="flex justify-between items-center pt-4 border-t border-[var(--p-surface-border)]">
+          <div class="flex gap-2">
             @if (currentStep() > 0) {
               <p-button
                 type="button"
@@ -145,7 +145,7 @@
               />
             }
           </div>
-          <div class="nav-right">
+          <div class="flex gap-2">
             @if (currentStep() < steps.length - 1) {
               <p-button
                 type="button"
@@ -171,17 +171,17 @@
       </form>
     } @else {
       <!-- Success state -->
-      <div class="success-state" data-testid="success-state">
-        <div class="success-icon">
+      <div class="flex flex-col items-center gap-5 py-8 text-center" data-testid="success-state">
+        <div class="text-[4rem] text-[var(--p-green-500)]">
           <i class="pi pi-check-circle"></i>
         </div>
-        <h2>{{ 'tournaments.new.success.title' | transloco }}</h2>
-        <p>{{ 'tournaments.new.success.message' | transloco }}</p>
+        <h2 class="text-2xl font-bold m-0 text-[var(--p-text-color)]">{{ 'tournaments.new.success.title' | transloco }}</h2>
+        <p class="m-0 text-[var(--p-text-muted-color)]">{{ 'tournaments.new.success.message' | transloco }}</p>
         <a href="{{ adminUrl() }}" target="_blank" rel="noopener" data-testid="admin-link">
           {{ adminUrl() }}
         </a>
 
-        <div class="success-actions">
+        <div class="flex gap-4 flex-wrap justify-center">
           <p-button
             [label]="'tournaments.new.success.backHome' | transloco"
             icon="pi pi-home"

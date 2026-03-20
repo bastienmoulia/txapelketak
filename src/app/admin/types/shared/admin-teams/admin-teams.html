@@ -1,4 +1,4 @@
-<div class="admin-teams-actions">
+<div class="mb-3">
   <p-button
     type="button"
     icon="pi pi-plus"
@@ -84,7 +84,7 @@
     <ng-template #header>
       <tr>
         <th>{{ 'shared.table.columns.name' | transloco }}</th>
-        <th class="actions-column">{{ 'shared.table.columns.actions' | transloco }}</th>
+        <th class="w-px whitespace-nowrap">{{ 'shared.table.columns.actions' | transloco }}</th>
       </tr>
     </ng-template>
 
@@ -92,7 +92,7 @@
       <tr>
         <td>{{ team.name }}</td>
         <td>
-          <div class="row-actions">
+          <div class="flex justify-end gap-2">
             <p-button
               type="button"
               size="small"

@@ -127,7 +127,8 @@
     "unknownType": "Tipo de torneo desconocido",
     "tabs": {
       "poules": "Grupos",
-      "teams": "Equipos"
+      "teams": "Equipos",
+      "games": "Partidos"
     },
     "poules": {
       "addSerie": "Añadir una serie",

@@ -127,7 +127,8 @@
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
       "poules": "Multzoak",
-      "teams": "Taldeak"
+      "teams": "Taldeak",
+      "games": "Partidak"
     },
     "poules": {
       "addSerie": "Serie bat gehitu",

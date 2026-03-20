@@ -127,7 +127,8 @@
     "unknownType": "Unknown tournament type",
     "tabs": {
       "poules": "Groups",
-      "teams": "Teams"
+      "teams": "Teams",
+      "games": "Games"
     },
     "poules": {
       "addSerie": "Add a series",

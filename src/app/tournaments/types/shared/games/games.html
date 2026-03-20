@@ -63,7 +63,7 @@
                 <span class="font-medium">{{ getTeamName(game.refTeam2) }}</span>
                 @if (game.date) {
                   <span class="text-color-secondary text-sm"
-                    >({{ game.date | date: 'short' }})</span
+                    >({{ game.date | date: 'short' : undefined : activeLanguage() }})</span
                   >
                 }
               </div>

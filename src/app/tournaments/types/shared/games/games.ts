@@ -1,10 +1,11 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Game, Poule, Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
 import { AccordionModule } from 'primeng/accordion';
 import { Message } from 'primeng/message';
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -50,12 +51,18 @@ export interface DeleteGameEvent {
   styleUrl: './games.css',
 })
 export class Games {
+  private readonly translocoService = inject(TranslocoService);
+
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
   admin = input(false);
 
   saveGame = output<SaveGameEvent>();
   deleteGame = output<DeleteGameEvent>();
+
+  activeLanguage = toSignal(this.translocoService.langChanges$, {
+    initialValue: this.translocoService.getActiveLang(),
+  });
 
   sortedSeries = computed(() =>
     [...this.series()]

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
@@ -21,9 +20,11 @@ describe('TournamentDetail', () => {
           provide: ActivatedRoute,
           useValue: {
             params: of({ tournamentId: 'test-id-123' }),
+            queryParamMap: of(convertToParamMap({})),
             snapshot: {
               params: { tournamentId: 'test-id-123' },
-              paramMap: { get: () => 'test-id-123' },
+              paramMap: convertToParamMap({ tournamentId: 'test-id-123' }),
+              queryParamMap: convertToParamMap({}),
             },
           },
         },

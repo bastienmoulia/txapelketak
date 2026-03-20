@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 
 import { AdminTypes } from './admin-types';
 import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
+import { provideRouter } from '@angular/router';
 
 describe('AdminTypes', () => {
   let component: AdminTypes;
@@ -11,7 +12,7 @@ describe('AdminTypes', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminTypes],
-      providers: [MessageService, ...provideTranslocoTesting()],
+      providers: [MessageService, ...provideTranslocoTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminTypes);

@@ -48,9 +48,17 @@
               <div class="flex align-items-center gap-2 flex-1">
                 <span class="font-medium">{{ getTeamName(game.refTeam1) }}</span>
                 <span class="font-bold text-lg">
-                  {{ game.scoreTeam1 != null ? game.scoreTeam1 : '-' }}
+                  @if (game.scoreTeam1 || game.scoreTeam1 === 0) {
+                    {{ game.scoreTeam1 }}
+                  } @else {
+                    -
+                  }
                   &ndash;
-                  {{ game.scoreTeam2 != null ? game.scoreTeam2 : '-' }}
+                  @if (game.scoreTeam2 || game.scoreTeam2 === 0) {
+                    {{ game.scoreTeam2 }}
+                  } @else {
+                    -
+                  }
                 </span>
                 <span class="font-medium">{{ getTeamName(game.refTeam2) }}</span>
                 @if (game.date) {

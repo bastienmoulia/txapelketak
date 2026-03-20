@@ -28,7 +28,13 @@
       />
     </p-tabpanel>
     <p-tabpanel value="games">
-      <app-games [series]="series()" [teams]="teams()" [admin]="true" />
+      <app-games
+        [series]="series()"
+        [teams]="teams()"
+        [admin]="true"
+        (saveGame)="onSaveGame($event)"
+        (deleteGame)="onDeleteGame($event)"
+      />
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

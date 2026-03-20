@@ -20,6 +20,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
+import { Game } from '../../tournaments/types/poules/poules';
 
 @Injectable({
   providedIn: 'root',
@@ -305,6 +306,7 @@ export class FirebaseService {
   }
 
   async deletePouleFromSerie(pouleRef: DocumentReference): Promise<void> {
+    await this.deletePouleGames(pouleRef);
     await runInInjectionContext(this.environmentInjector, async () => {
       await deleteDoc(pouleRef);
     });
@@ -319,6 +321,51 @@ export class FirebaseService {
   async removeTeamRefFromPoule(pouleRef: DocumentReference, teamRef: DocumentReference): Promise<void> {
     await runInInjectionContext(this.environmentInjector, async () => {
       await updateDoc(pouleRef, { refTeams: arrayRemove(teamRef) });
+    });
+  }
+
+  async deletePouleGames(pouleRef: DocumentReference): Promise<void> {
+    const gameDocs = await this.getCollectionFromDocumentRef(pouleRef, 'games');
+    for (const gameDoc of gameDocs) {
+      await runInInjectionContext(this.environmentInjector, async () => {
+        await deleteDoc(gameDoc.ref);
+      });
+    }
+  }
+
+  async addGameToPoule(
+    pouleRef: DocumentReference,
+    gameData: Omit<Game, 'ref'>,
+  ): Promise<DocumentReference> {
+    const gameDocRef = doc(collection(pouleRef, 'games'));
+    const data: Record<string, unknown> = {
+      refTeam1: gameData.refTeam1,
+      refTeam2: gameData.refTeam2,
+    };
+    if (gameData.scoreTeam1 != null) data['scoreTeam1'] = gameData.scoreTeam1;
+    if (gameData.scoreTeam2 != null) data['scoreTeam2'] = gameData.scoreTeam2;
+    if (gameData.date != null) data['date'] = gameData.date;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await setDoc(gameDocRef, data);
+    });
+    return gameDocRef;
+  }
+
+  async updateGame(gameRef: DocumentReference, gameData: Partial<Omit<Game, 'ref'>>): Promise<void> {
+    const data: Record<string, unknown> = {};
+    if (gameData.refTeam1 !== undefined) data['refTeam1'] = gameData.refTeam1;
+    if (gameData.refTeam2 !== undefined) data['refTeam2'] = gameData.refTeam2;
+    data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
+    data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
+    data['date'] = gameData.date ?? null;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(gameRef, data);
+    });
+  }
+
+  async deleteGameFromPoule(gameRef: DocumentReference): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await deleteDoc(gameRef);
     });
   }
 }

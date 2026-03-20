@@ -165,6 +165,26 @@
       "teamRemoved": "Équipe retirée",
       "teamRemovedDetail": "L'équipe a été retirée de la poule avec succès."
     },
+    "games": {
+      "addGame": "Ajouter un match",
+      "dialogAddGame": "Ajouter un match",
+      "dialogEditGame": "Modifier le match",
+      "noGames": "Aucun match dans cette poule",
+      "team1": "Équipe 1",
+      "team2": "Équipe 2",
+      "score1": "Score équipe 1",
+      "score2": "Score équipe 2",
+      "date": "Date",
+      "editAria": "Modifier ce match",
+      "deleteAria": "Supprimer ce match",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce match ? Cette action est irréversible.",
+      "added": "Match ajouté",
+      "addedDetail": "Le match a été ajouté avec succès.",
+      "edited": "Match modifié",
+      "editedDetail": "Le match a été modifié avec succès.",
+      "deleted": "Match supprimé",
+      "deletedDetail": "Le match a été supprimé avec succès."
+    },
     "teams": {
       "empty": "Aucune équipe",
       "add": "Ajouter une équipe",

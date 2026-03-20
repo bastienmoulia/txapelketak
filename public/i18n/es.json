@@ -165,6 +165,25 @@
       "teamRemoved": "Equipo quitado",
       "teamRemovedDetail": "El equipo ha sido quitado del grupo con éxito."
     },
+    "games": {
+      "addGame": "Añadir un partido",
+      "dialogAddGame": "Añadir un partido",
+      "dialogEditGame": "Editar partido",
+      "noGames": "No hay partidos en este grupo",
+      "team1": "Equipo 1",
+      "team2": "Equipo 2",
+      "score": "Puntuación",
+      "date": "Fecha",
+      "editAria": "Editar este partido",
+      "deleteAria": "Eliminar este partido",
+      "deleteConfirm": "¿Estás seguro de que deseas eliminar este partido? Esta acción es irreversible.",
+      "added": "Partido añadido",
+      "addedDetail": "El partido ha sido añadido con éxito.",
+      "edited": "Partido actualizado",
+      "editedDetail": "El partido ha sido actualizado con éxito.",
+      "deleted": "Partido eliminado",
+      "deletedDetail": "El partido ha sido eliminado con éxito."
+    },
     "teams": {
       "empty": "No hay equipos",
       "add": "Añadir un equipo",

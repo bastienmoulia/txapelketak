@@ -1,0 +1,28 @@
+/* Flexbox utilities for dialog content */
+:host ::ng-deep .p-dialog .p-dialog-content .flex {
+  display: flex;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content .flex-column {
+  flex-direction: column;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content .flex-row {
+  flex-direction: row;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content .gap-3 {
+  gap: 1rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content .gap-4 {
+  gap: 1.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content .pt-2 {
+  padding-top: 0.5rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content .flex-1 {
+  flex: 1 1 0%;
+}

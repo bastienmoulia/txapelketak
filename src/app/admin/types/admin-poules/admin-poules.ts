@@ -25,8 +25,8 @@ import {
   SaveSerieEvent,
   TeamInPouleEvent,
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
-import { Poule, Serie } from '../../../tournaments/types/poules/poules';
-import { Games } from '../../../tournaments/types/shared/games/games';
+import { Game, parseFirestoreDate, Poule, Serie } from '../../../tournaments/types/poules/poules';
+import { Games, DeleteGameEvent, SaveGameEvent } from '../../../tournaments/types/shared/games/games';
 import {
   DEFAULT_POULES_ROUTE_TAB,
   getPoulesRouteTab,
@@ -142,7 +142,60 @@ export class AdminPoules {
         ref: result[index].ref,
       } as Poule;
     }) ?? []) as Poule[];
-    return poules;
+    return Promise.all(
+      poules.map(async (poule) => ({
+        ...poule,
+        games: await this.loadGames(poule.ref),
+      })),
+    );
+  }
+
+  private async loadGames(pouleRef: DocumentReference): Promise<Game[]> {
+    const result = await this.firebaseService.getCollectionFromDocumentRef(pouleRef, 'games');
+    return (result?.map((item, index) => {
+      const data = item.data as Partial<Game>;
+      return {
+        ...data,
+        ref: result[index].ref,
+        date: parseFirestoreDate(data.date),
+      } as Game;
+    }) ?? []) as Game[];
+  }
+
+  async onSaveGame(event: SaveGameEvent): Promise<void> {
+    const gameData: Omit<Game, 'ref'> = {
+      refTeam1: event.refTeam1,
+      refTeam2: event.refTeam2,
+      scoreTeam1: event.scoreTeam1 ?? undefined,
+      scoreTeam2: event.scoreTeam2 ?? undefined,
+      date: event.date ?? undefined,
+    };
+    if (event.gameRef) {
+      await this.firebaseService.updateGame(event.gameRef, gameData);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.games.edited'),
+        detail: this.translocoService.translate('admin.games.editedDetail'),
+      });
+    } else {
+      await this.firebaseService.addGameToPoule(event.pouleRef, gameData);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.games.added'),
+        detail: this.translocoService.translate('admin.games.addedDetail'),
+      });
+    }
+    this.series.set(await this.loadSeries(this.tournament().id));
+  }
+
+  async onDeleteGame(event: DeleteGameEvent): Promise<void> {
+    await this.firebaseService.deleteGameFromPoule(event.gameRef);
+    this.series.set(await this.loadSeries(this.tournament().id));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.games.deleted'),
+      detail: this.translocoService.translate('admin.games.deletedDetail'),
+    });
   }
 
   async onSaveSerie(event: SaveSerieEvent): Promise<void> {

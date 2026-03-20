@@ -91,6 +91,7 @@ export class Games {
   // Teams available for the current poule dialog
   dialogTeams = computed(() => {
     const refTeams = this.currentPouleRefTeams();
+    console.log('Calculating dialog teams for refs:', refTeams);
     return this.teams()
       .filter((t) => refTeams.some((ref) => ref.id === t.ref?.id))
       .sort((a, b) => a.name.localeCompare(b.name));

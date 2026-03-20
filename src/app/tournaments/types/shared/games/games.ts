@@ -30,6 +30,10 @@ export interface DeleteGameEvent {
   gameRef: DocumentReference;
 }
 
+export interface GenerateAllGamesEvent {
+  games: SaveGameEvent[];
+}
+
 @Component({
   selector: 'app-games',
   imports: [
@@ -59,6 +63,7 @@ export class Games {
 
   saveGame = output<SaveGameEvent>();
   deleteGame = output<DeleteGameEvent>();
+  generateAllGames = output<GenerateAllGamesEvent>();
 
   activeLanguage = toSignal(this.translocoService.langChanges$, {
     initialValue: this.translocoService.getActiveLang(),
@@ -98,7 +103,6 @@ export class Games {
   // Teams available for the current poule dialog
   dialogTeams = computed(() => {
     const refTeams = this.currentPouleRefTeams();
-    console.log('Calculating dialog teams for refs:', refTeams);
     return this.teams()
       .filter((t) => refTeams.some((ref) => ref.id === t.ref?.id))
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -171,6 +175,19 @@ export class Games {
     this.deleteConfirmVisible.set(true);
   }
 
+  getMissingGamesCount(poule: Poule): number {
+    return this.buildGeneratedGames(poule).length;
+  }
+
+  onGenerateAllGames(poule: Poule): void {
+    const games = this.buildGeneratedGames(poule);
+    if (games.length === 0) {
+      return;
+    }
+
+    this.generateAllGames.emit({ games });
+  }
+
   onConfirmDelete(): void {
     const gameRef = this.pendingDeleteGameRef();
     if (gameRef) {
@@ -183,5 +200,44 @@ export class Games {
   onCancelDelete(): void {
     this.pendingDeleteGameRef.set(null);
     this.deleteConfirmVisible.set(false);
+  }
+
+  private buildGeneratedGames(poule: Poule): SaveGameEvent[] {
+    const pouleRef = poule.ref;
+    const refTeams = poule.refTeams ?? [];
+    if (!pouleRef || refTeams.length < 2) {
+      return [];
+    }
+
+    const existingGameKeys = new Set(
+      (poule.games ?? [])
+        .map((game) => this.getGameKey(game.refTeam1, game.refTeam2))
+        .filter((gameKey): gameKey is string => Boolean(gameKey)),
+    );
+
+    const generatedGames: SaveGameEvent[] = [];
+    for (let i = 0; i < refTeams.length; i++) {
+      for (let j = i + 1; j < refTeams.length; j++) {
+        const refTeam1 = refTeams[i];
+        const refTeam2 = refTeams[j];
+        const gameKey = this.getGameKey(refTeam1, refTeam2);
+        if (!gameKey || existingGameKeys.has(gameKey)) {
+          continue;
+        }
+        generatedGames.push({ pouleRef, refTeam1, refTeam2 });
+      }
+    }
+
+    return generatedGames;
+  }
+
+  private getGameKey(
+    refTeam1: DocumentReference | null | undefined,
+    refTeam2: DocumentReference | null | undefined,
+  ): string | null {
+    if (!refTeam1?.id || !refTeam2?.id) {
+      return null;
+    }
+    return [refTeam1.id, refTeam2.id].sort().join('|');
   }
 }

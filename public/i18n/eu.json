@@ -167,6 +167,8 @@
     },
     "games": {
       "addGame": "Partida gehitu",
+      "generateAllGames": "Partida guztiak sortu",
+      "generateAllGamesAria": "Multzo honetako partida guztiak sortu",
       "dialogAddGame": "Partida gehitu",
       "dialogEditGame": "Partida editatu",
       "noGames": "Ez dago partidarik multzo honetan",
@@ -179,6 +181,8 @@
       "deleteConfirm": "Ziur zaude partida hau ezabatu nahi duzula? Ekintza hau atzera buelta ezin da.",
       "added": "Partida gehitu da",
       "addedDetail": "Partida arrakastaz gehitu da.",
+      "generated": "Partidak sortu dira",
+      "generatedDetail": "{{count}} partida arrakastaz sortu dira.",
       "edited": "Partida eguneratu da",
       "editedDetail": "Partida arrakastaz eguneratu da.",
       "deleted": "Partida ezabatu da",

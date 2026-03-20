@@ -12,5 +12,4 @@ registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 registerLocaleData(localeEu, 'eu');
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));

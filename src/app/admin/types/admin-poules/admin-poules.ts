@@ -26,7 +26,12 @@ import {
   TeamInPouleEvent,
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
 import { Game, parseFirestoreDate, Poule, Serie } from '../../../tournaments/types/poules/poules';
-import { Games, DeleteGameEvent, SaveGameEvent } from '../../../tournaments/types/shared/games/games';
+import {
+  Games,
+  DeleteGameEvent,
+  GenerateAllGamesEvent,
+  SaveGameEvent,
+} from '../../../tournaments/types/shared/games/games';
 import {
   DEFAULT_POULES_ROUTE_TAB,
   getPoulesRouteTab,
@@ -195,6 +200,30 @@ export class AdminPoules {
       severity: 'success',
       summary: this.translocoService.translate('admin.games.deleted'),
       detail: this.translocoService.translate('admin.games.deletedDetail'),
+    });
+  }
+
+  async onGenerateAllGames(event: GenerateAllGamesEvent): Promise<void> {
+    if (event.games.length === 0) {
+      return;
+    }
+
+    await Promise.all(
+      event.games.map((game) =>
+        this.firebaseService.addGameToPoule(game.pouleRef, {
+          refTeam1: game.refTeam1,
+          refTeam2: game.refTeam2,
+        }),
+      ),
+    );
+
+    this.series.set(await this.loadSeries(this.tournament().id));
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.games.generated'),
+      detail: this.translocoService.translate('admin.games.generatedDetail', {
+        count: event.games.length,
+      }),
     });
   }
 

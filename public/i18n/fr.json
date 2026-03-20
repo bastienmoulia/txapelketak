@@ -167,6 +167,8 @@
     },
     "games": {
       "addGame": "Ajouter un match",
+      "generateAllGames": "Générer tous les matchs",
+      "generateAllGamesAria": "Générer tous les matchs de cette poule",
       "dialogAddGame": "Ajouter un match",
       "dialogEditGame": "Modifier le match",
       "noGames": "Aucun match dans cette poule",
@@ -179,6 +181,8 @@
       "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce match ? Cette action est irréversible.",
       "added": "Match ajouté",
       "addedDetail": "Le match a été ajouté avec succès.",
+      "generated": "Matchs générés",
+      "generatedDetail": "{{count}} matchs ont été générés avec succès.",
       "edited": "Match modifié",
       "editedDetail": "Le match a été modifié avec succès.",
       "deleted": "Match supprimé",

@@ -28,13 +28,25 @@
         <div class="flex align-items-center justify-content-between px-3 pt-3">
           <span class="font-bold">{{ poule.name }}</span>
           @if (admin()) {
-            <p-button
-              icon="pi pi-plus"
-              [label]="'admin.games.addGame' | transloco"
-              severity="secondary"
-              size="small"
-              (onClick)="onAddGame(poule)"
-            />
+            <div class="flex gap-2">
+              <p-button
+                icon="pi pi-plus-circle"
+                [label]="'admin.games.generateAllGames' | transloco"
+                [ariaLabel]="'admin.games.generateAllGamesAria' | transloco"
+                severity="secondary"
+                size="small"
+                [outlined]="true"
+                [disabled]="getMissingGamesCount(poule) === 0"
+                (onClick)="onGenerateAllGames(poule)"
+              />
+              <p-button
+                icon="pi pi-plus"
+                [label]="'admin.games.addGame' | transloco"
+                severity="secondary"
+                size="small"
+                (onClick)="onAddGame(poule)"
+              />
+            </div>
           }
         </div>
       </ng-template>

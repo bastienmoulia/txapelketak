@@ -167,6 +167,8 @@
     },
     "games": {
       "addGame": "Añadir un partido",
+      "generateAllGames": "Generar todos los partidos",
+      "generateAllGamesAria": "Generar todos los partidos de este grupo",
       "dialogAddGame": "Añadir un partido",
       "dialogEditGame": "Editar partido",
       "noGames": "No hay partidos en este grupo",
@@ -179,6 +181,8 @@
       "deleteConfirm": "¿Estás seguro de que deseas eliminar este partido? Esta acción es irreversible.",
       "added": "Partido añadido",
       "addedDetail": "El partido ha sido añadido con éxito.",
+      "generated": "Partidos generados",
+      "generatedDetail": "Se han generado {{count}} partidos con éxito.",
       "edited": "Partido actualizado",
       "editedDetail": "El partido ha sido actualizado con éxito.",
       "deleted": "Partido eliminado",

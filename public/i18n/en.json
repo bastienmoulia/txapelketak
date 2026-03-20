@@ -167,6 +167,8 @@
     },
     "games": {
       "addGame": "Add a game",
+      "generateAllGames": "Generate all games",
+      "generateAllGamesAria": "Generate all games for this group",
       "dialogAddGame": "Add a game",
       "dialogEditGame": "Edit game",
       "noGames": "No games in this group",
@@ -179,6 +181,8 @@
       "deleteConfirm": "Are you sure you want to delete this game? This action is irreversible.",
       "added": "Game added",
       "addedDetail": "The game has been successfully added.",
+      "generated": "Games generated",
+      "generatedDetail": "{{count}} games have been generated successfully.",
       "edited": "Game updated",
       "editedDetail": "The game has been successfully updated.",
       "deleted": "Game deleted",

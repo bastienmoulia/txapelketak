@@ -15,6 +15,7 @@ import { Select } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePicker } from 'primeng/datepicker';
 import { DocumentReference } from '@angular/fire/firestore';
+import { TableModule } from 'primeng/table';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -50,6 +51,7 @@ export interface GenerateAllGamesEvent {
     Select,
     InputNumberModule,
     DatePicker,
+    TableModule,
   ],
   templateUrl: './games.html',
   styleUrl: './games.css',

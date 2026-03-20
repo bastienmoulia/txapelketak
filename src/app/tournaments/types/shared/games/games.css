@@ -26,3 +26,70 @@
 :host ::ng-deep .p-dialog .p-dialog-content .flex-1 {
   flex: 1 1 0%;
 }
+
+:host ::ng-deep .p-dialog .p-dialog-content .flex-2 {
+  flex: 2 1 0%;
+}
+
+@media (max-width: 768px) {
+  .games-poule-card__header {
+    flex-direction: column;
+  }
+
+  .games-table-shell {
+    padding: 0;
+  }
+
+  :host ::ng-deep .games-table,
+  :host ::ng-deep .games-table .p-datatable-wrapper {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  :host ::ng-deep .games-table thead {
+    display: none;
+  }
+
+  :host ::ng-deep .games-table tbody,
+  :host ::ng-deep .games-table tbody tr,
+  :host ::ng-deep .games-table tbody td {
+    display: block;
+    width: 100%;
+  }
+
+  :host ::ng-deep .games-table tbody tr {
+    margin: 0 1rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+    border-radius: 1rem;
+    background: var(--p-content-background);
+    box-shadow: 0 12px 30px -24px color-mix(in srgb, var(--p-primary-color) 55%, transparent);
+    overflow: hidden;
+  }
+
+  :host ::ng-deep .games-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    text-align: right;
+  }
+
+  :host ::ng-deep .games-table tbody td::before {
+    content: attr(data-label);
+    color: var(--p-text-muted-color);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .games-table__score {
+    min-width: auto;
+  }
+
+  .games-table__actions {
+    justify-content: flex-end;
+  }
+}

@@ -1,7 +1,18 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
+import { map } from 'rxjs';
 import { AdminTeams } from '../shared/admin-teams/admin-teams';
 import { Team } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
@@ -16,6 +27,11 @@ import {
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
 import { Poule, Serie } from '../../../tournaments/types/poules/poules';
 import { Games } from '../../../tournaments/types/shared/games/games';
+import {
+  DEFAULT_POULES_ROUTE_TAB,
+  getPoulesRouteTab,
+  POULES_TAB_QUERY_PARAM,
+} from '../../../tournaments/types/poules/poules.route';
 
 @Component({
   selector: 'app-admin-poules',
@@ -28,6 +44,8 @@ export class AdminPoules {
   private firebaseService = inject(FirebaseService);
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
 
   tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
@@ -35,6 +53,15 @@ export class AdminPoules {
 
   private tournamentRef = signal<DocumentReference | null>(null);
   private loadedTournamentId = signal<number | null>(null);
+
+  private tabFromUrl = toSignal(
+    this.activatedRoute.queryParamMap.pipe(
+      map((queryParams) => getPoulesRouteTab(queryParams.get(POULES_TAB_QUERY_PARAM))),
+    ),
+    { initialValue: DEFAULT_POULES_ROUTE_TAB },
+  );
+
+  activeTab = computed(() => this.tabFromUrl());
 
   constructor() {
     effect(async () => {
@@ -54,6 +81,23 @@ export class AdminPoules {
       this.tournamentRef.set(refResult?.ref ?? null);
       this.teams.set(await this.loadTeams(tournament.id));
       this.series.set(await this.loadSeries(tournament.id));
+    });
+  }
+
+  onTabChange(nextTab: string | number | undefined): void {
+    if (typeof nextTab !== 'string') {
+      return;
+    }
+
+    const routeTab = getPoulesRouteTab(nextTab);
+    if (routeTab === this.activeTab()) {
+      return;
+    }
+
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { [POULES_TAB_QUERY_PARAM]: routeTab },
+      queryParamsHandling: 'merge',
     });
   }
 

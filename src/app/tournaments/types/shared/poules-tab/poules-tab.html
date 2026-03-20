@@ -120,9 +120,9 @@
           />
         </div>
       }
-      <ul class="teams-list">
+      <ul class="m-0 pl-5">
         @for (refTeam of poule.refTeams; track refTeam.id) {
-          <li class="team-item">
+          <li class="mb-1">
             {{ getTeamName | apply: refTeam : teams() }}
             @if (admin()) {
               <p-button

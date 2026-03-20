@@ -32,12 +32,12 @@ describe('TournamentHeader', () => {
 
   it('should toggle details section', () => {
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.tournament-details')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="tournament-details"]')).toBeNull();
 
     component.toggleDetails();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.tournament-details')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="tournament-details"]')).not.toBeNull();
   });
 
   it('should render edit button when admin is true', () => {

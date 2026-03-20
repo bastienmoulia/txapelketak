@@ -1,11 +1,11 @@
 @if (loading()) {
-  <div class="loading-state" data-testid="loading-state">
-    <i class="pi pi-spin pi-spinner loading-spinner"></i>
+  <div class="flex flex-col items-center justify-center gap-4 py-16 px-8 text-center" data-testid="loading-state">
+    <i class="pi pi-spin pi-spinner text-[2rem] text-[var(--p-primary-color)]"></i>
     <p>{{ 'tournaments.detail.loading' | transloco }}</p>
   </div>
 } @else if (notFound()) {
-  <div class="not-found-state" data-testid="not-found-state">
-    <i class="pi pi-exclamation-triangle not-found-icon"></i>
+  <div class="flex flex-col items-center justify-center gap-4 py-16 px-8 text-center" data-testid="not-found-state">
+    <i class="pi pi-exclamation-triangle text-[3rem] text-[var(--p-yellow-500)]"></i>
     <h2>{{ 'tournaments.detail.notFound.title' | transloco }}</h2>
     <p>{{ 'tournaments.detail.notFound.message' | transloco }}</p>
     <p-button
@@ -19,10 +19,10 @@
   </div>
 } @else if (tournament(); as t) {
   <app-tournament-header [tournament]="t" />
-  <div class="tournament-content">
+  <div class="flex flex-col gap-8">
     <!-- Waiting validation message -->
     @if (t.status === 'waitingValidation') {
-      <div class="validation-section" data-testid="validation-section">
+      <div class="flex flex-col gap-4" data-testid="validation-section">
         <p-message
           severity="warn"
           icon="pi pi-clock"

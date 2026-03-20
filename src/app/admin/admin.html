@@ -1,6 +1,6 @@
 <p-toast />
 @if (loading()) {
-  <div class="state state-loading" data-testid="admin-loading">
+  <div class="flex flex-col gap-4 items-start" data-testid="admin-loading">
     <p-progress-spinner
       strokeWidth="4"
       fill="transparent"
@@ -10,7 +10,7 @@
     <p-message severity="info" variant="simple">{{ 'admin.loading' | transloco }}</p-message>
   </div>
 } @else if (accessDenied()) {
-  <div class="state" data-testid="admin-denied">
+  <div class="flex flex-col gap-4" data-testid="admin-denied">
     <p-message severity="error" icon="pi pi-lock">
       {{ 'admin.denied' | transloco }}
     </p-message>

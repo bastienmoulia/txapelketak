@@ -44,6 +44,14 @@ export interface Game {
   date?: Date;
 }
 
+export function parseFirestoreDate(value: unknown): Date | undefined {
+  if (!value) return undefined;
+  if (typeof (value as { toDate?: unknown }).toDate === 'function') {
+    return (value as { toDate: () => Date }).toDate();
+  }
+  return new Date(value as string);
+}
+
 @Component({
   selector: 'app-poules',
   imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games],
@@ -121,7 +129,6 @@ export class Poules {
         return {
           ...serie,
           poules: await this.loadPoules(serie.ref),
-          games: await this.loadGames(serie.ref),
         } as Serie;
       }),
     );
@@ -137,17 +144,23 @@ export class Poules {
         ref: result[index].ref,
       } as Poule;
     }) ?? []) as Poule[];
-    return poules;
+    return Promise.all(
+      poules.map(async (poule) => ({
+        ...poule,
+        games: await this.loadGames(poule.ref),
+      })),
+    );
   }
 
-  private async loadGames(serieRef: DocumentReference): Promise<Game[]> {
-    const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'games');
-    const games = (result?.map((item, index) => {
+  private async loadGames(pouleRef: DocumentReference): Promise<Game[]> {
+    const result = await this.firebaseService.getCollectionFromDocumentRef(pouleRef, 'games');
+    return (result?.map((item, index) => {
+      const data = item.data as Partial<Game>;
       return {
-        ...(item.data as Partial<Game>),
+        ...data,
         ref: result[index].ref,
+        date: parseFirestoreDate(data.date),
       } as Game;
     }) ?? []) as Game[];
-    return games;
   }
 }

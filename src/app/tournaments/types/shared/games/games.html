@@ -9,10 +9,7 @@
         </p-accordion-header>
         <p-accordion-content>
           <ng-container
-            *ngTemplateOutlet="
-              poules;
-              context: { $implicit: serie.poules, serieRef: serie.ref, serie: serie }
-            "
+            *ngTemplateOutlet="poules; context: { $implicit: serie.poules }"
           ></ng-container>
         </p-accordion-content>
       </p-accordion-panel>
@@ -24,17 +21,171 @@
   </p-message>
 }
 
-<ng-template #poules let-poules let-serieRef="serieRef">
-  @for (poule of poules; track $index) {
+<ng-template #poules let-poules>
+  @for (poule of poules; track poule.ref.id) {
     <p-card class="mb-2">
       <ng-template #header>
         <div class="flex align-items-center justify-content-between px-3 pt-3">
           <span class="font-bold">{{ poule.name }}</span>
+          @if (admin()) {
+            <p-button
+              icon="pi pi-plus"
+              [label]="'admin.games.addGame' | transloco"
+              severity="secondary"
+              size="small"
+              (onClick)="onAddGame(poule)"
+            />
+          }
         </div>
       </ng-template>
-      @for (game of poule.games; track $index) {
-        {{ game.refTeam1?.id }} vs {{ game.refTeam2?.id }} on {{ game.date | date: 'short' }}
+
+      @if (poule.games && poule.games.length > 0) {
+        <div class="flex flex-column gap-2">
+          @for (game of poule.games; track game.ref.id) {
+            <div class="flex align-items-center justify-content-between gap-2 p-2 border-round surface-100">
+              <div class="flex align-items-center gap-2 flex-1">
+                <span class="font-medium">{{ getTeamName(game.refTeam1) }}</span>
+                <span class="font-bold text-lg">
+                  {{ game.scoreTeam1 != null ? game.scoreTeam1 : '-' }}
+                  &ndash;
+                  {{ game.scoreTeam2 != null ? game.scoreTeam2 : '-' }}
+                </span>
+                <span class="font-medium">{{ getTeamName(game.refTeam2) }}</span>
+                @if (game.date) {
+                  <span class="text-color-secondary text-sm">({{ game.date | date: 'short' }})</span>
+                }
+              </div>
+              @if (admin()) {
+                <div class="flex gap-1">
+                  <p-button
+                    icon="pi pi-pencil"
+                    [ariaLabel]="'admin.games.editAria' | transloco"
+                    severity="secondary"
+                    size="small"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="onEditGame(poule, game)"
+                  />
+                  <p-button
+                    icon="pi pi-trash"
+                    [ariaLabel]="'admin.games.deleteAria' | transloco"
+                    severity="danger"
+                    size="small"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="onDeleteGame(game.ref)"
+                  />
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        <p-message severity="info">
+          {{ 'admin.games.noGames' | transloco }}
+        </p-message>
       }
     </p-card>
   }
 </ng-template>
+
+<!-- Add / Edit game dialog -->
+<p-dialog
+  [(visible)]="gameDialogVisible"
+  [header]="(isEditingGame() ? 'admin.games.dialogEditGame' : 'admin.games.dialogAddGame') | transloco"
+  [modal]="true"
+  [style]="{ width: '30rem' }"
+>
+  <div class="flex flex-column gap-3 pt-2">
+    <p-floatlabel variant="on">
+      <p-select
+        inputId="team1"
+        [options]="dialogTeams()"
+        [(ngModel)]="selectedTeam1Ref"
+        optionLabel="name"
+        optionValue="ref"
+        [style]="{ width: '100%' }"
+      />
+      <label for="team1">{{ 'admin.games.team1' | transloco }}</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on">
+      <p-select
+        inputId="team2"
+        [options]="dialogTeams()"
+        [(ngModel)]="selectedTeam2Ref"
+        optionLabel="name"
+        optionValue="ref"
+        [style]="{ width: '100%' }"
+      />
+      <label for="team2">{{ 'admin.games.team2' | transloco }}</label>
+    </p-floatlabel>
+
+    <div class="flex gap-2 align-items-center justify-content-center">
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          inputId="score1"
+          [(ngModel)]="scoreTeam1"
+          [min]="0"
+          [style]="{ width: '8rem' }"
+        />
+        <label for="score1">{{ 'admin.games.score1' | transloco }}</label>
+      </p-floatlabel>
+      <span class="font-bold text-xl">&ndash;</span>
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          inputId="score2"
+          [(ngModel)]="scoreTeam2"
+          [min]="0"
+          [style]="{ width: '8rem' }"
+        />
+        <label for="score2">{{ 'admin.games.score2' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+
+    <p-floatlabel variant="on">
+      <p-datepicker
+        inputId="gameDate"
+        [(ngModel)]="gameDate"
+        [showTime]="true"
+        [style]="{ width: '100%' }"
+      />
+      <label for="gameDate">{{ 'admin.games.date' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="gameDialogVisible.set(false)"
+    />
+    <p-button
+      [label]="'shared.actions.save' | transloco"
+      [disabled]="!selectedTeam1Ref() || !selectedTeam2Ref()"
+      (onClick)="onSaveGame()"
+    />
+  </ng-template>
+</p-dialog>
+
+<!-- Delete confirmation dialog -->
+<p-dialog
+  [(visible)]="deleteConfirmVisible"
+  [header]="'shared.confirm.deleteHeader' | transloco"
+  [modal]="true"
+  [style]="{ width: '25rem' }"
+>
+  <p>{{ 'admin.games.deleteConfirm' | transloco }}</p>
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.confirm.cancel' | transloco"
+      severity="secondary"
+      (onClick)="onCancelDelete()"
+    />
+    <p-button
+      [label]="'shared.confirm.confirm' | transloco"
+      severity="danger"
+      (onClick)="onConfirmDelete()"
+    />
+  </ng-template>
+</p-dialog>

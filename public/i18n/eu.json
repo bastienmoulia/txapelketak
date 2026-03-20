@@ -165,6 +165,26 @@
       "teamRemoved": "Taldea kendu da",
       "teamRemovedDetail": "Taldea arrakastaz kendu da multzotik."
     },
+    "games": {
+      "addGame": "Partida gehitu",
+      "dialogAddGame": "Partida gehitu",
+      "dialogEditGame": "Partida editatu",
+      "noGames": "Ez dago partidarik multzo honetan",
+      "team1": "1. taldea",
+      "team2": "2. taldea",
+      "score1": "1. taldearen puntuazioa",
+      "score2": "2. taldearen puntuazioa",
+      "date": "Data",
+      "editAria": "Partida hau editatu",
+      "deleteAria": "Partida hau ezabatu",
+      "deleteConfirm": "Ziur zaude partida hau ezabatu nahi duzula? Ekintza hau atzera buelta ezin da.",
+      "added": "Partida gehitu da",
+      "addedDetail": "Partida arrakastaz gehitu da.",
+      "edited": "Partida eguneratu da",
+      "editedDetail": "Partida arrakastaz eguneratu da.",
+      "deleted": "Partida ezabatu da",
+      "deletedDetail": "Partida arrakastaz ezabatu da."
+    },
     "teams": {
       "empty": "Ez dago talderik",
       "add": "Taldea gehitu",

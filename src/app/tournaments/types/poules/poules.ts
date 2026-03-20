@@ -7,8 +7,11 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@jsverse/transloco';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
+import { map } from 'rxjs';
 import { Team } from '../shared/teams/teams';
 import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
@@ -16,6 +19,11 @@ import { FirebaseService } from '../../../shared/services/firebase.service';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Games } from '../shared/games/games';
+import {
+  DEFAULT_POULES_ROUTE_TAB,
+  getPoulesRouteTab,
+  POULES_TAB_QUERY_PARAM,
+} from './poules.route';
 
 export interface PoulesData {
   teams?: Team[];
@@ -61,11 +69,22 @@ export function parseFirestoreDate(value: unknown): Date | undefined {
 })
 export class Poules {
   private firebaseService = inject(FirebaseService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
 
   tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
   private loadedTournamentId = signal<number | null>(null);
+
+  private tabFromUrl = toSignal(
+    this.activatedRoute.queryParamMap.pipe(
+      map((queryParams) => getPoulesRouteTab(queryParams.get(POULES_TAB_QUERY_PARAM))),
+    ),
+    { initialValue: DEFAULT_POULES_ROUTE_TAB },
+  );
+
+  activeTab = computed(() => this.tabFromUrl());
 
   teamsWithContext = computed(() => {
     const teams = this.teams();
@@ -100,6 +119,23 @@ export class Poules {
       this.loadedTournamentId.set(tournament.id);
       this.teams.set(await this.loadTeams(tournament.id));
       this.series.set(await this.loadSeries(tournament.id));
+    });
+  }
+
+  onTabChange(nextTab: string | number | undefined): void {
+    if (typeof nextTab !== 'string') {
+      return;
+    }
+
+    const routeTab = getPoulesRouteTab(nextTab);
+    if (routeTab === this.activeTab()) {
+      return;
+    }
+
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { [POULES_TAB_QUERY_PARAM]: routeTab },
+      queryParamsHandling: 'merge',
     });
   }
 

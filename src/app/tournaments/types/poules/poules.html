@@ -1,4 +1,4 @@
-<p-tabs value="poules">
+<p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
   <p-tablist>
     <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>

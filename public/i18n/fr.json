@@ -128,7 +128,8 @@
     "tabs": {
       "poules": "Poules",
       "teams": "Équipes",
-      "games": "Matchs"
+      "games": "Matchs",
+      "users": "Utilisateurs"
     },
     "poules": {
       "addSerie": "Ajouter une série",
@@ -206,6 +207,22 @@
       "editedDetail": "L'équipe a été modifiée avec succès.",
       "deleted": "Équipe supprimée",
       "deletedDetail": "L'équipe a été supprimée avec succès."
+    },
+    "users": {
+      "add": "Ajouter un utilisateur",
+      "dialogAdd": "Ajouter un utilisateur",
+      "dialogEdit": "Modifier l'utilisateur",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "editAria": "Modifier cet utilisateur",
+      "deleteAria": "Supprimer cet utilisateur",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "noUsers": "Aucun utilisateur",
+      "rights": {
+        "label": "Droits",
+        "admin": "Administrateur",
+        "organizer": "Organisateur"
+      }
     }
   },
   "shared": {

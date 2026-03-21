@@ -3,6 +3,7 @@
     <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
+    <p-tab value="users">{{ 'admin.tabs.users' | transloco }}</p-tab>
   </p-tablist>
 
   <p-tabpanels>
@@ -36,6 +37,9 @@
         (generateAllGames)="onGenerateAllGames($event)"
         (deleteGame)="onDeleteGame($event)"
       />
+    </p-tabpanel>
+    <p-tabpanel value="users">
+      <app-admin-users [tournament]="tournament()" />
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

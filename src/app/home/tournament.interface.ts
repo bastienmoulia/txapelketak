@@ -14,11 +14,12 @@ export interface Tournament<T extends TournamentType = TournamentType> {
 }
 
 export interface User {
+  ref?: DocumentReference;
   refTournament: DocumentReference;
   username: string;
   email: string;
   token: string;
-  rights: string[]; // e.g. ['admin', 'manager']
+  rights: string[]; // e.g. ['admin', 'organizer']
 }
 
 export type TournamentType = 'poules' | 'finale' | 'poules_finale';
@@ -29,8 +30,7 @@ export interface TournamentDataByType {
   poules_finale: PoulesFinaleData;
 }
 
-export type TournamentData<T extends TournamentType = TournamentType> = T extends keyof TournamentDataByType
-  ? TournamentDataByType[T]
-  : never;
+export type TournamentData<T extends TournamentType = TournamentType> =
+  T extends keyof TournamentDataByType ? TournamentDataByType[T] : never;
 
 export type TournamentStatus = 'waitingValidation' | 'paused' | 'ongoing' | 'archived';

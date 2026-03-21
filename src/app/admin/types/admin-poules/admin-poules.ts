@@ -37,10 +37,11 @@ import {
   getPoulesRouteTab,
   POULES_TAB_QUERY_PARAM,
 } from '../../../tournaments/types/poules/poules.route';
+import { AdminUsers } from '../shared/admin-users/admin-users';
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Games],
+  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Games, AdminUsers],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,7 +57,6 @@ export class AdminPoules {
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
 
-  private tournamentRef = signal<DocumentReference | null>(null);
   private loadedTournamentId = signal<string | null>(null);
 
   private tabFromUrl = toSignal(
@@ -82,7 +82,6 @@ export class AdminPoules {
       }
 
       this.loadedTournamentId.set(tournament.ref.id);
-      this.tournamentRef.set(tournament.ref);
       this.teams.set(await this.loadTeams(tournament.ref));
       this.series.set(await this.loadSeries(tournament.ref));
     });
@@ -226,7 +225,7 @@ export class AdminPoules {
   }
 
   async onSaveSerie(event: SaveSerieEvent): Promise<void> {
-    const tournamentRef = this.tournamentRef();
+    const tournamentRef = this.tournament().ref;
     if (!tournamentRef) {
       if (event.ref) {
         this.series.update((series) =>
@@ -270,7 +269,7 @@ export class AdminPoules {
   }
 
   async onDeleteSerie(serie: Serie): Promise<void> {
-    const tournamentRef = this.tournamentRef();
+    const tournamentRef = this.tournament().ref;
     if (!tournamentRef) {
       this.series.update((series) => series.filter((s) => s.ref !== serie.ref));
       this.messageService.add({
@@ -340,7 +339,7 @@ export class AdminPoules {
   }
 
   async onSaveTeam(team: Team): Promise<void> {
-    const ref = this.tournamentRef();
+    const ref = this.tournament().ref;
     if (!ref) {
       if (team.ref) {
         this.teams.update((teams) => teams.map((t) => (t.ref === team.ref ? team : t)));
@@ -379,7 +378,7 @@ export class AdminPoules {
   }
 
   async onSaveTeams(teams: Team[]): Promise<void> {
-    const ref = this.tournamentRef();
+    const ref = this.tournament().ref;
     if (!ref) {
       const newTeams = teams.map((t) => ({ ...t, id: crypto.randomUUID() }));
       this.teams.update((existing) => [...existing, ...newTeams]);
@@ -403,7 +402,7 @@ export class AdminPoules {
   }
 
   async onDeleteTeam(team: Team): Promise<void> {
-    const ref = this.tournamentRef();
+    const ref = this.tournament().ref;
     if (!ref) {
       this.teams.update((teams) => teams.filter((t) => t.ref.id !== team.ref.id));
       this.messageService.add({

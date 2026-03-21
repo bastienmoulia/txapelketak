@@ -128,7 +128,8 @@
     "tabs": {
       "poules": "Groups",
       "teams": "Teams",
-      "games": "Games"
+      "games": "Games",
+      "users": "Users"
     },
     "poules": {
       "addSerie": "Add a series",
@@ -206,6 +207,22 @@
       "editedDetail": "The team has been successfully updated.",
       "deleted": "Team deleted",
       "deletedDetail": "The team has been successfully deleted."
+    },
+    "users": {
+      "add": "Add user",
+      "dialogAdd": "Add user",
+      "dialogEdit": "Edit user",
+      "username": "Username",
+      "email": "Email",
+      "editAria": "Edit this user",
+      "deleteAria": "Delete this user",
+      "deleteConfirm": "Are you sure you want to delete this user?",
+      "noUsers": "No users",
+      "rights": {
+        "label": "Rights",
+        "admin": "Administrator",
+        "organizer": "Organizer"
+      }
     }
   },
   "shared": {

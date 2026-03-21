@@ -128,7 +128,8 @@
     "tabs": {
       "poules": "Multzoak",
       "teams": "Taldeak",
-      "games": "Partidak"
+      "games": "Partidak",
+      "users": "Erabiltzaileak"
     },
     "poules": {
       "addSerie": "Serie bat gehitu",
@@ -206,6 +207,22 @@
       "editedDetail": "Taldea arrakastaz eguneratu da.",
       "deleted": "Taldea ezabatu da",
       "deletedDetail": "Taldea arrakastaz ezabatu da."
+    },
+    "users": {
+      "add": "Erabiltzaile bat gehitu",
+      "dialogAdd": "Erabiltzaile bat gehitu",
+      "dialogEdit": "Erabiltzailea editatu",
+      "username": "Erabiltzaile izena",
+      "email": "Emaila",
+      "editAria": "Erabiltzaile hau editatu",
+      "deleteAria": "Erabiltzaile hau ezabatu",
+      "deleteConfirm": "Ziur zaude erabiltzaile hau ezabatu nahi duzula?",
+      "noUsers": "Ez dago erabiltzailerik",
+      "rights": {
+        "label": "Eskubideak",
+        "admin": "Administratzailea",
+        "organizer": "Antolatzailea"
+      }
     }
   },
   "shared": {

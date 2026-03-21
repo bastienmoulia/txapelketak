@@ -198,6 +198,31 @@ export class FirebaseService {
     });
   }
 
+  async getUsersByTournament(tournamentRef: DocumentReference): Promise<User[]> {
+    if (!this.firestore) {
+      return [];
+    }
+
+    const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
+      return getDocs(
+        query(collection(this.firestore!, 'users'), where('refTournament', '==', tournamentRef)),
+      );
+    });
+    return snapshot.docs.map((d) => ({ ...(d.data() as User), ref: d.ref }));
+  }
+
+  async updateUser(ref: DocumentReference, userData: Partial<Omit<User, 'ref'>>): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(ref, userData as Record<string, unknown>);
+    });
+  }
+
+  async deleteUserDoc(ref: DocumentReference): Promise<void> {
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await deleteDoc(ref);
+    });
+  }
+
   async addTeamToTournament(tournamentRef: DocumentReference, teamName: string): Promise<Team> {
     const teamDocRef = doc(collection(tournamentRef, 'teams'));
     const team: Team = { ref: teamDocRef, name: teamName };

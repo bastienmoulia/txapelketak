@@ -1,8 +1,8 @@
 <p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
   <p-tablist>
     @if (role() === 'admin') {
-      <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
       <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+      <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     }
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
     @if (role() === 'admin') {
@@ -13,6 +13,15 @@
 
   <p-tabpanels>
     @if (role() === 'admin') {
+      <p-tabpanel value="teams">
+        <app-admin-teams
+          [teams]="teams()"
+          [role]="role()"
+          (saveTeam)="onSaveTeam($event)"
+          (saveTeams)="onSaveTeams($event)"
+          (deleteTeam)="onDeleteTeam($event)"
+        />
+      </p-tabpanel>
       <p-tabpanel value="poules">
         <app-poules-tab
           [series]="series()"
@@ -24,15 +33,6 @@
           (deletePoule)="onDeletePoule($event)"
           (addTeamToPoule)="onAddTeamToPoule($event)"
           (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
-        />
-      </p-tabpanel>
-      <p-tabpanel value="teams">
-        <app-admin-teams
-          [teams]="teams()"
-          [role]="role()"
-          (saveTeam)="onSaveTeam($event)"
-          (saveTeams)="onSaveTeams($event)"
-          (deleteTeam)="onDeleteTeam($event)"
         />
       </p-tabpanel>
     }

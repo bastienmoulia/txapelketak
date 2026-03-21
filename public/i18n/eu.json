@@ -129,7 +129,8 @@
       "poules": "Multzoak",
       "teams": "Taldeak",
       "games": "Partidak",
-      "users": "Erabiltzaileak"
+      "users": "Erabiltzaileak",
+      "importExport": "Inportatu / Esportatu"
     },
     "poules": {
       "addSerie": "Serie bat gehitu",
@@ -230,6 +231,24 @@
         "admin": "Administratzailea",
         "organizer": "Antolatzailea"
       }
+    },
+    "importExport": {
+      "exportTitle": "Esportatu",
+      "exportDescription": "Deskargatu txapelketaren datu guztiak (taldeak, seriak, multzoak, partidak) YAML formatuan.",
+      "exportButton": "YAML fitxategia deskargatu",
+      "importTitle": "Inportatu",
+      "importDescription": "Inportatu YAML fitxategi bat txapelketaren datu guztiak berrezarri edo ordezkatzeko.",
+      "importButton": "YAML fitxategia aukeratu",
+      "invalidFile": "Fitxategi baliogabea. Mesedez aukeratu YAML fitxategi baliogarria.",
+      "importConfirmTitle": "Inportazioa baieztatu",
+      "importConfirmMessage": "Ekintza honek dauden datu guztiak ordezkatuko ditu (taldeak, seriak, multzoak, partidak). Eragiketa hau itzuliezina da.",
+      "teamsCount": "{{ count }} talde(ak)",
+      "seriesCount": "{{ count }} serie(ak)",
+      "importConfirm": "Inportatu",
+      "importSuccess": "Inportazioa arrakastatsua",
+      "importSuccessDetail": "Txapelketaren datuak ongi inportatu dira.",
+      "importError": "Inportazio errorea",
+      "importErrorDetail": "Errorea gertatu da inportazioan. Mesedez saiatu berriro."
     }
   },
   "shared": {

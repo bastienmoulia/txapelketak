@@ -141,7 +141,7 @@ export class TournamentNew {
         username: creatorUsername,
         email: creatorEmail,
         token: crypto.randomUUID(),
-        rights: ['admin'],
+        role: 'admin',
       };
 
       await this.firebaseService.createUser(user);

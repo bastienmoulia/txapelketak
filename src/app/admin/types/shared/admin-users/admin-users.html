@@ -13,7 +13,7 @@
       <tr>
         <th>{{ 'admin.users.username' | transloco }}</th>
         <th>{{ 'admin.users.email' | transloco }}</th>
-        <th>{{ 'admin.users.rights.label' | transloco }}</th>
+        <th>{{ 'admin.users.role.label' | transloco }}</th>
         <th class="w-px whitespace-nowrap">{{ 'shared.table.columns.actions' | transloco }}</th>
       </tr>
     </ng-template>
@@ -23,11 +23,7 @@
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>
-          <div class="flex flex-wrap gap-1">
-            @for (right of user.rights; track right) {
-              <p-tag [value]="'admin.users.rights.' + right | transloco" severity="secondary" />
-            }
-          </div>
+          <p-tag [value]="'admin.users.role.' + user.role | transloco" severity="secondary" />
         </td>
         <td>
           <div class="flex justify-end gap-2">
@@ -96,17 +92,17 @@
     </p-floatlabel>
 
     <p-floatlabel variant="on">
-      <p-multiselect
-        inputId="rights"
-        [options]="rightsOptions()"
+      <p-select
+        inputId="role"
+        [options]="roleOptions()"
         optionLabel="label"
         optionValue="value"
-        [ngModel]="selectedRights()"
-        (ngModelChange)="selectedRights.set($event)"
+        [ngModel]="selectedRole()"
+        (ngModelChange)="selectedRole.set($event)"
         [style]="{ width: '100%' }"
         appendTo="body"
       />
-      <label for="rights">{{ 'admin.users.rights.label' | transloco }}</label>
+      <label for="role">{{ 'admin.users.role.label' | transloco }}</label>
     </p-floatlabel>
   </div>
 

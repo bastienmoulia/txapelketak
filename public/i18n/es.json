@@ -119,7 +119,7 @@
     "welcome": "Bienvenido {{ username }}",
     "tournament": "Torneo",
     "email": "Email",
-    "rights": "Derechos",
+    "role": "Rol",
     "archived": "Este torneo está archivado. No se permiten modificaciones.",
     "notFound": "Torneo no encontrado o no especificado.",
     "validated": "Torneo validado",
@@ -218,8 +218,8 @@
       "deleteAria": "Eliminar este usuario",
       "deleteConfirm": "¿Estás seguro de que quieres eliminar este usuario?",
       "noUsers": "Sin usuarios",
-      "rights": {
-        "label": "Derechos",
+      "role": {
+        "label": "Rol",
         "admin": "Administrador",
         "organizer": "Organizador"
       }

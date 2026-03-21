@@ -15,7 +15,7 @@ import { DialogModule } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
@@ -31,7 +31,7 @@ import { DocumentReference } from '@angular/fire/firestore';
     FormsModule,
     InputTextModule,
     MessageModule,
-    MultiSelectModule,
+    Select,
     TableModule,
     TagModule,
     TranslocoModule,
@@ -52,13 +52,13 @@ export class AdminUsers {
     initialValue: this.translocoService.getActiveLang(),
   });
 
-  rightsOptions = computed(() => {
+  roleOptions = computed(() => {
     this.activeLanguage();
     return [
-      { value: 'admin', label: this.translocoService.translate('admin.users.rights.admin') },
+      { value: 'admin', label: this.translocoService.translate('admin.users.role.admin') },
       {
         value: 'organizer',
-        label: this.translocoService.translate('admin.users.rights.organizer'),
+        label: this.translocoService.translate('admin.users.role.organizer'),
       },
     ];
   });
@@ -69,7 +69,7 @@ export class AdminUsers {
   editingRef = signal<DocumentReference | null>(null);
   username = signal('');
   email = signal('');
-  selectedRights = signal<string[]>([]);
+  selectedRole = signal<string>('');
 
   // Delete confirm
   deleteConfirmVisible = signal(false);
@@ -97,7 +97,7 @@ export class AdminUsers {
     this.editingRef.set(null);
     this.username.set('');
     this.email.set('');
-    this.selectedRights.set([]);
+    this.selectedRole.set('');
     this.dialogVisible.set(true);
   }
 
@@ -106,7 +106,7 @@ export class AdminUsers {
     this.editingRef.set(user.ref ?? null);
     this.username.set(user.username);
     this.email.set(user.email);
-    this.selectedRights.set([...user.rights]);
+    this.selectedRole.set(user.role);
     this.dialogVisible.set(true);
   }
 
@@ -116,7 +116,7 @@ export class AdminUsers {
       await this.firebaseService.updateUser(ref, {
         username: this.username(),
         email: this.email(),
-        rights: this.selectedRights(),
+        role: this.selectedRole(),
       });
       this.users.update((list) =>
         list.map((u) =>
@@ -125,7 +125,7 @@ export class AdminUsers {
                 ...u,
                 username: this.username(),
                 email: this.email(),
-                rights: this.selectedRights(),
+                role: this.selectedRole(),
               }
             : u,
         ),
@@ -135,7 +135,7 @@ export class AdminUsers {
         refTournament: this.tournament().ref,
         username: this.username(),
         email: this.email(),
-        rights: this.selectedRights(),
+        role: this.selectedRole(),
         token: crypto.randomUUID(),
       };
       await this.firebaseService.createUser(newUser);

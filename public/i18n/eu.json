@@ -119,7 +119,7 @@
     "welcome": "Ongi etorri {{ username }}",
     "tournament": "Txapelketa",
     "email": "Emaila",
-    "rights": "Eskubideak",
+    "role": "Rola",
     "archived": "Txapelketa hau artxibatuta dago. Aldaketak ez daude baimenduta.",
     "notFound": "Txapelketa ez da aurkitu edo ez da zehaztu.",
     "validated": "Txapelketa balioztatua",
@@ -218,8 +218,8 @@
       "deleteAria": "Erabiltzaile hau ezabatu",
       "deleteConfirm": "Ziur zaude erabiltzaile hau ezabatu nahi duzula?",
       "noUsers": "Ez dago erabiltzailerik",
-      "rights": {
-        "label": "Eskubideak",
+      "role": {
+        "label": "Rola",
         "admin": "Administratzailea",
         "organizer": "Antolatzailea"
       }

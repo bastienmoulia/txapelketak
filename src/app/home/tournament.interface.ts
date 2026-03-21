@@ -19,7 +19,7 @@ export interface User {
   username: string;
   email: string;
   token: string;
-  rights: string[]; // e.g. ['admin', 'organizer']
+  role: string; // e.g. 'admin' | 'organizer'
 }
 
 export type TournamentType = 'poules' | 'finale' | 'poules_finale';

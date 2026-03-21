@@ -1,0 +1,11 @@
+.poules-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .poules-grid {
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  }
+}

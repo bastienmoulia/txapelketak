@@ -75,72 +75,74 @@
       />
     </div>
   }
-  @for (poule of poules; track $index) {
-    <p-card class="mb-2">
-      <ng-template #header>
-        <div class="flex align-items-center justify-content-between px-3 pt-3">
-          <span class="font-bold">{{ poule.name }}</span>
-          @if (role() === 'admin') {
-            <div class="flex gap-2">
-              <p-button
-                type="button"
-                size="small"
-                severity="secondary"
-                [outlined]="true"
-                icon="pi pi-pencil"
-                [label]="'shared.actions.edit' | transloco"
-                [ariaLabel]="'admin.poules.editPouleAria' | transloco"
-                (onClick)="onEditPoule(serieRef, poule)"
-                data-testid="edit-poule-button"
-              />
-              <p-button
-                type="button"
-                size="small"
-                severity="danger"
-                [outlined]="true"
-                icon="pi pi-trash"
-                [label]="'shared.actions.delete' | transloco"
-                [ariaLabel]="'admin.poules.deletePouleAria' | transloco"
-                (onClick)="onDeletePoule(serieRef, poule)"
-                data-testid="delete-poule-button"
-              />
-            </div>
-          }
-        </div>
-      </ng-template>
-      @if (role() === 'admin') {
-        <div class="mb-2">
-          <p-button
-            type="button"
-            severity="primary"
-            icon="pi pi-plus"
-            [label]="'admin.poules.addTeam' | transloco"
-            (onClick)="onAddTeamToPoule(poule)"
-            data-testid="add-team-to-poule-button"
-          />
-        </div>
-      }
-      <ul class="m-0 pl-5">
-        @for (refTeam of poule.refTeams; track refTeam.id) {
-          <li class="mb-1">
-            {{ getTeamName | apply: refTeam : teams() }}
+  <div class="poules-grid">
+    @for (poule of poules; track $index) {
+      <p-card>
+        <ng-template #header>
+          <div class="flex align-items-center justify-content-between px-3 pt-3">
+            <span class="font-bold">{{ poule.name }}</span>
             @if (role() === 'admin') {
-              <p-button
-                type="button"
-                size="small"
-                severity="danger"
-                [outlined]="true"
-                icon="pi pi-times"
-                [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
-                (onClick)="onRemoveTeamFromPoule(poule, refTeam)"
-                data-testid="remove-team-from-poule-button"
-              />
+              <div class="flex gap-2">
+                <p-button
+                  type="button"
+                  size="small"
+                  severity="secondary"
+                  [outlined]="true"
+                  icon="pi pi-pencil"
+                  [label]="'shared.actions.edit' | transloco"
+                  [ariaLabel]="'admin.poules.editPouleAria' | transloco"
+                  (onClick)="onEditPoule(serieRef, poule)"
+                  data-testid="edit-poule-button"
+                />
+                <p-button
+                  type="button"
+                  size="small"
+                  severity="danger"
+                  [outlined]="true"
+                  icon="pi pi-trash"
+                  [label]="'shared.actions.delete' | transloco"
+                  [ariaLabel]="'admin.poules.deletePouleAria' | transloco"
+                  (onClick)="onDeletePoule(serieRef, poule)"
+                  data-testid="delete-poule-button"
+                />
+              </div>
             }
-          </li>
+          </div>
+        </ng-template>
+        @if (role() === 'admin') {
+          <div class="mb-2">
+            <p-button
+              type="button"
+              severity="primary"
+              icon="pi pi-plus"
+              [label]="'admin.poules.addTeam' | transloco"
+              (onClick)="onAddTeamToPoule(poule)"
+              data-testid="add-team-to-poule-button"
+            />
+          </div>
         }
-      </ul>
-    </p-card>
-  }
+        <ul class="m-0 pl-5">
+          @for (refTeam of poule.refTeams; track refTeam.id) {
+            <li class="mb-1">
+              {{ getTeamName | apply: refTeam : teams() }}
+              @if (role() === 'admin') {
+                <p-button
+                  type="button"
+                  size="small"
+                  severity="danger"
+                  [outlined]="true"
+                  icon="pi pi-times"
+                  [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
+                  (onClick)="onRemoveTeamFromPoule(poule, refTeam)"
+                  data-testid="remove-team-from-poule-button"
+                />
+              }
+            </li>
+          }
+        </ul>
+      </p-card>
+    }
+  </div>
 </ng-template>
 
 <!-- Serie dialog -->

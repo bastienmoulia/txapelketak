@@ -252,5 +252,10 @@
       "editSummary": "Tournament edit",
       "editDetail": "Tournament editing will be available soon"
     }
+  },
+  "datepicker": {
+    "firstDayOfWeek": 0,
+    "dateFormat": "mm/dd/yy",
+    "placeholder": "mm/dd/yyyy hh:mm"
   }
 }

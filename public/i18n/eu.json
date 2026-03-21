@@ -252,5 +252,10 @@
       "editSummary": "Txapelketa editatu",
       "editDetail": "Txapelketa editatzea laster eskuragarri izango da"
     }
+  },
+  "datepicker": {
+    "firstDayOfWeek": 1,
+    "dateFormat": "dd/mm/yy",
+    "placeholder": "ee/hh/uuuu oo:mm"
   }
 }

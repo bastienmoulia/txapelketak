@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DatePicker } from 'primeng/datepicker';
+import { InputMask } from 'primeng/inputmask';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
 
@@ -50,7 +50,7 @@ export interface GenerateAllGamesEvent {
     FloatLabel,
     Select,
     InputNumberModule,
-    DatePicker,
+    InputMask,
     TableModule,
   ],
   templateUrl: './games.html',
@@ -70,6 +70,55 @@ export class Games {
   activeLanguage = toSignal(this.translocoService.langChanges$, {
     initialValue: this.translocoService.getActiveLang(),
   });
+
+  firstDayOfWeek = computed(() => {
+    this.activeLanguage(); // reactive dependency: re-evaluate on lang change
+    return Number(this.translocoService.translate('datepicker.firstDayOfWeek'));
+  });
+
+  datePlaceholder = computed(() => {
+    this.activeLanguage();
+    return this.translocoService.translate('datepicker.placeholder');
+  });
+
+  gameDateString = '';
+
+  private formatDateForMask(date: Date | null): string {
+    if (!date) return '';
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const y = String(date.getFullYear());
+    const h = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    if (this.activeLanguage() === 'en') {
+      return `${m}/${d}/${y} ${h}:${min}`;
+    }
+    return `${d}/${m}/${y} ${h}:${min}`;
+  }
+
+  onDateMaskComplete(): void {
+    const value = this.gameDateString;
+    const parts = value.split(' ');
+    if (parts.length < 2) return;
+    const dateParts = parts[0].split('/');
+    const timeParts = parts[1].split(':');
+    if (dateParts.length < 3 || timeParts.length < 2) return;
+    let day: number, month: number;
+    if (this.activeLanguage() === 'en') {
+      month = parseInt(dateParts[0]) - 1;
+      day = parseInt(dateParts[1]);
+    } else {
+      day = parseInt(dateParts[0]);
+      month = parseInt(dateParts[1]) - 1;
+    }
+    const year = parseInt(dateParts[2]);
+    const hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
+    const date = new Date(year, month, day, hours, minutes);
+    if (!isNaN(date.getTime())) {
+      this.gameDate.set(date);
+    }
+  }
 
   sortedSeries = computed(() =>
     [...this.series()]
@@ -138,6 +187,7 @@ export class Games {
     this.scoreTeam1.set(null);
     this.scoreTeam2.set(null);
     this.gameDate.set(null);
+    this.gameDateString = '';
     this.gameDialogVisible.set(true);
   }
 
@@ -150,7 +200,9 @@ export class Games {
     this.selectedTeam2Ref.set(game.refTeam2 ?? null);
     this.scoreTeam1.set(game.scoreTeam1 ?? null);
     this.scoreTeam2.set(game.scoreTeam2 ?? null);
-    this.gameDate.set(game.date ? new Date(game.date) : null);
+    const editDate = game.date ? new Date(game.date) : null;
+    this.gameDate.set(editDate);
+    this.gameDateString = this.formatDateForMask(editDate);
     this.gameDialogVisible.set(true);
   }
 

@@ -237,7 +237,10 @@ export class FirebaseService {
     });
   }
 
-  async addSeriesToTournament(tournamentRef: DocumentReference, name: string): Promise<DocumentReference> {
+  async addSeriesToTournament(
+    tournamentRef: DocumentReference,
+    name: string,
+  ): Promise<DocumentReference> {
     const serieDocRef = doc(collection(tournamentRef, 'series'));
     await runInInjectionContext(this.environmentInjector, async () => {
       await setDoc(serieDocRef, { name });
@@ -290,7 +293,10 @@ export class FirebaseService {
     });
   }
 
-  async removeTeamRefFromPoule(pouleRef: DocumentReference, teamRef: DocumentReference): Promise<void> {
+  async removeTeamRefFromPoule(
+    pouleRef: DocumentReference,
+    teamRef: DocumentReference,
+  ): Promise<void> {
     await runInInjectionContext(this.environmentInjector, async () => {
       await updateDoc(pouleRef, { refTeams: arrayRemove(teamRef) });
     });
@@ -323,7 +329,10 @@ export class FirebaseService {
     return gameDocRef;
   }
 
-  async updateGame(gameRef: DocumentReference, gameData: Partial<Omit<Game, 'ref'>>): Promise<void> {
+  async updateGame(
+    gameRef: DocumentReference,
+    gameData: Partial<Omit<Game, 'ref'>>,
+  ): Promise<void> {
     const data: Record<string, unknown> = {};
     if (gameData.refTeam1 !== undefined) data['refTeam1'] = gameData.refTeam1;
     if (gameData.refTeam2 !== undefined) data['refTeam2'] = gameData.refTeam2;

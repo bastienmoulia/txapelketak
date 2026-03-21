@@ -252,5 +252,10 @@
       "editSummary": "Edición del torneo",
       "editDetail": "La edición del torneo estará disponible pronto"
     }
+  },
+  "datepicker": {
+    "firstDayOfWeek": 0,
+    "dateFormat": "dd/mm/yy",
+    "placeholder": "dd/mm/aaaa hh:mm"
   }
 }

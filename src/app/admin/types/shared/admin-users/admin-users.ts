@@ -111,6 +111,10 @@ export class AdminUsers {
   }
 
   async onSaveUser(): Promise<void> {
+    if (!this.username() || !this.email() || !this.selectedRole()) {
+      return;
+    }
+
     const ref = this.editingRef();
     if (this.isEditing() && ref) {
       await this.firebaseService.updateUser(ref, {

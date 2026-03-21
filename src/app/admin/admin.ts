@@ -85,17 +85,16 @@ export class Admin {
     }
 
     try {
-      const result = await this.firebaseService.getTournamentByIdWithRef(tournamentId);
-      if (!result) {
+      const tournament = await this.firebaseService.getTournamentById(tournamentId);
+      if (!tournament) {
         return;
       }
 
-      const { tournament, ref } = result;
       console.log('Loaded tournament:', tournament);
 
       if (tournament.status == 'waitingValidation') {
         console.log('Tournament is waiting validation, updating status to paused');
-        await this.firebaseService.updateTournamentStatus(ref, 'paused');
+        await this.firebaseService.updateTournamentStatus(tournament.ref, 'paused');
         this.tournament.set({ ...tournament, status: 'paused' });
         this.messageService.add({
           severity: 'success',

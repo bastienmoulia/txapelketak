@@ -54,7 +54,7 @@ export class TournamentDetail {
     }
 
     this.firebaseService.watchTournaments().subscribe((all) => {
-      const found = all.find((t) => t.id === this.tournamentId());
+      const found = all.find((t) => t.ref.id === this.tournamentId());
       if (found) {
         this.tournament.set(found);
         this.notFound.set(false);

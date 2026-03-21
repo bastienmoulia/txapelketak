@@ -92,7 +92,7 @@ export class Home {
   ]);
 
   getTournamentLink(tournament: Tournament): string {
-    return `/tournaments/${tournament.id}`;
+    return `/tournaments/${tournament.ref.id}`;
   }
 
   createSoonAvailable(): void {

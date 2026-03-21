@@ -1,8 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DocumentReference } from '@angular/fire/firestore';
 import { provideRouter } from '@angular/router';
 
 import { Home } from './home';
 import { provideTranslocoTesting } from '../testing/transloco-testing.providers';
+
+function createRef(id: string): DocumentReference {
+  return { id } as DocumentReference;
+}
 
 describe('Home', () => {
   let component: Home;
@@ -50,7 +55,7 @@ describe('Home', () => {
   it('should limit recentTournaments to 5', () => {
     component.tournaments.set([
       {
-        id: '1',
+        ref: createRef('1'),
         name: 'T1',
         description: '',
         type: 'poules',
@@ -58,7 +63,7 @@ describe('Home', () => {
         createdAt: '2024-01-01',
       },
       {
-        id: '2',
+        ref: createRef('2'),
         name: 'T2',
         description: '',
         type: 'poules',
@@ -66,7 +71,7 @@ describe('Home', () => {
         createdAt: '2024-01-02',
       },
       {
-        id: '3',
+        ref: createRef('3'),
         name: 'T3',
         description: '',
         type: 'poules',
@@ -74,7 +79,7 @@ describe('Home', () => {
         createdAt: '2024-01-03',
       },
       {
-        id: '4',
+        ref: createRef('4'),
         name: 'T4',
         description: '',
         type: 'poules',
@@ -82,7 +87,7 @@ describe('Home', () => {
         createdAt: '2024-01-04',
       },
       {
-        id: '5',
+        ref: createRef('5'),
         name: 'T5',
         description: '',
         type: 'poules',
@@ -90,7 +95,7 @@ describe('Home', () => {
         createdAt: '2024-01-05',
       },
       {
-        id: '6',
+        ref: createRef('6'),
         name: 'T6',
         description: '',
         type: 'poules',
@@ -104,7 +109,7 @@ describe('Home', () => {
   it('should display the 5 most recently created tournaments', () => {
     component.tournaments.set([
       {
-        id: '1',
+        ref: createRef('1'),
         name: 'T1',
         description: '',
         type: 'poules',
@@ -112,7 +117,7 @@ describe('Home', () => {
         createdAt: '2024-01-01',
       },
       {
-        id: '2',
+        ref: createRef('2'),
         name: 'T2',
         description: '',
         type: 'poules',
@@ -120,7 +125,7 @@ describe('Home', () => {
         createdAt: '2024-01-02',
       },
       {
-        id: '3',
+        ref: createRef('3'),
         name: 'T3',
         description: '',
         type: 'poules',
@@ -128,7 +133,7 @@ describe('Home', () => {
         createdAt: '2024-01-03',
       },
       {
-        id: '4',
+        ref: createRef('4'),
         name: 'T4',
         description: '',
         type: 'poules',
@@ -136,7 +141,7 @@ describe('Home', () => {
         createdAt: '2024-01-04',
       },
       {
-        id: '5',
+        ref: createRef('5'),
         name: 'T5',
         description: '',
         type: 'poules',
@@ -144,7 +149,7 @@ describe('Home', () => {
         createdAt: '2024-01-05',
       },
       {
-        id: '6',
+        ref: createRef('6'),
         name: 'T6',
         description: '',
         type: 'poules',
@@ -153,8 +158,8 @@ describe('Home', () => {
       },
     ]);
     const recent = component.recentTournaments();
-    expect(recent[0].id).toBe('6');
-    expect(recent[4].id).toBe('2');
+    expect(recent[0].ref.id).toBe('6');
+    expect(recent[4].ref.id).toBe('2');
   });
 
   it('should display 6 feature cards', () => {

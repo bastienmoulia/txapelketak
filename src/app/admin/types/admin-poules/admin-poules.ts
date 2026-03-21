@@ -77,15 +77,14 @@ export class AdminPoules {
         return;
       }
 
-      if (this.loadedTournamentId() === tournament.id) {
+      if (this.loadedTournamentId() === tournament.ref.id) {
         return;
       }
 
-      this.loadedTournamentId.set(tournament.id);
-      const refResult = await this.firebaseService.getTournamentByIdWithRef(tournament.id);
-      this.tournamentRef.set(refResult?.ref ?? null);
-      this.teams.set(await this.loadTeams(tournament.id));
-      this.series.set(await this.loadSeries(tournament.id));
+      this.loadedTournamentId.set(tournament.ref.id);
+      this.tournamentRef.set(tournament.ref);
+      this.teams.set(await this.loadTeams(tournament.ref));
+      this.series.set(await this.loadSeries(tournament.ref));
     });
   }
 
@@ -106,26 +105,25 @@ export class AdminPoules {
     });
   }
 
-  private async loadTeams(tournamentId: number): Promise<Team[]> {
-    const result = await this.firebaseService.getTournamentCollection(tournamentId, 'teams');
-    const teams =
-      result?.map((item, index) => {
-        return {
-          ...(item.data as Partial<Team>),
-          ref: result[index].ref,
-        } as Team;
-      }) ?? [];
+  private async loadTeams(tournamentRef: DocumentReference): Promise<Team[]> {
+    const result = await this.firebaseService.getTournamentCollection(tournamentRef, 'teams');
+    const teams = result.map((item, index) => {
+      return {
+        ...(item.data as Partial<Team>),
+        ref: result[index].ref,
+      } as Team;
+    });
     return teams;
   }
 
-  private async loadSeries(tournamentId: number): Promise<Serie[]> {
-    const result = await this.firebaseService.getTournamentCollection(tournamentId, 'series');
-    const series = (result?.map((item, index) => {
+  private async loadSeries(tournamentRef: DocumentReference): Promise<Serie[]> {
+    const result = await this.firebaseService.getTournamentCollection(tournamentRef, 'series');
+    const series = result.map((item, index) => {
       return {
         ...(item.data as Partial<Serie>),
         ref: result[index].ref,
       } as Serie;
-    }) ?? []) as Serie[];
+    }) as Serie[];
 
     const seriesWithPoules = await Promise.all(
       series.map(async (serie) => {

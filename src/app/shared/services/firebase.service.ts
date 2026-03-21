@@ -3,21 +3,21 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
-  collectionData,
+  collectionSnapshots,
   deleteDoc,
   doc,
   DocumentReference,
   Firestore,
+  getDoc,
   getDocs,
   limit,
-  orderBy,
   query,
   setDoc,
   updateDoc,
   addDoc,
   where,
 } from '@angular/fire/firestore';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
 import { Game } from '../../tournaments/types/poules/poules';
@@ -38,18 +38,23 @@ export class FirebaseService {
       return of([]);
     }
 
-    return collectionData(collection(this.firestore, 'tournaments')) as Observable<Tournament[]>;
+    return collectionSnapshots(collection(this.firestore, 'tournaments')).pipe(
+      map((snapshots) =>
+        snapshots.map((snap) => ({ ref: snap.ref, ...snap.data() }) as Tournament),
+      ),
+    );
   }
 
-  async getUserByTournamentAndToken(tournamentId: number, token: string): Promise<User | null> {
+  async getUserByTournamentAndToken(tournamentId: string, token: string): Promise<User | null> {
     if (!this.firestore) {
       return null;
     }
 
+    const tournamentRef = doc(this.firestore, 'tournaments', tournamentId);
     const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
       const usersQuery = query(
         collection(this.firestore!, 'users'),
-        where('tournamentId', '==', tournamentId),
+        where('refTournament', '==', tournamentRef),
         where('token', '==', token),
         limit(1),
       );
@@ -63,96 +68,87 @@ export class FirebaseService {
     return snapshot.docs[0].data() as User;
   }
 
-  async getTournamentById(tournamentId: number): Promise<Tournament | null> {
+  async getTournamentById(tournamentId: string): Promise<Tournament | null> {
     if (!this.firestore) {
       return null;
     }
 
+    const tournamentRef = doc(this.firestore, 'tournaments', tournamentId);
     const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
-      const tournamentsQuery = query(
-        collection(this.firestore!, 'tournaments'),
-        where('id', '==', tournamentId),
-        limit(1),
-      );
-      return getDocs(tournamentsQuery);
+      return getDoc(tournamentRef);
     });
 
-    if (snapshot.empty) {
+    if (!snapshot.exists()) {
       return null;
     }
 
-    return snapshot.docs[0].data() as Tournament;
+    return { ref: snapshot.ref, ...snapshot.data() } as Tournament;
   }
 
   async getTournamentByIdWithRef(
-    tournamentId: number,
+    tournamentId: string,
   ): Promise<{ tournament: Tournament; ref: DocumentReference } | null> {
     if (!this.firestore) {
       return null;
     }
 
+    const tournamentRef = doc(this.firestore, 'tournaments', tournamentId);
     const snapshot = await runInInjectionContext(this.environmentInjector, async () => {
-      const tournamentsQuery = query(
-        collection(this.firestore!, 'tournaments'),
-        where('id', '==', tournamentId),
-        limit(1),
-      );
-      return getDocs(tournamentsQuery);
+      return getDoc(tournamentRef);
     });
 
-    if (snapshot.empty) {
+    if (!snapshot.exists()) {
       return null;
     }
 
-    const tournamentDoc = snapshot.docs[0];
+    const tournament = { ref: snapshot.ref, ...snapshot.data() } as Tournament;
     return {
-      tournament: tournamentDoc.data() as Tournament,
-      ref: tournamentDoc.ref,
+      tournament,
+      ref: snapshot.ref,
     };
   }
 
   async getTournamentWithCollectionyId(
-    tournamentId: number,
-    collenctionName: string,
+    tournamentRef: DocumentReference,
+    collectionName: string,
   ): Promise<{ tournament: Tournament; ref: DocumentReference } | null> {
-    const tournamentWithRef = await this.getTournamentByIdWithRef(tournamentId);
-    if (!tournamentWithRef) {
+    const tournamentSnapshot = await runInInjectionContext(this.environmentInjector, async () => {
+      return getDoc(tournamentRef);
+    });
+
+    if (!tournamentSnapshot.exists()) {
       return null;
     }
 
+    const tournament = { ref: tournamentRef, ...tournamentSnapshot.data() } as Tournament;
+
     const collectionSnapshot = await runInInjectionContext(this.environmentInjector, async () => {
-      return getDocs(collection(tournamentWithRef.ref, collenctionName));
+      return getDocs(collection(tournamentRef, collectionName));
     });
     const collectionData = collectionSnapshot.docs.map((doc) => doc.data() as unknown);
 
     return {
-      ref: tournamentWithRef.ref,
+      ref: tournamentRef,
       tournament: {
-        ...tournamentWithRef.tournament,
+        ...tournament,
         data: {
-          ...(tournamentWithRef.tournament.data ?? {}),
-          [collenctionName]: collectionData,
+          ...(tournament.data ?? {}),
+          [collectionName]: collectionData,
         },
       } as Tournament,
     };
   }
 
   async getTournamentCollection(
-    tournamentId: number,
-    collenctionName: string,
+    tournamentRef: DocumentReference,
+    collectionName: string,
   ): Promise<
-    | {
-        data: unknown;
-        ref: DocumentReference;
-      }[]
-    | null
+    {
+      data: unknown;
+      ref: DocumentReference;
+    }[]
   > {
-    const tournamentWithRef = await this.getTournamentByIdWithRef(tournamentId);
-    if (!tournamentWithRef) {
-      return null;
-    }
-
-    return await this.getCollectionFromDocumentRef(tournamentWithRef.ref, collenctionName);
+    return await this.getCollectionFromDocumentRef(tournamentRef, collectionName);
   }
 
   async getCollectionFromDocumentRef(
@@ -181,39 +177,15 @@ export class FirebaseService {
     });
   }
 
-  async getNextTournamentId(): Promise<number> {
+  async createTournament(tournament: Omit<Tournament, 'ref'>): Promise<DocumentReference | null> {
     if (!this.firestore) {
-      return 1;
+      return null;
     }
 
-    const latestTournamentSnapshot = await runInInjectionContext(
-      this.environmentInjector,
-      async () => {
-        const latestTournamentQuery = query(
-          collection(this.firestore!, 'tournaments'),
-          orderBy('id', 'desc'),
-          limit(1),
-        );
-        return getDocs(latestTournamentQuery);
-      },
-    );
-
-    const latestTournament = latestTournamentSnapshot.docs[0]?.data() as {
-      id?: number;
-    };
-    const latestTournamentId = typeof latestTournament?.id === 'number' ? latestTournament.id : 0;
-
-    return latestTournamentId + 1;
-  }
-
-  async createTournament(tournament: Tournament): Promise<void> {
-    if (!this.firestore) {
-      return;
-    }
-
-    await runInInjectionContext(this.environmentInjector, async () => {
-      await addDoc(collection(this.firestore!, 'tournaments'), tournament);
+    const docRef = await runInInjectionContext(this.environmentInjector, async () => {
+      return addDoc(collection(this.firestore!, 'tournaments'), tournament);
     });
+    return docRef;
   }
 
   async createUser(user: User): Promise<void> {

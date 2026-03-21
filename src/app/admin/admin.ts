@@ -50,10 +50,10 @@ export class Admin {
   }
 
   private async loadUser(): Promise<void> {
-    const tournamentId = Number(this.tournamentId());
+    const tournamentId = this.tournamentId();
     const token = this.token();
 
-    if (!this.firebaseService.isAvailable() || !Number.isFinite(tournamentId) || !token) {
+    if (!this.firebaseService.isAvailable() || !tournamentId || !token) {
       this.accessDenied.set(true);
       this.loading.set(false);
       return;
@@ -78,24 +78,23 @@ export class Admin {
   }
 
   async loadTournament(): Promise<void> {
-    const tournamentId = Number(this.tournamentId());
+    const tournamentId = this.tournamentId();
 
-    if (!this.firebaseService.isAvailable() || !Number.isFinite(tournamentId)) {
+    if (!this.firebaseService.isAvailable() || !tournamentId) {
       return;
     }
 
     try {
-      const result = await this.firebaseService.getTournamentByIdWithRef(tournamentId);
-      if (!result) {
+      const tournament = await this.firebaseService.getTournamentById(tournamentId);
+      if (!tournament) {
         return;
       }
 
-      const { tournament, ref } = result;
       console.log('Loaded tournament:', tournament);
 
       if (tournament.status == 'waitingValidation') {
         console.log('Tournament is waiting validation, updating status to paused');
-        await this.firebaseService.updateTournamentStatus(ref, 'paused');
+        await this.firebaseService.updateTournamentStatus(tournament.ref, 'paused');
         this.tournament.set({ ...tournament, status: 'paused' });
         this.messageService.add({
           severity: 'success',

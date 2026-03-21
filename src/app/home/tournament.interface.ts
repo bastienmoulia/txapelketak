@@ -1,9 +1,10 @@
+import type { DocumentReference } from '@angular/fire/firestore';
 import type { FinaleData } from '../tournaments/types/finale/finale';
 import type { PoulesFinaleData } from '../tournaments/types/poules-finale/poules-finale';
 import type { PoulesData } from '../tournaments/types/poules/poules';
 
 export interface Tournament<T extends TournamentType = TournamentType> {
-  id: number;
+  ref: DocumentReference;
   name: string;
   description: string;
   type: T;
@@ -13,7 +14,7 @@ export interface Tournament<T extends TournamentType = TournamentType> {
 }
 
 export interface User {
-  tournamentId: number;
+  refTournament: DocumentReference;
   username: string;
   email: string;
   token: string;

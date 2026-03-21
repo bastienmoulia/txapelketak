@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DocumentReference } from '@angular/fire/firestore';
 import { provideRouter } from '@angular/router';
 import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
 
@@ -16,7 +17,7 @@ describe('Poules', () => {
 
     fixture = TestBed.createComponent(Poules);
     fixture.componentRef.setInput('tournament', {
-      id: 1,
+      ref: { id: '1' } as DocumentReference,
       name: 'Test Tournoi',
       description: '',
       type: 'poules',

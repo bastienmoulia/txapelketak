@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { DocumentReference } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 
 import { TournamentDetail } from './tournament-detail';
@@ -53,7 +54,7 @@ describe('TournamentDetail', () => {
     component.loading.set(false);
     component.notFound.set(false);
     component.tournament.set({
-      id: 123,
+      ref: { id: '123' } as DocumentReference,
       name: 'Tournoi test',
       description: 'Description',
       type: 'poules',
@@ -76,7 +77,7 @@ describe('TournamentDetail', () => {
     component.loading.set(false);
     component.notFound.set(false);
     component.tournament.set({
-      id: 123,
+      ref: { id: '123' } as DocumentReference,
       name: 'Tournoi test',
       description: 'Description',
       type: 'poules',

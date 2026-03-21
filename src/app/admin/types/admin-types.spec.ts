@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DocumentReference } from '@angular/fire/firestore';
 import { MessageService } from 'primeng/api';
 
 import { AdminTypes } from './admin-types';
@@ -17,7 +18,7 @@ describe('AdminTypes', () => {
 
     fixture = TestBed.createComponent(AdminTypes);
     fixture.componentRef.setInput('tournament', {
-      id: 1,
+      ref: { id: '1' } as DocumentReference,
       name: 'Test Tournoi',
       description: '',
       type: 'poules',

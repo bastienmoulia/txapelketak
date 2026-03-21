@@ -1,15 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DocumentReference } from '@angular/fire/firestore';
 import { provideRouter } from '@angular/router';
 import { Tournament } from '../../home/tournament.interface';
 
 import { TournamentsTable } from './tournaments-table';
 import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
+function createRef(id: string): DocumentReference {
+  return { id } as DocumentReference;
+}
+
 describe('TournamentsTable', () => {
   let component: TournamentsTable;
   let fixture: ComponentFixture<TournamentsTable>;
   const getTournamentLink = (tournament: Tournament): string => {
-    return `/custom/${tournament.id}`;
+    return `/custom/${tournament.ref.id}`;
   };
 
   beforeEach(async () => {
@@ -38,7 +43,7 @@ describe('TournamentsTable', () => {
   it('should disable open button for paused and waitingValidation tournaments', async () => {
     fixture.componentRef.setInput('tournaments', [
       {
-        id: 1,
+        ref: createRef('1'),
         name: 'T1',
         description: '',
         type: 'poules',
@@ -46,7 +51,7 @@ describe('TournamentsTable', () => {
         createdAt: '2024-01-01',
       },
       {
-        id: 2,
+        ref: createRef('2'),
         name: 'T2',
         description: '',
         type: 'poules',
@@ -54,7 +59,7 @@ describe('TournamentsTable', () => {
         createdAt: '2024-01-02',
       },
       {
-        id: 3,
+        ref: createRef('3'),
         name: 'T3',
         description: '',
         type: 'poules',
@@ -85,7 +90,7 @@ describe('TournamentsTable', () => {
   it('should sort tournaments by name when clicking Nom header', async () => {
     fixture.componentRef.setInput('tournaments', [
       {
-        id: 1,
+        ref: createRef('1'),
         name: 'Zeta',
         description: '',
         type: 'poules',
@@ -93,7 +98,7 @@ describe('TournamentsTable', () => {
         createdAt: '2024-01-01',
       },
       {
-        id: 2,
+        ref: createRef('2'),
         name: 'Alpha',
         description: '',
         type: 'finale',
@@ -123,11 +128,11 @@ describe('TournamentsTable', () => {
     const calledWith: Tournament[] = [];
     fixture.componentRef.setInput('getTournamentLink', (tournament: Tournament) => {
       calledWith.push(tournament);
-      return `/custom/${tournament.id}`;
+      return `/custom/${tournament.ref.id}`;
     });
     fixture.componentRef.setInput('tournaments', [
       {
-        id: 42,
+        ref: createRef('42'),
         name: 'T42',
         description: '',
         type: 'poules',
@@ -139,6 +144,6 @@ describe('TournamentsTable', () => {
     await fixture.whenStable();
 
     expect(calledWith.length).toBeGreaterThan(0);
-    expect(calledWith.some((tournament) => tournament.id === 42)).toBe(true);
+    expect(calledWith.some((tournament) => tournament.ref.id === '42')).toBe(true);
   });
 });

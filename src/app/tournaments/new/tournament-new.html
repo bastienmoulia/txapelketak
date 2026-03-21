@@ -1,20 +1,21 @@
 <div class="flex justify-center py-8 px-4 min-h-[calc(100vh-4rem)] bg-[var(--p-surface-ground)]">
-  <div class="w-full max-w-[640px] bg-[var(--p-surface-card)] rounded-[var(--p-border-radius-xl)] p-8 shadow-[var(--p-card-shadow)]">
-    <h1 class="text-[1.75rem] font-bold mt-0 mb-6 text-[var(--p-text-color)]">{{ 'tournaments.new.title' | transloco }}</h1>
+  <div
+    class="w-full max-w-[640px] bg-[var(--p-surface-card)] rounded-[var(--p-border-radius-xl)] p-8 shadow-[var(--p-card-shadow)]"
+  >
+    <h1 class="text-[1.75rem] font-bold mt-0 mb-6 text-[var(--p-text-color)]">
+      {{ 'tournaments.new.title' | transloco }}
+    </h1>
 
-    <p-steps
-      [model]="steps"
-      [activeIndex]="currentStep()"
-      [readonly]="true"
-      class="block mb-8"
-    />
+    <p-steps [model]="steps" [activeIndex]="currentStep()" [readonly]="true" class="block mb-8" />
 
     @if (!submitted()) {
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
         <!-- Step 1: Informations -->
         @if (currentStep() === 0) {
           <div class="flex flex-col gap-5" data-testid="step-1">
-            <h2 class="text-xl font-semibold m-0 text-[var(--p-text-color)]">{{ 'tournaments.new.step1.title' | transloco }}</h2>
+            <h2 class="text-xl font-semibold m-0 text-[var(--p-text-color)]">
+              {{ 'tournaments.new.step1.title' | transloco }}
+            </h2>
 
             <div class="flex flex-col gap-2">
               <p-floatlabel variant="on">
@@ -44,7 +45,11 @@
                 [style]="{ height: '160px' }"
                 data-testid="field-description"
               >
-                <ng-template #toolbar>
+                <ng-template #header>
+                  <!-- eslint-disable @angular-eslint/template/elements-content -->
+                  <span class="ql-formats">
+                    <button class="ql-header"></button>
+                  </span>
                   <span class="ql-formats">
                     <button class="ql-bold"></button>
                     <button class="ql-italic"></button>
@@ -57,6 +62,7 @@
                   <span class="ql-formats">
                     <button class="ql-link"></button>
                   </span>
+                  <!-- eslint-enable @angular-eslint/template/elements-content -->
                 </ng-template>
               </p-editor>
             </div>
@@ -80,7 +86,9 @@
         <!-- Step 2: Créateur -->
         @if (currentStep() === 1) {
           <div class="flex flex-col gap-5" data-testid="step-2">
-            <h2 class="text-xl font-semibold m-0 text-[var(--p-text-color)]">{{ 'tournaments.new.step2.title' | transloco }}</h2>
+            <h2 class="text-xl font-semibold m-0 text-[var(--p-text-color)]">
+              {{ 'tournaments.new.step2.title' | transloco }}
+            </h2>
             <p class="m-0 text-[var(--p-text-muted-color)] text-[0.9rem]">
               {{ 'tournaments.new.step2.description' | transloco }}
             </p>
@@ -133,7 +141,9 @@
         }
 
         <!-- Navigation -->
-        <div class="flex justify-between items-center pt-4 border-t border-[var(--p-surface-border)]">
+        <div
+          class="flex justify-between items-center pt-4 border-t border-[var(--p-surface-border)]"
+        >
           <div class="flex gap-2">
             @if (currentStep() > 0) {
               <p-button
@@ -186,8 +196,12 @@
         <div class="text-[4rem] text-[var(--p-green-500)]">
           <i class="pi pi-check-circle"></i>
         </div>
-        <h2 class="text-2xl font-bold m-0 text-[var(--p-text-color)]">{{ 'tournaments.new.success.title' | transloco }}</h2>
-        <p class="m-0 text-[var(--p-text-muted-color)]">{{ 'tournaments.new.success.message' | transloco }}</p>
+        <h2 class="text-2xl font-bold m-0 text-[var(--p-text-color)]">
+          {{ 'tournaments.new.success.title' | transloco }}
+        </h2>
+        <p class="m-0 text-[var(--p-text-muted-color)]">
+          {{ 'tournaments.new.success.message' | transloco }}
+        </p>
         <a href="{{ adminUrl() }}" target="_blank" rel="noopener" data-testid="admin-link">
           {{ adminUrl() }}
         </a>

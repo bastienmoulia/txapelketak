@@ -75,7 +75,7 @@ export class Poules {
   tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
-  private loadedTournamentId = signal<number | null>(null);
+  private loadedTournamentId = signal<string | null>(null);
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(

@@ -17,7 +17,7 @@ describe('AdminPoules', () => {
 
     fixture = TestBed.createComponent(AdminPoules);
     fixture.componentRef.setInput('tournament', {
-      id: 1,
+      id: '1',
       name: 'Tournoi test',
       description: '',
       type: 'poules',

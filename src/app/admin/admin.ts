@@ -50,10 +50,10 @@ export class Admin {
   }
 
   private async loadUser(): Promise<void> {
-    const tournamentId = Number(this.tournamentId());
+    const tournamentId = this.tournamentId();
     const token = this.token();
 
-    if (!this.firebaseService.isAvailable() || !Number.isFinite(tournamentId) || !token) {
+    if (!this.firebaseService.isAvailable() || !tournamentId || !token) {
       this.accessDenied.set(true);
       this.loading.set(false);
       return;
@@ -78,9 +78,9 @@ export class Admin {
   }
 
   async loadTournament(): Promise<void> {
-    const tournamentId = Number(this.tournamentId());
+    const tournamentId = this.tournamentId();
 
-    if (!this.firebaseService.isAvailable() || !Number.isFinite(tournamentId)) {
+    if (!this.firebaseService.isAvailable() || !tournamentId) {
       return;
     }
 

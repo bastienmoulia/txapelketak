@@ -57,7 +57,7 @@ export class AdminPoules {
   series = signal<Serie[]>([]);
 
   private tournamentRef = signal<DocumentReference | null>(null);
-  private loadedTournamentId = signal<number | null>(null);
+  private loadedTournamentId = signal<string | null>(null);
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(

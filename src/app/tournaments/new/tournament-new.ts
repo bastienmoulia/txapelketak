@@ -122,16 +122,16 @@ export class TournamentNew {
       const creatorUsername = (value.creatorUsername ?? '').trim();
       const creatorEmail = (value.creatorEmail ?? '').trim();
 
-      const tournamentId = await this.firebaseService.getNextTournamentId();
-
-      const tournament: Tournament = {
-        id: tournamentId,
+      const tournament: Omit<Tournament, 'id'> = {
         name: tournamentName,
         description: value.description ?? '',
         type: value.type as TournamentType,
         status: 'waitingValidation' as const,
         createdAt: new Date().toISOString(),
       };
+
+      const tournamentId = await this.firebaseService.createTournament(tournament);
+
       const user: User = {
         tournamentId: tournamentId,
         username: creatorUsername,
@@ -140,10 +140,9 @@ export class TournamentNew {
         rights: ['admin'],
       };
 
-      await this.firebaseService.createTournament(tournament);
       await this.firebaseService.createUser(user);
 
-      this.adminUrl.set(`${window.location.origin}/tournaments/${tournament.id}/${user.token}`);
+      this.adminUrl.set(`${window.location.origin}/tournaments/${tournamentId}/${user.token}`);
 
       /*await this.firebaseService.queueMail(
         creatorEmail,

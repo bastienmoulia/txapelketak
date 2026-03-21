@@ -3,7 +3,7 @@ import type { PoulesFinaleData } from '../tournaments/types/poules-finale/poules
 import type { PoulesData } from '../tournaments/types/poules/poules';
 
 export interface Tournament<T extends TournamentType = TournamentType> {
-  id: number;
+  id: string;
   name: string;
   description: string;
   type: T;
@@ -13,7 +13,7 @@ export interface Tournament<T extends TournamentType = TournamentType> {
 }
 
 export interface User {
-  tournamentId: number;
+  tournamentId: string;
   username: string;
   email: string;
   token: string;

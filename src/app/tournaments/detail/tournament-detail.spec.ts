@@ -53,7 +53,7 @@ describe('TournamentDetail', () => {
     component.loading.set(false);
     component.notFound.set(false);
     component.tournament.set({
-      id: 123,
+      id: '123',
       name: 'Tournoi test',
       description: 'Description',
       type: 'poules',
@@ -76,7 +76,7 @@ describe('TournamentDetail', () => {
     component.loading.set(false);
     component.notFound.set(false);
     component.tournament.set({
-      id: 123,
+      id: '123',
       name: 'Tournoi test',
       description: 'Description',
       type: 'poules',

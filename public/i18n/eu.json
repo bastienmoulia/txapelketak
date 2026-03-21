@@ -258,6 +258,7 @@
     },
     "tournamentHeader": {
       "admin": "Administraria",
+      "organizer": "Antolatzailea",
       "edit": "Txapelketa editatu",
       "editAria": "Txapelketa hau editatu",
       "hideDetails": "Xehetasunak izkutatu",

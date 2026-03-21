@@ -38,11 +38,13 @@ describe('TournamentHeader', () => {
     component.toggleDetails();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('[data-testid="tournament-details"]')).not.toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="tournament-details"]'),
+    ).not.toBeNull();
   });
 
   it('should render edit button when admin is true', () => {
-    fixture.componentRef.setInput('admin', true);
+    fixture.componentRef.setInput('role', 'admin');
     fixture.detectChanges();
 
     expect(
@@ -51,7 +53,7 @@ describe('TournamentHeader', () => {
   });
 
   it('should not render edit button when admin is false', () => {
-    fixture.componentRef.setInput('admin', false);
+    fixture.componentRef.setInput('role', 'observer');
     fixture.detectChanges();
 
     expect(

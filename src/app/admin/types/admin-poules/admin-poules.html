@@ -11,7 +11,7 @@
       <app-poules-tab
         [series]="series()"
         [teams]="teams()"
-        [admin]="true"
+        role="admin"
         (saveSerie)="onSaveSerie($event)"
         (deleteSerie)="onDeleteSerie($event)"
         (savePoule)="onSavePoule($event)"
@@ -32,7 +32,7 @@
       <app-games
         [series]="series()"
         [teams]="teams()"
-        [admin]="true"
+        role="admin"
         (saveGame)="onSaveGame($event)"
         (generateAllGames)="onGenerateAllGames($event)"
         (deleteGame)="onDeleteGame($event)"

@@ -23,7 +23,7 @@
     />
   </div>
 } @else if (tournament() && user()) {
-  <app-tournament-header [tournament]="tournament()!" [admin]="true" />
+  <app-tournament-header [tournament]="tournament()!" [role]="user()!.role" />
   <app-admin-types [tournament]="tournament()!" />
 } @else {
   <p-message severity="warn" icon="pi pi-exclamation-triangle">

@@ -30,7 +30,7 @@ export class TournamentHeader {
   #translocoService = inject(TranslocoService);
 
   tournament = input.required<Tournament>();
-  admin = input<boolean>(false);
+  role = input<string>('');
   detailsExpanded = signal(false);
 
   creator = computed(() => this.resolveCreator(this.tournament()));

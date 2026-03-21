@@ -257,7 +257,8 @@
       "waitingValidation": "Awaiting validation"
     },
     "tournamentHeader": {
-      "admin": "Admin",
+      "admin": "Administrator",
+      "organizer": "Organizer",
       "edit": "Edit tournament",
       "editAria": "Edit this tournament",
       "hideDetails": "Hide details",

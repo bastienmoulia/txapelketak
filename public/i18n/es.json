@@ -257,7 +257,8 @@
       "waitingValidation": "En espera de validación"
     },
     "tournamentHeader": {
-      "admin": "Admin",
+      "admin": "Administrador",
+      "organizer": "Organizador",
       "edit": "Editar torneo",
       "editAria": "Editar este torneo",
       "hideDetails": "Ocultar detalles",

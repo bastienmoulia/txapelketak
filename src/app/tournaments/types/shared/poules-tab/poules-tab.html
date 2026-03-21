@@ -1,4 +1,4 @@
-@if (admin()) {
+@if (role() === 'admin') {
   <div class="mb-3">
     <p-button
       type="button"
@@ -17,7 +17,7 @@
         <p-accordion-header>
           <div class="flex align-items-center justify-content-between w-full pr-2">
             <span class="font-bold">{{ serie.name }}</span>
-            @if (admin()) {
+            @if (role() === 'admin') {
               <div class="flex gap-2">
                 <p-button
                   type="button"
@@ -63,7 +63,7 @@
 }
 
 <ng-template #poules let-poules let-serieRef="serieRef">
-  @if (admin()) {
+  @if (role() === 'admin') {
     <div class="mb-2">
       <p-button
         type="button"
@@ -80,7 +80,7 @@
       <ng-template #header>
         <div class="flex align-items-center justify-content-between px-3 pt-3">
           <span class="font-bold">{{ poule.name }}</span>
-          @if (admin()) {
+          @if (role() === 'admin') {
             <div class="flex gap-2">
               <p-button
                 type="button"
@@ -108,7 +108,7 @@
           }
         </div>
       </ng-template>
-      @if (admin()) {
+      @if (role() === 'admin') {
         <div class="mb-2">
           <p-button
             type="button"
@@ -124,7 +124,7 @@
         @for (refTeam of poule.refTeams; track refTeam.id) {
           <li class="mb-1">
             {{ getTeamName | apply: refTeam : teams() }}
-            @if (admin()) {
+            @if (role() === 'admin') {
               <p-button
                 type="button"
                 size="small"

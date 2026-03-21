@@ -58,7 +58,7 @@ export interface TeamInPouleEvent {
 export class PoulesTab {
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
-  role = input<string>('observer');
+  role = input<string>('');
 
   saveSerie = output<SaveSerieEvent>();
   deleteSerie = output<Serie>();

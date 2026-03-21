@@ -52,8 +52,8 @@ describe('TournamentHeader', () => {
     ).not.toBeNull();
   });
 
-  it('should not render edit button when admin is false', () => {
-    fixture.componentRef.setInput('role', 'observer');
+  it('should not render edit button when role is empty', () => {
+    fixture.componentRef.setInput('role', '');
     fixture.detectChanges();
 
     expect(

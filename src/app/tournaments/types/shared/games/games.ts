@@ -61,7 +61,7 @@ export class Games {
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
-  role = input<string>('observer');
+  role = input<string>('');
 
   saveGame = output<SaveGameEvent>();
   deleteGame = output<DeleteGameEvent>();

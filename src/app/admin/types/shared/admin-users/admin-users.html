@@ -1,3 +1,22 @@
+<p-toast key="admin-users" position="top-right">
+  <ng-template let-message #message>
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1">
+        <span class="font-semibold">{{ message.summary }}</span>
+        @if (message.detail) {
+          <span>{{ message.detail }}</span>
+        }
+      </div>
+
+      @if (getToastAdminUrl(message); as adminUrl) {
+        <a pButton severity="contrast" [href]="adminUrl" target="_blank" rel="noopener noreferrer">
+          {{ 'admin.users.openAdminLink' | transloco }}
+        </a>
+      }
+    </div>
+  </ng-template>
+</p-toast>
+
 <div class="mb-3">
   <p-button
     type="button"

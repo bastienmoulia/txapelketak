@@ -54,6 +54,8 @@ export class AdminPoules {
   private router = inject(Router);
 
   tournament = input.required<Tournament>();
+  role = input<string>('');
+
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
 

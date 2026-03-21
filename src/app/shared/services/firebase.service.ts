@@ -188,13 +188,13 @@ export class FirebaseService {
     return docRef;
   }
 
-  async createUser(user: User): Promise<void> {
+  async createUser(user: User): Promise<DocumentReference | null> {
     if (!this.firestore) {
-      return;
+      return null;
     }
 
-    await runInInjectionContext(this.environmentInjector, async () => {
-      await addDoc(collection(this.firestore!, 'users'), user);
+    return runInInjectionContext(this.environmentInjector, async () => {
+      return addDoc(collection(this.firestore!, 'users'), user);
     });
   }
 

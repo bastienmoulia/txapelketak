@@ -17,6 +17,7 @@ import { PoulesFinaleData } from '../../tournaments/types/poules-finale/poules-f
 })
 export class AdminTypes {
   tournament = input.required<Tournament>();
+  role = input<string>('');
 
   poulesData = computed(() => this.tournament().data as PoulesData);
   finaleData = computed(() => this.tournament().data as FinaleData);

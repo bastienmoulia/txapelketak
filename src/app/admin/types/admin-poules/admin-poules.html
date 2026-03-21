@@ -1,45 +1,54 @@
 <p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
   <p-tablist>
-    <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
-    <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    @if (role() === 'admin') {
+      <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
+      <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    }
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
-    <p-tab value="users">{{ 'admin.tabs.users' | transloco }}</p-tab>
+    @if (role() === 'admin') {
+      <p-tab value="users">{{ 'admin.tabs.users' | transloco }}</p-tab>
+    }
   </p-tablist>
 
   <p-tabpanels>
-    <p-tabpanel value="poules">
-      <app-poules-tab
-        [series]="series()"
-        [teams]="teams()"
-        role="admin"
-        (saveSerie)="onSaveSerie($event)"
-        (deleteSerie)="onDeleteSerie($event)"
-        (savePoule)="onSavePoule($event)"
-        (deletePoule)="onDeletePoule($event)"
-        (addTeamToPoule)="onAddTeamToPoule($event)"
-        (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
-      />
-    </p-tabpanel>
-    <p-tabpanel value="teams">
-      <app-admin-teams
-        [teams]="teams()"
-        (saveTeam)="onSaveTeam($event)"
-        (saveTeams)="onSaveTeams($event)"
-        (deleteTeam)="onDeleteTeam($event)"
-      />
-    </p-tabpanel>
+    @if (role() === 'admin') {
+      <p-tabpanel value="poules">
+        <app-poules-tab
+          [series]="series()"
+          [teams]="teams()"
+          [role]="role()"
+          (saveSerie)="onSaveSerie($event)"
+          (deleteSerie)="onDeleteSerie($event)"
+          (savePoule)="onSavePoule($event)"
+          (deletePoule)="onDeletePoule($event)"
+          (addTeamToPoule)="onAddTeamToPoule($event)"
+          (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
+        />
+      </p-tabpanel>
+      <p-tabpanel value="teams">
+        <app-admin-teams
+          [teams]="teams()"
+          [role]="role()"
+          (saveTeam)="onSaveTeam($event)"
+          (saveTeams)="onSaveTeams($event)"
+          (deleteTeam)="onDeleteTeam($event)"
+        />
+      </p-tabpanel>
+    }
     <p-tabpanel value="games">
       <app-games
         [series]="series()"
         [teams]="teams()"
-        role="admin"
+        [role]="role()"
         (saveGame)="onSaveGame($event)"
         (generateAllGames)="onGenerateAllGames($event)"
         (deleteGame)="onDeleteGame($event)"
       />
     </p-tabpanel>
-    <p-tabpanel value="users">
-      <app-admin-users [tournament]="tournament()" />
-    </p-tabpanel>
+    @if (role() === 'admin') {
+      <p-tabpanel value="users">
+        <app-admin-users [tournament]="tournament()" />
+      </p-tabpanel>
+    }
   </p-tabpanels>
 </p-tabs>

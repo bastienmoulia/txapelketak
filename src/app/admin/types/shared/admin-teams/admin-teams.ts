@@ -31,6 +31,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 })
 export class AdminTeams {
   teams = input.required<Team[]>();
+  role = input<string>('');
 
   saveTeam = output<Team>();
   saveTeams = output<Team[]>();

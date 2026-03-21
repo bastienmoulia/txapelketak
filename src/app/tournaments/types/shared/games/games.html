@@ -69,7 +69,7 @@
                 <th>{{ 'admin.games.score' | transloco }}</th>
                 <th>{{ 'admin.games.team2' | transloco }}</th>
                 <th>{{ 'admin.games.date' | transloco }}</th>
-                @if (role() === 'admin') {
+                @if (role() === 'admin' || role() === 'organizer') {
                   <th class="games-table__actions-header">
                     {{ 'shared.table.columns.actions' | transloco }}
                   </th>
@@ -109,7 +109,7 @@
                     <span class="text-color-secondary">-</span>
                   }
                 </td>
-                @if (role() === 'admin') {
+                @if (role() === 'admin' || role() === 'organizer') {
                   <td [attr.data-label]="'shared.table.columns.actions' | transloco">
                     <div class="flex justify-end gap-1">
                       <p-button
@@ -121,15 +121,17 @@
                         [text]="true"
                         (onClick)="onEditGame(poule, game)"
                       />
-                      <p-button
-                        icon="pi pi-trash"
-                        [ariaLabel]="'admin.games.deleteAria' | transloco"
-                        severity="danger"
-                        size="small"
-                        [rounded]="true"
-                        [text]="true"
-                        (onClick)="onDeleteGame(game.ref)"
-                      />
+                      @if (role() === 'admin') {
+                        <p-button
+                          icon="pi pi-trash"
+                          [ariaLabel]="'admin.games.deleteAria' | transloco"
+                          severity="danger"
+                          size="small"
+                          [rounded]="true"
+                          [text]="true"
+                          (onClick)="onDeleteGame(game.ref)"
+                        />
+                      }
                     </div>
                   </td>
                 }

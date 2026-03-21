@@ -62,9 +62,17 @@
         />
       </div>
 
-      <p class="m-0 text-[var(--p-text-muted-color)]">
-        {{ tournament().description || ('shared.tournamentHeader.noDescription' | transloco) }}
-      </p>
+      @if (tournament().description) {
+        <div
+          class="m-0 text-[var(--p-text-muted-color)] ql-editor !p-0"
+          [innerHTML]="tournament().description"
+          data-testid="tournament-description"
+        ></div>
+      } @else {
+        <p class="m-0 text-[var(--p-text-muted-color)]" data-testid="tournament-description">
+          {{ 'shared.tournamentHeader.noDescription' | transloco }}
+        </p>
+      }
     </div>
   }
 </section>

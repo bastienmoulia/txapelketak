@@ -19,11 +19,7 @@ import { FirebaseService } from '../../../shared/services/firebase.service';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Games } from '../shared/games/games';
-import {
-  DEFAULT_POULES_ROUTE_TAB,
-  getPoulesRouteTab,
-  POULES_TAB_QUERY_PARAM,
-} from './poules.route';
+import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './poules.route';
 
 export interface PoulesData {
   teams?: Team[];
@@ -81,7 +77,7 @@ export class Poules {
     this.activatedRoute.queryParamMap.pipe(
       map((queryParams) => getPoulesRouteTab(queryParams.get(POULES_TAB_QUERY_PARAM))),
     ),
-    { initialValue: DEFAULT_POULES_ROUTE_TAB },
+    { initialValue: POULES_ROUTE_TABS[0] },
   );
 
   activeTab = computed(() => this.tabFromUrl());

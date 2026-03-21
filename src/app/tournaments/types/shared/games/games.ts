@@ -13,9 +13,10 @@ import { FormsModule } from '@angular/forms';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { InputMask } from 'primeng/inputmask';
+import { InputMaskModule } from 'primeng/inputmask';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
+import { DatePicker } from 'primeng/datepicker';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -50,8 +51,9 @@ export interface GenerateAllGamesEvent {
     FloatLabel,
     Select,
     InputNumberModule,
-    InputMask,
     TableModule,
+    DatePicker,
+    InputMaskModule,
   ],
   templateUrl: './games.html',
   styleUrl: './games.css',

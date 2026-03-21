@@ -221,13 +221,17 @@
     <!-- Ligne 3 : Date (optionnelle) -->
     <div>
       <p-floatlabel variant="on">
-        <p-inputmask
+        <p-datepicker
           inputId="gameDate"
           [(ngModel)]="gameDateString"
-          mask="99/99/9999 99:99"
+          pInputMask="99/99/9999 99:99"
           [placeholder]="datePlaceholder()"
           [style]="{ width: '100%' }"
           [showClear]="true"
+          [showIcon]="true"
+          [showOnFocus]="false"
+          [showTime]="true"
+          appendTo="body"
           (onComplete)="onDateMaskComplete()"
           (onClear)="gameDate.set(null); gameDateString = ''"
         />

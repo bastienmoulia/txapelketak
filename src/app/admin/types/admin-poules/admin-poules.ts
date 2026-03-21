@@ -33,7 +33,7 @@ import {
   SaveGameEvent,
 } from '../../../tournaments/types/shared/games/games';
 import {
-  DEFAULT_POULES_ROUTE_TAB,
+  POULES_ROUTE_TABS,
   getPoulesRouteTab,
   POULES_TAB_QUERY_PARAM,
 } from '../../../tournaments/types/poules/poules.route';
@@ -42,7 +42,15 @@ import { AdminImportExport } from '../shared/admin-import-export/admin-import-ex
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Games, AdminUsers, AdminImportExport],
+  imports: [
+    TabsModule,
+    AdminTeams,
+    TranslocoModule,
+    PoulesTab,
+    Games,
+    AdminUsers,
+    AdminImportExport,
+  ],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -66,7 +74,7 @@ export class AdminPoules {
     this.activatedRoute.queryParamMap.pipe(
       map((queryParams) => getPoulesRouteTab(queryParams.get(POULES_TAB_QUERY_PARAM))),
     ),
-    { initialValue: DEFAULT_POULES_ROUTE_TAB },
+    { initialValue: POULES_ROUTE_TABS[0] },
   );
 
   activeTab = computed(() => this.tabFromUrl());

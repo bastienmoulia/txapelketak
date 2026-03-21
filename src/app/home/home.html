@@ -2,7 +2,7 @@
   <p-toast />
   <!-- Hero Section -->
   <div class="text-center py-12 px-4">
-    <h1 class="text-5xl font-bold mb-4">Txapelketak</h1>
+    <h1 class="text-5xl font-bold mb-4 text-[var(--p-primary-color)]"><i class="pi pi-trophy mr-3"></i>Txapelketak</h1>
     <p class="text-xl mb-8 opacity-80">{{ 'home.hero.subtitle' | transloco }}</p>
     <p-button
       [label]="'home.hero.createButton' | transloco"
@@ -55,7 +55,10 @@
       @for (feature of features(); track feature.titleKey) {
         <p-card class="feature-card">
           <div class="text-center p-2">
-            <i [class]="feature.icon" class="text-[2.5rem] text-[var(--p-primary-color)] block mb-4"></i>
+            <i
+              [class]="feature.icon"
+              class="text-[2.5rem] text-[var(--p-primary-color)] block mb-4"
+            ></i>
             <h3 class="text-[1.1rem] font-semibold mb-2">{{ feature.titleKey | transloco }}</h3>
             <p class="opacity-80 m-0">{{ feature.descriptionKey | transloco }}</p>
           </div>

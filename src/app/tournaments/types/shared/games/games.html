@@ -170,6 +170,7 @@
             optionValue="ref"
             [style]="{ width: '100%' }"
             appendTo="body"
+            [disabled]="role() !== 'admin'"
           />
           <label for="team1">{{ 'admin.games.team1' | transloco }}</label>
         </p-floatlabel>
@@ -199,6 +200,7 @@
             optionValue="ref"
             [style]="{ width: '100%' }"
             appendTo="body"
+            [disabled]="role() !== 'admin'"
           />
           <label for="team2">{{ 'admin.games.team2' | transloco }}</label>
         </p-floatlabel>

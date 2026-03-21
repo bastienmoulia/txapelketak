@@ -1,0 +1,70 @@
+<div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-2">
+    <h3 class="text-lg font-semibold">{{ 'admin.importExport.exportTitle' | transloco }}</h3>
+    <p class="text-surface-500">{{ 'admin.importExport.exportDescription' | transloco }}</p>
+    <div>
+      <p-button
+        type="button"
+        icon="pi pi-download"
+        [label]="'admin.importExport.exportButton' | transloco"
+        (onClick)="onExport()"
+      />
+    </div>
+  </div>
+
+  <p-divider />
+
+  <div class="flex flex-col gap-2">
+    <h3 class="text-lg font-semibold">{{ 'admin.importExport.importTitle' | transloco }}</h3>
+    <p class="text-surface-500">{{ 'admin.importExport.importDescription' | transloco }}</p>
+    <div>
+      <input
+        #fileInput
+        type="file"
+        accept=".yaml,.yml"
+        class="hidden"
+        (change)="onImportFileChange($event)"
+      />
+      <p-button
+        type="button"
+        icon="pi pi-upload"
+        severity="secondary"
+        [label]="'admin.importExport.importButton' | transloco"
+        (onClick)="fileInput.click()"
+      />
+    </div>
+    @if (importError()) {
+      <p-message severity="error">{{ importError() }}</p-message>
+    }
+  </div>
+</div>
+
+<!-- Import confirmation dialog -->
+<p-dialog
+  [header]="'admin.importExport.importConfirmTitle' | transloco"
+  [modal]="true"
+  [(visible)]="importDialogVisible"
+  [style]="{ width: '30rem' }"
+>
+  <p>{{ 'admin.importExport.importConfirmMessage' | transloco }}</p>
+  @if (parsedImportData(); as data) {
+    <ul class="mt-3 list-disc pl-5 text-surface-600">
+      <li>{{ 'admin.importExport.teamsCount' | transloco : { count: data.teams.length } }}</li>
+      <li>{{ 'admin.importExport.seriesCount' | transloco : { count: data.series.length } }}</li>
+    </ul>
+  }
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      [disabled]="isImporting()"
+      (onClick)="onCancelImport()"
+    />
+    <p-button
+      [label]="'admin.importExport.importConfirm' | transloco"
+      severity="danger"
+      [loading]="isImporting()"
+      (onClick)="onConfirmImport()"
+    />
+  </ng-template>
+</p-dialog>

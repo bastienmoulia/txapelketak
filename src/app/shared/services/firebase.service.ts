@@ -21,6 +21,7 @@ import { map, Observable, of } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
 import { Game } from '../../tournaments/types/poules/poules';
+import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 
 @Injectable({
   providedIn: 'root',
@@ -373,5 +374,76 @@ export class FirebaseService {
     await runInInjectionContext(this.environmentInjector, async () => {
       await deleteDoc(gameRef);
     });
+  }
+
+  async importTournamentData(
+    tournamentRef: DocumentReference,
+    data: TournamentYamlData,
+  ): Promise<void> {
+    if (!this.firestore) {
+      return;
+    }
+
+    // Delete existing teams
+    const existingTeams = await this.getCollectionFromDocumentRef(tournamentRef, 'teams');
+    await Promise.all(
+      existingTeams.map((item) =>
+        runInInjectionContext(this.environmentInjector, async () => {
+          await deleteDoc(item.ref);
+        }),
+      ),
+    );
+
+    // Delete existing series (with their poules and games)
+    const existingSeries = await this.getCollectionFromDocumentRef(tournamentRef, 'series');
+    await Promise.all(existingSeries.map((item) => this.deleteSerieFromTournament(item.ref)));
+
+    // Create new teams and build id mapping (yaml id -> new DocumentReference)
+    const teamIdMap = new Map<string, DocumentReference>();
+    await Promise.all(
+      data.teams.map(async (yamlTeam) => {
+        const teamDocRef = doc(collection(tournamentRef, 'teams'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          await setDoc(teamDocRef, { name: yamlTeam.name });
+        });
+        teamIdMap.set(yamlTeam.id, teamDocRef);
+      }),
+    );
+
+    // Create new series with poules and games
+    for (const yamlSerie of data.series) {
+      const serieDocRef = doc(collection(tournamentRef, 'series'));
+      await runInInjectionContext(this.environmentInjector, async () => {
+        await setDoc(serieDocRef, { name: yamlSerie.name });
+      });
+
+      for (const yamlPoule of yamlSerie.poules ?? []) {
+        const refTeams = (yamlPoule.teams ?? [])
+          .map((id) => teamIdMap.get(id))
+          .filter((ref): ref is DocumentReference => ref != null);
+
+        const pouleDocRef = doc(collection(serieDocRef, 'poules'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          await setDoc(pouleDocRef, { name: yamlPoule.name, refTeams });
+        });
+
+        for (const yamlGame of yamlPoule.games ?? []) {
+          const refTeam1 = teamIdMap.get(yamlGame.team1);
+          const refTeam2 = teamIdMap.get(yamlGame.team2);
+          if (!refTeam1 || !refTeam2) {
+            continue;
+          }
+
+          const gameDocRef = doc(collection(pouleDocRef, 'games'));
+          const gameData: Record<string, unknown> = { refTeam1, refTeam2 };
+          if (yamlGame.score1 != null) gameData['scoreTeam1'] = yamlGame.score1;
+          if (yamlGame.score2 != null) gameData['scoreTeam2'] = yamlGame.score2;
+          if (yamlGame.date != null) gameData['date'] = new Date(yamlGame.date);
+          await runInInjectionContext(this.environmentInjector, async () => {
+            await setDoc(gameDocRef, gameData);
+          });
+        }
+      }
+    }
   }
 }

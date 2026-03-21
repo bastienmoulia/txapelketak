@@ -38,10 +38,11 @@ import {
   POULES_TAB_QUERY_PARAM,
 } from '../../../tournaments/types/poules/poules.route';
 import { AdminUsers } from '../shared/admin-users/admin-users';
+import { AdminImportExport } from '../shared/admin-import-export/admin-import-export';
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Games, AdminUsers],
+  imports: [TabsModule, AdminTeams, TranslocoModule, PoulesTab, Games, AdminUsers, AdminImportExport],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

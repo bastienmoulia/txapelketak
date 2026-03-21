@@ -129,7 +129,8 @@
       "poules": "Groups",
       "teams": "Teams",
       "games": "Games",
-      "users": "Users"
+      "users": "Users",
+      "importExport": "Import / Export"
     },
     "poules": {
       "addSerie": "Add a series",
@@ -230,6 +231,24 @@
         "admin": "Administrator",
         "organizer": "Organizer"
       }
+    },
+    "importExport": {
+      "exportTitle": "Export",
+      "exportDescription": "Download all tournament data (teams, series, groups, games) in YAML format.",
+      "exportButton": "Download YAML file",
+      "importTitle": "Import",
+      "importDescription": "Import a YAML file to restore or replace all tournament data.",
+      "importButton": "Choose YAML file",
+      "invalidFile": "Invalid file. Please select a valid YAML file.",
+      "importConfirmTitle": "Confirm import",
+      "importConfirmMessage": "This action will replace all existing data (teams, series, groups, games). This operation is irreversible.",
+      "teamsCount": "{{ count }} team(s)",
+      "seriesCount": "{{ count }} series",
+      "importConfirm": "Import",
+      "importSuccess": "Import successful",
+      "importSuccessDetail": "The tournament data was imported successfully.",
+      "importError": "Import error",
+      "importErrorDetail": "An error occurred during import. Please try again."
     }
   },
   "shared": {

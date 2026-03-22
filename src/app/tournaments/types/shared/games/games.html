@@ -62,11 +62,7 @@
 
       @if (poule.games && poule.games.length > 0) {
         <div class="games-table-shell">
-          <p-table
-            [value]="poule.games"
-            [tableStyle]="{ 'min-width': '42rem' }"
-            class="games-table"
-          >
+          <p-table [value]="poule.games" class="games-table">
             <ng-template #header>
               <tr>
                 <th pSortableColumn="team1Name">

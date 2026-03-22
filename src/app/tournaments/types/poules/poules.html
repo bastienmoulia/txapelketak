@@ -5,7 +5,7 @@
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
   </p-tablist>
 
-  <p-tabpanels>
+  <p-tabpanels class="px-0!">
     <p-tabpanel value="teams">
       <app-teams [teams]="teamsWithContext()" />
     </p-tabpanel>

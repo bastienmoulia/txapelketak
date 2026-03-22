@@ -59,12 +59,15 @@
   }
 
   :host ::ng-deep .games-table tbody tr {
-    margin: 0 1rem 1rem;
     border: 1px solid color-mix(in srgb, var(--p-primary-color) 12%, transparent);
     border-radius: 1rem;
     background: var(--p-content-background);
     box-shadow: 0 12px 30px -24px color-mix(in srgb, var(--p-primary-color) 55%, transparent);
     overflow: hidden;
+  }
+
+  :host ::ng-deep .games-table tbody tr + tr {
+    margin-top: 1em;
   }
 
   :host ::ng-deep .games-table tbody td {

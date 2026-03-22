@@ -102,6 +102,11 @@
         "backHome": "Volver al inicio",
         "openAdmin": "Abrir administración"
       },
+      "error": {
+        "title": "No se pudo crear",
+        "message": "El torneo se envió, pero no se pudo generar el enlace de administración.",
+        "backHome": "Volver al inicio"
+      },
       "type": {
         "poules": "Grupos",
         "finale": "Fase eliminatoria",

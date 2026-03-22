@@ -102,6 +102,11 @@
         "backHome": "Hasierara itzuli",
         "openAdmin": "Ireki administrazioa"
       },
+      "error": {
+        "title": "Ezin izan da sortu",
+        "message": "Txapelketa bidali da, baina ezin izan da administrazio esteka sortu.",
+        "backHome": "Hasierara itzuli"
+      },
       "type": {
         "poules": "Multzoak",
         "finale": "Kanporaketa fasea",

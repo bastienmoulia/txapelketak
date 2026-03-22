@@ -102,6 +102,11 @@
         "backHome": "Retour à l'accueil",
         "openAdmin": "Ouvrir l'administration"
       },
+      "error": {
+        "title": "Création impossible",
+        "message": "Le tournoi a été soumis, mais le lien d'administration n'a pas pu être généré.",
+        "backHome": "Retour à l'accueil"
+      },
       "type": {
         "poules": "Poules",
         "finale": "Phase finale",

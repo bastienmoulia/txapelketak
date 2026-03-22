@@ -102,6 +102,11 @@
         "backHome": "Back to home",
         "openAdmin": "Open admin page"
       },
+      "error": {
+        "title": "Creation failed",
+        "message": "The tournament was submitted, but the administration link could not be generated.",
+        "backHome": "Back to home"
+      },
       "type": {
         "poules": "Groups",
         "finale": "Knockout stage",

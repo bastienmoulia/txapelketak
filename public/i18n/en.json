@@ -180,7 +180,8 @@
       "teamAdded": "Team added",
       "teamAddedDetail": "The team has been successfully added to the group.",
       "teamRemoved": "Team removed",
-      "teamRemovedDetail": "The team has been successfully removed from the group."
+      "teamRemovedDetail": "The team has been successfully removed from the group.",
+      "poule": "Pool"
     },
     "games": {
       "addGame": "Add a game",
@@ -203,7 +204,13 @@
       "edited": "Game updated",
       "editedDetail": "The game has been successfully updated.",
       "deleted": "Game deleted",
-      "deletedDetail": "The game has been successfully deleted."
+      "deletedDetail": "The game has been successfully deleted.",
+      "viewByPool": "By pool",
+      "viewByDate": "By date",
+      "noDate": "No date",
+      "serie": "Series",
+      "poule": "Pool",
+      "time": "Time"
     },
     "teams": {
       "empty": "No teams",

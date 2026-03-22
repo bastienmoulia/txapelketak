@@ -26,6 +26,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
 import { DatePicker } from 'primeng/datepicker';
 import { UserRole } from '../../../../home/tournament.interface';
+import { SelectButton } from 'primeng/selectbutton';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -51,6 +52,20 @@ interface SortableGame extends Game {
   gameDateSortValue: number;
 }
 
+export interface GameByDate extends SortableGame {
+  pouleName: string;
+  serieName: string;
+  pouleRef: DocumentReference;
+}
+
+export interface GamesDateGroup {
+  dateKey: string;
+  dateSortValue: number;
+  games: GameByDate[];
+}
+
+export type GamesViewMode = 'by-pool' | 'by-date';
+
 @Component({
   selector: 'app-games',
   imports: [
@@ -69,6 +84,7 @@ interface SortableGame extends Game {
     TableModule,
     DatePicker,
     InputMaskModule,
+    SelectButton,
   ],
   templateUrl: './games.html',
   styleUrl: './games.css',
@@ -182,6 +198,48 @@ export class Games {
       })),
   );
 
+  gamesByDate = computed((): GamesDateGroup[] => {
+    const dateMap = new Map<string, GameByDate[]>();
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules) {
+        for (const game of poule.games ?? []) {
+          const sortable = this.toSortableGame(game);
+          const gameWithContext: GameByDate = {
+            ...sortable,
+            pouleName: poule.name,
+            serieName: serie.name,
+            pouleRef: poule.ref,
+          };
+          const dateKey = game.date
+            ? new Date(game.date).toISOString().substring(0, 10)
+            : '';
+          const existing = dateMap.get(dateKey);
+          if (existing) {
+            existing.push(gameWithContext);
+          } else {
+            dateMap.set(dateKey, [gameWithContext]);
+          }
+        }
+      }
+    }
+
+    return [...dateMap.entries()]
+      .map(([dateKey, games]) => ({
+        dateKey,
+        dateSortValue: dateKey ? new Date(dateKey).getTime() : Infinity,
+        games: [...games].sort((a, b) => a.gameDateSortValue - b.gameDateSortValue),
+      }))
+      .sort((a, b) => a.dateSortValue - b.dateSortValue);
+  });
+
+  viewMode = signal<GamesViewMode>('by-pool');
+
+  viewOptions = computed(() => [
+    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
+    { label: this.translocoService.translate('admin.games.viewByDate'), value: 'by-date' },
+  ]);
+
   // Dialog state
   gameDialogVisible = signal(false);
   isEditingGame = signal(false);
@@ -256,6 +314,12 @@ export class Games {
     this.gameDate.set(editDate);
     this.gameDateString = this.formatDateForMask(editDate);
     this.gameDialogVisible.set(true);
+  }
+
+  onEditGameFromDate(game: GameByDate): void {
+    const poule = this.findPouleByRef(game.pouleRef);
+    if (!poule) return;
+    this.onEditGame(poule, game);
   }
 
   onSaveGame(): void {
@@ -345,5 +409,13 @@ export class Games {
       return null;
     }
     return [refTeam1.id, refTeam2.id].sort().join('|');
+  }
+
+  private findPouleByRef(pouleRef: DocumentReference): Poule | undefined {
+    for (const serie of this.series()) {
+      const poule = serie.poules.find((p) => p.ref?.id === pouleRef?.id);
+      if (poule) return poule;
+    }
+    return undefined;
   }
 }

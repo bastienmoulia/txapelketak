@@ -44,3 +44,8 @@ Thumbs.db
 !.firebase/emulator-data/**
 *-debug.log
 .runtimeconfig.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

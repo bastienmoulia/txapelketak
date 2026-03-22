@@ -4,9 +4,7 @@
   "cli": {
     "packageManager": "npm",
     "analytics": "3c9fd401-63a9-4cae-8c88-12143b6652bd",
-    "schematicCollections": [
-      "angular-eslint"
-    ]
+    "schematicCollections": ["angular-eslint", "playwright-ng-schematics"]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -82,11 +80,18 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html",
-              "src/**/*.css"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html", "src/**/*.css"]
+          }
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "txapelketak:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "txapelketak:serve:production"
+            }
           }
         }
       }

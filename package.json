@@ -9,6 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
+    "e2e": "ng e2e",
     "emulators": "npx firebase emulators:start --only firestore --import=.firebase/emulator-data --export-on-exit",
     "emulators:stop": "pkill -f \"firebase emulators:start\" || true; pkill -f \"cloud-firestore-emulator.*txapelketak-ac529\" || true; pkill -f \"/emulators/ui-v.*server.mjs\" || true",
     "emulators:reset": "npm run emulators:stop && npm run emulators"
@@ -43,6 +44,7 @@
     "@angular/compiler-cli": "^21.2.0",
     "@eslint/css": "^1.0.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.58.2",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/js-yaml": "^4.0.9",
     "@vitest/browser-playwright": "^4.0.0",
@@ -51,6 +53,7 @@
     "eslint": "^10.0.2",
     "ngxtension-plugin": "^7.2.0",
     "playwright": "^1.54.0",
+    "playwright-ng-schematics": "^21.0.6",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.12",

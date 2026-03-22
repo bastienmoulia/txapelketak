@@ -6,7 +6,7 @@ import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
@@ -58,7 +58,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideFirestore(() => {
-      const firestore = getFirestore();
+      const firestore = getFirestore(getApp(), environment.firestoreDatabase);
 
       if (environment.useFirestoreEmulator) {
         try {

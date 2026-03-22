@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
-import { Tournament } from '../../home/tournament.interface';
+import { Tournament, UserRole } from '../../home/tournament.interface';
 import { AdminFinale } from './admin-finale/admin-finale';
 import { AdminPoules } from './admin-poules/admin-poules';
 import { AdminPoulesFinale } from './admin-poules-finale/admin-poules-finale';
@@ -17,7 +17,7 @@ import { PoulesFinaleData } from '../../tournaments/types/poules-finale/poules-f
 })
 export class AdminTypes {
   tournament = input.required<Tournament>();
-  role = input<string>('');
+  role = input<UserRole | ''>('');
 
   poulesData = computed(() => this.tournament().data as PoulesData);
   finaleData = computed(() => this.tournament().data as FinaleData);

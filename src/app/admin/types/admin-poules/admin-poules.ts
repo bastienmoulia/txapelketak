@@ -15,7 +15,7 @@ import { TabsModule } from 'primeng/tabs';
 import { map } from 'rxjs';
 import { AdminTeams } from '../shared/admin-teams/admin-teams';
 import { Team } from '../../../tournaments/types/shared/teams/teams';
-import { Tournament } from '../../../home/tournament.interface';
+import { Tournament, UserRole } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { DocumentReference } from '@angular/fire/firestore';
 import {
@@ -63,7 +63,7 @@ export class AdminPoules {
   private router = inject(Router);
 
   tournament = input.required<Tournament>();
-  role = input<string>('');
+  role = input<UserRole | ''>('');
 
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);

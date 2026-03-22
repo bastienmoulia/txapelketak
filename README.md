@@ -99,6 +99,18 @@ Convention projet : variables TypeScript en anglais, textes utilisateur traduits
 - Données : Firestore (émulé en local)
 - Configuration principale : `firebase.json`
 
+### Règles Firestore
+
+- Les règles sont définies dans `firestore.rules` et chargées via `firebase.json`.
+- Le modèle de sécurité repose sur Firebase Auth + claims custom : `role` (`admin`/`organizer`) et `tournamentId`.
+- Sans utilisateur authentifié avec ces claims, les écritures sont refusées et l'accès aux documents sensibles (`users`, `mail`) est bloqué.
+
+Déploiement des règles :
+
+```bash
+firebase deploy --only firestore:rules
+```
+
 ## Ressources
 
 - Angular CLI : https://angular.dev/tools/cli

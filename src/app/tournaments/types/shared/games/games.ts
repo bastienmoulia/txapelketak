@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Game, Poule, Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
@@ -36,6 +44,12 @@ export interface GenerateAllGamesEvent {
   games: SaveGameEvent[];
 }
 
+interface SortableGame extends Game {
+  team1Name: string;
+  team2Name: string;
+  gameDateSortValue: number;
+}
+
 @Component({
   selector: 'app-games',
   imports: [
@@ -57,6 +71,7 @@ export interface GenerateAllGamesEvent {
   ],
   templateUrl: './games.html',
   styleUrl: './games.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Games {
   private readonly translocoService = inject(TranslocoService);
@@ -131,11 +146,9 @@ export class Games {
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((poule) => ({
             ...poule,
-            games: [...(poule.games ?? [])].sort((a, b) => {
-              const aDate = a.date ? new Date(a.date).getTime() : 0;
-              const bDate = b.date ? new Date(b.date).getTime() : 0;
-              return aDate - bDate;
-            }),
+            games: [...(poule.games ?? [])]
+              .map((game) => this.toSortableGame(game))
+              .sort((a, b) => a.gameDateSortValue - b.gameDateSortValue),
           })),
       })),
   );
@@ -177,6 +190,15 @@ export class Games {
   getTeamName(ref: DocumentReference): string {
     if (!ref) return '?';
     return this.teamNameMap().get(ref.id) ?? '?';
+  }
+
+  private toSortableGame(game: Game): SortableGame {
+    return {
+      ...game,
+      team1Name: this.getTeamName(game.refTeam1),
+      team2Name: this.getTeamName(game.refTeam2),
+      gameDateSortValue: game.date ? new Date(game.date).getTime() : 0,
+    };
   }
 
   onAddGame(poule: Poule): void {

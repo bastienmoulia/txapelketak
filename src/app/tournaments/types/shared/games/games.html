@@ -62,13 +62,26 @@
 
       @if (poule.games && poule.games.length > 0) {
         <div class="games-table-shell">
-          <p-table [value]="poule.games" [tableStyle]="{ 'min-width': '42rem' }">
+          <p-table
+            [value]="poule.games"
+            [tableStyle]="{ 'min-width': '42rem' }"
+            class="games-table"
+          >
             <ng-template #header>
               <tr>
-                <th>{{ 'admin.games.team1' | transloco }}</th>
+                <th pSortableColumn="team1Name">
+                  {{ 'admin.games.team1' | transloco }}
+                  <p-sortIcon field="team1Name" />
+                </th>
                 <th>{{ 'admin.games.score' | transloco }}</th>
-                <th>{{ 'admin.games.team2' | transloco }}</th>
-                <th>{{ 'admin.games.date' | transloco }}</th>
+                <th pSortableColumn="team2Name">
+                  {{ 'admin.games.team2' | transloco }}
+                  <p-sortIcon field="team2Name" />
+                </th>
+                <th pSortableColumn="gameDateSortValue">
+                  {{ 'admin.games.date' | transloco }}
+                  <p-sortIcon field="gameDateSortValue" />
+                </th>
                 @if (role() === 'admin' || role() === 'organizer') {
                   <th class="games-table__actions-header">
                     {{ 'shared.table.columns.actions' | transloco }}
@@ -80,7 +93,7 @@
             <ng-template #body let-game>
               <tr>
                 <td [attr.data-label]="'admin.games.team1' | transloco">
-                  <span class="font-medium">{{ getTeamName(game.refTeam1) }}</span>
+                  <span class="font-medium">{{ game.team1Name }}</span>
                 </td>
                 <td [attr.data-label]="'admin.games.score' | transloco">
                   <span class="font-bold">
@@ -98,7 +111,7 @@
                   </span>
                 </td>
                 <td [attr.data-label]="'admin.games.team2' | transloco">
-                  <span class="font-medium">{{ getTeamName(game.refTeam2) }}</span>
+                  <span class="font-medium">{{ game.team2Name }}</span>
                 </td>
                 <td [attr.data-label]="'admin.games.date' | transloco">
                   @if (game.date) {

@@ -1,5 +1,5 @@
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, TitleStrategy } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
@@ -11,6 +11,7 @@ import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angul
 import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './transloco-loader';
+import { AppTitleStrategy } from './shared/router/app-title.strategy';
 
 const TxapelketaTheme = definePreset(Aura, {
   semantic: {
@@ -34,6 +35,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    {
+      provide: TitleStrategy,
+      useClass: AppTitleStrategy,
+    },
     providePrimeNG({
       theme: {
         preset: TxapelketaTheme,

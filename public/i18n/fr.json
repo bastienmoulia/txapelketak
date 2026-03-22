@@ -1,4 +1,14 @@
 {
+  "app": {
+    "title": "Txapelketak"
+  },
+  "routes": {
+    "home": "Accueil",
+    "tournaments": "Tournois",
+    "tournamentNew": "Créer un tournoi",
+    "tournamentDetail": "Détail du tournoi",
+    "admin": "Administration"
+  },
   "header": {
     "theme": {
       "light": "Clair",

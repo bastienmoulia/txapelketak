@@ -45,8 +45,8 @@ service cloud.firestore {
       return value == 'admin' || value == 'organizer';
     }
 
-    function tournamentRefPath(tournamentId) {
-      return '/databases/' + database + '/documents/tournaments/' + tournamentId;
+      function tournamentRef(tournamentId) {
+        return /databases/$(database)/documents/tournaments/$(tournamentId);
     }
 
     match /tournaments/{tournamentId} {
@@ -110,16 +110,14 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow get, list: if isSignedIn()
-        && request.auth.token.role is string
         && request.auth.token.tournamentId is string
-        && resource.data.refTournament.path == tournamentRefPath(request.auth.token.tournamentId)
-        && (request.auth.token.role == 'admin' || request.auth.token.role == 'organizer');
+        && resource.data.refTournament == tournamentRef(request.auth.token.tournamentId);
 
       allow create: if isSignedIn()
         && request.auth.token.role is string
         && request.auth.token.tournamentId is string
         && request.auth.token.role == 'admin'
-        && request.resource.data.refTournament.path == tournamentRefPath(request.auth.token.tournamentId)
+        && request.resource.data.refTournament == tournamentRef(request.auth.token.tournamentId)
         && request.resource.data.username is string
         && request.resource.data.email is string
         && request.resource.data.token is string
@@ -130,11 +128,7 @@ service cloud.firestore {
         && request.auth.token.role is string
         && request.auth.token.tournamentId is string
         && request.auth.token.role == 'admin'
-        && resource.data.refTournament.path == tournamentRefPath(request.auth.token.tournamentId);
-    }
-
-    match /mail/{documentId} {
-      allow read, write: if false;
+        && resource.data.refTournament == tournamentRef(request.auth.token.tournamentId);
     }
 
     match /{document=**} {

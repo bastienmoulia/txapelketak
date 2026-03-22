@@ -133,6 +133,35 @@ describe('Games', () => {
     expect(secondGame.team1Name).toBe('Charlie');
     expect(secondGame.team2Name).toBe('Bravo');
   });
+
+  it('should populate the datepicker model when editing a game with a date', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const pouleRef = createDocumentReference('poule-1');
+    const gameDate = new Date('2026-03-22T10:15:00');
+
+    const poule = {
+      ref: pouleRef,
+      name: 'Poule A',
+      refTeams: [team1Ref, team2Ref],
+      games: [],
+    } as Poule;
+
+    const game = {
+      ref: createDocumentReference('game-1'),
+      refTeam1: team1Ref,
+      refTeam2: team2Ref,
+      scoreTeam1: 10,
+      scoreTeam2: 8,
+      date: gameDate,
+    };
+
+    component.onEditGame(poule, game);
+
+    expect(component.gameDate()).toEqual(gameDate);
+    expect(component.gameDateModel).toBeInstanceOf(Date);
+    expect(component.gameDateString).not.toBe('');
+  });
 });
 
 function createDocumentReference(id: string): DocumentReference {

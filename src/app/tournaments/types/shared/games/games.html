@@ -232,7 +232,7 @@
       <p-floatlabel variant="on">
         <p-datepicker
           inputId="gameDate"
-          [(ngModel)]="gameDateString"
+          [(ngModel)]="gameDateModel"
           pInputMask="99/99/9999 99:99"
           [placeholder]="datePlaceholder()"
           [style]="{ width: '100%' }"
@@ -242,7 +242,7 @@
           [showTime]="true"
           appendTo="body"
           (onComplete)="onDateMaskComplete()"
-          (onClear)="gameDate.set(null); gameDateString = ''"
+          (onClear)="clearGameDate()"
         />
         <label for="gameDate">{{ 'admin.games.date' | transloco }}</label>
       </p-floatlabel>

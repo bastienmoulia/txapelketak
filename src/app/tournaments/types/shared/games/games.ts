@@ -101,6 +101,28 @@ export class Games {
 
   gameDateString = '';
 
+  get gameDateModel(): Date | string | null {
+    return this.gameDate() ?? (this.gameDateString || null);
+  }
+
+  set gameDateModel(value: Date | string | null) {
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      this.gameDate.set(value);
+      this.gameDateString = this.formatDateForMask(value);
+      return;
+    }
+
+    if (typeof value === 'string') {
+      this.gameDateString = value;
+      if (!value) {
+        this.gameDate.set(null);
+      }
+      return;
+    }
+
+    this.clearGameDate();
+  }
+
   private formatDateForMask(date: Date | null): string {
     if (!date) return '';
     const d = String(date.getDate()).padStart(2, '0');
@@ -135,7 +157,13 @@ export class Games {
     const date = new Date(year, month, day, hours, minutes);
     if (!isNaN(date.getTime())) {
       this.gameDate.set(date);
+      this.gameDateString = this.formatDateForMask(date);
     }
+  }
+
+  clearGameDate(): void {
+    this.gameDate.set(null);
+    this.gameDateString = '';
   }
 
   sortedSeries = computed(() =>
@@ -211,8 +239,7 @@ export class Games {
     this.selectedTeam2Ref.set(null);
     this.scoreTeam1.set(null);
     this.scoreTeam2.set(null);
-    this.gameDate.set(null);
-    this.gameDateString = '';
+    this.clearGameDate();
     this.gameDialogVisible.set(true);
   }
 

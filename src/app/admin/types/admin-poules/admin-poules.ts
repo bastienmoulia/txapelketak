@@ -2,17 +2,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
-import { map } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { Team, Teams } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament, UserRole } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
@@ -60,6 +61,7 @@ export class AdminPoules {
   private translocoService = inject(TranslocoService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
   role = input<UserRole | ''>('');
@@ -68,6 +70,7 @@ export class AdminPoules {
   series = signal<Serie[]>([]);
 
   private loadedTournamentId = signal<string | null>(null);
+  private readonly stopGameSubs$ = new Subject<void>();
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -96,6 +99,11 @@ export class AdminPoules {
   });
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.stopGameSubs$.next();
+      this.stopGameSubs$.complete();
+    });
+
     effect(async () => {
       const tournament = this.tournament();
       this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
@@ -110,7 +118,7 @@ export class AdminPoules {
 
       this.loadedTournamentId.set(tournament.ref.id);
       this.teams.set(await this.loadTeams(tournament.ref));
-      this.series.set(await this.loadSeries(tournament.ref));
+      await this.reloadSeries();
     });
   }
 
@@ -191,6 +199,41 @@ export class AdminPoules {
     }) ?? []) as Game[];
   }
 
+  private async reloadSeries(): Promise<void> {
+    const series = await this.loadSeries(this.tournament().ref);
+    this.series.set(series);
+    this.watchGames(series);
+  }
+
+  private watchGames(series: Serie[]): void {
+    this.stopGameSubs$.next();
+    for (const serie of series) {
+      for (const poule of serie.poules ?? []) {
+        this.firebaseService
+          .watchCollectionFromDocumentRef(poule.ref, 'games')
+          .pipe(takeUntilDestroyed(this.destroyRef), takeUntil(this.stopGameSubs$))
+          .subscribe((items) => {
+            const games = items.map((item) => {
+              const data = item.data as Partial<Game>;
+              return {
+                ...data,
+                ref: item.ref,
+                date: parseFirestoreDate(data.date),
+              } as Game;
+            });
+            this.series.update((currentSeries) =>
+              currentSeries.map((s) => ({
+                ...s,
+                poules: (s.poules ?? []).map((p) =>
+                  p.ref.id === poule.ref.id ? { ...p, games } : p,
+                ),
+              })),
+            );
+          });
+      }
+    }
+  }
+
   async onSaveGame(event: SaveGameEvent): Promise<void> {
     const gameData: Omit<Game, 'ref'> = {
       refTeam1: event.refTeam1,
@@ -214,12 +257,12 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.games.addedDetail'),
       });
     }
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
   }
 
   async onDeleteGame(event: DeleteGameEvent): Promise<void> {
     await this.firebaseService.deleteGameFromPoule(event.gameRef);
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.games.deleted'),
@@ -241,7 +284,7 @@ export class AdminPoules {
       ),
     );
 
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.games.generated'),
@@ -292,7 +335,7 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.poules.serieAddedDetail'),
       });
     }
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
   }
 
   async onDeleteSerie(serie: Serie): Promise<void> {
@@ -308,7 +351,7 @@ export class AdminPoules {
     }
 
     await this.firebaseService.deleteSerieFromTournament(serie.ref);
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.serieDeleted'),
@@ -332,12 +375,12 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.poules.pouleAddedDetail'),
       });
     }
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
   }
 
   async onDeletePoule(event: DeletePouleEvent): Promise<void> {
     await this.firebaseService.deletePouleFromSerie(event.poule.ref);
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.pouleDeleted'),
@@ -347,7 +390,7 @@ export class AdminPoules {
 
   async onAddTeamToPoule(event: TeamInPouleEvent): Promise<void> {
     await this.firebaseService.addTeamRefToPoule(event.poule.ref, event.teamRef);
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.teamAdded'),
@@ -357,7 +400,7 @@ export class AdminPoules {
 
   async onRemoveTeamFromPoule(event: TeamInPouleEvent): Promise<void> {
     await this.firebaseService.removeTeamRefFromPoule(event.poule.ref, event.teamRef);
-    this.series.set(await this.loadSeries(this.tournament().ref));
+    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.teamRemoved'),

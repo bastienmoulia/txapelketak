@@ -191,6 +191,26 @@ export class FirebaseService {
     return collectionData;
   }
 
+  watchCollectionFromDocumentRef(
+    ref: DocumentReference,
+    collectionName: string,
+  ): Observable<{ data: unknown; ref: DocumentReference }[]> {
+    console.debug(
+      `[Firestore] watchCollectionFromDocumentRef: ${ref.path}/${collectionName}`,
+    );
+    if (!this.firestore) {
+      return of([]);
+    }
+    return collectionSnapshots(collection(ref, collectionName)).pipe(
+      map((snapshots) =>
+        snapshots.map((snap) => ({
+          data: snap.data(),
+          ref: snap.ref,
+        })),
+      ),
+    );
+  }
+
   async updateTournamentStatus(ref: DocumentReference, status: TournamentStatus): Promise<void> {
     console.debug(`[Firestore] updateTournamentStatus: status=${status}`);
     await runInInjectionContext(this.environmentInjector, async () => {

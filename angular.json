@@ -75,7 +75,10 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@analogjs/vitest-angular:test"
+          "builder": "@analogjs/vitest-angular:test",
+          "options": {
+            "configFile": "vitest.config.mts"
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",

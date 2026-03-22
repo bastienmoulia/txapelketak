@@ -2,12 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
@@ -67,6 +68,7 @@ export class Poules {
   private firebaseService = inject(FirebaseService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
@@ -114,7 +116,9 @@ export class Poules {
 
       this.loadedTournamentId.set(tournament.ref.id);
       this.teams.set(await this.loadTeams(tournament.ref));
-      this.series.set(await this.loadSeries(tournament.ref));
+      const series = await this.loadSeries(tournament.ref);
+      this.series.set(series);
+      this.watchGames(series);
     });
   }
 
@@ -193,5 +197,33 @@ export class Poules {
         date: parseFirestoreDate(data.date),
       } as Game;
     }) ?? []) as Game[];
+  }
+
+  private watchGames(series: Serie[]): void {
+    for (const serie of series) {
+      for (const poule of serie.poules ?? []) {
+        this.firebaseService
+          .watchCollectionFromDocumentRef(poule.ref, 'games')
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((items) => {
+            const games = items.map((item) => {
+              const data = item.data as Partial<Game>;
+              return {
+                ...data,
+                ref: item.ref,
+                date: parseFirestoreDate(data.date),
+              } as Game;
+            });
+            this.series.update((currentSeries) =>
+              currentSeries.map((s) => ({
+                ...s,
+                poules: (s.poules ?? []).map((p) =>
+                  p.ref.id === poule.ref.id ? { ...p, games } : p,
+                ),
+              })),
+            );
+          });
+      }
+    }
   }
 }

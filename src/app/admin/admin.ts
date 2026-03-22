@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tournament, User } from '../home/tournament.interface';
 import { RouterLink } from '@angular/router';
 import { injectParams } from 'ngxtension/inject-params';
@@ -36,6 +37,7 @@ export class Admin {
   firebaseService = inject(FirebaseService);
   messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
+  private destroyRef = inject(DestroyRef);
 
   tournamentId = injectParams('tournamentId');
   token = injectParams('token');
@@ -63,51 +65,44 @@ export class Admin {
       const user = await this.firebaseService.getUserByTournamentAndToken(tournamentId, token);
       if (!user) {
         this.accessDenied.set(true);
+        this.loading.set(false);
         return;
       }
 
       this.user.set(user as User);
       this.accessDenied.set(false);
-      this.loadTournament();
+      this.watchTournament(tournamentId);
     } catch (error) {
       console.error('Failed to load admin user', error);
       this.accessDenied.set(true);
-    } finally {
       this.loading.set(false);
     }
   }
 
-  async loadTournament(): Promise<void> {
-    const tournamentId = this.tournamentId();
+  private watchTournament(tournamentId: string): void {
+    this.firebaseService
+      .watchTournaments()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(async (tournaments) => {
+        this.loading.set(false);
+        const tournament = tournaments.find((t) => t.ref.id === tournamentId);
 
-    if (!this.firebaseService.isAvailable() || !tournamentId) {
-      return;
-    }
+        if (!tournament) return;
 
-    try {
-      const tournament = await this.firebaseService.getTournamentById(tournamentId);
-      if (!tournament) {
-        return;
-      }
+        if (tournament.status === 'waitingValidation') {
+          console.log('Tournament is waiting validation, updating status to paused');
+          await this.firebaseService.updateTournamentStatus(tournament.ref, 'paused');
+          this.tournament.set({ ...tournament, status: 'paused' });
+          this.messageService.add({
+            severity: 'success',
+            summary: this.translocoService.translate('admin.validated'),
+            detail: this.translocoService.translate('admin.validatedDetail'),
+            life: 10000,
+          });
+          return;
+        }
 
-      console.log('Loaded tournament:', tournament);
-
-      if (tournament.status == 'waitingValidation') {
-        console.log('Tournament is waiting validation, updating status to paused');
-        await this.firebaseService.updateTournamentStatus(tournament.ref, 'paused');
-        this.tournament.set({ ...tournament, status: 'paused' });
-        this.messageService.add({
-          severity: 'success',
-          summary: this.translocoService.translate('admin.validated'),
-          detail: this.translocoService.translate('admin.validatedDetail'),
-          life: 10000,
-        });
-        return;
-      }
-
-      this.tournament.set(tournament);
-    } catch (error) {
-      console.error('Failed to load tournament', error);
-    }
+        this.tournament.set(tournament);
+      });
   }
 }

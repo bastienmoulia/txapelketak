@@ -13,7 +13,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
-import { map, Subject, takeUntil } from 'rxjs';
+import { map, skip, Subject, takeUntil } from 'rxjs';
 import { Team, Teams } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament, UserRole } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
@@ -118,6 +118,7 @@ export class AdminPoules {
 
       this.loadedTournamentId.set(tournament.ref.id);
       this.teams.set(await this.loadTeams(tournament.ref));
+      this.watchTeams(tournament.ref);
       await this.reloadSeries();
     });
   }
@@ -203,6 +204,19 @@ export class AdminPoules {
     const series = await this.loadSeries(this.tournament().ref);
     this.series.set(series);
     this.watchGames(series);
+  }
+
+  private watchTeams(tournamentRef: DocumentReference): void {
+    this.firebaseService
+      .watchCollectionFromDocumentRef(tournamentRef, 'teams')
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe((items) => {
+        const teams = items.map((item) => ({
+          ...(item.data as Partial<Team>),
+          ref: item.ref,
+        })) as Team[];
+        this.teams.set(teams);
+      });
   }
 
   private watchGames(series: Serie[]): void {

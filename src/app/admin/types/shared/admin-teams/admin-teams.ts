@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Textarea } from 'primeng/textarea';
 import { form, FormField, required } from '@angular/forms/signals';
+import { UserRole } from '../../../../home/tournament.interface';
 
 @Component({
   selector: 'app-admin-teams',
@@ -31,7 +32,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 })
 export class AdminTeams {
   teams = input.required<Team[]>();
-  role = input<string>('');
+  role = input<UserRole | ''>('');
 
   saveTeam = output<Team>();
   saveTeams = output<Team[]>();

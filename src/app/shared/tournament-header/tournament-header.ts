@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { Tournament } from '../../home/tournament.interface';
+import { Tournament, UserRole } from '../../home/tournament.interface';
 import { TournamentStatusLabelPipe } from '../pipes/tournament-status-label.pipe';
 import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severity.pipe';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -30,7 +30,7 @@ export class TournamentHeader {
   #translocoService = inject(TranslocoService);
 
   tournament = input.required<Tournament>();
-  role = input<string>('');
+  role = input<UserRole | ''>('');
   detailsExpanded = signal(false);
 
   creator = computed(() => this.resolveCreator(this.tournament()));

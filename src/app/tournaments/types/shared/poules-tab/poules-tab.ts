@@ -14,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
+import { UserRole } from '../../../../home/tournament.interface';
 
 export interface SaveSerieEvent {
   name: string;
@@ -58,7 +59,7 @@ export interface TeamInPouleEvent {
 export class PoulesTab {
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
-  role = input<string>('');
+  role = input<UserRole | ''>('');
 
   saveSerie = output<SaveSerieEvent>();
   deleteSerie = output<Serie>();

@@ -50,4 +50,108 @@ describe('Teams', () => {
     expect(cellTexts).toContain('Série 1');
     expect(cellTexts).toContain('Poule A');
   });
+
+  it('should not render admin actions without admin role', async () => {
+    fixture.componentRef.setInput('teams', [{ ref: null!, name: 'Team A' }]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="edit-team-button"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="delete-team-button"]')).toBeNull();
+  });
+
+  it('should render admin actions with admin role', async () => {
+    fixture.componentRef.setInput('role', 'admin');
+    fixture.componentRef.setInput('teams', [
+      { ref: { id: '1' } as never, name: 'Équipe A' },
+      { ref: { id: '2' } as never, name: 'Équipe B' },
+    ]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="add-teams-bulk-button"]')).not.toBeNull();
+
+    const editButtons = fixture.nativeElement.querySelectorAll('[data-testid="edit-team-button"]');
+    const deleteButtons = fixture.nativeElement.querySelectorAll(
+      '[data-testid="delete-team-button"]',
+    );
+
+    expect(editButtons.length).toBe(2);
+    expect(deleteButtons.length).toBe(2);
+  });
+
+  it('should open dialog when add team is triggered', () => {
+    component.onAddTeam();
+
+    expect(component.visible()).toBe(true);
+    expect(component.isEditing()).toBe(false);
+  });
+
+  it('should open dialog in edit mode when edit is triggered', () => {
+    const team = { ref: { id: '1' } as never, name: 'Équipe A' };
+
+    component.onEditTeam(team);
+
+    expect(component.visible()).toBe(true);
+    expect(component.isEditing()).toBe(true);
+    expect(component.team()).toEqual(team);
+  });
+
+  it('should emit saveTeam when saving a valid team', () => {
+    const emitted: { ref: unknown; name: string }[] = [];
+    component.saveTeam.subscribe((team) => emitted.push(team));
+
+    component.onAddTeam();
+    component.team.set({ ref: null!, name: 'New Team' });
+    component.onSaveTeam();
+
+    expect(emitted.length).toBe(1);
+    expect(emitted[0].name).toBe('New Team');
+    expect(component.visible()).toBe(false);
+  });
+
+  it('should show confirmation dialog and emit delete on confirm', () => {
+    const emitted: { ref: unknown; name: string }[] = [];
+    component.deleteTeam.subscribe((team) => emitted.push(team));
+
+    const team = { ref: { id: '1' } as never, name: 'Équipe A' };
+    component.onDeleteTeam(team);
+
+    expect(component.deleteConfirmVisible()).toBe(true);
+    expect(component.pendingDeleteTeam()).toEqual(team);
+    expect(emitted.length).toBe(0);
+
+    component.onConfirmDeleteTeam();
+
+    expect(emitted.length).toBe(1);
+    expect(emitted[0]).toEqual(team);
+    expect(component.deleteConfirmVisible()).toBe(false);
+    expect(component.pendingDeleteTeam()).toBeNull();
+  });
+
+  it('should cancel deletion without emitting delete event', () => {
+    const emitted: { ref: unknown; name: string }[] = [];
+    component.deleteTeam.subscribe((team) => emitted.push(team));
+
+    component.onDeleteTeam({ ref: { id: '1' } as never, name: 'Équipe A' });
+    component.onCancelDeleteTeam();
+
+    expect(emitted.length).toBe(0);
+    expect(component.deleteConfirmVisible()).toBe(false);
+    expect(component.pendingDeleteTeam()).toBeNull();
+  });
+
+  it('should emit saveTeams with parsed names from bulk text', () => {
+    const emitted: { ref: unknown; name: string }[][] = [];
+    component.saveTeams.subscribe((teams) => emitted.push(teams));
+
+    component.bulkText.set('Team A\nTeam B\n\nTeam C');
+    component.onSaveTeams();
+
+    expect(emitted.length).toBe(1);
+    expect(emitted[0].length).toBe(3);
+    expect(emitted[0].map((team) => team.name)).toEqual(['Team A', 'Team B', 'Team C']);
+  });
 });

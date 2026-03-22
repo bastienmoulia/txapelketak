@@ -13,8 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
 import { map } from 'rxjs';
-import { AdminTeams } from '../shared/admin-teams/admin-teams';
-import { Team } from '../../../tournaments/types/shared/teams/teams';
+import { Team, Teams } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament, UserRole } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -44,7 +43,7 @@ import { AdminImportExport } from '../shared/admin-import-export/admin-import-ex
   selector: 'app-admin-poules',
   imports: [
     TabsModule,
-    AdminTeams,
+    Teams,
     TranslocoModule,
     PoulesTab,
     Games,
@@ -78,6 +77,23 @@ export class AdminPoules {
   );
 
   activeTab = computed(() => this.tabFromUrl());
+
+  teamsWithContext = computed(() => {
+    const teams = this.teams();
+    const series = this.series();
+    const contextMap = new Map<string, { serieName: string; pouleName: string }>();
+    for (const serie of series) {
+      for (const poule of serie.poules ?? []) {
+        for (const ref of poule.refTeams ?? []) {
+          contextMap.set(ref.id, { serieName: serie.name, pouleName: poule.name });
+        }
+      }
+    }
+    return teams.map((team) => {
+      const context = team.ref?.id ? contextMap.get(team.ref.id) : undefined;
+      return context ? { ...team, ...context } : team;
+    });
+  });
 
   constructor() {
     effect(async () => {
@@ -391,7 +407,10 @@ export class AdminPoules {
   async onSaveTeams(teams: Team[]): Promise<void> {
     const ref = this.tournament().ref;
     if (!ref) {
-      const newTeams = teams.map((t) => ({ ...t, id: crypto.randomUUID() }));
+      const newTeams = teams.map((team) => ({
+        ...team,
+        ref: { id: crypto.randomUUID() } as DocumentReference,
+      }));
       this.teams.update((existing) => [...existing, ...newTeams]);
       this.messageService.add({
         severity: 'success',

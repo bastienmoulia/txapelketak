@@ -21,7 +21,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
-import { Tournament, User } from '../../../../home/tournament.interface';
+import { Tournament, User, UserRole } from '../../../../home/tournament.interface';
 import { DocumentReference } from '@angular/fire/firestore';
 
 @Component({
@@ -75,7 +75,7 @@ export class AdminUsers {
   editingRef = signal<DocumentReference | null>(null);
   username = signal('');
   email = signal('');
-  selectedRole = signal<string>('');
+  selectedRole = signal<UserRole>(null!);
 
   // Delete confirm
   deleteConfirmVisible = signal(false);
@@ -103,7 +103,7 @@ export class AdminUsers {
     this.editingRef.set(null);
     this.username.set('');
     this.email.set('');
-    this.selectedRole.set('');
+    this.selectedRole.set(null!);
     this.dialogVisible.set(true);
   }
 

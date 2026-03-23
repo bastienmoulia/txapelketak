@@ -1,20 +1,150 @@
 @if (sortedSeries().length > 0) {
-  <p-accordion [multiple]="true" class="mb-3">
-    @for (serie of sortedSeries(); track serie.ref.id) {
-      <p-accordion-panel [value]="serie.ref.id">
-        <p-accordion-header>
-          <div class="flex align-items-center justify-content-between w-full pr-2">
-            <span class="font-bold">{{ serie.name }}</span>
+  <div class="flex justify-content-end mb-3">
+    <p-selectbutton
+      [options]="viewOptions()"
+      [(ngModel)]="viewMode"
+      optionLabel="label"
+      optionValue="value"
+      [allowEmpty]="false"
+    />
+  </div>
+
+  @if (viewMode() === 'by-pool') {
+    <p-accordion [multiple]="true" class="mb-3">
+      @for (serie of sortedSeries(); track serie.ref.id) {
+        <p-accordion-panel [value]="serie.ref.id">
+          <p-accordion-header>
+            <div class="flex align-items-center justify-content-between w-full pr-2">
+              <span class="font-bold">{{ serie.name }}</span>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <ng-container
+              *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serie: serie }"
+            ></ng-container>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  } @else {
+    @for (group of gamesByDate(); track group.dateKey) {
+      <p-card class="games-poule-card mb-2">
+        <ng-template #header>
+          <div class="games-poule-card__header flex align-items-center px-3 pt-3">
+            <span class="font-bold">
+              @if (group.dateKey) {
+                {{ group.games[0]?.date | date: 'longDate' : undefined : activeLanguage() }}
+              } @else {
+                {{ 'admin.games.noDate' | transloco }}
+              }
+            </span>
           </div>
-        </p-accordion-header>
-        <p-accordion-content>
-          <ng-container
-            *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serie: serie }"
-          ></ng-container>
-        </p-accordion-content>
-      </p-accordion-panel>
+        </ng-template>
+
+        <div class="games-table-shell">
+          <p-table [value]="group.games" class="games-table">
+            <ng-template #header>
+              <tr>
+                <th pSortableColumn="serieName">
+                  {{ 'admin.games.serie' | transloco }}
+                  <p-sortIcon field="serieName" />
+                </th>
+                <th pSortableColumn="pouleName">
+                  {{ 'admin.poules.poule' | transloco }}
+                  <p-sortIcon field="pouleName" />
+                </th>
+                <th pSortableColumn="team1Name">
+                  {{ 'admin.games.team1' | transloco }}
+                  <p-sortIcon field="team1Name" />
+                </th>
+                <th>{{ 'admin.games.score' | transloco }}</th>
+                <th pSortableColumn="team2Name">
+                  {{ 'admin.games.team2' | transloco }}
+                  <p-sortIcon field="team2Name" />
+                </th>
+                <th pSortableColumn="gameDateSortValue">
+                  {{ 'admin.games.time' | transloco }}
+                  <p-sortIcon field="gameDateSortValue" />
+                </th>
+                @if (role() === 'admin' || role() === 'organizer') {
+                  <th class="games-table__actions-header">
+                    {{ 'shared.table.columns.actions' | transloco }}
+                  </th>
+                }
+              </tr>
+            </ng-template>
+
+            <ng-template #body let-game>
+              <tr>
+                <td [attr.data-label]="'admin.games.serie' | transloco">
+                  <span class="text-color-secondary">{{ game.serieName }}</span>
+                </td>
+                <td [attr.data-label]="'admin.poules.poule' | transloco">
+                  <span class="text-color-secondary">{{ game.pouleName }}</span>
+                </td>
+                <td [attr.data-label]="'admin.games.team1' | transloco">
+                  <span class="font-medium">{{ game.team1Name }}</span>
+                </td>
+                <td [attr.data-label]="'admin.games.score' | transloco">
+                  <span class="font-bold">
+                    @if (game.scoreTeam1 || game.scoreTeam1 === 0) {
+                      {{ game.scoreTeam1 }}
+                    } @else {
+                      -
+                    }
+                    <span aria-hidden="true">&ndash;</span>
+                    @if (game.scoreTeam2 || game.scoreTeam2 === 0) {
+                      {{ game.scoreTeam2 }}
+                    } @else {
+                      -
+                    }
+                  </span>
+                </td>
+                <td [attr.data-label]="'admin.games.team2' | transloco">
+                  <span class="font-medium">{{ game.team2Name }}</span>
+                </td>
+                <td [attr.data-label]="'admin.games.time' | transloco">
+                  @if (game.date) {
+                    <span class="text-color-secondary">
+                      {{ game.date | date: 'shortTime' : undefined : activeLanguage() }}
+                    </span>
+                  } @else {
+                    <span class="text-color-secondary">-</span>
+                  }
+                </td>
+                @if (role() === 'admin' || role() === 'organizer') {
+                  <td [attr.data-label]="'shared.table.columns.actions' | transloco">
+                    <div class="flex justify-end gap-1">
+                      <p-button
+                        icon="pi pi-pencil"
+                        [ariaLabel]="'admin.games.editAria' | transloco"
+                        severity="secondary"
+                        size="small"
+                        [rounded]="true"
+                        [text]="true"
+                        (onClick)="onEditGameFromDate(game)"
+                      />
+                      @if (role() === 'admin') {
+                        <p-button
+                          icon="pi pi-trash"
+                          [ariaLabel]="'admin.games.deleteAria' | transloco"
+                          severity="danger"
+                          size="small"
+                          [rounded]="true"
+                          [text]="true"
+                          (onClick)="onDeleteGame(game.ref)"
+                        />
+                      }
+                    </div>
+                  </td>
+                }
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-card>
     }
-  </p-accordion>
+  }
 } @else {
   <p-message severity="warn" class="mt-4">
     {{ 'admin.poules.noSeriesOrPoules' | transloco }}

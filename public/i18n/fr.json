@@ -180,7 +180,8 @@
       "teamAdded": "Équipe ajoutée",
       "teamAddedDetail": "L'équipe a été ajoutée à la poule avec succès.",
       "teamRemoved": "Équipe retirée",
-      "teamRemovedDetail": "L'équipe a été retirée de la poule avec succès."
+      "teamRemovedDetail": "L'équipe a été retirée de la poule avec succès.",
+      "poule": "Poule"
     },
     "games": {
       "addGame": "Ajouter un match",
@@ -203,7 +204,13 @@
       "edited": "Match modifié",
       "editedDetail": "Le match a été modifié avec succès.",
       "deleted": "Match supprimé",
-      "deletedDetail": "Le match a été supprimé avec succès."
+      "deletedDetail": "Le match a été supprimé avec succès.",
+      "viewByPool": "Par poule",
+      "viewByDate": "Par date",
+      "noDate": "Sans date",
+      "serie": "Série",
+      "poule": "Poule",
+      "time": "Heure"
     },
     "teams": {
       "empty": "Aucune équipe",

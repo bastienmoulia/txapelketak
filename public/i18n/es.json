@@ -180,7 +180,8 @@
       "teamAdded": "Equipo añadido",
       "teamAddedDetail": "El equipo ha sido añadido al grupo con éxito.",
       "teamRemoved": "Equipo quitado",
-      "teamRemovedDetail": "El equipo ha sido quitado del grupo con éxito."
+      "teamRemovedDetail": "El equipo ha sido quitado del grupo con éxito.",
+      "poule": "Grupo"
     },
     "games": {
       "addGame": "Añadir un partido",
@@ -203,7 +204,13 @@
       "edited": "Partido actualizado",
       "editedDetail": "El partido ha sido actualizado con éxito.",
       "deleted": "Partido eliminado",
-      "deletedDetail": "El partido ha sido eliminado con éxito."
+      "deletedDetail": "El partido ha sido eliminado con éxito.",
+      "viewByPool": "Por grupo",
+      "viewByDate": "Por fecha",
+      "noDate": "Sin fecha",
+      "serie": "Serie",
+      "poule": "Grupo",
+      "time": "Hora"
     },
     "teams": {
       "empty": "No hay equipos",

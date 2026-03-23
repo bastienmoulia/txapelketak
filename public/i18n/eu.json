@@ -180,7 +180,8 @@
       "teamAdded": "Taldea gehitu da",
       "teamAddedDetail": "Taldea arrakastaz gehitu da multzora.",
       "teamRemoved": "Taldea kendu da",
-      "teamRemovedDetail": "Taldea arrakastaz kendu da multzotik."
+      "teamRemovedDetail": "Taldea arrakastaz kendu da multzotik.",
+      "poule": "Multzoa"
     },
     "games": {
       "addGame": "Partida gehitu",
@@ -203,7 +204,13 @@
       "edited": "Partida eguneratu da",
       "editedDetail": "Partida arrakastaz eguneratu da.",
       "deleted": "Partida ezabatu da",
-      "deletedDetail": "Partida arrakastaz ezabatu da."
+      "deletedDetail": "Partida arrakastaz ezabatu da.",
+      "viewByPool": "Multzoaren arabera",
+      "viewByDate": "Dataren arabera",
+      "noDate": "Datarik gabe",
+      "serie": "Seriea",
+      "poule": "Multzoa",
+      "time": "Ordua"
     },
     "teams": {
       "empty": "Ez dago talderik",

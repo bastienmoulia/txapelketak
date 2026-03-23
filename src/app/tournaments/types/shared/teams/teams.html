@@ -1,5 +1,5 @@
 @if (role() === 'admin') {
-  <div class="mb-3 flex flex-wrap gap-2">
+  <div class="mb-3 flex flex-wrap gap-2 mx-3">
     <p-button
       type="button"
       icon="pi pi-plus"
@@ -91,13 +91,7 @@
   <form (submit)="$event.preventDefault(); onSaveTeam()">
     <div class="mb-4">
       <p-floatlabel variant="on">
-        <input
-          pInputText
-          [formField]="teamForm.name"
-          id="name"
-          class="w-full"
-          autocomplete="off"
-        />
+        <input pInputText [formField]="teamForm.name" id="name" class="w-full" autocomplete="off" />
         <label for="name">{{ 'shared.table.columns.name' | transloco }}</label>
       </p-floatlabel>
     </div>

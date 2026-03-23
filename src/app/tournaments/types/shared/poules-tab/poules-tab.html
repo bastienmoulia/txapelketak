@@ -15,7 +15,7 @@
     @for (serie of sortedSeries(); track serie.ref.id) {
       <p-accordion-panel [value]="serie.ref.id">
         <p-accordion-header>
-          <div class="flex align-items-center justify-content-between w-full pr-2">
+          <div class="flex align-items-center justify-between w-full pr-2">
             <span class="font-bold">{{ serie.name }}</span>
             @if (role() === 'admin') {
               <div class="flex gap-2">
@@ -57,7 +57,7 @@
     }
   </p-accordion>
 } @else {
-  <p-message severity="warn" class="mt-4">
+  <p-message severity="warn" class="mt-4 mx-3">
     {{ 'admin.poules.noSeriesOrPoules' | transloco }}
   </p-message>
 }
@@ -79,7 +79,7 @@
     @for (poule of poules; track $index) {
       <p-card>
         <ng-template #header>
-          <div class="flex align-items-center justify-content-between px-3 pt-3">
+          <div class="flex align-items-center justify-between px-3 pt-3">
             <span class="font-bold">{{ poule.name }}</span>
             @if (role() === 'admin') {
               <div class="flex gap-2">
@@ -133,6 +133,8 @@
                   [outlined]="true"
                   icon="pi pi-times"
                   [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
+                  [pTooltip]="'admin.poules.removeTeamAria' | transloco"
+                  tooltipPosition="top"
                   (onClick)="onRemoveTeamFromPoule(poule, refTeam)"
                   data-testid="remove-team-from-poule-button"
                 />

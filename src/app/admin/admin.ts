@@ -81,11 +81,10 @@ export class Admin {
 
   private watchTournament(tournamentId: string): void {
     this.firebaseService
-      .watchTournaments()
+      .watchTournamentById(tournamentId)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(async (tournaments) => {
+      .subscribe(async (tournament) => {
         this.loading.set(false);
-        const tournament = tournaments.find((t) => t.ref.id === tournamentId);
 
         if (!tournament) return;
 

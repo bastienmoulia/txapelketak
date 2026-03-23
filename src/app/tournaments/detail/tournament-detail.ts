@@ -53,10 +53,9 @@ export class TournamentDetail {
       return;
     }
 
-    this.firebaseService.watchTournaments().subscribe((all) => {
-      const found = all.find((t) => t.ref.id === this.tournamentId());
-      if (found) {
-        this.tournament.set(found);
+    this.firebaseService.watchTournamentById(this.tournamentId()!).subscribe((tournament) => {
+      if (tournament) {
+        this.tournament.set(tournament);
         this.notFound.set(false);
       } else {
         this.notFound.set(true);

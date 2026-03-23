@@ -27,6 +27,7 @@ import { TableModule } from 'primeng/table';
 import { DatePicker } from 'primeng/datepicker';
 import { UserRole } from '../../../../home/tournament.interface';
 import { SelectButton } from 'primeng/selectbutton';
+import { TooltipModule } from 'primeng/tooltip';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -85,6 +86,7 @@ export type GamesViewMode = 'by-pool' | 'by-date';
     DatePicker,
     InputMaskModule,
     SelectButton,
+    TooltipModule,
   ],
   templateUrl: './games.html',
   styleUrl: './games.css',
@@ -211,9 +213,7 @@ export class Games {
             serieName: serie.name,
             pouleRef: poule.ref,
           };
-          const dateKey = game.date
-            ? new Date(game.date).toISOString().substring(0, 10)
-            : '';
+          const dateKey = game.date ? new Date(game.date).toISOString().substring(0, 10) : '';
           const existing = dateMap.get(dateKey);
           if (existing) {
             existing.push(gameWithContext);

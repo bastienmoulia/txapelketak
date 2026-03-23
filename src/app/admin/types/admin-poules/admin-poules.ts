@@ -13,7 +13,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
-import { map, skip, Subject, takeUntil } from 'rxjs';
+import { map, skip, Subject, switchMap, takeUntil, from } from 'rxjs';
 import { Team, Teams } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament, User } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
@@ -113,7 +113,10 @@ export class AdminPoules {
       this.loadedTournamentId.set(tournament.ref.id);
       this.teams.set(await this.loadTeams(tournament.ref));
       this.watchTeams(tournament.ref);
-      await this.reloadSeries();
+      const initialSeries = await this.loadSeries(tournament.ref);
+      this.series.set(initialSeries);
+      this.watchGames(initialSeries);
+      this.watchSeriesStructure(tournament.ref);
     });
   }
 
@@ -194,12 +197,6 @@ export class AdminPoules {
     }) ?? []) as Game[];
   }
 
-  private async reloadSeries(): Promise<void> {
-    const series = await this.loadSeries(this.tournament().ref);
-    this.series.set(series);
-    this.watchGames(series);
-  }
-
   private watchTeams(tournamentRef: DocumentReference): void {
     this.firebaseService
       .watchCollectionFromDocumentRef(tournamentRef, 'teams')
@@ -210,6 +207,23 @@ export class AdminPoules {
           ref: item.ref,
         })) as Team[];
         this.teams.set(teams);
+      });
+  }
+
+  private watchSeriesStructure(tournamentRef: DocumentReference): void {
+    this.firebaseService
+      .watchCollectionFromDocumentRef(tournamentRef, 'series')
+      .pipe(
+        skip(1),
+        takeUntilDestroyed(this.destroyRef),
+        switchMap(() => {
+          this.stopGameSubs$.next();
+          return from(this.loadSeries(tournamentRef));
+        }),
+      )
+      .subscribe((series) => {
+        this.series.set(series);
+        this.watchGames(series);
       });
   }
 
@@ -265,12 +279,10 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.games.addedDetail'),
       });
     }
-    await this.reloadSeries();
   }
 
   async onDeleteGame(event: DeleteGameEvent): Promise<void> {
     await this.firebaseService.deleteGameFromPoule(event.gameRef);
-    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.games.deleted'),
@@ -292,7 +304,6 @@ export class AdminPoules {
       ),
     );
 
-    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.games.generated'),
@@ -343,7 +354,6 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.poules.serieAddedDetail'),
       });
     }
-    await this.reloadSeries();
   }
 
   async onDeleteSerie(serie: Serie): Promise<void> {
@@ -359,7 +369,6 @@ export class AdminPoules {
     }
 
     await this.firebaseService.deleteSerieFromTournament(serie.ref);
-    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.serieDeleted'),
@@ -383,12 +392,10 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.poules.pouleAddedDetail'),
       });
     }
-    await this.reloadSeries();
   }
 
   async onDeletePoule(event: DeletePouleEvent): Promise<void> {
     await this.firebaseService.deletePouleFromSerie(event.poule.ref);
-    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.pouleDeleted'),
@@ -398,7 +405,6 @@ export class AdminPoules {
 
   async onAddTeamToPoule(event: TeamInPouleEvent): Promise<void> {
     await this.firebaseService.addTeamRefToPoule(event.poule.ref, event.teamRef);
-    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.teamAdded'),
@@ -408,7 +414,6 @@ export class AdminPoules {
 
   async onRemoveTeamFromPoule(event: TeamInPouleEvent): Promise<void> {
     await this.firebaseService.removeTeamRefFromPoule(event.poule.ref, event.teamRef);
-    await this.reloadSeries();
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.teamRemoved'),

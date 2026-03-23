@@ -1,5 +1,5 @@
 @if (sortedSeries().length > 0) {
-  <div class="flex justify-content-end mb-3 mx-3">
+  <div class="flex justify-end mx-3">
     <p-selectbutton
       [options]="viewOptions()"
       [(ngModel)]="viewMode"
@@ -14,7 +14,7 @@
       @for (serie of sortedSeries(); track serie.ref.id) {
         <p-accordion-panel [value]="serie.ref.id">
           <p-accordion-header>
-            <div class="flex align-items-center justify-content-between w-full pr-2">
+            <div class="flex align-items-center justify-between w-full pr-2">
               <span class="font-bold">{{ serie.name }}</span>
             </div>
           </p-accordion-header>
@@ -118,6 +118,8 @@
                       <p-button
                         icon="pi pi-pencil"
                         [ariaLabel]="'admin.games.editAria' | transloco"
+                        [pTooltip]="'shared.actions.edit' | transloco"
+                        tooltipPosition="top"
                         severity="secondary"
                         size="small"
                         [rounded]="true"
@@ -128,6 +130,8 @@
                         <p-button
                           icon="pi pi-trash"
                           [ariaLabel]="'admin.games.deleteAria' | transloco"
+                          [pTooltip]="'shared.actions.delete' | transloco"
+                          tooltipPosition="top"
                           severity="danger"
                           size="small"
                           [rounded]="true"
@@ -146,7 +150,7 @@
     }
   }
 } @else {
-  <p-message severity="warn" class="mt-4">
+  <p-message severity="warn" class="mt-4 mx-3">
     {{ 'admin.poules.noSeriesOrPoules' | transloco }}
   </p-message>
 }
@@ -156,7 +160,7 @@
     <p-card class="games-poule-card mb-2">
       <ng-template #header>
         <div
-          class="games-poule-card__header flex align-items-center justify-content-between gap-3 px-3 pt-3"
+          class="games-poule-card__header flex align-items-center justify-between gap-3 px-3 pt-3"
         >
           <div class="games-poule-card__title-group">
             @if (serie?.name) {
@@ -254,6 +258,8 @@
                       <p-button
                         icon="pi pi-pencil"
                         [ariaLabel]="'admin.games.editAria' | transloco"
+                        [pTooltip]="'shared.actions.edit' | transloco"
+                        tooltipPosition="top"
                         severity="secondary"
                         size="small"
                         [rounded]="true"
@@ -264,6 +270,8 @@
                         <p-button
                           icon="pi pi-trash"
                           [ariaLabel]="'admin.games.deleteAria' | transloco"
+                          [pTooltip]="'shared.actions.delete' | transloco"
+                          tooltipPosition="top"
                           severity="danger"
                           size="small"
                           [rounded]="true"

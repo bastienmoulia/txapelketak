@@ -6,6 +6,7 @@ import {
   collectionSnapshots,
   deleteDoc,
   doc,
+  docSnapshots,
   DocumentReference,
   Firestore,
   getDoc,
@@ -45,6 +46,19 @@ export class FirebaseService {
       map((snapshots) =>
         snapshots.map((snap) => ({ ref: snap.ref, ...snap.data() }) as Tournament),
       ),
+    );
+  }
+
+  watchTournamentById(tournamentId: string): Observable<Tournament | null> {
+    console.debug(`[Firestore] watchTournamentById: tournamentId=${tournamentId}`);
+    if (!this.firestore) {
+      console.debug('[Firestore] watchTournamentById: firestore unavailable');
+      return of(null);
+    }
+
+    const tournamentRef = doc(this.firestore, 'tournaments', tournamentId);
+    return docSnapshots(tournamentRef).pipe(
+      map((snap) => (snap.exists() ? ({ ref: snap.ref, ...snap.data() } as Tournament) : null)),
     );
   }
 

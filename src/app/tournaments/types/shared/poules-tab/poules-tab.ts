@@ -15,6 +15,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { UserRole } from '../../../../home/tournament.interface';
+import { TooltipModule } from 'primeng/tooltip';
 
 export interface SaveSerieEvent {
   name: string;
@@ -52,6 +53,7 @@ export interface TeamInPouleEvent {
     FloatLabel,
     MultiSelectModule,
     FormsModule,
+    TooltipModule,
   ],
   templateUrl: './poules-tab.html',
   styleUrl: './poules-tab.css',

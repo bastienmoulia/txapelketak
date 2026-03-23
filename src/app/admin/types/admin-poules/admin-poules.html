@@ -1,9 +1,7 @@
 <p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
   <p-tablist>
-    @if (role() === 'admin') {
-      <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
-      <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
-    }
+    <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
     @if (role() === 'admin') {
       <p-tab value="users">{{ 'admin.tabs.users' | transloco }}</p-tab>

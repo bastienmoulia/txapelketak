@@ -241,6 +241,8 @@
       "editedDetail": "L'utilisateur {{username}} a été modifié avec succès.",
       "deleted": "Utilisateur supprimé",
       "deletedDetail": "L'utilisateur {{username}} a été supprimé avec succès.",
+      "cannotDeleteSelf": "Impossible de vous supprimer",
+      "cannotDeleteSelfDetail": "L'administrateur actuel ne peut pas se supprimer.",
       "openAdminLink": "Ouvrir la page admin",
       "username": "Nom d'utilisateur",
       "email": "Email",

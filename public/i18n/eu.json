@@ -241,6 +241,8 @@
       "editedDetail": "{{username}} erabiltzailea ondo eguneratu da.",
       "deleted": "Erabiltzailea ezabatu da",
       "deletedDetail": "{{username}} erabiltzailea ondo ezabatu da.",
+      "cannotDeleteSelf": "Ezin duzu zeure burua ezabatu",
+      "cannotDeleteSelfDetail": "Oraingo administratzaileak ezin du bere burua ezabatu.",
       "openAdminLink": "Admin orria ireki",
       "username": "Erabiltzaile izena",
       "email": "Emaila",

@@ -72,7 +72,7 @@ export class FirebaseService {
     }
 
     console.debug(`[Firestore] getUserByTournamentAndToken: user found`);
-    return snapshot.docs[0].data() as User;
+    return { ...(snapshot.docs[0].data() as User), ref: snapshot.docs[0].ref };
   }
 
   async getTournamentById(tournamentId: string): Promise<Tournament | null> {
@@ -195,9 +195,7 @@ export class FirebaseService {
     ref: DocumentReference,
     collectionName: string,
   ): Observable<{ data: unknown; ref: DocumentReference }[]> {
-    console.debug(
-      `[Firestore] watchCollectionFromDocumentRef: ${ref.path}/${collectionName}`,
-    );
+    console.debug(`[Firestore] watchCollectionFromDocumentRef: ${ref.path}/${collectionName}`);
     if (!this.firestore) {
       return of([]);
     }

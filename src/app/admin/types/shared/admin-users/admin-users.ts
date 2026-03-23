@@ -23,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament, User, UserRole } from '../../../../home/tournament.interface';
 import { DocumentReference } from '@angular/fire/firestore';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-admin-users',
@@ -38,6 +39,7 @@ import { DocumentReference } from '@angular/fire/firestore';
     TagModule,
     ToastModule,
     TranslocoModule,
+    TooltipModule,
   ],
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css',
@@ -50,6 +52,7 @@ export class AdminUsers {
   private translocoService = inject(TranslocoService);
 
   tournament = input.required<Tournament>();
+  currentUser = input<User | null>(null);
 
   users = signal<User[]>([]);
 
@@ -67,6 +70,15 @@ export class AdminUsers {
         label: this.translocoService.translate('admin.users.role.organizer'),
       },
     ];
+  });
+
+  isEditingCurrentUser = computed(() => {
+    const editRef = this.editingRef();
+    const currUser = this.currentUser();
+    if (!editRef || !currUser?.ref) {
+      return false;
+    }
+    return editRef.id === currUser.ref.id;
   });
 
   // Dialog state

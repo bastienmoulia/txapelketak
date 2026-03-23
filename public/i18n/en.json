@@ -241,6 +241,8 @@
       "editedDetail": "User {{username}} was updated successfully.",
       "deleted": "User deleted",
       "deletedDetail": "User {{username}} was deleted successfully.",
+      "cannotDeleteSelf": "Cannot delete yourself",
+      "cannotDeleteSelfDetail": "The current administrator cannot delete themselves.",
       "openAdminLink": "Open admin page",
       "username": "Username",
       "email": "Email",

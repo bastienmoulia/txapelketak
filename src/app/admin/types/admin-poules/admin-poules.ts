@@ -15,7 +15,7 @@ import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
 import { map, skip, Subject, takeUntil } from 'rxjs';
 import { Team, Teams } from '../../../tournaments/types/shared/teams/teams';
-import { Tournament, UserRole } from '../../../home/tournament.interface';
+import { Tournament, User } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
 import { DocumentReference } from '@angular/fire/firestore';
 import {
@@ -42,15 +42,7 @@ import { AdminImportExport } from '../shared/admin-import-export/admin-import-ex
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [
-    TabsModule,
-    Teams,
-    TranslocoModule,
-    PoulesTab,
-    Games,
-    AdminUsers,
-    AdminImportExport,
-  ],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, AdminUsers, AdminImportExport],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,10 +56,12 @@ export class AdminPoules {
   private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
-  role = input<UserRole | ''>('');
+  currentUser = input<User | null>(null);
 
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
+
+  role = computed(() => this.currentUser()?.role ?? '');
 
   private loadedTournamentId = signal<string | null>(null);
   private readonly stopGameSubs$ = new Subject<void>();

@@ -241,6 +241,8 @@
       "editedDetail": "El usuario {{username}} se ha actualizado correctamente.",
       "deleted": "Usuario eliminado",
       "deletedDetail": "El usuario {{username}} se ha eliminado correctamente.",
+      "cannotDeleteSelf": "No puedes eliminarte a ti mismo",
+      "cannotDeleteSelfDetail": "El administrador actual no puede eliminarse a sí mismo.",
       "openAdminLink": "Abrir la página de administración",
       "username": "Nombre de usuario",
       "email": "Email",

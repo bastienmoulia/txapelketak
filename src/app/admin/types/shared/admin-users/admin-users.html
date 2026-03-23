@@ -64,6 +64,12 @@
               icon="pi pi-trash"
               [label]="'shared.actions.delete' | transloco"
               [ariaLabel]="'admin.users.deleteAria' | transloco"
+              [disabled]="user.ref.id === currentUser()?.ref?.id"
+              [pTooltip]="
+                user.ref.id === currentUser()?.ref?.id
+                  ? ('admin.users.cannotDeleteSelf' | transloco)
+                  : ''
+              "
               (onClick)="onDeleteUser(user)"
             />
           </div>
@@ -120,6 +126,7 @@
         (ngModelChange)="selectedRole.set($event)"
         [style]="{ width: '100%' }"
         appendTo="body"
+        [disabled]="isEditingCurrentUser()"
       />
       <label for="role">{{ 'admin.users.role.label' | transloco }}</label>
     </p-floatlabel>

@@ -48,7 +48,7 @@
     </p-tabpanel>
     @if (role() === 'admin') {
       <p-tabpanel value="users">
-        <app-admin-users [tournament]="tournament()" />
+        <app-admin-users [tournament]="tournament()" [currentUser]="currentUser()" />
       </p-tabpanel>
       <p-tabpanel value="import-export">
         <app-admin-import-export

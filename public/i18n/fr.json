@@ -306,9 +306,11 @@
       "archived": "Archivé",
       "waitingValidation": "En attente de validation"
     },
-    "tournamentHeader": {
+    "roles": {
       "admin": "Administrateur",
-      "organizer": "Organisateur",
+      "organizer": "Organisateur"
+    },
+    "tournamentHeader": {
       "edit": "Modifier le tournoi",
       "editAria": "Modifier ce tournoi",
       "hideDetails": "Masquer les détails",

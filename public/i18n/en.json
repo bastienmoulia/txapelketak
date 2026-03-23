@@ -28,7 +28,6 @@
       "createButton": "Create a tournament"
     },
     "features": {
-      "title": "How does it work?",
       "createTournament": {
         "title": "Create your tournament",
         "description": "Easily configure your tournaments: groups, knockout stages, or both."
@@ -306,9 +305,11 @@
       "archived": "Archived",
       "waitingValidation": "Awaiting validation"
     },
-    "tournamentHeader": {
+    "roles": {
       "admin": "Administrator",
-      "organizer": "Organizer",
+      "organizer": "Organizer"
+    },
+    "tournamentHeader": {
       "edit": "Edit tournament",
       "editAria": "Edit this tournament",
       "hideDetails": "Hide details",

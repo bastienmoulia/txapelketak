@@ -1,0 +1,15 @@
+@if (role() === 'admin') {
+  <p-badge
+    class="ml-2 align-middle"
+    severity="danger"
+    [value]="'shared.roles.admin' | transloco"
+    data-testid="admin-badge"
+  />
+} @else if (role() === 'organizer') {
+  <p-badge
+    class="ml-2 align-middle"
+    severity="warn"
+    [value]="'shared.roles.organizer' | transloco"
+    data-testid="organizer-badge"
+  />
+}

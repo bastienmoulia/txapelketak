@@ -18,12 +18,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament, User, UserRole } from '../../../../home/tournament.interface';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TooltipModule } from 'primeng/tooltip';
+import { RoleBadge } from '../../../../shared/role-badge/role-badge';
 
 @Component({
   selector: 'app-admin-users',
@@ -36,10 +36,10 @@ import { TooltipModule } from 'primeng/tooltip';
     MessageModule,
     Select,
     TableModule,
-    TagModule,
     ToastModule,
     TranslocoModule,
     TooltipModule,
+    RoleBadge,
   ],
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css',

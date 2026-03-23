@@ -10,30 +10,29 @@
   </p-tablist>
 
   <p-tabpanels class="px-0!">
-    @if (role() === 'admin') {
-      <p-tabpanel value="teams">
-        <app-teams
-          [teams]="teamsWithContext()"
-          [role]="role()"
-          (saveTeam)="onSaveTeam($event)"
-          (saveTeams)="onSaveTeams($event)"
-          (deleteTeam)="onDeleteTeam($event)"
-        />
-      </p-tabpanel>
-      <p-tabpanel value="poules">
-        <app-poules-tab
-          [series]="series()"
-          [teams]="teams()"
-          [role]="role()"
-          (saveSerie)="onSaveSerie($event)"
-          (deleteSerie)="onDeleteSerie($event)"
-          (savePoule)="onSavePoule($event)"
-          (deletePoule)="onDeletePoule($event)"
-          (addTeamToPoule)="onAddTeamToPoule($event)"
-          (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
-        />
-      </p-tabpanel>
-    }
+    <p-tabpanel value="teams">
+      <app-teams
+        [teams]="teamsWithContext()"
+        [role]="role()"
+        (saveTeam)="onSaveTeam($event)"
+        (saveTeams)="onSaveTeams($event)"
+        (deleteTeam)="onDeleteTeam($event)"
+      />
+    </p-tabpanel>
+    <p-tabpanel value="poules">
+      <app-poules-tab
+        [series]="series()"
+        [teams]="teams()"
+        [role]="role()"
+        (saveSerie)="onSaveSerie($event)"
+        (deleteSerie)="onDeleteSerie($event)"
+        (savePoule)="onSavePoule($event)"
+        (deletePoule)="onDeletePoule($event)"
+        (addTeamToPoule)="onAddTeamToPoule($event)"
+        (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
+      />
+    </p-tabpanel>
+
     <p-tabpanel value="games">
       <app-games
         [series]="series()"

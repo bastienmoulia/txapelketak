@@ -42,7 +42,7 @@
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
         <td>
-          <p-tag [value]="'admin.users.role.' + user.role | transloco" severity="secondary" />
+          <app-role-badge [role]="user.role" />
         </td>
         <td>
           <div class="flex justify-end gap-2">

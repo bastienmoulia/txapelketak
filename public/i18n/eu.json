@@ -306,9 +306,11 @@
       "archived": "Artxibatuta",
       "waitingValidation": "Balioztapen zain"
     },
-    "tournamentHeader": {
+    "roles": {
       "admin": "Administraria",
-      "organizer": "Antolatzailea",
+      "organizer": "Antolatzailea"
+    },
+    "tournamentHeader": {
       "edit": "Txapelketa editatu",
       "editAria": "Txapelketa hau editatu",
       "hideDetails": "Xehetasunak izkutatu",

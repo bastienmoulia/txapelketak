@@ -3,21 +3,7 @@
   <div class="flex items-center justify-between gap-3 max-sm:flex-col max-sm:items-start">
     <h2 class="m-0 text-xl font-bold leading-[1.2]">
       {{ tournament().name }}
-      @if (role() === 'admin') {
-        <p-badge
-          class="ml-2 align-middle"
-          severity="danger"
-          [value]="'shared.tournamentHeader.admin' | transloco"
-          data-testid="admin-badge"
-        />
-      } @else if (role() === 'organizer') {
-        <p-badge
-          class="ml-2 align-middle"
-          severity="warn"
-          [value]="'shared.tournamentHeader.organizer' | transloco"
-          data-testid="organizer-badge"
-        />
-      }
+      <app-role-badge [role]="role()" />
     </h2>
 
     <div class="flex items-center gap-2 max-sm:w-full max-sm:flex-wrap">

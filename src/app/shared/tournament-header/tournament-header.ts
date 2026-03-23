@@ -8,6 +8,7 @@ import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severit
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { RoleBadge } from '../role-badge/role-badge';
 
 @Component({
   selector: 'app-tournament-header',
@@ -19,6 +20,7 @@ import { MessageService } from 'primeng/api';
     TournamentStatusSeverityPipe,
     TranslocoPipe,
     ToastModule,
+    RoleBadge,
   ],
   providers: [MessageService],
   templateUrl: './tournament-header.html',

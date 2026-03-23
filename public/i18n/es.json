@@ -306,9 +306,11 @@
       "archived": "Archivado",
       "waitingValidation": "En espera de validación"
     },
-    "tournamentHeader": {
+    "roles": {
       "admin": "Administrador",
-      "organizer": "Organizador",
+      "organizer": "Organizador"
+    },
+    "tournamentHeader": {
       "edit": "Editar torneo",
       "editAria": "Editar este torneo",
       "hideDetails": "Ocultar detalles",

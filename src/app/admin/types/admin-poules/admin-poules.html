@@ -1,5 +1,6 @@
 <p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
   <p-tablist>
+    <p-tab value="dashboard">{{ 'tournaments.dashboard.tab' | transloco }}</p-tab>
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
     <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
@@ -10,6 +11,13 @@
   </p-tablist>
 
   <p-tabpanels class="px-0!">
+    <p-tabpanel value="dashboard">
+      <app-tournament-dashboard
+        [tournament]="tournament()"
+        [teams]="teams()"
+        [series]="series()"
+      />
+    </p-tabpanel>
     <p-tabpanel value="teams">
       <app-teams
         [teams]="teamsWithContext()"

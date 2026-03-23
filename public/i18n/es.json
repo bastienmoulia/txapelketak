@@ -124,6 +124,15 @@
     },
     "types": {
       "unknown": "Tipo de torneo desconocido"
+    },
+    "dashboard": {
+      "tab": "Panel",
+      "teams": "Equipos",
+      "games": "Partidos",
+      "upcomingGames": "Próximos partidos",
+      "noUpcomingGames": "No hay partidos próximos",
+      "showMore": "Ver más",
+      "showLess": "Ver menos"
     }
   },
   "admin": {

@@ -1,6 +1,6 @@
 export const POULES_TAB_QUERY_PARAM = 'tab';
 
-export const POULES_ROUTE_TABS = ['teams', 'poules', 'games', 'users', 'import-export'] as const;
+export const POULES_ROUTE_TABS = ['dashboard', 'teams', 'poules', 'games', 'users', 'import-export'] as const;
 export type PoulesRouteTab = (typeof POULES_ROUTE_TABS)[number];
 
 export function isPoulesRouteTab(value: string | null | undefined): value is PoulesRouteTab {

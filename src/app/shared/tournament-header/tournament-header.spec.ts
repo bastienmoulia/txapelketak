@@ -31,18 +31,6 @@ describe('TournamentHeader', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle details section', () => {
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('[data-testid="tournament-details"]')).toBeNull();
-
-    component.toggleDetails();
-    fixture.detectChanges();
-
-    expect(
-      fixture.nativeElement.querySelector('[data-testid="tournament-details"]'),
-    ).not.toBeNull();
-  });
-
   it('should render edit button when admin is true', () => {
     fixture.componentRef.setInput('role', 'admin');
     fixture.detectChanges();

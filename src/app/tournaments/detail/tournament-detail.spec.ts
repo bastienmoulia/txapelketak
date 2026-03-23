@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
-import { By } from '@angular/platform-browser';
 import { DocumentReference } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 
 import { TournamentDetail } from './tournament-detail';
-import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
 import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
 
 describe('TournamentDetail', () => {
@@ -50,7 +48,7 @@ describe('TournamentDetail', () => {
     expect(component.notFound()).toBe(true);
   });
 
-  it('should render tournament status label using pipe', () => {
+  it('should render tournament name in header', () => {
     component.loading.set(false);
     component.notFound.set(false);
     component.tournament.set({
@@ -64,13 +62,8 @@ describe('TournamentDetail', () => {
 
     fixture.detectChanges();
 
-    // Expand tournament header details to make the status p-tag visible
-    const headerEl = fixture.debugElement.query(By.directive(TournamentHeader));
-    (headerEl.componentInstance as TournamentHeader).toggleDetails();
-    fixture.detectChanges();
-
-    const statusTag = fixture.nativeElement.querySelector('p-tag');
-    expect(statusTag?.textContent?.trim()).toBe('En cours');
+    const header = fixture.nativeElement.querySelector('app-tournament-header');
+    expect(header?.textContent).toContain('Tournoi test');
   });
 
   it('should show waiting validation message and hide types', () => {

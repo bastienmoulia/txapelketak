@@ -2,16 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
-import { map } from 'rxjs';
+import { from, map, skip, Subject, switchMap, takeUntil } from 'rxjs';
 import { Team } from '../shared/teams/teams';
 import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
@@ -67,11 +68,13 @@ export class Poules {
   private firebaseService = inject(FirebaseService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
   teams = signal<Team[]>([]);
   series = signal<Serie[]>([]);
   private loadedTournamentId = signal<string | null>(null);
+  private readonly stopGameSubs$ = new Subject<void>();
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -100,6 +103,11 @@ export class Poules {
   });
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.stopGameSubs$.next();
+      this.stopGameSubs$.complete();
+    });
+
     effect(async () => {
       const tournament = this.tournament();
       this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
@@ -114,7 +122,11 @@ export class Poules {
 
       this.loadedTournamentId.set(tournament.ref.id);
       this.teams.set(await this.loadTeams(tournament.ref));
-      this.series.set(await this.loadSeries(tournament.ref));
+      const series = await this.loadSeries(tournament.ref);
+      this.series.set(series);
+      this.watchGames(series);
+      this.watchTeams(tournament.ref);
+      this.watchSeriesStructure(tournament.ref);
     });
   }
 
@@ -193,5 +205,63 @@ export class Poules {
         date: parseFirestoreDate(data.date),
       } as Game;
     }) ?? []) as Game[];
+  }
+
+  private watchGames(series: Serie[]): void {
+    for (const serie of series) {
+      for (const poule of serie.poules ?? []) {
+        this.firebaseService
+          .watchCollectionFromDocumentRef(poule.ref, 'games')
+          .pipe(takeUntilDestroyed(this.destroyRef), takeUntil(this.stopGameSubs$))
+          .subscribe((items) => {
+            const games = items.map((item) => {
+              const data = item.data as Partial<Game>;
+              return {
+                ...data,
+                ref: item.ref,
+                date: parseFirestoreDate(data.date),
+              } as Game;
+            });
+            this.series.update((currentSeries) =>
+              currentSeries.map((s) => ({
+                ...s,
+                poules: (s.poules ?? []).map((p) =>
+                  p.ref.id === poule.ref.id ? { ...p, games } : p,
+                ),
+              })),
+            );
+          });
+      }
+    }
+  }
+
+  private watchTeams(tournamentRef: DocumentReference): void {
+    this.firebaseService
+      .watchCollectionFromDocumentRef(tournamentRef, 'teams')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((items) => {
+        const teams = items.map((item) => ({
+          ...(item.data as Partial<Team>),
+          ref: item.ref,
+        })) as Team[];
+        this.teams.set(teams);
+      });
+  }
+
+  private watchSeriesStructure(tournamentRef: DocumentReference): void {
+    this.firebaseService
+      .watchCollectionFromDocumentRef(tournamentRef, 'series')
+      .pipe(
+        skip(1),
+        takeUntilDestroyed(this.destroyRef),
+        switchMap(() => {
+          this.stopGameSubs$.next();
+          return from(this.loadSeries(tournamentRef));
+        }),
+      )
+      .subscribe((series) => {
+        this.series.set(series);
+        this.watchGames(series);
+      });
   }
 }

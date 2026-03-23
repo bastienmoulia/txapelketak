@@ -279,7 +279,6 @@
     "table": {
       "columns": {
         "name": "Izena",
-        "type": "Mota",
         "status": "Egoera",
         "actions": "Ekintzak",
         "serie": "Seriea",

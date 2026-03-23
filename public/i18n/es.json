@@ -279,7 +279,6 @@
     "table": {
       "columns": {
         "name": "Nombre",
-        "type": "Tipo",
         "status": "Estado",
         "actions": "Acciones",
         "serie": "Serie",

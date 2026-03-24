@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, input, signal, viewChild, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
@@ -11,7 +11,6 @@ import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
 
 const MAX_UPCOMING_GAMES = 5;
-const DESCRIPTION_TRUNCATE_LENGTH = 300;
 
 export interface UpcomingGame {
   team1Name: string;
@@ -41,7 +40,21 @@ export class TournamentDashboard {
   teams = input<Team[]>([]);
   series = input<Serie[]>([]);
 
+  descriptionEl = viewChild<ElementRef<HTMLElement>>('descriptionEl');
+
   descriptionExpanded = signal(false);
+  descriptionOverflows = signal(false);
+
+  constructor() {
+    afterRenderEffect({
+      read: () => {
+        const el = this.descriptionEl()?.nativeElement;
+        if (el && !this.descriptionExpanded()) {
+          this.descriptionOverflows.set(el.scrollHeight > el.clientHeight + 1);
+        }
+      },
+    });
+  }
 
   teamsCount = computed(() => this.teams().length);
 
@@ -83,13 +96,6 @@ export class TournamentDashboard {
 
   description = computed(() => this.tournament().description ?? '');
 
-  descriptionTruncated = computed(() => {
-    const desc = this.description();
-    if (!desc) return false;
-    const textContent = this.stripHtml(desc);
-    return textContent.length > DESCRIPTION_TRUNCATE_LENGTH;
-  });
-
   toggleDescription(): void {
     this.descriptionExpanded.update((v) => !v);
   }
@@ -108,11 +114,5 @@ export class TournamentDashboard {
   ): string {
     if (!ref?.id) return '?';
     return map.get(ref.id) ?? '?';
-  }
-
-  private stripHtml(html: string): string {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent ?? tmp.innerText ?? '';
   }
 }

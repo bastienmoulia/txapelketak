@@ -13,12 +13,13 @@
       @if (description()) {
         <div class="description-container" [class.description-expanded]="descriptionExpanded()">
           <div
+            #descriptionEl
             class="m-0 ql-editor !p-0 text-[var(--p-text-muted-color)]"
             [innerHTML]="description()"
             data-testid="dashboard-description"
           ></div>
         </div>
-        @if (descriptionTruncated()) {
+        @if (descriptionOverflows() || descriptionExpanded()) {
           <p-button
             [text]="true"
             [label]="

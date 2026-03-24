@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
+import { filter, merge } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,10 @@ export class AppTitleStrategy extends TitleStrategy {
   constructor() {
     super();
 
-    this.translocoService.langChanges$
+    merge(
+      this.translocoService.langChanges$,
+      this.translocoService.events$.pipe(filter((e) => e.type === 'translationLoadSuccess')),
+    )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.applyTitle(this.currentRouteTitle));
   }

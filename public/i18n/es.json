@@ -282,7 +282,8 @@
         "status": "Estado",
         "actions": "Acciones",
         "serie": "Serie",
-        "poule": "Grupo"
+        "poule": "Grupo",
+        "type": "Tipo"
       },
       "open": "Abrir",
       "empty": "No hay torneos disponibles"

@@ -282,7 +282,8 @@
         "status": "Status",
         "actions": "Actions",
         "serie": "Series",
-        "poule": "Pool"
+        "poule": "Pool",
+        "type": "Type"
       },
       "open": "Open",
       "empty": "No tournaments available"

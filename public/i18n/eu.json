@@ -282,7 +282,8 @@
         "status": "Egoera",
         "actions": "Ekintzak",
         "serie": "Seriea",
-        "poule": "Taldea"
+        "poule": "Taldea",
+        "type": "Mota"
       },
       "open": "Ireki",
       "empty": "Ez dago txapelketarik"

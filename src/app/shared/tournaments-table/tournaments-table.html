@@ -4,6 +4,9 @@
       <th pSortableColumn="name">
         {{ 'shared.table.columns.name' | transloco }} <p-sortIcon field="name" />
       </th>
+      <th pSortableColumn="type">
+        {{ 'shared.table.columns.type' | transloco }} <p-sortIcon field="type" />
+      </th>
       <th pSortableColumn="status">
         {{ 'shared.table.columns.status' | transloco }} <p-sortIcon field="status" />
       </th>
@@ -13,6 +16,7 @@
   <ng-template #body let-tournament>
     <tr>
       <td>{{ tournament.name }}</td>
+      <td>{{ tournament.type }}</td>
       <td>
         <p-tag
           [value]="tournament.status | tournamentStatusLabel"
@@ -30,7 +34,7 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="3" class="text-center">{{ 'shared.table.empty' | transloco }}</td>
+      <td colspan="4" class="text-center">{{ 'shared.table.empty' | transloco }}</td>
     </tr>
   </ng-template>
 </p-table>

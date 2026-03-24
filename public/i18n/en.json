@@ -28,6 +28,7 @@
       "createButton": "Create a tournament"
     },
     "features": {
+      "title": "How does it work?",
       "createTournament": {
         "title": "Create your tournament",
         "description": "Easily configure your tournaments: groups, knockout stages, or both."

@@ -291,8 +291,7 @@
         "status": "Statut",
         "actions": "Actions",
         "serie": "Série",
-        "poule": "Poule",
-        "type": "Type"
+        "poule": "Poule"
       },
       "open": "Ouvrir",
       "empty": "Aucun tournoi disponible"

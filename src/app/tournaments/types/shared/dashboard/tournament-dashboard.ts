@@ -1,4 +1,13 @@
-import { afterRenderEffect, ChangeDetectionStrategy, Component, computed, input, signal, viewChild, ElementRef } from '@angular/core';
+import {
+  afterRenderEffect,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  signal,
+  viewChild,
+  ElementRef,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
@@ -48,9 +57,15 @@ export class TournamentDashboard {
   constructor() {
     afterRenderEffect({
       read: () => {
+        this.description();
         const el = this.descriptionEl()?.nativeElement;
         if (el && !this.descriptionExpanded()) {
-          this.descriptionOverflows.set(el.scrollHeight > el.clientHeight + 1);
+          const originalDisplay = el.style.display;
+          el.style.display = 'block';
+          const naturalHeight = el.scrollHeight;
+          el.style.display = originalDisplay;
+
+          this.descriptionOverflows.set(naturalHeight > 6 * 16); // 6rem in px
         }
       },
     });

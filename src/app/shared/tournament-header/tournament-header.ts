@@ -1,10 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
-import { BadgeModule } from 'primeng/badge';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { Tournament, UserRole } from '../../home/tournament.interface';
-import { TournamentStatusLabelPipe } from '../pipes/tournament-status-label.pipe';
-import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severity.pipe';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -13,11 +9,7 @@ import { RoleBadge } from '../role-badge/role-badge';
 @Component({
   selector: 'app-tournament-header',
   imports: [
-    BadgeModule,
     ButtonModule,
-    TagModule,
-    TournamentStatusLabelPipe,
-    TournamentStatusSeverityPipe,
     TranslocoPipe,
     ToastModule,
     RoleBadge,
@@ -33,13 +25,8 @@ export class TournamentHeader {
 
   tournament = input.required<Tournament>();
   role = input<UserRole | ''>('');
-  detailsExpanded = signal(false);
 
   creator = computed(() => this.resolveCreator(this.tournament()));
-
-  toggleDetails(): void {
-    this.detailsExpanded.update((isExpanded) => !isExpanded);
-  }
 
   edit(): void {
     this.#messageService.add({

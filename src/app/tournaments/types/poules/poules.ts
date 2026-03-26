@@ -21,6 +21,7 @@ import { PoulesTab } from '../shared/poules-tab/poules-tab';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Games } from '../shared/games/games';
 import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './poules.route';
+import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
 
 export interface PoulesData {
   teams?: Team[];
@@ -59,7 +60,7 @@ export function parseFirestoreDate(value: unknown): Date | undefined {
 
 @Component({
   selector: 'app-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, TournamentDashboard],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

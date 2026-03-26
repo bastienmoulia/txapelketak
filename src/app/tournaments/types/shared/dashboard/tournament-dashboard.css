@@ -1,0 +1,117 @@
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-card {
+  height: 100%;
+}
+
+.stat-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  color: var(--p-primary-color);
+  flex-shrink: 0;
+}
+
+.stat-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--p-text-color);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--p-text-muted-color);
+  margin-top: 0.25rem;
+}
+
+.description-container {
+  max-height: 6rem;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.description-container.description-expanded {
+  max-height: none;
+}
+
+.dashboard-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1rem 0;
+  font-weight: 600;
+}
+
+.upcoming-games-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.upcoming-game-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+
+.upcoming-game-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.upcoming-game-teams {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.upcoming-game-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 640px) {
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .dashboard-card--main {
+    grid-column: 1 / -1;
+  }
+
+  .stats-grid {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}

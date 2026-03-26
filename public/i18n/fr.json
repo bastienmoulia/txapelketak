@@ -124,6 +124,15 @@
     },
     "types": {
       "unknown": "Type de tournoi inconnu"
+    },
+    "dashboard": {
+      "tab": "Tableau de bord",
+      "teams": "Équipes",
+      "games": "Matchs",
+      "upcomingGames": "Prochains matchs",
+      "noUpcomingGames": "Aucun match à venir",
+      "showMore": "Voir plus",
+      "showLess": "Voir moins"
     }
   },
   "admin": {

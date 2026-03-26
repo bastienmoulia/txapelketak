@@ -39,10 +39,11 @@ import {
 } from '../../../tournaments/types/poules/poules.route';
 import { AdminUsers } from '../shared/admin-users/admin-users';
 import { AdminImportExport } from '../shared/admin-import-export/admin-import-export';
+import { TournamentDashboard } from '../../../tournaments/types/shared/dashboard/tournament-dashboard';
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, AdminUsers, AdminImportExport],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, AdminUsers, AdminImportExport, TournamentDashboard],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

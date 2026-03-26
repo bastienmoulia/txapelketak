@@ -124,6 +124,15 @@
     },
     "types": {
       "unknown": "Txapelketa mota ezezaguna"
+    },
+    "dashboard": {
+      "tab": "Aginte-ohola",
+      "teams": "Taldeak",
+      "games": "Partidak",
+      "upcomingGames": "Hurrengo partidak",
+      "noUpcomingGames": "Ez dago partida programaturik",
+      "showMore": "Gehiago ikusi",
+      "showLess": "Gutxiago ikusi"
     }
   },
   "admin": {

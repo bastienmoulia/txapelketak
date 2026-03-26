@@ -124,6 +124,15 @@
     },
     "types": {
       "unknown": "Unknown tournament type"
+    },
+    "dashboard": {
+      "tab": "Dashboard",
+      "teams": "Teams",
+      "games": "Games",
+      "upcomingGames": "Upcoming games",
+      "noUpcomingGames": "No upcoming games",
+      "showMore": "Show more",
+      "showLess": "Show less"
     }
   },
   "admin": {

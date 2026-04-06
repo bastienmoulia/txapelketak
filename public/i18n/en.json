@@ -128,7 +128,11 @@
     "dashboard": {
       "tab": "Dashboard",
       "teams": "Teams",
+      "series": "Series",
+      "poules": "Groups",
       "games": "Games",
+      "playedGames": "Played games",
+      "progress": "Progress",
       "upcomingGames": "Upcoming games",
       "noUpcomingGames": "No upcoming games",
       "showMore": "Show more",

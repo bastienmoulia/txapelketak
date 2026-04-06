@@ -8,11 +8,7 @@
 
   <p-tabpanels class="px-0!">
     <p-tabpanel value="dashboard">
-      <app-tournament-dashboard
-        [tournament]="tournament()"
-        [teams]="teams()"
-        [series]="series()"
-      />
+      <app-tournament-dashboard [tournament]="tournament()" [teams]="teams()" [series]="series()" />
     </p-tabpanel>
     <p-tabpanel value="teams">
       <app-teams [teams]="teamsWithContext()" />
@@ -21,7 +17,7 @@
       <app-poules-tab [series]="series()" [teams]="teams()" />
     </p-tabpanel>
     <p-tabpanel value="games">
-      <app-games [series]="series()" [teams]="teams()" />
+      <app-games [series]="series()" [teams]="teams()" [tournament]="tournament()" />
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

@@ -25,7 +25,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
 import { DatePicker } from 'primeng/datepicker';
-import { UserRole } from '../../../../home/tournament.interface';
+import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { SelectButton } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -97,6 +97,7 @@ export class Games {
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
+  tournament = input.required<Tournament>();
   role = input<UserRole | ''>('');
 
   saveGame = output<SaveGameEvent>();

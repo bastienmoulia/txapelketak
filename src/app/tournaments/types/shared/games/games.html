@@ -19,9 +19,19 @@
             </div>
           </p-accordion-header>
           <p-accordion-content>
-            <ng-container
-              *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serie: serie }"
-            ></ng-container>
+            @if (tournament().type === 'poules' || tournament().type === 'poules_finale') {
+              <ng-container
+                *ngTemplateOutlet="
+                  poules;
+                  context: { $implicit: serie.poules, serieRef: serie.ref, serie: serie }
+                "
+              ></ng-container>
+            }
+            @if (tournament().type === 'poules_finale' || tournament().type === 'finale') {
+              <p-message severity="info">{{
+                'admin.games.finalPhaseComingSoon' | transloco
+              }}</p-message>
+            }
           </p-accordion-content>
         </p-accordion-panel>
       }

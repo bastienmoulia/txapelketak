@@ -132,7 +132,9 @@
       "upcomingGames": "Próximos partidos",
       "noUpcomingGames": "No hay partidos próximos",
       "showMore": "Ver más",
-      "showLess": "Ver menos"
+      "showLess": "Ver menos",
+      "recentGames": "Últimos resultados",
+      "noRecentGames": "No hay resultados disponibles"
     }
   },
   "admin": {

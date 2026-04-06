@@ -99,6 +99,14 @@
   flex-wrap: wrap;
 }
 
+.recent-game-score {
+  font-weight: 700;
+  font-size: 1.125rem;
+  min-width: 1.5rem;
+  text-align: center;
+  margin: 0 0.25rem;
+}
+
 @media (min-width: 640px) {
   .dashboard-grid {
     display: grid;

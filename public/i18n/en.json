@@ -132,7 +132,9 @@
       "upcomingGames": "Upcoming games",
       "noUpcomingGames": "No upcoming games",
       "showMore": "Show more",
-      "showLess": "Show less"
+      "showLess": "Show less",
+      "recentGames": "Recent results",
+      "noRecentGames": "No results available"
     }
   },
   "admin": {

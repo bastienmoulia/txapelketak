@@ -97,11 +97,6 @@ export class AdminFinale {
     return this.translocoService.translate('datepicker.placeholder');
   });
 
-  firstDayOfWeek = computed(() => {
-    this.activeLanguage();
-    return Number(this.translocoService.translate('datepicker.firstDayOfWeek'));
-  });
-
   totalRounds = computed(() => {
     const n = this.numberOfTeams();
     return n >= 2 ? Math.log2(n) : 0;
@@ -130,7 +125,6 @@ export class AdminFinale {
 
   // Edit match dialog state
   matchDialogVisible = signal(false);
-  isEditingMatch = signal(false);
   editingMatch = signal<KnockoutMatch | null>(null);
   editTeam1Name = signal('');
   editTeam2Name = signal('');
@@ -256,7 +250,6 @@ export class AdminFinale {
   }
 
   onEditMatch(match: KnockoutMatch): void {
-    this.isEditingMatch.set(true);
     this.editingMatch.set(match);
     this.editTeam1Name.set(match.team1Name ?? '');
     this.editTeam2Name.set(match.team2Name ?? '');

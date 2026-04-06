@@ -60,7 +60,7 @@ export function getRoundName(
     case 4:
       return translateFn('admin.finale.rounds.roundOf32');
     default:
-      return translateFn('admin.finale.rounds.round') + ' ' + (roundIndex + 1);
+      return `${translateFn('admin.finale.rounds.round')} ${roundIndex + 1}`;
   }
 }
 

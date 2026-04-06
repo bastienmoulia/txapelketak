@@ -35,7 +35,10 @@
           />
         }
       } @else {
-        <p class="m-0 text-[var(--p-text-muted-color)] italic" data-testid="dashboard-no-description">
+        <p
+          class="m-0 text-[var(--p-text-muted-color)] italic"
+          data-testid="dashboard-no-description"
+        >
           {{ 'shared.tournamentHeader.noDescription' | transloco }}
         </p>
       }
@@ -79,7 +82,18 @@
 
       @if (upcomingGames().length > 0) {
         <ul class="upcoming-games-list">
-          @for (game of upcomingGames(); track game.date.getTime() + '_' + game.team1Name + '_' + game.team2Name + '_' + game.serieName + '_' + game.pouleName) {
+          @for (
+            game of upcomingGames();
+            track game.date.getTime() +
+              '_' +
+              game.team1Name +
+              '_' +
+              game.team2Name +
+              '_' +
+              game.serieName +
+              '_' +
+              game.pouleName
+          ) {
             <li class="upcoming-game-item" data-testid="dashboard-upcoming-game">
               <div class="upcoming-game-teams">
                 <span class="font-semibold">{{ game.team1Name }}</span>
@@ -98,6 +112,57 @@
       } @else {
         <p class="m-0 text-[var(--p-text-muted-color)] italic" data-testid="dashboard-no-upcoming">
           {{ 'tournaments.dashboard.noUpcomingGames' | transloco }}
+        </p>
+      }
+    </p-card>
+  }
+
+  <!-- Recent games card -->
+  @if (series().length > 0) {
+    <p-card styleClass="dashboard-card">
+      <ng-template pTemplate="header">
+        <div class="dashboard-card-header">
+          <i class="pi pi-history"></i>
+          <span>{{ 'tournaments.dashboard.recentGames' | transloco }}</span>
+        </div>
+      </ng-template>
+
+      @if (recentGames().length > 0) {
+        <ul class="upcoming-games-list">
+          @for (
+            game of recentGames();
+            track (game.date?.getTime() ?? 0) +
+              '_' +
+              game.team1Name +
+              '_' +
+              game.team2Name +
+              '_' +
+              game.serieName +
+              '_' +
+              game.pouleName
+          ) {
+            <li class="upcoming-game-item" data-testid="dashboard-recent-game">
+              <div class="upcoming-game-teams">
+                <span class="font-semibold">{{ game.team1Name }}</span>
+                <span class="recent-game-score">{{ game.scoreTeam1 }}</span>
+                <span class="text-[var(--p-text-muted-color)]">-</span>
+                <span class="recent-game-score">{{ game.scoreTeam2 }}</span>
+                <span class="font-semibold">{{ game.team2Name }}</span>
+              </div>
+              <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
+                @if (game.date) {
+                  <i class="pi pi-clock text-xs mr-1"></i>
+                  {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                  <span class="mx-1">·</span>
+                }
+                {{ game.serieName }} – {{ game.pouleName }}
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="m-0 text-[var(--p-text-muted-color)] italic" data-testid="dashboard-no-recent">
+          {{ 'tournaments.dashboard.noRecentGames' | transloco }}
         </p>
       }
     </p-card>

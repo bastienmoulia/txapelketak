@@ -132,7 +132,9 @@
       "upcomingGames": "Hurrengo partidak",
       "noUpcomingGames": "Ez dago partida programaturik",
       "showMore": "Gehiago ikusi",
-      "showLess": "Gutxiago ikusi"
+      "showLess": "Gutxiago ikusi",
+      "recentGames": "Azken emaitzak",
+      "noRecentGames": "Ez dago emaitzarik"
     }
   },
   "admin": {

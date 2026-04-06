@@ -20,11 +20,22 @@ import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
 
 const MAX_UPCOMING_GAMES = 5;
+const MAX_RECENT_GAMES = 5;
 
 export interface UpcomingGame {
   team1Name: string;
   team2Name: string;
   date: Date;
+  serieName: string;
+  pouleName: string;
+}
+
+export interface RecentGame {
+  team1Name: string;
+  team2Name: string;
+  scoreTeam1: number;
+  scoreTeam2: number;
+  date: Date | undefined;
   serieName: string;
   pouleName: string;
 }
@@ -107,6 +118,38 @@ export class TournamentDashboard {
     return upcoming
       .sort((a, b) => a.date.getTime() - b.date.getTime())
       .slice(0, MAX_UPCOMING_GAMES);
+  });
+
+  recentGames = computed((): RecentGame[] => {
+    const teamNameMap = this.buildTeamNameMap();
+    const recent: RecentGame[] = [];
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
+            recent.push({
+              team1Name: this.getTeamName(game.refTeam1, teamNameMap),
+              team2Name: this.getTeamName(game.refTeam2, teamNameMap),
+              scoreTeam1: game.scoreTeam1,
+              scoreTeam2: game.scoreTeam2,
+              date: game.date ? new Date(game.date) : undefined,
+              serieName: serie.name,
+              pouleName: poule.name,
+            });
+          }
+        }
+      }
+    }
+
+    return recent
+      .sort((a, b) => {
+        if (a.date && b.date) return b.date.getTime() - a.date.getTime();
+        if (a.date) return -1;
+        if (b.date) return 1;
+        return 0;
+      })
+      .slice(0, MAX_RECENT_GAMES);
   });
 
   description = computed(() => this.tournament().description ?? '');

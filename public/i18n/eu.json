@@ -128,7 +128,11 @@
     "dashboard": {
       "tab": "Aginte-ohola",
       "teams": "Taldeak",
+      "series": "Serieak",
+      "poules": "Taldekatzeak",
       "games": "Partidak",
+      "playedGames": "Jokatutako partidak",
+      "progress": "Aurrerabidea",
       "upcomingGames": "Hurrengo partidak",
       "noUpcomingGames": "Ez dago partida programaturik",
       "showMore": "Gehiago ikusi",

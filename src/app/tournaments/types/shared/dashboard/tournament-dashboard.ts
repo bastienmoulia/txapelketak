@@ -84,6 +84,36 @@ export class TournamentDashboard {
 
   teamsCount = computed(() => this.teams().length);
 
+  seriesCount = computed(() => this.series().length);
+
+  poulesCount = computed(() => {
+    let count = 0;
+    for (const serie of this.series()) {
+      count += serie.poules?.length ?? 0;
+    }
+    return count;
+  });
+
+  playedGamesCount = computed(() => {
+    let count = 0;
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
+            count++;
+          }
+        }
+      }
+    }
+    return count;
+  });
+
+  progressPercent = computed(() => {
+    const total = this.gamesCount();
+    if (total === 0) return 0;
+    return Math.round((this.playedGamesCount() / total) * 100);
+  });
+
   gamesCount = computed(() => {
     let count = 0;
     for (const serie of this.series()) {

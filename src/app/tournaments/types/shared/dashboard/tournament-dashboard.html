@@ -58,6 +58,28 @@
       </div>
     </p-card>
 
+    <!-- Series count -->
+    <p-card styleClass="dashboard-card dashboard-card--stat">
+      <div class="stat-content">
+        <i class="pi pi-list stat-icon"></i>
+        <div class="stat-text">
+          <span class="stat-value" data-testid="dashboard-series-count">{{ seriesCount() }}</span>
+          <span class="stat-label">{{ 'tournaments.dashboard.series' | transloco }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Poules count -->
+    <p-card styleClass="dashboard-card dashboard-card--stat">
+      <div class="stat-content">
+        <i class="pi pi-th-large stat-icon"></i>
+        <div class="stat-text">
+          <span class="stat-value" data-testid="dashboard-poules-count">{{ poulesCount() }}</span>
+          <span class="stat-label">{{ 'tournaments.dashboard.poules' | transloco }}</span>
+        </div>
+      </div>
+    </p-card>
+
     <!-- Games count -->
     <p-card styleClass="dashboard-card dashboard-card--stat">
       <div class="stat-content">
@@ -65,6 +87,19 @@
         <div class="stat-text">
           <span class="stat-value" data-testid="dashboard-games-count">{{ gamesCount() }}</span>
           <span class="stat-label">{{ 'tournaments.dashboard.games' | transloco }}</span>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Played games count -->
+    <p-card styleClass="dashboard-card dashboard-card--stat">
+      <div class="stat-content">
+        <i class="pi pi-check-circle stat-icon"></i>
+        <div class="stat-text">
+          <span class="stat-value" data-testid="dashboard-played-count">{{
+            playedGamesCount()
+          }}</span>
+          <span class="stat-label">{{ 'tournaments.dashboard.playedGames' | transloco }}</span>
         </div>
       </div>
     </p-card>

@@ -178,11 +178,21 @@
           ) {
             <li class="upcoming-game-item" data-testid="dashboard-recent-game">
               <div class="upcoming-game-teams">
-                <span class="font-semibold">{{ game.team1Name }}</span>
-                <span class="recent-game-score">{{ game.scoreTeam1 }}</span>
+                <span
+                  class="font-semibold"
+                  [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
+                  [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                  >{{ game.team1Name }}</span
+                >
+                <span class="recent-game-score" [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2" [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2">{{ game.scoreTeam1 }}</span>
                 <span class="text-[var(--p-text-muted-color)]">-</span>
-                <span class="recent-game-score">{{ game.scoreTeam2 }}</span>
-                <span class="font-semibold">{{ game.team2Name }}</span>
+                <span class="recent-game-score" [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1" [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1">{{ game.scoreTeam2 }}</span>
+                <span
+                  class="font-semibold"
+                  [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
+                  [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                  >{{ game.team2Name }}</span
+                >
               </div>
               <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
                 @if (game.date) {

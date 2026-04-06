@@ -19,6 +19,14 @@ describe('Games', () => {
     fixture = TestBed.createComponent(Games);
     fixture.componentRef.setInput('teams', []);
     fixture.componentRef.setInput('series', []);
+    fixture.componentRef.setInput('tournament', {
+      ref: createDocumentReference('tournament-1'),
+      name: 'Test Tournament',
+      description: '',
+      type: 'poules',
+      status: 'ongoing',
+      createdAt: '2026-01-01',
+    });
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();

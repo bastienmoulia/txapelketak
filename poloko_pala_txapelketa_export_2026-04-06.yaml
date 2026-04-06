@@ -1,0 +1,570 @@
+tournament:
+  name: Poloko pala txapelketa
+  description: |-
+    Organisé par poloki hiriondo ikastola & ASL Polo Beyris antolaturik.
+
+    Du lundi au vendredi
+    à partir de 17h30
+    du 6 avril au 2 juillet
+    au Fronton du quartier Polo Beyris
+  type: poules
+  status: ongoing
+teams:
+  - id: 0Lmbg75GCRWgUOJXFZl5
+    name: Larrory - Lafitte
+  - id: 0jmFCmLU3WfR6wMrUA0A
+    name: Zamponi - Aurkenerena
+  - id: 2yViI7hCF55QletDOzqk
+    name: Lataillade - Dutey
+  - id: 56G83YJ657yi7vLiER7Q
+    name: Armendariz - Vivier Dechirure
+  - id: 5YHw62q1EJpEs4a6UoAl
+    name: Luro - Libarle
+  - id: 6rZGTjB9SakAkYUdX9Rc
+    name: Iturrino - Etxeberri
+  - id: 7YtzMTHayHISL2BqdQVO
+    name: Lamaison - Duviau
+  - id: 90bu7p20WA6DqzVlZKAV
+    name: Lottin - Behasteguy
+  - id: 9yikIdvkWIAS34GN02ZK
+    name: Greciet - Diger
+  - id: A3S8Qg2mAogxbliOlNz0
+    name: Aguirrebarrena - Hiriart
+  - id: C1OAZonW7A6un7GRIscM
+    name: Poueyts - Poueyts
+  - id: C4qIjqAn6LGfxRDKAh9F
+    name: HOLGADO - Holgado (T)
+  - id: C6lU92dpXxsP7pP2Ejhn
+    name: Lopez - Cosqueric
+  - id: CRUDvS1g8dFg8PypoWtK
+    name: Garat - Albor
+  - id: Djugb9EoaxwcVlw4UWdt
+    name: Rouault - Mendibourre
+  - id: FGfgq12WYaZQvE3N3zol
+    name: Hontaas - Lartigue
+  - id: FdidGjAi5iUsOnrbVBPJ
+    name: Lataillade - Cledon
+  - id: GyMltVsNkjsbF2GfL5tD
+    name: Makazaga - Almandoz
+  - id: HUbm1CVfqymbnaiiDVb8
+    name: Itcia - Haira
+  - id: I51WY3USAL0Elea58sA8
+    name: Oyhagaray - Oyhagaray
+  - id: JGuyQ6nhBYPgDVJXSway
+    name: De Brito - Gastesi
+  - id: K8CySQDXHjTkU3bMSTHU
+    name: Arrossagaray - Arrossagaray
+  - id: QXrUbM0gOOJWWOEl7DWV
+    name: Escande - Escande
+  - id: SUJyY52SvPnlPsEtjMUM
+    name: Legarto - Greciet
+  - id: TOtrOHZdMlc9wpo2qAf3
+    name: Rathier - Lataste
+  - id: UWDx8IQDBgY7wTiE2rbk
+    name: Etchemendy - Barrague
+  - id: Uz1bzS1s3XfmwIcmsgVa
+    name: Iribarren - Artigue
+  - id: W0qE0hFnWmhpzBZnGhcD
+    name: PINATEL - URTASUN
+  - id: W0rNZ9jBdbWCoexoBXWC
+    name: DE BRITO - Mendiboure
+  - id: WmuWpZuDUTa8EQkIiWBM
+    name: HIRIGOYEN - GUEZALA
+  - id: beJYAql4t5JTPmOs4CfN
+    name: Ladevese - Henry
+  - id: biAfmAG63FTfLfynW1Fh
+    name: DUPOUY - Odriozola
+  - id: btbqUoOTNMMNxZ5pYz0S
+    name: Hardoy - Arretche
+  - id: c3jhvoRPPlrwgFIZp9jJ
+    name: Iribarren - Landart
+  - id: e0GmNybMVDSFtKCBU02X
+    name: HOLGADO - Etcheberry
+  - id: e1FVaaE2yQVXRqZVZybD
+    name: Tauzin - Itoiz
+  - id: fGPIs98mh25VZ74YG5Lt
+    name: Errecart - Mendiboure
+  - id: fIGTfKiPgkYpBzD2VYZr
+    name: Maubaret - Maujean
+  - id: fRh9wKv29rpMpQeU0D30
+    name: Lissalt - Cazauran (T)
+  - id: fdvFvsHPIuebLbt0VOc4
+    name: Lamothe - Urkijo
+  - id: ffcXBy34kZQMrEVQzAGB
+    name: Etcheverry - Rattinacannou
+  - id: gANnssmYauhgDQk5TKhW
+    name: Hayet - Arcuby
+  - id: gD4bNN8yJmWekVwPkSAM
+    name: Montazel - Toujas
+  - id: iPRIsNyA0H8bfBcxrn9h
+    name: Contim - SCOTTO D'ANIELLO
+  - id: jWAcQdrzXS9RXonZDt11
+    name: Lasarroques - HOUSSAYE
+  - id: jlJVpQfl6rYGvDmtX6sC
+    name: Olive - Lavignasse
+  - id: kwJyg9a4W48ytgyucmu0
+    name: Hayet - Menetre
+  - id: lAr0uGK8sx4Pn1gJPWdX
+    name: Albistur - Patxi
+  - id: lHvBt7HRgmv4KMH8fcfU
+    name: Beheregaray - Saumoneau
+  - id: lbOmaUh0TPDZ5M9Flt4c
+    name: Patissier - Albagnac
+  - id: ld02TXrJKx8qU3sqf2vu
+    name: Arcuby - Lorin de Reure
+  - id: lvi9B9C6EUVyqGxzLaAi
+    name: BERNARD - HIRIGOYEN
+  - id: mYx6JxXLcP6vbQWvjxGW
+    name: Laby - Sarraude
+  - id: p1eGRjX202GC9RTk8ANd
+    name: Nascimento - Arretche
+  - id: pxZcVVC7ZNdRkh1qMhmN
+    name: URTASUN AKERRETA - ETCHEGARAY
+  - id: qbZL5bNC41YjT873Gr9k
+    name: DE BRITO - DE BRITO
+  - id: qk1VAbgRaSTfrzS3wHQj
+    name: Prebende - Arotcarena
+  - id: rpHiUgRRJ1hdUMzI9qqN
+    name: souveste - hontas
+  - id: s13yVDFEeI8RGR2KDLm1
+    name: Crusener Mattei - Zozaya
+  - id: spYy10FAywHhHN7Gizf4
+    name: Edouard - Ojan
+  - id: tRmXpVuK0G0XIAms1SzF
+    name: Herve - Guiraude (T)
+  - id: y9RaSJPMxlwIXSIBfcQm
+    name: Godrie Williams - Godrie
+  - id: yE2nkr8bsqUBlqmUeQ0p
+    name: Hiriberry - Hiriberry
+  - id: zMLFMPLB3gRJrScWbbxP
+    name: Garric - Oyhagaray
+series:
+  - name: 1re Série
+    poules:
+      - name: A
+        teams:
+          - fRh9wKv29rpMpQeU0D30
+          - qk1VAbgRaSTfrzS3wHQj
+          - QXrUbM0gOOJWWOEl7DWV
+          - 6rZGTjB9SakAkYUdX9Rc
+        games:
+          - team1: fRh9wKv29rpMpQeU0D30
+            team2: 6rZGTjB9SakAkYUdX9Rc
+            date: '2026-05-19T15:30:00.000Z'
+          - team1: fRh9wKv29rpMpQeU0D30
+            team2: QXrUbM0gOOJWWOEl7DWV
+            date: '2026-05-26T17:30:00.000Z'
+          - team1: fRh9wKv29rpMpQeU0D30
+            team2: qk1VAbgRaSTfrzS3wHQj
+            date: '2026-05-07T15:30:00.000Z'
+          - team1: 6rZGTjB9SakAkYUdX9Rc
+            team2: QXrUbM0gOOJWWOEl7DWV
+            date: '2026-05-11T17:30:00.000Z'
+          - team1: QXrUbM0gOOJWWOEl7DWV
+            team2: qk1VAbgRaSTfrzS3wHQj
+            score1: 30
+            score2: 15
+            date: '2026-04-06T16:30:00.000Z'
+          - team1: qk1VAbgRaSTfrzS3wHQj
+            team2: 6rZGTjB9SakAkYUdX9Rc
+            date: '2026-04-30T15:30:00.000Z'
+      - name: B
+        teams:
+          - tRmXpVuK0G0XIAms1SzF
+          - lAr0uGK8sx4Pn1gJPWdX
+          - jlJVpQfl6rYGvDmtX6sC
+          - C1OAZonW7A6un7GRIscM
+          - lbOmaUh0TPDZ5M9Flt4c
+        games:
+          - team1: tRmXpVuK0G0XIAms1SzF
+            team2: lAr0uGK8sx4Pn1gJPWdX
+            date: '2026-05-29T15:30:00.000Z'
+          - team1: C1OAZonW7A6un7GRIscM
+            team2: lbOmaUh0TPDZ5M9Flt4c
+            date: '2026-05-08T16:30:00.000Z'
+          - team1: lAr0uGK8sx4Pn1gJPWdX
+            team2: jlJVpQfl6rYGvDmtX6sC
+            date: '2026-05-14T16:30:00.000Z'
+          - team1: lAr0uGK8sx4Pn1gJPWdX
+            team2: lbOmaUh0TPDZ5M9Flt4c
+            date: '2026-04-17T17:30:00.000Z'
+          - team1: jlJVpQfl6rYGvDmtX6sC
+            team2: C1OAZonW7A6un7GRIscM
+            date: '2026-04-29T17:30:00.000Z'
+          - team1: tRmXpVuK0G0XIAms1SzF
+            team2: lbOmaUh0TPDZ5M9Flt4c
+            date: '2026-05-15T16:30:00.000Z'
+          - team1: lAr0uGK8sx4Pn1gJPWdX
+            team2: C1OAZonW7A6un7GRIscM
+            date: '2026-05-22T17:30:00.000Z'
+          - team1: tRmXpVuK0G0XIAms1SzF
+            team2: C1OAZonW7A6un7GRIscM
+            date: '2026-04-28T17:30:00.000Z'
+          - team1: jlJVpQfl6rYGvDmtX6sC
+            team2: lbOmaUh0TPDZ5M9Flt4c
+            date: '2026-04-13T17:30:00.000Z'
+          - team1: tRmXpVuK0G0XIAms1SzF
+            team2: jlJVpQfl6rYGvDmtX6sC
+            date: '2026-05-21T17:30:00.000Z'
+      - name: C
+        teams:
+          - btbqUoOTNMMNxZ5pYz0S
+          - C4qIjqAn6LGfxRDKAh9F
+          - e1FVaaE2yQVXRqZVZybD
+          - FGfgq12WYaZQvE3N3zol
+        games:
+          - team1: btbqUoOTNMMNxZ5pYz0S
+            team2: FGfgq12WYaZQvE3N3zol
+            date: '2026-04-10T16:30:00.000Z'
+          - team1: C4qIjqAn6LGfxRDKAh9F
+            team2: e1FVaaE2yQVXRqZVZybD
+            date: '2026-05-07T16:30:00.000Z'
+          - team1: C4qIjqAn6LGfxRDKAh9F
+            team2: FGfgq12WYaZQvE3N3zol
+            date: '2026-05-29T16:30:00.000Z'
+          - team1: btbqUoOTNMMNxZ5pYz0S
+            team2: e1FVaaE2yQVXRqZVZybD
+            date: '2026-04-14T16:30:00.000Z'
+          - team1: btbqUoOTNMMNxZ5pYz0S
+            team2: C4qIjqAn6LGfxRDKAh9F
+            date: '2026-04-22T16:30:00.000Z'
+          - team1: e1FVaaE2yQVXRqZVZybD
+            team2: FGfgq12WYaZQvE3N3zol
+            date: '2026-04-20T17:30:00.000Z'
+  - name: Mixte
+    poules:
+      - name: E
+        teams:
+          - e0GmNybMVDSFtKCBU02X
+          - fIGTfKiPgkYpBzD2VYZr
+          - iPRIsNyA0H8bfBcxrn9h
+          - FdidGjAi5iUsOnrbVBPJ
+        games:
+          - team1: fIGTfKiPgkYpBzD2VYZr
+            team2: iPRIsNyA0H8bfBcxrn9h
+            date: '2026-05-20T15:30:00.000Z'
+          - team1: e0GmNybMVDSFtKCBU02X
+            team2: iPRIsNyA0H8bfBcxrn9h
+            date: '2026-05-13T16:30:00.000Z'
+          - team1: e0GmNybMVDSFtKCBU02X
+            team2: fIGTfKiPgkYpBzD2VYZr
+            date: '2026-04-15T15:30:00.000Z'
+          - team1: iPRIsNyA0H8bfBcxrn9h
+            team2: FdidGjAi5iUsOnrbVBPJ
+            date: '2026-05-27T15:30:00.000Z'
+          - team1: fIGTfKiPgkYpBzD2VYZr
+            team2: FdidGjAi5iUsOnrbVBPJ
+            date: '2026-04-29T15:30:00.000Z'
+          - team1: e0GmNybMVDSFtKCBU02X
+            team2: FdidGjAi5iUsOnrbVBPJ
+            date: '2026-04-24T15:30:00.000Z'
+      - name: D
+        teams:
+          - zMLFMPLB3gRJrScWbbxP
+          - s13yVDFEeI8RGR2KDLm1
+          - y9RaSJPMxlwIXSIBfcQm
+          - rpHiUgRRJ1hdUMzI9qqN
+        games:
+          - team1: s13yVDFEeI8RGR2KDLm1
+            team2: y9RaSJPMxlwIXSIBfcQm
+            date: '2026-04-14T15:30:00.000Z'
+          - team1: zMLFMPLB3gRJrScWbbxP
+            team2: y9RaSJPMxlwIXSIBfcQm
+            date: '2026-05-28T16:30:00.000Z'
+          - team1: s13yVDFEeI8RGR2KDLm1
+            team2: rpHiUgRRJ1hdUMzI9qqN
+            date: '2026-05-22T15:30:00.000Z'
+          - team1: zMLFMPLB3gRJrScWbbxP
+            team2: rpHiUgRRJ1hdUMzI9qqN
+            date: '2026-05-11T16:30:00.000Z'
+          - team1: y9RaSJPMxlwIXSIBfcQm
+            team2: rpHiUgRRJ1hdUMzI9qqN
+            date: '2026-04-08T15:30:00.000Z'
+          - team1: zMLFMPLB3gRJrScWbbxP
+            team2: s13yVDFEeI8RGR2KDLm1
+            date: '2026-05-15T17:30:00.000Z'
+      - name: B
+        teams:
+          - WmuWpZuDUTa8EQkIiWBM
+          - 7YtzMTHayHISL2BqdQVO
+          - c3jhvoRPPlrwgFIZp9jJ
+          - pxZcVVC7ZNdRkh1qMhmN
+        games:
+          - team1: WmuWpZuDUTa8EQkIiWBM
+            team2: pxZcVVC7ZNdRkh1qMhmN
+            date: '2026-05-25T16:30:00.000Z'
+          - team1: 7YtzMTHayHISL2BqdQVO
+            team2: pxZcVVC7ZNdRkh1qMhmN
+            date: '2026-04-28T15:30:00.000Z'
+          - team1: 7YtzMTHayHISL2BqdQVO
+            team2: c3jhvoRPPlrwgFIZp9jJ
+            date: '2026-05-18T15:30:00.000Z'
+          - team1: WmuWpZuDUTa8EQkIiWBM
+            team2: 7YtzMTHayHISL2BqdQVO
+            date: '2026-05-06T17:30:00.000Z'
+          - team1: c3jhvoRPPlrwgFIZp9jJ
+            team2: pxZcVVC7ZNdRkh1qMhmN
+            date: '2026-05-14T15:30:00.000Z'
+          - team1: WmuWpZuDUTa8EQkIiWBM
+            team2: c3jhvoRPPlrwgFIZp9jJ
+            date: '2026-04-22T17:30:00.000Z'
+      - name: C
+        teams:
+          - TOtrOHZdMlc9wpo2qAf3
+          - SUJyY52SvPnlPsEtjMUM
+          - biAfmAG63FTfLfynW1Fh
+          - 0Lmbg75GCRWgUOJXFZl5
+        games:
+          - team1: SUJyY52SvPnlPsEtjMUM
+            team2: 0Lmbg75GCRWgUOJXFZl5
+            date: '2026-04-08T17:30:00.000Z'
+          - team1: biAfmAG63FTfLfynW1Fh
+            team2: 0Lmbg75GCRWgUOJXFZl5
+            date: '2026-05-20T17:30:00.000Z'
+          - team1: TOtrOHZdMlc9wpo2qAf3
+            team2: 0Lmbg75GCRWgUOJXFZl5
+            date: '2026-05-27T17:30:00.000Z'
+          - team1: TOtrOHZdMlc9wpo2qAf3
+            team2: biAfmAG63FTfLfynW1Fh
+            date: '2026-05-07T17:30:00.000Z'
+          - team1: TOtrOHZdMlc9wpo2qAf3
+            team2: SUJyY52SvPnlPsEtjMUM
+            date: '2026-04-15T16:30:00.000Z'
+          - team1: SUJyY52SvPnlPsEtjMUM
+            team2: biAfmAG63FTfLfynW1Fh
+            date: '2026-05-29T17:30:00.000Z'
+      - name: A
+        teams:
+          - p1eGRjX202GC9RTk8ANd
+          - qbZL5bNC41YjT873Gr9k
+          - UWDx8IQDBgY7wTiE2rbk
+          - K8CySQDXHjTkU3bMSTHU
+        games:
+          - team1: p1eGRjX202GC9RTk8ANd
+            team2: UWDx8IQDBgY7wTiE2rbk
+            date: '2026-05-08T17:30:00.000Z'
+          - team1: qbZL5bNC41YjT873Gr9k
+            team2: K8CySQDXHjTkU3bMSTHU
+          - team1: UWDx8IQDBgY7wTiE2rbk
+            team2: K8CySQDXHjTkU3bMSTHU
+            date: '2026-05-13T15:30:00.000Z'
+          - team1: qbZL5bNC41YjT873Gr9k
+            team2: UWDx8IQDBgY7wTiE2rbk
+            score1: 30
+            score2: 23
+            date: '2026-04-06T15:30:00.000Z'
+          - team1: p1eGRjX202GC9RTk8ANd
+            team2: qbZL5bNC41YjT873Gr9k
+            date: '2026-05-26T16:30:00.000Z'
+          - team1: p1eGRjX202GC9RTk8ANd
+            team2: K8CySQDXHjTkU3bMSTHU
+            date: '2026-04-10T17:30:00.000Z'
+  - name: Féminines
+    poules:
+      - name: A
+        teams:
+          - mYx6JxXLcP6vbQWvjxGW
+          - 5YHw62q1EJpEs4a6UoAl
+          - GyMltVsNkjsbF2GfL5tD
+          - W0qE0hFnWmhpzBZnGhcD
+          - CRUDvS1g8dFg8PypoWtK
+          - HUbm1CVfqymbnaiiDVb8
+        games:
+          - team1: CRUDvS1g8dFg8PypoWtK
+            team2: mYx6JxXLcP6vbQWvjxGW
+            date: '2026-04-23T17:30:00.000Z'
+          - team1: 5YHw62q1EJpEs4a6UoAl
+            team2: W0qE0hFnWmhpzBZnGhcD
+            date: '2026-04-30T17:30:00.000Z'
+          - team1: mYx6JxXLcP6vbQWvjxGW
+            team2: GyMltVsNkjsbF2GfL5tD
+            date: '2026-05-14T17:30:00.000Z'
+          - team1: 5YHw62q1EJpEs4a6UoAl
+            team2: HUbm1CVfqymbnaiiDVb8
+            date: '2026-04-28T16:30:00.000Z'
+          - team1: mYx6JxXLcP6vbQWvjxGW
+            team2: 5YHw62q1EJpEs4a6UoAl
+            date: '2026-05-20T16:30:00.000Z'
+          - team1: GyMltVsNkjsbF2GfL5tD
+            team2: W0qE0hFnWmhpzBZnGhcD
+            date: '2026-05-21T16:30:00.000Z'
+          - team1: W0qE0hFnWmhpzBZnGhcD
+            team2: HUbm1CVfqymbnaiiDVb8
+            date: '2026-05-04T17:30:00.000Z'
+          - team1: 5YHw62q1EJpEs4a6UoAl
+            team2: GyMltVsNkjsbF2GfL5tD
+            date: '2026-04-16T17:30:00.000Z'
+          - team1: CRUDvS1g8dFg8PypoWtK
+            team2: W0qE0hFnWmhpzBZnGhcD
+            date: '2026-04-27T17:30:00.000Z'
+          - team1: GyMltVsNkjsbF2GfL5tD
+            team2: HUbm1CVfqymbnaiiDVb8
+            date: '2026-04-21T17:30:00.000Z'
+          - team1: mYx6JxXLcP6vbQWvjxGW
+            team2: W0qE0hFnWmhpzBZnGhcD
+            date: '2026-05-06T15:30:00.000Z'
+  - name: 2me Série
+    poules:
+      - name: C
+        teams:
+          - beJYAql4t5JTPmOs4CfN
+          - gD4bNN8yJmWekVwPkSAM
+          - I51WY3USAL0Elea58sA8
+          - JGuyQ6nhBYPgDVJXSway
+        games:
+          - team1: beJYAql4t5JTPmOs4CfN
+            team2: gD4bNN8yJmWekVwPkSAM
+            date: '2026-04-15T17:30:00.000Z'
+          - team1: gD4bNN8yJmWekVwPkSAM
+            team2: I51WY3USAL0Elea58sA8
+            date: '2026-04-10T15:30:00.000Z'
+          - team1: I51WY3USAL0Elea58sA8
+            team2: JGuyQ6nhBYPgDVJXSway
+            date: '2026-05-19T16:30:00.000Z'
+          - team1: gD4bNN8yJmWekVwPkSAM
+            team2: JGuyQ6nhBYPgDVJXSway
+            date: '2026-04-21T15:30:00.000Z'
+          - team1: beJYAql4t5JTPmOs4CfN
+            team2: I51WY3USAL0Elea58sA8
+            date: '2026-05-01T17:30:00.000Z'
+          - team1: beJYAql4t5JTPmOs4CfN
+            team2: JGuyQ6nhBYPgDVJXSway
+            date: '2026-05-25T17:30:00.000Z'
+      - name: E
+        teams:
+          - lHvBt7HRgmv4KMH8fcfU
+          - spYy10FAywHhHN7Gizf4
+          - kwJyg9a4W48ytgyucmu0
+          - ffcXBy34kZQMrEVQzAGB
+        games:
+          - team1: spYy10FAywHhHN7Gizf4
+            team2: ffcXBy34kZQMrEVQzAGB
+            date: '2026-04-27T16:30:00.000Z'
+          - team1: kwJyg9a4W48ytgyucmu0
+            team2: ffcXBy34kZQMrEVQzAGB
+            date: '2026-04-17T16:30:00.000Z'
+          - team1: spYy10FAywHhHN7Gizf4
+            team2: kwJyg9a4W48ytgyucmu0
+            date: '2026-05-01T16:30:00.000Z'
+          - team1: lHvBt7HRgmv4KMH8fcfU
+            team2: kwJyg9a4W48ytgyucmu0
+            date: '2026-05-22T16:30:00.000Z'
+          - team1: lHvBt7HRgmv4KMH8fcfU
+            team2: spYy10FAywHhHN7Gizf4
+            date: '2026-04-14T17:30:00.000Z'
+          - team1: lHvBt7HRgmv4KMH8fcfU
+            team2: ffcXBy34kZQMrEVQzAGB
+            date: '2026-05-18T17:30:00.000Z'
+      - name: F
+        teams:
+          - fdvFvsHPIuebLbt0VOc4
+          - A3S8Qg2mAogxbliOlNz0
+          - yE2nkr8bsqUBlqmUeQ0p
+          - Uz1bzS1s3XfmwIcmsgVa
+          - ld02TXrJKx8qU3sqf2vu
+        games:
+          - team1: fdvFvsHPIuebLbt0VOc4
+            team2: yE2nkr8bsqUBlqmUeQ0p
+            date: '2026-04-23T16:30:00.000Z'
+          - team1: A3S8Qg2mAogxbliOlNz0
+            team2: ld02TXrJKx8qU3sqf2vu
+            date: '2026-05-27T16:30:00.000Z'
+          - team1: yE2nkr8bsqUBlqmUeQ0p
+            team2: Uz1bzS1s3XfmwIcmsgVa
+            date: '2026-05-28T17:30:00.000Z'
+          - team1: A3S8Qg2mAogxbliOlNz0
+            team2: yE2nkr8bsqUBlqmUeQ0p
+            date: '2026-04-09T17:30:00.000Z'
+          - team1: fdvFvsHPIuebLbt0VOc4
+            team2: ld02TXrJKx8qU3sqf2vu
+            date: '2026-04-29T16:30:00.000Z'
+          - team1: fdvFvsHPIuebLbt0VOc4
+            team2: A3S8Qg2mAogxbliOlNz0
+            date: '2026-05-12T16:30:00.000Z'
+          - team1: yE2nkr8bsqUBlqmUeQ0p
+            team2: ld02TXrJKx8qU3sqf2vu
+            date: '2026-04-13T16:30:00.000Z'
+          - team1: Uz1bzS1s3XfmwIcmsgVa
+            team2: ld02TXrJKx8qU3sqf2vu
+            date: '2026-04-09T16:30:00.000Z'
+          - team1: A3S8Qg2mAogxbliOlNz0
+            team2: Uz1bzS1s3XfmwIcmsgVa
+            date: '2026-04-21T16:30:00.000Z'
+          - team1: fdvFvsHPIuebLbt0VOc4
+            team2: Uz1bzS1s3XfmwIcmsgVa
+            date: '2026-05-19T17:30:00.000Z'
+      - name: D
+        teams:
+          - 56G83YJ657yi7vLiER7Q
+          - fGPIs98mh25VZ74YG5Lt
+          - W0rNZ9jBdbWCoexoBXWC
+          - 2yViI7hCF55QletDOzqk
+        games:
+          - team1: 56G83YJ657yi7vLiER7Q
+            team2: fGPIs98mh25VZ74YG5Lt
+            date: '2026-04-07T15:30:00.000Z'
+          - team1: fGPIs98mh25VZ74YG5Lt
+            team2: 2yViI7hCF55QletDOzqk
+            date: '2026-04-27T15:30:00.000Z'
+          - team1: 56G83YJ657yi7vLiER7Q
+            team2: 2yViI7hCF55QletDOzqk
+            date: '2026-05-26T15:30:00.000Z'
+          - team1: W0rNZ9jBdbWCoexoBXWC
+            team2: 2yViI7hCF55QletDOzqk
+            date: '2026-04-07T17:30:00.000Z'
+          - team1: fGPIs98mh25VZ74YG5Lt
+            team2: W0rNZ9jBdbWCoexoBXWC
+            date: '2026-05-28T15:30:00.000Z'
+          - team1: 56G83YJ657yi7vLiER7Q
+            team2: W0rNZ9jBdbWCoexoBXWC
+            date: '2026-04-23T15:30:00.000Z'
+      - name: B
+        teams:
+          - Djugb9EoaxwcVlw4UWdt
+          - 0jmFCmLU3WfR6wMrUA0A
+          - 90bu7p20WA6DqzVlZKAV
+          - gANnssmYauhgDQk5TKhW
+        games:
+          - team1: Djugb9EoaxwcVlw4UWdt
+            team2: 0jmFCmLU3WfR6wMrUA0A
+            date: '2026-05-04T15:30:00.000Z'
+          - team1: 0jmFCmLU3WfR6wMrUA0A
+            team2: gANnssmYauhgDQk5TKhW
+            date: '2026-05-11T15:30:00.000Z'
+          - team1: Djugb9EoaxwcVlw4UWdt
+            team2: 90bu7p20WA6DqzVlZKAV
+            date: '2026-05-21T15:30:00.000Z'
+          - team1: 0jmFCmLU3WfR6wMrUA0A
+            team2: 90bu7p20WA6DqzVlZKAV
+            date: '2026-05-15T15:30:00.000Z'
+          - team1: Djugb9EoaxwcVlw4UWdt
+            team2: gANnssmYauhgDQk5TKhW
+            date: '2026-04-20T15:30:00.000Z'
+          - team1: 90bu7p20WA6DqzVlZKAV
+            team2: gANnssmYauhgDQk5TKhW
+            date: '2026-04-16T15:30:00.000Z'
+      - name: A
+        teams:
+          - jWAcQdrzXS9RXonZDt11
+          - C6lU92dpXxsP7pP2Ejhn
+          - lvi9B9C6EUVyqGxzLaAi
+          - 9yikIdvkWIAS34GN02ZK
+        games:
+          - team1: C6lU92dpXxsP7pP2Ejhn
+            team2: 9yikIdvkWIAS34GN02ZK
+            date: '2026-05-13T17:30:00.000Z'
+          - team1: jWAcQdrzXS9RXonZDt11
+            team2: lvi9B9C6EUVyqGxzLaAi
+            date: '2026-04-20T16:30:00.000Z'
+          - team1: C6lU92dpXxsP7pP2Ejhn
+            team2: lvi9B9C6EUVyqGxzLaAi
+            date: '2026-04-22T15:30:00.000Z'
+          - team1: lvi9B9C6EUVyqGxzLaAi
+            team2: 9yikIdvkWIAS34GN02ZK
+            date: '2026-04-16T16:30:00.000Z'
+          - team1: jWAcQdrzXS9RXonZDt11
+            team2: 9yikIdvkWIAS34GN02ZK
+            date: '2026-05-18T16:30:00.000Z'
+          - team1: jWAcQdrzXS9RXonZDt11
+            team2: C6lU92dpXxsP7pP2Ejhn
+            date: '2026-05-25T15:30:00.000Z'

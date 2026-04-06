@@ -80,8 +80,9 @@ export class AdminImportExport {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     const tournamentName = this.tournament().name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const today = new Date().toISOString().slice(0, 10);
     a.href = url;
-    a.download = `${tournamentName}_export.yaml`;
+    a.download = `${tournamentName}_export_${today}.yaml`;
     a.click();
     URL.revokeObjectURL(url);
   }

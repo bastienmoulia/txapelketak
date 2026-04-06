@@ -35,7 +35,10 @@
           />
         }
       } @else {
-        <p class="m-0 text-[var(--p-text-muted-color)] italic" data-testid="dashboard-no-description">
+        <p
+          class="m-0 text-[var(--p-text-muted-color)] italic"
+          data-testid="dashboard-no-description"
+        >
           {{ 'shared.tournamentHeader.noDescription' | transloco }}
         </p>
       }
@@ -79,7 +82,18 @@
 
       @if (upcomingGames().length > 0) {
         <ul class="upcoming-games-list">
-          @for (game of upcomingGames(); track game.date.getTime() + '_' + game.team1Name + '_' + game.team2Name + '_' + game.serieName + '_' + game.pouleName) {
+          @for (
+            game of upcomingGames();
+            track game.date.getTime() +
+              '_' +
+              game.team1Name +
+              '_' +
+              game.team2Name +
+              '_' +
+              game.serieName +
+              '_' +
+              game.pouleName
+          ) {
             <li class="upcoming-game-item" data-testid="dashboard-upcoming-game">
               <div class="upcoming-game-teams">
                 <span class="font-semibold">{{ game.team1Name }}</span>
@@ -115,7 +129,18 @@
 
       @if (recentGames().length > 0) {
         <ul class="upcoming-games-list">
-          @for (game of recentGames(); track (game.date?.getTime() ?? 0) + '_' + game.team1Name + '_' + game.team2Name + '_' + game.serieName + '_' + game.pouleName) {
+          @for (
+            game of recentGames();
+            track (game.date?.getTime() ?? 0) +
+              '_' +
+              game.team1Name +
+              '_' +
+              game.team2Name +
+              '_' +
+              game.serieName +
+              '_' +
+              game.pouleName
+          ) {
             <li class="upcoming-game-item" data-testid="dashboard-recent-game">
               <div class="upcoming-game-teams">
                 <span class="font-semibold">{{ game.team1Name }}</span>

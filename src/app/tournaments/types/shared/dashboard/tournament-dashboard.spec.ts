@@ -54,11 +54,7 @@ describe('TournamentDashboard', () => {
     component = fixture.componentInstance;
   });
 
-  function setInputs(inputs: {
-    tournament?: Tournament;
-    teams?: Team[];
-    series?: Serie[];
-  }): void {
+  function setInputs(inputs: { tournament?: Tournament; teams?: Team[]; series?: Serie[] }): void {
     fixture.componentRef.setInput('tournament', inputs.tournament ?? makeTournament());
     if (inputs.teams) fixture.componentRef.setInput('teams', inputs.teams);
     if (inputs.series) fixture.componentRef.setInput('series', inputs.series);
@@ -199,7 +195,9 @@ describe('TournamentDashboard', () => {
             ref: makeRef('p1'),
             name: 'P1',
             refTeams: [],
-            games: [makeGame({ refTeam1Id: 'unknown1', refTeam2Id: 'unknown2', date: futureDate1 })],
+            games: [
+              makeGame({ refTeam1Id: 'unknown1', refTeam2Id: 'unknown2', date: futureDate1 }),
+            ],
           },
         ]),
       ];

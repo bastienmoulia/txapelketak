@@ -22,6 +22,7 @@ import { map, Observable, of } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
 import { Game } from '../../tournaments/types/poules/poules';
+import { KnockoutMatch } from '../../tournaments/types/finale/finale.model';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 
 @Injectable({
@@ -458,6 +459,7 @@ export class FirebaseService {
     data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
     data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
     data['date'] = gameData.date ?? null;
+    data['finished'] = gameData.finished ?? false;
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] updateDoc: game`);
       await updateDoc(gameRef, data);
@@ -469,6 +471,77 @@ export class FirebaseService {
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: game`);
       await deleteDoc(gameRef);
+    });
+  }
+
+  async addKnockoutMatch(
+    tournamentRef: DocumentReference,
+    matchData: Omit<KnockoutMatch, 'ref'>,
+  ): Promise<DocumentReference> {
+    console.debug(`[Firestore] addKnockoutMatch: adding knockout match`);
+    const matchDocRef = doc(collection(tournamentRef, 'knockoutMatches'));
+    const data: Record<string, unknown> = {
+      roundIndex: matchData.roundIndex,
+      matchIndex: matchData.matchIndex,
+      team1Name: matchData.team1Name ?? '',
+      team2Name: matchData.team2Name ?? '',
+      finished: matchData.finished ?? false,
+    };
+    if (matchData.scoreTeam1 != null) data['scoreTeam1'] = matchData.scoreTeam1;
+    if (matchData.scoreTeam2 != null) data['scoreTeam2'] = matchData.scoreTeam2;
+    if (matchData.date != null) data['date'] = matchData.date;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] setDoc: knockoutMatch`);
+      await setDoc(matchDocRef, data);
+    });
+    return matchDocRef;
+  }
+
+  async updateKnockoutMatch(
+    matchRef: DocumentReference,
+    matchData: Partial<Omit<KnockoutMatch, 'ref'>>,
+  ): Promise<void> {
+    console.debug(`[Firestore] updateKnockoutMatch: updating knockout match`);
+    const data: Record<string, unknown> = {};
+    if (matchData.team1Name !== undefined) data['team1Name'] = matchData.team1Name;
+    if (matchData.team2Name !== undefined) data['team2Name'] = matchData.team2Name;
+    data['scoreTeam1'] = matchData.scoreTeam1 ?? null;
+    data['scoreTeam2'] = matchData.scoreTeam2 ?? null;
+    data['date'] = matchData.date ?? null;
+    data['finished'] = matchData.finished ?? false;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: knockoutMatch`);
+      await updateDoc(matchRef, data);
+    });
+  }
+
+  async deleteAllKnockoutMatches(tournamentRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteAllKnockoutMatches: deleting all knockout matches`);
+    const matchDocs = await this.getCollectionFromDocumentRef(tournamentRef, 'knockoutMatches');
+    await Promise.all(
+      matchDocs.map((item) =>
+        runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] deleteDoc: knockoutMatch`);
+          await deleteDoc(item.ref);
+        }),
+      ),
+    );
+  }
+
+  watchKnockoutMatches(
+    tournamentRef: DocumentReference,
+  ): Observable<{ data: unknown; ref: DocumentReference }[]> {
+    return this.watchCollectionFromDocumentRef(tournamentRef, 'knockoutMatches');
+  }
+
+  async updateTournamentData(
+    tournamentRef: DocumentReference,
+    data: Record<string, unknown>,
+  ): Promise<void> {
+    console.debug(`[Firestore] updateTournamentData`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: tournament data`);
+      await updateDoc(tournamentRef, data);
     });
   }
 

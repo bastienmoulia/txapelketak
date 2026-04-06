@@ -159,6 +159,7 @@
       "poules": "Multzoak",
       "teams": "Taldeak",
       "games": "Partidak",
+      "finale": "Finalaurrekoa",
       "users": "Erabiltzaileak",
       "importExport": "Inportatu / Esportatu"
     },
@@ -226,7 +227,8 @@
       "noDate": "Datarik gabe",
       "serie": "Seriea",
       "poule": "Multzoa",
-      "time": "Ordua"
+      "time": "Ordua",
+      "finished": "Partida amaitua"
     },
     "teams": {
       "empty": "Ez dago talderik",
@@ -289,6 +291,34 @@
       "importSuccessDetail": "Txapelketaren datuak ongi inportatu dira.",
       "importError": "Inportazio errorea",
       "importErrorDetail": "Errorea gertatu da inportazioan. Mesedez saiatu berriro."
+    },
+    "finale": {
+      "bracketTab": "Finalaurrekoa",
+      "numberOfTeams": "Talde kopurua",
+      "generateBracket": "Zuhaitza sortu",
+      "noBracket": "Ez da zuhaitzik sortu. Aukeratu talde kopurua eta sortu zuhaitza.",
+      "tbd": "Definitu gabe",
+      "matchFinished": "Amaitua",
+      "editMatch": "Partida aldatu",
+      "team1": "1. taldea",
+      "team2": "2. taldea",
+      "saved": "Ezarpenak gordeta",
+      "savedDetail": "Finalaurrekoaren konfigurazioa gordeta.",
+      "generated": "Zuhaitza sortuta",
+      "generatedDetail": "{{ count }} partida sortu dira arrakastaz.",
+      "matchEdited": "Partida eguneratua",
+      "matchEditedDetail": "Partida arrakastaz eguneratu da.",
+      "confirmRegenerateTitle": "Berregitea baieztatu",
+      "confirmRegenerateMessage": "Ekintza honek lehendik dauden partida guztiak ezabatuko ditu eta zuhaitza berriro sortuko du. Eragiketa hau itzulezina da.",
+      "winnerOf": "{{ round }} {{ match }} irabazlea",
+      "rounds": {
+        "final": "Finala",
+        "semiFinal": "Erdifinalak",
+        "quarterFinal": "Laurdenfinala",
+        "roundOf16": "Hamaseirenak",
+        "roundOf32": "Hogeita hamabiurenak",
+        "round": "Txanda"
+      }
     }
   },
   "shared": {

@@ -28,6 +28,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { SelectButton } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
+import { CheckboxModule } from 'primeng/checkbox';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -37,6 +38,7 @@ export interface SaveGameEvent {
   scoreTeam2?: number | null;
   date?: Date | null;
   gameRef?: DocumentReference;
+  finished?: boolean;
 }
 
 export interface DeleteGameEvent {
@@ -87,6 +89,7 @@ export type GamesViewMode = 'by-pool' | 'by-date';
     InputMaskModule,
     SelectButton,
     TooltipModule,
+    CheckboxModule,
   ],
   templateUrl: './games.html',
   styleUrl: './games.css',
@@ -253,6 +256,7 @@ export class Games {
   scoreTeam1 = signal<number | null>(null);
   scoreTeam2 = signal<number | null>(null);
   gameDate = signal<Date | null>(null);
+  gameFinished = signal<boolean>(false);
 
   // Teams available for the current poule dialog
   dialogTeams = computed(() => {
@@ -298,6 +302,7 @@ export class Games {
     this.selectedTeam2Ref.set(null);
     this.scoreTeam1.set(null);
     this.scoreTeam2.set(null);
+    this.gameFinished.set(false);
     this.clearGameDate();
     this.gameDialogVisible.set(true);
   }
@@ -311,6 +316,7 @@ export class Games {
     this.selectedTeam2Ref.set(game.refTeam2 ?? null);
     this.scoreTeam1.set(game.scoreTeam1 ?? null);
     this.scoreTeam2.set(game.scoreTeam2 ?? null);
+    this.gameFinished.set(game.finished ?? false);
     const editDate = game.date ? new Date(game.date) : null;
     this.gameDate.set(editDate);
     this.gameDateString = this.formatDateForMask(editDate);
@@ -337,6 +343,7 @@ export class Games {
       scoreTeam2: this.scoreTeam2(),
       date: this.gameDate(),
       gameRef: this.editingGameRef() ?? undefined,
+      finished: this.gameFinished(),
     });
     this.gameDialogVisible.set(false);
   }

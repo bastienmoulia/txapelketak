@@ -1,0 +1,12 @@
+.knockout-bracket {
+  min-height: 200px;
+}
+
+.knockout-match {
+  border-color: var(--p-surface-border);
+  transition: box-shadow 0.2s;
+}
+
+.knockout-match:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

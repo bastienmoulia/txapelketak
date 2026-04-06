@@ -159,6 +159,7 @@
       "poules": "Poules",
       "teams": "Équipes",
       "games": "Matchs",
+      "finale": "Phase finale",
       "users": "Utilisateurs",
       "importExport": "Import / Export"
     },
@@ -226,7 +227,8 @@
       "noDate": "Sans date",
       "serie": "Série",
       "poule": "Poule",
-      "time": "Heure"
+      "time": "Heure",
+      "finished": "Match terminé"
     },
     "teams": {
       "empty": "Aucune équipe",
@@ -289,6 +291,34 @@
       "importSuccessDetail": "Les données du tournoi ont été importées avec succès.",
       "importError": "Erreur d'import",
       "importErrorDetail": "Une erreur est survenue lors de l'import. Veuillez réessayer."
+    },
+    "finale": {
+      "bracketTab": "Phase finale",
+      "numberOfTeams": "Nombre d'équipes",
+      "generateBracket": "Générer l'arbre",
+      "noBracket": "Aucun arbre généré. Choisissez le nombre d'équipes et générez l'arbre.",
+      "tbd": "À définir",
+      "matchFinished": "Terminé",
+      "editMatch": "Modifier le match",
+      "team1": "Équipe 1",
+      "team2": "Équipe 2",
+      "saved": "Paramètres sauvegardés",
+      "savedDetail": "La configuration de la phase finale a été sauvegardée.",
+      "generated": "Arbre généré",
+      "generatedDetail": "{{ count }} matchs ont été créés avec succès.",
+      "matchEdited": "Match modifié",
+      "matchEditedDetail": "Le match a été modifié avec succès.",
+      "confirmRegenerateTitle": "Confirmer la régénération",
+      "confirmRegenerateMessage": "Cette action supprimera tous les matchs existants et régénérera l'arbre. Cette opération est irréversible.",
+      "winnerOf": "Gagnant {{ round }} {{ match }}",
+      "rounds": {
+        "final": "Finale",
+        "semiFinal": "Demi-finales",
+        "quarterFinal": "Quarts de finale",
+        "roundOf16": "Huitièmes de finale",
+        "roundOf32": "Seizièmes de finale",
+        "round": "Tour"
+      }
     }
   },
   "shared": {

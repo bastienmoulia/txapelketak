@@ -479,6 +479,16 @@
         <label for="gameDate">{{ 'admin.games.date' | transloco }}</label>
       </p-floatlabel>
     </div>
+
+    <!-- Ligne 4 : Match terminé -->
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        inputId="gameFinished"
+        [(ngModel)]="gameFinished"
+        [binary]="true"
+      />
+      <label for="gameFinished">{{ 'admin.games.finished' | transloco }}</label>
+    </div>
   </div>
 
   <ng-template #footer>

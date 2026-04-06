@@ -184,9 +184,19 @@
                   [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
                   >{{ game.team1Name }}</span
                 >
-                <span class="recent-game-score" [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2" [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2">{{ game.scoreTeam1 }}</span>
+                <span
+                  class="recent-game-score"
+                  [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
+                  [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                  >{{ game.scoreTeam1 }}</span
+                >
                 <span class="text-[var(--p-text-muted-color)]">-</span>
-                <span class="recent-game-score" [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1" [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1">{{ game.scoreTeam2 }}</span>
+                <span
+                  class="recent-game-score"
+                  [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
+                  [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                  >{{ game.scoreTeam2 }}</span
+                >
                 <span
                   class="font-semibold"
                   [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"

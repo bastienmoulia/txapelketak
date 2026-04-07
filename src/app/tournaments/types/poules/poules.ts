@@ -12,7 +12,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
-import { from, map, skip, Subject, switchMap, takeUntil } from 'rxjs';
+import { distinctUntilChanged, from, map, skip, Subject, switchMap, takeUntil } from 'rxjs';
 import { Team } from '../shared/teams/teams';
 import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
@@ -182,30 +182,13 @@ export class Poules {
 
   private async loadPoules(serieRef: DocumentReference): Promise<Poule[]> {
     const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'poules');
-    const poules = (result?.map((item, index) => {
+    return (result?.map((item, index) => {
       return {
         ...(item.data as Partial<Poule>),
         ref: result[index].ref,
+        games: [],
       } as Poule;
     }) ?? []) as Poule[];
-    return Promise.all(
-      poules.map(async (poule) => ({
-        ...poule,
-        games: await this.loadGames(poule.ref),
-      })),
-    );
-  }
-
-  private async loadGames(pouleRef: DocumentReference): Promise<Game[]> {
-    const result = await this.firebaseService.getCollectionFromDocumentRef(pouleRef, 'games');
-    return (result?.map((item, index) => {
-      const data = item.data as Partial<Game>;
-      return {
-        ...data,
-        ref: result[index].ref,
-        date: parseFirestoreDate(data.date),
-      } as Game;
-    }) ?? []) as Game[];
   }
 
   private watchGames(series: Serie[]): void {
@@ -253,6 +236,16 @@ export class Poules {
     this.firebaseService
       .watchCollectionFromDocumentRef(tournamentRef, 'series')
       .pipe(
+        map((items) =>
+          items
+            .map((item) => {
+              const data = item.data as Partial<Serie>;
+              return `${item.ref.id}:${data.name ?? ''}`;
+            })
+            .sort()
+            .join('|'),
+        ),
+        distinctUntilChanged(),
         skip(1),
         takeUntilDestroyed(this.destroyRef),
         switchMap(() => {

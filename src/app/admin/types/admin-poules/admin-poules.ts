@@ -6,14 +6,13 @@ import {
   effect,
   inject,
   input,
-  signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
-import { map, skip, Subject, switchMap, takeUntil, from } from 'rxjs';
+import { map } from 'rxjs';
 import { Team, Teams } from '../../../tournaments/types/shared/teams/teams';
 import { Tournament, User } from '../../../home/tournament.interface';
 import { FirebaseService } from '../../../shared/services/firebase.service';
@@ -25,7 +24,7 @@ import {
   SaveSerieEvent,
   TeamInPouleEvent,
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
-import { Game, parseFirestoreDate, Poule, Serie } from '../../../tournaments/types/poules/poules';
+import { Game, Poule, Serie } from '../../../tournaments/types/poules/poules';
 import {
   Games,
   DeleteGameEvent,
@@ -40,10 +39,20 @@ import {
 import { AdminUsers } from '../shared/admin-users/admin-users';
 import { AdminImportExport } from '../shared/admin-import-export/admin-import-export';
 import { TournamentDashboard } from '../../../tournaments/types/shared/dashboard/tournament-dashboard';
+import { PoulesStore } from '../../../store/poules.store';
 
 @Component({
   selector: 'app-admin-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, AdminUsers, AdminImportExport, TournamentDashboard],
+  imports: [
+    TabsModule,
+    Teams,
+    TranslocoModule,
+    PoulesTab,
+    Games,
+    AdminUsers,
+    AdminImportExport,
+    TournamentDashboard,
+  ],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,17 +64,15 @@ export class AdminPoules {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private poulesStore = inject(PoulesStore);
 
   tournament = input.required<Tournament>();
   currentUser = input<User | null>(null);
 
-  teams = signal<Team[]>([]);
-  series = signal<Serie[]>([]);
+  teams = this.poulesStore.teams;
+  series = this.poulesStore.series;
 
   role = computed(() => this.currentUser()?.role ?? '');
-
-  private loadedTournamentId = signal<string | null>(null);
-  private readonly stopGameSubs$ = new Subject<void>();
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -94,30 +101,10 @@ export class AdminPoules {
   });
 
   constructor() {
-    this.destroyRef.onDestroy(() => {
-      this.stopGameSubs$.next();
-      this.stopGameSubs$.complete();
-    });
+    this.destroyRef.onDestroy(() => this.poulesStore.stopWatching());
 
-    effect(async () => {
-      const tournament = this.tournament();
-      this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
-
-      if (!this.firebaseService.isAvailable()) {
-        return;
-      }
-
-      if (this.loadedTournamentId() === tournament.ref.id) {
-        return;
-      }
-
-      this.loadedTournamentId.set(tournament.ref.id);
-      this.teams.set(await this.loadTeams(tournament.ref));
-      this.watchTeams(tournament.ref);
-      const initialSeries = await this.loadSeries(tournament.ref);
-      this.series.set(initialSeries);
-      this.watchGames(initialSeries);
-      this.watchSeriesStructure(tournament.ref);
+    effect(() => {
+      this.poulesStore.startWatching(this.tournament().ref);
     });
   }
 
@@ -136,125 +123,6 @@ export class AdminPoules {
       queryParams: { [POULES_TAB_QUERY_PARAM]: routeTab },
       queryParamsHandling: 'merge',
     });
-  }
-
-  private async loadTeams(tournamentRef: DocumentReference): Promise<Team[]> {
-    const result = await this.firebaseService.getTournamentCollection(tournamentRef, 'teams');
-    const teams = result.map((item, index) => {
-      return {
-        ...(item.data as Partial<Team>),
-        ref: result[index].ref,
-      } as Team;
-    });
-    return teams;
-  }
-
-  private async loadSeries(tournamentRef: DocumentReference): Promise<Serie[]> {
-    const result = await this.firebaseService.getTournamentCollection(tournamentRef, 'series');
-    const series = result.map((item, index) => {
-      return {
-        ...(item.data as Partial<Serie>),
-        ref: result[index].ref,
-      } as Serie;
-    }) as Serie[];
-
-    const seriesWithPoules = await Promise.all(
-      series.map(async (serie) => {
-        return {
-          ...serie,
-          poules: await this.loadPoules(serie.ref),
-        } as Serie;
-      }),
-    );
-
-    return seriesWithPoules;
-  }
-
-  private async loadPoules(serieRef: DocumentReference): Promise<Poule[]> {
-    const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'poules');
-    const poules = (result?.map((item, index) => {
-      return {
-        ...(item.data as Partial<Poule>),
-        ref: result[index].ref,
-      } as Poule;
-    }) ?? []) as Poule[];
-    return Promise.all(
-      poules.map(async (poule) => ({
-        ...poule,
-        games: await this.loadGames(poule.ref),
-      })),
-    );
-  }
-
-  private async loadGames(pouleRef: DocumentReference): Promise<Game[]> {
-    const result = await this.firebaseService.getCollectionFromDocumentRef(pouleRef, 'games');
-    return (result?.map((item, index) => {
-      const data = item.data as Partial<Game>;
-      return {
-        ...data,
-        ref: result[index].ref,
-        date: parseFirestoreDate(data.date),
-      } as Game;
-    }) ?? []) as Game[];
-  }
-
-  private watchTeams(tournamentRef: DocumentReference): void {
-    this.firebaseService
-      .watchCollectionFromDocumentRef(tournamentRef, 'teams')
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
-      .subscribe((items) => {
-        const teams = items.map((item) => ({
-          ...(item.data as Partial<Team>),
-          ref: item.ref,
-        })) as Team[];
-        this.teams.set(teams);
-      });
-  }
-
-  private watchSeriesStructure(tournamentRef: DocumentReference): void {
-    this.firebaseService
-      .watchCollectionFromDocumentRef(tournamentRef, 'series')
-      .pipe(
-        skip(1),
-        takeUntilDestroyed(this.destroyRef),
-        switchMap(() => {
-          this.stopGameSubs$.next();
-          return from(this.loadSeries(tournamentRef));
-        }),
-      )
-      .subscribe((series) => {
-        this.series.set(series);
-        this.watchGames(series);
-      });
-  }
-
-  private watchGames(series: Serie[]): void {
-    this.stopGameSubs$.next();
-    for (const serie of series) {
-      for (const poule of serie.poules ?? []) {
-        this.firebaseService
-          .watchCollectionFromDocumentRef(poule.ref, 'games')
-          .pipe(takeUntilDestroyed(this.destroyRef), takeUntil(this.stopGameSubs$))
-          .subscribe((items) => {
-            const games = items.map((item) => {
-              const data = item.data as Partial<Game>;
-              return {
-                ...data,
-                ref: item.ref,
-                date: parseFirestoreDate(data.date),
-              } as Game;
-            });
-            this.series.update((currentSeries) =>
-              currentSeries.map((s) => ({
-                ...s,
-                poules: (s.poules ?? []).map((p) =>
-                  p.ref.id === poule.ref.id ? { ...p, games } : p,
-                ),
-              })),
-            );
-          });
-      }
-    }
   }
 
   async onSaveGame(event: SaveGameEvent): Promise<void> {
@@ -318,8 +186,10 @@ export class AdminPoules {
     const tournamentRef = this.tournament().ref;
     if (!tournamentRef) {
       if (event.ref) {
-        this.series.update((series) =>
-          series.map((s) => (s.ref === event.ref ? { ...s, name: event.name } : s)),
+        this.poulesStore.patchSeries(
+          this.poulesStore
+            .series()
+            .map((s) => (s.ref === event.ref ? { ...s, name: event.name } : s)),
         );
         this.messageService.add({
           severity: 'success',
@@ -327,8 +197,8 @@ export class AdminPoules {
           detail: this.translocoService.translate('admin.poules.serieEditedDetail'),
         });
       } else {
-        this.series.update((series) => [
-          ...series,
+        this.poulesStore.patchSeries([
+          ...this.poulesStore.series(),
           { name: event.name, poules: [], ref: null as unknown as DocumentReference },
         ]);
         this.messageService.add({
@@ -360,7 +230,7 @@ export class AdminPoules {
   async onDeleteSerie(serie: Serie): Promise<void> {
     const tournamentRef = this.tournament().ref;
     if (!tournamentRef) {
-      this.series.update((series) => series.filter((s) => s.ref !== serie.ref));
+      this.poulesStore.patchSeries(this.poulesStore.series().filter((s) => s.ref !== serie.ref));
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.serieDeleted'),
@@ -426,14 +296,16 @@ export class AdminPoules {
     const ref = this.tournament().ref;
     if (!ref) {
       if (team.ref) {
-        this.teams.update((teams) => teams.map((t) => (t.ref === team.ref ? team : t)));
+        this.poulesStore.patchTeams(
+          this.poulesStore.teams().map((t) => (t.ref === team.ref ? team : t)),
+        );
         this.messageService.add({
           severity: 'success',
           summary: this.translocoService.translate('admin.teams.edited'),
           detail: this.translocoService.translate('admin.teams.editedDetail'),
         });
       } else {
-        this.teams.update((teams) => [...teams, { ...team, ref: null! }]);
+        this.poulesStore.patchTeams([...this.poulesStore.teams(), { ...team, ref: null! }]);
         this.messageService.add({
           severity: 'success',
           summary: this.translocoService.translate('admin.teams.added'),
@@ -458,7 +330,6 @@ export class AdminPoules {
         detail: this.translocoService.translate('admin.teams.addedDetail'),
       });
     }
-    this.teams.set(await this.loadTeams(this.tournament().ref));
   }
 
   async onSaveTeams(teams: Team[]): Promise<void> {
@@ -468,7 +339,7 @@ export class AdminPoules {
         ...team,
         ref: { id: crypto.randomUUID() } as DocumentReference,
       }));
-      this.teams.update((existing) => [...existing, ...newTeams]);
+      this.poulesStore.patchTeams([...this.poulesStore.teams(), ...newTeams]);
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.teams.added'),
@@ -480,7 +351,6 @@ export class AdminPoules {
     for (const team of teams) {
       await this.firebaseService.addTeamToTournament(ref, team.name);
     }
-    this.teams.set(await this.loadTeams(this.tournament().ref));
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.teams.added'),
@@ -491,7 +361,7 @@ export class AdminPoules {
   async onDeleteTeam(team: Team): Promise<void> {
     const ref = this.tournament().ref;
     if (!ref) {
-      this.teams.update((teams) => teams.filter((t) => t.ref.id !== team.ref.id));
+      this.poulesStore.patchTeams(this.poulesStore.teams().filter((t) => t.ref.id !== team.ref.id));
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.teams.deleted'),
@@ -501,7 +371,6 @@ export class AdminPoules {
     }
 
     await this.firebaseService.deleteTeamFromTournament(ref, team.ref.id);
-    this.teams.set(await this.loadTeams(this.tournament().ref));
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('admin.teams.deleted'),

@@ -24,7 +24,7 @@ import {
   SaveSerieEvent,
   TeamInPouleEvent,
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
-import { Game, Poule, Serie } from '../../../tournaments/types/poules/poules';
+import { Game, Serie } from '../../../tournaments/types/poules/poules';
 import {
   Games,
   DeleteGameEvent,

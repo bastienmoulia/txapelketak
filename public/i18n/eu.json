@@ -245,7 +245,13 @@
       "edited": "Taldea eguneratu da",
       "editedDetail": "Taldea arrakastaz eguneratu da.",
       "deleted": "Taldea ezabatu da",
-      "deletedDetail": "Taldea arrakastaz ezabatu da."
+      "deletedDetail": "Taldea arrakastaz ezabatu da.",
+      "viewMatches": "Partidak ikusi",
+      "viewMatchesAria": "{{name}} taldearen partidak ikusi",
+      "upcomingMatches": "Hurrengo partidak",
+      "noUpcomingMatches": "Ez dago partida programaturik",
+      "playedMatches": "Jokatutako partidak",
+      "noPlayedMatches": "Ez dago jokatutako partidarik"
     },
     "users": {
       "add": "Erabiltzaile bat gehitu",
@@ -298,7 +304,8 @@
         "status": "Egoera",
         "actions": "Ekintzak",
         "serie": "Seriea",
-        "poule": "Taldea"
+        "poule": "Taldea",
+        "adminActions": "Admin ekintzak"
       },
       "open": "Ireki",
       "empty": "Ez dago txapelketarik"

@@ -245,7 +245,13 @@
       "edited": "Team updated",
       "editedDetail": "The team has been successfully updated.",
       "deleted": "Team deleted",
-      "deletedDetail": "The team has been successfully deleted."
+      "deletedDetail": "The team has been successfully deleted.",
+      "viewMatches": "View matches",
+      "viewMatchesAria": "View matches for {{name}}",
+      "upcomingMatches": "Upcoming matches",
+      "noUpcomingMatches": "No upcoming matches",
+      "playedMatches": "Played matches",
+      "noPlayedMatches": "No matches played"
     },
     "users": {
       "add": "Add user",
@@ -298,7 +304,8 @@
         "status": "Status",
         "actions": "Actions",
         "serie": "Series",
-        "poule": "Pool"
+        "poule": "Pool",
+        "adminActions": "Admin actions"
       },
       "open": "Open",
       "empty": "No tournaments available"

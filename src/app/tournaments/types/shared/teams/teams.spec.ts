@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DocumentReference } from '@angular/fire/firestore';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 
 import { Teams } from './teams';
+import { Serie } from '../../poules/poules';
 
 describe('Teams', () => {
   let component: Teams;
@@ -153,5 +155,106 @@ describe('Teams', () => {
     expect(emitted.length).toBe(1);
     expect(emitted[0].length).toBe(3);
     expect(emitted[0].map((team) => team.name)).toEqual(['Team A', 'Team B', 'Team C']);
+  });
+
+  it('should show view team button for all users', async () => {
+    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Équipe A' }]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const viewButtons = fixture.nativeElement.querySelectorAll('[data-testid="view-team-button"]');
+    expect(viewButtons.length).toBe(1);
+  });
+
+  it('should open team detail dialog when onViewTeam is called', () => {
+    const team = { ref: { id: '1' } as never, name: 'Équipe A' };
+    component.onViewTeam(team);
+
+    expect(component.teamDetailVisible()).toBe(true);
+    expect(component.selectedTeam()).toEqual(team);
+  });
+
+  it('should compute teamUpcomingGames for selected team', () => {
+    const teamRef = { id: 'team1' } as DocumentReference;
+    const otherRef = { id: 'team2' } as DocumentReference;
+    const futureDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    const series: Serie[] = [
+      {
+        ref: { id: 's1' } as DocumentReference,
+        name: 'Série 1',
+        poules: [
+          {
+            ref: { id: 'p1' } as DocumentReference,
+            name: 'Poule A',
+            refTeams: [teamRef, otherRef],
+            games: [
+              {
+                ref: { id: 'g1' } as DocumentReference,
+                refTeam1: teamRef,
+                refTeam2: otherRef,
+                date: futureDate,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    fixture.componentRef.setInput('teams', [
+      { ref: teamRef, name: 'Équipe A' },
+      { ref: otherRef, name: 'Équipe B' },
+    ]);
+    fixture.componentRef.setInput('series', series);
+    fixture.detectChanges();
+
+    component.selectedTeam.set({ ref: teamRef, name: 'Équipe A' });
+
+    expect(component.teamUpcomingGames().length).toBe(1);
+    expect(component.teamUpcomingGames()[0].team1Name).toBe('Équipe A');
+    expect(component.teamUpcomingGames()[0].team2Name).toBe('Équipe B');
+  });
+
+  it('should compute teamPlayedGames for selected team', () => {
+    const teamRef = { id: 'team1' } as DocumentReference;
+    const otherRef = { id: 'team2' } as DocumentReference;
+    const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    const series: Serie[] = [
+      {
+        ref: { id: 's1' } as DocumentReference,
+        name: 'Série 1',
+        poules: [
+          {
+            ref: { id: 'p1' } as DocumentReference,
+            name: 'Poule A',
+            refTeams: [teamRef, otherRef],
+            games: [
+              {
+                ref: { id: 'g1' } as DocumentReference,
+                refTeam1: teamRef,
+                refTeam2: otherRef,
+                scoreTeam1: 3,
+                scoreTeam2: 1,
+                date: pastDate,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    fixture.componentRef.setInput('teams', [
+      { ref: teamRef, name: 'Équipe A' },
+      { ref: otherRef, name: 'Équipe B' },
+    ]);
+    fixture.componentRef.setInput('series', series);
+    fixture.detectChanges();
+
+    component.selectedTeam.set({ ref: teamRef, name: 'Équipe A' });
+
+    expect(component.teamPlayedGames().length).toBe(1);
+    expect(component.teamPlayedGames()[0].scoreTeam1).toBe(3);
+    expect(component.teamPlayedGames()[0].scoreTeam2).toBe(1);
   });
 });

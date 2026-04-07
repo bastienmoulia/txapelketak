@@ -245,7 +245,13 @@
       "edited": "Equipo actualizado",
       "editedDetail": "El equipo ha sido actualizado con éxito.",
       "deleted": "Equipo eliminado",
-      "deletedDetail": "El equipo ha sido eliminado con éxito."
+      "deletedDetail": "El equipo ha sido eliminado con éxito.",
+      "viewMatches": "Ver partidos",
+      "viewMatchesAria": "Ver los partidos de {{name}}",
+      "upcomingMatches": "Próximos partidos",
+      "noUpcomingMatches": "No hay partidos próximos",
+      "playedMatches": "Partidos jugados",
+      "noPlayedMatches": "No hay partidos jugados"
     },
     "users": {
       "add": "Añadir usuario",
@@ -298,7 +304,8 @@
         "status": "Estado",
         "actions": "Acciones",
         "serie": "Serie",
-        "poule": "Grupo"
+        "poule": "Grupo",
+        "adminActions": "Acciones admin"
       },
       "open": "Abrir",
       "empty": "No hay torneos disponibles"

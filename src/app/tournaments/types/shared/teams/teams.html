@@ -33,9 +33,12 @@
         <th pSortableColumn="pouleName">
           {{ 'shared.table.columns.poule' | transloco }} <p-sortIcon field="pouleName" />
         </th>
+        <th class="w-px whitespace-nowrap">
+          {{ 'shared.table.columns.actions' | transloco }}
+        </th>
         @if (role() === 'admin') {
           <th class="w-px whitespace-nowrap">
-            {{ 'shared.table.columns.actions' | transloco }}
+            {{ 'shared.table.columns.adminActions' | transloco }}
           </th>
         }
       </tr>
@@ -46,6 +49,21 @@
         <td>{{ team.name }}</td>
         <td>{{ team.serieName }}</td>
         <td>{{ team.pouleName }}</td>
+        <td>
+          <div class="flex justify-end gap-2">
+            <p-button
+              type="button"
+              size="small"
+              severity="secondary"
+              [outlined]="true"
+              icon="pi pi-eye"
+              [label]="'admin.teams.viewMatches' | transloco"
+              [ariaLabel]="'admin.teams.viewMatchesAria' | transloco: { name: team.name }"
+              (onClick)="onViewTeam(team)"
+              data-testid="view-team-button"
+            />
+          </div>
+        </td>
         @if (role() === 'admin') {
           <td>
             <div class="flex justify-end gap-2">
@@ -159,5 +177,95 @@
       (click)="onConfirmDeleteTeam()"
       data-testid="delete-confirm-button"
     />
+  </div>
+</p-dialog>
+
+<p-dialog
+  [header]="selectedTeam()?.name ?? ''"
+  [modal]="true"
+  [(visible)]="teamDetailVisible"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  data-testid="team-detail-dialog"
+>
+  <div class="flex flex-col gap-4">
+    <!-- Upcoming matches -->
+    <div>
+      <h3 class="text-base font-semibold mb-2 flex items-center gap-2">
+        <i class="pi pi-calendar text-[var(--p-primary-color)]"></i>
+        {{ 'admin.teams.upcomingMatches' | transloco }}
+      </h3>
+      @if (teamUpcomingGames().length > 0) {
+        <ul class="list-none p-0 m-0 flex flex-col gap-2">
+          @for (game of teamUpcomingGames(); track game.date.getTime() + '_' + game.team1Name + '_' + game.team2Name) {
+            <li class="flex flex-col gap-1 p-2 rounded border border-[var(--p-content-border-color)]" data-testid="team-upcoming-game">
+              <div class="flex items-center gap-2 flex-wrap font-semibold">
+                <span [class.text-[var(--p-primary-color)]]="game.team1Name === selectedTeam()?.name">{{ game.team1Name }}</span>
+                <span class="text-[var(--p-text-muted-color)]">vs</span>
+                <span [class.text-[var(--p-primary-color)]]="game.team2Name === selectedTeam()?.name">{{ game.team2Name }}</span>
+              </div>
+              <div class="text-sm text-[var(--p-text-muted-color)] flex items-center gap-1 flex-wrap">
+                <i class="pi pi-clock text-xs"></i>
+                {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                <span class="mx-1">·</span>
+                {{ game.serieName }} – {{ game.pouleName }}
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="m-0 text-[var(--p-text-muted-color)] italic" data-testid="team-no-upcoming">
+          {{ 'admin.teams.noUpcomingMatches' | transloco }}
+        </p>
+      }
+    </div>
+
+    <!-- Played matches -->
+    <div>
+      <h3 class="text-base font-semibold mb-2 flex items-center gap-2">
+        <i class="pi pi-history text-[var(--p-primary-color)]"></i>
+        {{ 'admin.teams.playedMatches' | transloco }}
+      </h3>
+      @if (teamPlayedGames().length > 0) {
+        <ul class="list-none p-0 m-0 flex flex-col gap-2">
+          @for (game of teamPlayedGames(); track (game.date?.getTime() ?? 0) + '_' + game.team1Name + '_' + game.team2Name) {
+            <li class="flex flex-col gap-1 p-2 rounded border border-[var(--p-content-border-color)]" data-testid="team-played-game">
+              <div class="flex items-center gap-2 flex-wrap font-semibold">
+                <span
+                  [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
+                  [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                >{{ game.team1Name }}</span>
+                <span
+                  class="font-bold text-lg"
+                  [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
+                  [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                >{{ game.scoreTeam1 }}</span>
+                <span class="text-[var(--p-text-muted-color)]">–</span>
+                <span
+                  class="font-bold text-lg"
+                  [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
+                  [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                >{{ game.scoreTeam2 }}</span>
+                <span
+                  [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
+                  [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                >{{ game.team2Name }}</span>
+              </div>
+              <div class="text-sm text-[var(--p-text-muted-color)] flex items-center gap-1 flex-wrap">
+                @if (game.date) {
+                  <i class="pi pi-clock text-xs"></i>
+                  {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                  <span class="mx-1">·</span>
+                }
+                {{ game.serieName }} – {{ game.pouleName }}
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="m-0 text-[var(--p-text-muted-color)] italic" data-testid="team-no-played">
+          {{ 'admin.teams.noPlayedMatches' | transloco }}
+        </p>
+      }
+    </div>
   </div>
 </p-dialog>

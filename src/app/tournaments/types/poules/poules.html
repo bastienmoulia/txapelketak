@@ -11,7 +11,7 @@
       <app-tournament-dashboard [tournament]="tournament()" [teams]="teams()" [series]="series()" />
     </p-tabpanel>
     <p-tabpanel value="teams">
-      <app-teams [teams]="teamsWithContext()" />
+      <app-teams [teams]="teamsWithContext()" [series]="series()" />
     </p-tabpanel>
     <p-tabpanel value="poules">
       <app-poules-tab [series]="series()" [teams]="teams()" />

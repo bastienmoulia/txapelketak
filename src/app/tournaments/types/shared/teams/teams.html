@@ -233,21 +233,47 @@
                 <span
                   [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
                   [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                  [class.text-[var(--p-text-muted-color)]]="game.scoreTeam1 === game.scoreTeam2"
                 >{{ game.team1Name }}</span>
                 <span
                   class="font-bold text-lg"
                   [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
                   [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
-                >{{ game.scoreTeam1 }}</span>
+                  [class.text-[var(--p-text-muted-color)]]="game.scoreTeam1 === game.scoreTeam2"
+                  [attr.aria-label]="game.scoreTeam1"
+                >{{ game.scoreTeam1 }}
+                  @if (game.team1Name === selectedTeam()?.name) {
+                    @if (game.scoreTeam1 > game.scoreTeam2) {
+                      <i class="pi pi-check text-xs ml-1" aria-label="Victoire"></i>
+                    } @else if (game.scoreTeam1 < game.scoreTeam2) {
+                      <i class="pi pi-times text-xs ml-1" aria-label="Défaite"></i>
+                    } @else {
+                      <i class="pi pi-minus text-xs ml-1" aria-label="Match nul"></i>
+                    }
+                  }
+                </span>
                 <span class="text-[var(--p-text-muted-color)]">–</span>
                 <span
                   class="font-bold text-lg"
                   [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
                   [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
-                >{{ game.scoreTeam2 }}</span>
+                  [class.text-[var(--p-text-muted-color)]]="game.scoreTeam1 === game.scoreTeam2"
+                  [attr.aria-label]="game.scoreTeam2"
+                >{{ game.scoreTeam2 }}
+                  @if (game.team2Name === selectedTeam()?.name) {
+                    @if (game.scoreTeam2 > game.scoreTeam1) {
+                      <i class="pi pi-check text-xs ml-1" aria-label="Victoire"></i>
+                    } @else if (game.scoreTeam2 < game.scoreTeam1) {
+                      <i class="pi pi-times text-xs ml-1" aria-label="Défaite"></i>
+                    } @else {
+                      <i class="pi pi-minus text-xs ml-1" aria-label="Match nul"></i>
+                    }
+                  }
+                </span>
                 <span
                   [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
                   [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                  [class.text-[var(--p-text-muted-color)]]="game.scoreTeam1 === game.scoreTeam2"
                 >{{ game.team2Name }}</span>
               </div>
               <div class="text-sm text-[var(--p-text-muted-color)] flex items-center gap-1 flex-wrap">

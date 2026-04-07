@@ -39,6 +39,22 @@
           </th>
         }
       </tr>
+      <tr>
+        <th>
+          <p-columnFilter
+            field="name"
+            type="text"
+            matchMode="contains"
+            filterOn="input"
+            [showMenu]="false"
+          />
+        </th>
+        <th></th>
+        <th></th>
+        @if (role() === 'admin') {
+          <th></th>
+        }
+      </tr>
     </ng-template>
 
     <ng-template #body let-team>

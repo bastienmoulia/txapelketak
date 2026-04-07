@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
+  isDevMode,
   signal,
 } from '@angular/core';
 import { User } from '../home/tournament.interface';
@@ -53,8 +55,10 @@ export class Admin {
   tournamentId = injectParams('tournamentId');
   token = injectParams('token');
 
+  readonly isDev = isDevMode();
   user = signal<User | null>(null);
-  loading = signal(true);
+  private loadingUser = signal(true);
+  loading = computed(() => this.loadingUser() || (!!this.user() && this.tournamentDetailStore.loading()));
   accessDenied = signal(false);
   tournament = this.tournamentDetailStore.tournament;
   private waitingValidationHandledForTournamentId = signal<string | null>(null);
@@ -91,7 +95,7 @@ export class Admin {
 
     if (!this.firebaseService.isAvailable() || !tournamentId || !token) {
       this.accessDenied.set(true);
-      this.loading.set(false);
+      this.loadingUser.set(false);
       return;
     }
 
@@ -99,18 +103,18 @@ export class Admin {
       const user = await this.firebaseService.getUserByTournamentAndToken(tournamentId, token);
       if (!user) {
         this.accessDenied.set(true);
-        this.loading.set(false);
+        this.loadingUser.set(false);
         return;
       }
 
       this.user.set(user);
       this.accessDenied.set(false);
       this.tournamentDetailStore.startWatching(tournamentId);
-      this.loading.set(false);
+      this.loadingUser.set(false);
     } catch (error) {
       console.error('Failed to load admin user', error);
       this.accessDenied.set(true);
-      this.loading.set(false);
+      this.loadingUser.set(false);
     }
   }
 
@@ -119,7 +123,7 @@ export class Admin {
     tournamentId: string,
   ): Promise<void> {
     try {
-      console.log('Tournament is waiting validation, updating status to paused');
+      console.debug('Tournament is waiting validation, updating status to paused');
       await this.firebaseService.updateTournamentStatus(tournamentRef, 'paused');
       this.messageService.add({
         severity: 'success',

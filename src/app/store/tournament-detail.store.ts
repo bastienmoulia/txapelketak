@@ -59,6 +59,7 @@ export const TournamentDetailStore = signalStore(
         watchedTournamentId = tournamentId;
 
         patchState(store, {
+          tournament: null,
           loading: true,
           notFound: false,
           activeTournamentId: tournamentId,
@@ -95,6 +96,7 @@ export const TournamentDetailStore = signalStore(
         tournamentSubscription?.unsubscribe();
         tournamentSubscription = null;
         watchedTournamentId = null;
+        patchState(store, initialState);
       },
 
       async loadTournamentName(tournamentId: string): Promise<string | null> {

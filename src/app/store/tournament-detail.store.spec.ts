@@ -71,6 +71,17 @@ describe('TournamentDetailStore', () => {
     expect(store.tournament()?.name).toBe('Detail Name');
   });
 
+  it('should clear stale tournament when switching to another id', () => {
+    store.startWatching('t1');
+    tournament$.next(createTournament('t1', 'Old Name'));
+
+    store.startWatching('t2');
+
+    expect(store.tournament()).toBeNull();
+    expect(store.loading()).toBe(true);
+    expect(store.activeTournamentId()).toBe('t2');
+  });
+
   it('should allow retry with same id after watcher error', () => {
     store.startWatching('t1');
     tournament$.error(new Error('boom'));
@@ -112,5 +123,18 @@ describe('TournamentDetailStore', () => {
     expect(name).toBeNull();
     expect(store.notFound()).toBe(true);
     expect(store.activeTournamentId()).toBe('missing-id');
+  });
+
+  it('should reset to initial state when stopWatching is called', () => {
+    store.startWatching('t1');
+    tournament$.next(createTournament('t1', 'Name'));
+
+    store.stopWatching();
+
+    expect(store.tournament()).toBeNull();
+    expect(store.loading()).toBe(false);
+    expect(store.notFound()).toBe(false);
+    expect(store.activeTournamentId()).toBeNull();
+    expect(store.error()).toBeNull();
   });
 });

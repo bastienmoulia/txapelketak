@@ -73,6 +73,7 @@ export class Poules {
   tournament = input.required<Tournament>();
   teams = this.poulesStore.teams;
   series = this.poulesStore.series;
+  loading = this.poulesStore.loading;
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(

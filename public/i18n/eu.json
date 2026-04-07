@@ -301,6 +301,7 @@
         "poule": "Taldea"
       },
       "open": "Ireki",
+      "loading": "Txapelketak kargatzen...",
       "empty": "Ez dago txapelketarik"
     },
     "actions": {

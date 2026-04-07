@@ -9,5 +9,9 @@
       (onClick)="createSoonAvailable()"
     />
   </div>
-  <app-tournaments-table [tournaments]="tournaments()" [getTournamentLink]="getTournamentLink" />
+  <app-tournaments-table
+    [tournaments]="tournaments()"
+    [loading]="loading()"
+    [getTournamentLink]="getTournamentLink"
+  />
 </div>

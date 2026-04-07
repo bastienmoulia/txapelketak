@@ -20,6 +20,7 @@ export class TournamentList {
   translocoService = inject(TranslocoService);
 
   tournaments = this.tournamentsStore.tournaments;
+  loading = this.tournamentsStore.loading;
 
   constructor() {
     this.tournamentsStore.ensureLoaded();

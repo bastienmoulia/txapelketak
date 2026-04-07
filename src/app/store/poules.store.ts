@@ -51,23 +51,37 @@ export const PoulesStore = signalStore(
         for (const poule of serie.poules ?? []) {
           const sub = firebaseService
             .watchCollectionFromDocumentRef(poule.ref, 'games')
-            .subscribe((items) => {
-              const games: Game[] = items.map((item) => {
-                const data = item.data as Partial<Game>;
-                return {
-                  ...data,
-                  ref: item.ref,
-                  date: parseFirestoreDate(data.date),
-                } as Game;
-              });
-              patchState(store, {
-                series: store.series().map((s) => ({
-                  ...s,
-                  poules: (s.poules ?? []).map((p) =>
-                    p.ref.id === poule.ref.id ? { ...p, games } : p,
-                  ),
-                })),
-              });
+            .subscribe({
+              next: (items) => {
+                const games: Game[] = items.map((item) => {
+                  const data = item.data as Partial<Game>;
+                  return {
+                    ...data,
+                    ref: item.ref,
+                    date: parseFirestoreDate(data.date),
+                  } as Game;
+                });
+                patchState(store, {
+                  series: store.series().map((s) => ({
+                    ...s,
+                    poules: (s.poules ?? []).map((p) =>
+                      p.ref.id === poule.ref.id ? { ...p, games } : p,
+                    ),
+                  })),
+                  error: null,
+                });
+              },
+              error: (err: unknown) => {
+                patchState(store, {
+                  error: err instanceof Error ? err.message : 'Unable to watch games',
+                });
+              },
+              complete: () => {
+                const index = gameSubscriptions.indexOf(sub);
+                if (index >= 0) {
+                  gameSubscriptions.splice(index, 1);
+                }
+              },
             });
           gameSubscriptions.push(sub);
         }

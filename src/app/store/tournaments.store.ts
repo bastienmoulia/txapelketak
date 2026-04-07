@@ -69,6 +69,10 @@ export const TournamentsStore = signalStore(
           },
           complete: () => {
             tournamentsSubscription = null;
+            patchState(store, {
+              loading: false,
+              loaded: false,
+            });
           },
         });
       },

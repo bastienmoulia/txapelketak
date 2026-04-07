@@ -1,19 +1,20 @@
 import { inject } from '@angular/core';
 import { Routes, ResolveFn } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
-import { TournamentDetailStore } from './store/tournament-detail.store';
+import { FirebaseService } from './shared/services/firebase.service';
 
 function tournamentNameTitleResolver(fallbackKey: string): ResolveFn<string> {
   return async (route) => {
     const tournamentId = route.paramMap.get('tournamentId');
     const translocoService = inject(TranslocoService);
-    const tournamentDetailStore = inject(TournamentDetailStore);
+    const firebaseService = inject(FirebaseService);
 
-    if (!tournamentId) {
+    if (!tournamentId || !firebaseService.isAvailable()) {
       return translocoService.translate(fallbackKey);
     }
 
-    const tournamentName = await tournamentDetailStore.loadTournamentName(tournamentId);
+    const tournament = await firebaseService.getTournamentById(tournamentId);
+    const tournamentName = tournament?.name?.trim();
 
     return tournamentName || translocoService.translate(fallbackKey);
   };

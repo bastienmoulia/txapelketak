@@ -21,10 +21,12 @@ describe('PoulesStore', () => {
 
   let teams$: Subject<{ data: unknown; ref: DocumentReference }[]>;
   let series$: Subject<{ data: unknown; ref: DocumentReference }[]>;
+  let gameStreams: Map<string, Subject<{ data: unknown; ref: DocumentReference }[]>>;
 
   beforeEach(() => {
     teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
     series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    gameStreams = new Map();
 
     firebaseService = {
       isAvailable: vi.fn().mockReturnValue(true),
@@ -39,6 +41,13 @@ describe('PoulesStore', () => {
         }
         if (collectionName === 'series') {
           return series$.asObservable();
+        }
+        if (collectionName === 'games') {
+          const key = _ref.id;
+          const stream =
+            gameStreams.get(key) ?? new Subject<{ data: unknown; ref: DocumentReference }[]>();
+          gameStreams.set(key, stream);
+          return stream.asObservable();
         }
         return new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable();
       },
@@ -169,5 +178,24 @@ describe('PoulesStore', () => {
     expect(store.error()).toBeNull();
     expect(store.teams()).toEqual([]);
     expect(store.series()).toEqual([]);
+  });
+
+  it('should expose error when a game watcher fails', async () => {
+    firebaseService.getCollectionFromDocumentRef.mockResolvedValue([
+      { data: { name: 'Poule A' }, ref: createRef('p1') },
+    ]);
+
+    store.startWatching(createRef('t1'));
+    series$.next([{ data: { name: 'Serie A' }, ref: createRef('s1') }]);
+
+    for (let attempt = 0; attempt < 5 && !gameStreams.get('p1'); attempt++) {
+      await Promise.resolve();
+    }
+
+    const gamesStream = gameStreams.get('p1');
+    expect(gamesStream).toBeDefined();
+    gamesStream?.error(new Error('games failed'));
+
+    expect(store.error()).toBe('games failed');
   });
 });

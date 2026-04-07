@@ -71,6 +71,18 @@ describe('TournamentDetailStore', () => {
     expect(store.tournament()?.name).toBe('Detail Name');
   });
 
+  it('should allow retry with same id after watcher error', () => {
+    store.startWatching('t1');
+    tournament$.error(new Error('boom'));
+
+    tournament$ = new Subject<Tournament | null>();
+    firebaseService.watchTournamentById.mockReturnValue(tournament$.asObservable());
+
+    store.startWatching('t1');
+
+    expect(firebaseService.watchTournamentById).toHaveBeenCalledTimes(2);
+  });
+
   it('should use cached name in loadTournamentName when active tournament matches', async () => {
     store.startWatching('t1');
     tournament$.next(createTournament('t1', 'Cached Name'));

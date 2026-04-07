@@ -75,12 +75,18 @@ export const TournamentDetailStore = signalStore(
             });
           },
           error: (error: unknown) => {
+            tournamentSubscription = null;
+            watchedTournamentId = null;
             patchState(store, {
               tournament: null,
               loading: false,
               notFound: false,
               error: error instanceof Error ? error.message : 'Unable to watch tournament detail',
             });
+          },
+          complete: () => {
+            tournamentSubscription = null;
+            watchedTournamentId = null;
           },
         });
       },

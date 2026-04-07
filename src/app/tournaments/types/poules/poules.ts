@@ -12,50 +12,16 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
 import { map } from 'rxjs';
-import { Team } from '../shared/teams/teams';
 import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
-import { DocumentReference } from '@angular/fire/firestore';
 import { Games } from '../shared/games/games';
 import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './poules.route';
 import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
 
-export interface PoulesData {
-  teams?: Team[];
-  series?: Serie[];
-}
-
-export interface Serie {
-  ref: DocumentReference;
-  name: string;
-  poules: Poule[];
-}
-
-export interface Poule {
-  ref: DocumentReference;
-  name: string;
-  refTeams: DocumentReference[];
-  games?: Game[];
-}
-
-export interface Game {
-  ref: DocumentReference;
-  refTeam1: DocumentReference;
-  refTeam2: DocumentReference;
-  scoreTeam1?: number;
-  scoreTeam2?: number;
-  date?: Date;
-}
-
-export function parseFirestoreDate(value: unknown): Date | undefined {
-  if (!value) return undefined;
-  if (typeof (value as { toDate?: unknown }).toDate === 'function') {
-    return (value as { toDate: () => Date }).toDate();
-  }
-  return new Date(value as string);
-}
+export type { PoulesData, Serie, Poule, Game } from './poules.model';
+export { parseFirestoreDate } from './poules.model';
 
 @Component({
   selector: 'app-poules',

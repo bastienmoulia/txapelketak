@@ -81,4 +81,16 @@ describe('TournamentsStore', () => {
     expect(store.loaded()).toBe(false);
     expect(store.error()).toBe('boom');
   });
+
+  it('should allow retry after stream error', () => {
+    store.ensureLoaded();
+    tournaments$.error(new Error('boom'));
+
+    tournaments$ = new Subject<Tournament[]>();
+    firebaseService.watchTournaments.mockReturnValue(tournaments$.asObservable());
+
+    store.ensureLoaded();
+
+    expect(firebaseService.watchTournaments).toHaveBeenCalledTimes(2);
+  });
 });

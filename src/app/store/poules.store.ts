@@ -3,7 +3,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Team } from '../tournaments/types/shared/teams/teams';
-import { Game, parseFirestoreDate, Poule, Serie } from '../tournaments/types/poules/poules';
+import { Game, parseFirestoreDate, Poule, Serie } from '../tournaments/types/poules/poules.model';
 import { FirebaseService } from '../shared/services/firebase.service';
 
 interface PoulesStoreState {
@@ -34,6 +34,15 @@ export const PoulesStore = signalStore(
     function stopGameWatchers(): void {
       gameSubscriptions.forEach((s) => s.unsubscribe());
       gameSubscriptions.length = 0;
+    }
+
+    function resetWatchingState(): void {
+      teamsSubscription?.unsubscribe();
+      teamsSubscription = null;
+      seriesSubscription?.unsubscribe();
+      seriesSubscription = null;
+      stopGameWatchers();
+      watchedTournamentId = null;
     }
 
     function watchGames(series: Serie[]): void {
@@ -92,9 +101,7 @@ export const PoulesStore = signalStore(
           return;
         }
 
-        teamsSubscription?.unsubscribe();
-        seriesSubscription?.unsubscribe();
-        stopGameWatchers();
+        resetWatchingState();
         watchedTournamentId = tournamentId;
 
         patchState(store, {
@@ -118,10 +125,14 @@ export const PoulesStore = signalStore(
               });
             },
             error: (err: unknown) => {
+              resetWatchingState();
               patchState(store, {
                 loading: false,
                 error: err instanceof Error ? err.message : 'Unable to watch teams',
               });
+            },
+            complete: () => {
+              teamsSubscription = null;
             },
           });
 
@@ -162,10 +173,14 @@ export const PoulesStore = signalStore(
               watchGames(series);
             },
             error: (err: unknown) => {
+              resetWatchingState();
               patchState(store, {
                 loading: false,
                 error: err instanceof Error ? err.message : 'Unable to watch series',
               });
+            },
+            complete: () => {
+              seriesSubscription = null;
             },
           });
       },

@@ -71,6 +71,12 @@ export class Admin {
     });
 
     effect(() => {
+      const user = this.user();
+      const accessDenied = this.accessDenied();
+      if (!user || accessDenied) {
+        return;
+      }
+
       const tournament = this.tournament();
       if (!tournament) {
         return;

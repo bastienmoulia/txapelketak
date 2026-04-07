@@ -93,4 +93,18 @@ describe('TournamentsStore', () => {
 
     expect(firebaseService.watchTournaments).toHaveBeenCalledTimes(2);
   });
+
+  it('should allow restart when stream completes', () => {
+    store.ensureLoaded();
+    tournaments$.next([createTournament('t1')]);
+    tournaments$.complete();
+
+    tournaments$ = new Subject<Tournament[]>();
+    firebaseService.watchTournaments.mockReturnValue(tournaments$.asObservable());
+
+    store.ensureLoaded();
+
+    expect(firebaseService.watchTournaments).toHaveBeenCalledTimes(2);
+    expect(store.loaded()).toBe(false);
+  });
 });

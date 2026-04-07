@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -9,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { Tournament } from './tournament.interface';
 import { TournamentsTable } from '../shared/tournaments-table/tournaments-table';
 import { HeaderActions } from '../shared/header-actions/header-actions';
-import { FirebaseService } from '../shared/services/firebase.service';
+import { TournamentsStore } from '../store/tournaments.store';
 
 interface Feature {
   icon: string;
@@ -34,10 +33,10 @@ interface Feature {
   providers: [MessageService],
 })
 export class Home {
-  firebaseService = inject(FirebaseService);
+  tournamentsStore = inject(TournamentsStore);
   messageService = inject(MessageService);
   translocoService = inject(TranslocoService);
-  tournaments = signal<Tournament[]>([]);
+  tournaments = this.tournamentsStore.tournaments;
 
   recentTournaments = computed(() =>
     [...this.tournaments()]
@@ -50,12 +49,7 @@ export class Home {
   );
 
   constructor() {
-    this.firebaseService
-      .watchTournaments()
-      .pipe(takeUntilDestroyed())
-      .subscribe((data) => {
-        this.tournaments.set(data);
-      });
+    this.tournamentsStore.ensureLoaded();
   }
 
   features = signal<Feature[]>([

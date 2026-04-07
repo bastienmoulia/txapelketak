@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../home/tournament.interface';
 import { TournamentsTable } from '../../shared/tournaments-table/tournaments-table';
-import { FirebaseService } from '../../shared/services/firebase.service';
 import { MessageService } from 'primeng/api';
+import { TournamentsStore } from '../../store/tournaments.store';
 
 @Component({
   selector: 'app-tournament-list',
@@ -16,19 +15,14 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService],
 })
 export class TournamentList {
-  firebaseService = inject(FirebaseService);
+  tournamentsStore = inject(TournamentsStore);
   messageService = inject(MessageService);
   translocoService = inject(TranslocoService);
 
-  tournaments = signal<Tournament[]>([]);
+  tournaments = this.tournamentsStore.tournaments;
 
   constructor() {
-    this.firebaseService
-      .watchTournaments()
-      .pipe(takeUntilDestroyed())
-      .subscribe((data) => {
-        this.tournaments.set(data);
-      });
+    this.tournamentsStore.ensureLoaded();
   }
 
   getTournamentLink(tournament: Tournament): string {

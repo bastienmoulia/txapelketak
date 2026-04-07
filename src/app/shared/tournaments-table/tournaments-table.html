@@ -1,4 +1,4 @@
-<p-table [value]="tournaments()" class="p-datatable-striped">
+<p-table [value]="tournaments()" [loading]="loading()" class="p-datatable-striped">
   <ng-template #header>
     <tr>
       <th pSortableColumn="name">
@@ -30,7 +30,13 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="3" class="text-center">{{ 'shared.table.empty' | transloco }}</td>
+      <td colspan="3" class="text-center">
+        @if (loading()) {
+          <span>{{ 'shared.table.loading' | transloco }}</span>
+        } @else {
+          <span>{{ 'shared.table.empty' | transloco }}</span>
+        }
+      </td>
     </tr>
   </ng-template>
 </p-table>

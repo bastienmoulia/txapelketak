@@ -6,57 +6,22 @@ import {
   effect,
   inject,
   input,
-  signal,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
-import { distinctUntilChanged, from, map, skip, Subject, switchMap, takeUntil } from 'rxjs';
-import { Team } from '../shared/teams/teams';
+import { map } from 'rxjs';
 import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
-import { FirebaseService } from '../../../shared/services/firebase.service';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
-import { DocumentReference } from '@angular/fire/firestore';
 import { Games } from '../shared/games/games';
 import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './poules.route';
 import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
+import { PoulesStore } from '../../../store/poules.store';
 
-export interface PoulesData {
-  teams?: Team[];
-  series?: Serie[];
-}
-
-export interface Serie {
-  ref: DocumentReference;
-  name: string;
-  poules: Poule[];
-}
-
-export interface Poule {
-  ref: DocumentReference;
-  name: string;
-  refTeams: DocumentReference[];
-  games?: Game[];
-}
-
-export interface Game {
-  ref: DocumentReference;
-  refTeam1: DocumentReference;
-  refTeam2: DocumentReference;
-  scoreTeam1?: number;
-  scoreTeam2?: number;
-  date?: Date;
-}
-
-export function parseFirestoreDate(value: unknown): Date | undefined {
-  if (!value) return undefined;
-  if (typeof (value as { toDate?: unknown }).toDate === 'function') {
-    return (value as { toDate: () => Date }).toDate();
-  }
-  return new Date(value as string);
-}
+export type { PoulesData, Serie, Poule, Game } from './poules.model';
+export { parseFirestoreDate } from './poules.model';
 
 @Component({
   selector: 'app-poules',
@@ -66,16 +31,15 @@ export function parseFirestoreDate(value: unknown): Date | undefined {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Poules {
-  private firebaseService = inject(FirebaseService);
+  private poulesStore = inject(PoulesStore);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
-  teams = signal<Team[]>([]);
-  series = signal<Serie[]>([]);
-  private loadedTournamentId = signal<string | null>(null);
-  private readonly stopGameSubs$ = new Subject<void>();
+  teams = this.poulesStore.teams;
+  series = this.poulesStore.series;
+  loading = this.poulesStore.loading;
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -104,30 +68,10 @@ export class Poules {
   });
 
   constructor() {
-    this.destroyRef.onDestroy(() => {
-      this.stopGameSubs$.next();
-      this.stopGameSubs$.complete();
-    });
+    this.destroyRef.onDestroy(() => this.poulesStore.stopWatching());
 
-    effect(async () => {
-      const tournament = this.tournament();
-      this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
-
-      if (!this.firebaseService.isAvailable()) {
-        return;
-      }
-
-      if (this.loadedTournamentId() === tournament.ref.id) {
-        return;
-      }
-
-      this.loadedTournamentId.set(tournament.ref.id);
-      this.teams.set(await this.loadTeams(tournament.ref));
-      const series = await this.loadSeries(tournament.ref);
-      this.series.set(series);
-      this.watchGames(series);
-      this.watchTeams(tournament.ref);
-      this.watchSeriesStructure(tournament.ref);
+    effect(() => {
+      this.poulesStore.startWatching(this.tournament().ref);
     });
   }
 
@@ -146,116 +90,5 @@ export class Poules {
       queryParams: { [POULES_TAB_QUERY_PARAM]: routeTab },
       queryParamsHandling: 'merge',
     });
-  }
-
-  private async loadTeams(tournamentRef: DocumentReference): Promise<Team[]> {
-    const result = await this.firebaseService.getTournamentCollection(tournamentRef, 'teams');
-    const teams = result.map((item, index) => {
-      return {
-        ...(item.data as Partial<Team>),
-        ref: result[index].ref,
-      } as Team;
-    });
-    return teams;
-  }
-
-  private async loadSeries(tournamentRef: DocumentReference): Promise<Serie[]> {
-    const result = await this.firebaseService.getTournamentCollection(tournamentRef, 'series');
-    const series = result.map((item, index) => {
-      return {
-        ...(item.data as Partial<Serie>),
-        ref: result[index].ref,
-      } as Serie;
-    }) as Serie[];
-
-    const seriesWithPoules = await Promise.all(
-      series.map(async (serie) => {
-        return {
-          ...serie,
-          poules: await this.loadPoules(serie.ref),
-        } as Serie;
-      }),
-    );
-
-    return seriesWithPoules;
-  }
-
-  private async loadPoules(serieRef: DocumentReference): Promise<Poule[]> {
-    const result = await this.firebaseService.getCollectionFromDocumentRef(serieRef, 'poules');
-    return (result?.map((item, index) => {
-      return {
-        ...(item.data as Partial<Poule>),
-        ref: result[index].ref,
-        games: [],
-      } as Poule;
-    }) ?? []) as Poule[];
-  }
-
-  private watchGames(series: Serie[]): void {
-    for (const serie of series) {
-      for (const poule of serie.poules ?? []) {
-        this.firebaseService
-          .watchCollectionFromDocumentRef(poule.ref, 'games')
-          .pipe(takeUntilDestroyed(this.destroyRef), takeUntil(this.stopGameSubs$))
-          .subscribe((items) => {
-            const games = items.map((item) => {
-              const data = item.data as Partial<Game>;
-              return {
-                ...data,
-                ref: item.ref,
-                date: parseFirestoreDate(data.date),
-              } as Game;
-            });
-            this.series.update((currentSeries) =>
-              currentSeries.map((s) => ({
-                ...s,
-                poules: (s.poules ?? []).map((p) =>
-                  p.ref.id === poule.ref.id ? { ...p, games } : p,
-                ),
-              })),
-            );
-          });
-      }
-    }
-  }
-
-  private watchTeams(tournamentRef: DocumentReference): void {
-    this.firebaseService
-      .watchCollectionFromDocumentRef(tournamentRef, 'teams')
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((items) => {
-        const teams = items.map((item) => ({
-          ...(item.data as Partial<Team>),
-          ref: item.ref,
-        })) as Team[];
-        this.teams.set(teams);
-      });
-  }
-
-  private watchSeriesStructure(tournamentRef: DocumentReference): void {
-    this.firebaseService
-      .watchCollectionFromDocumentRef(tournamentRef, 'series')
-      .pipe(
-        map((items) =>
-          items
-            .map((item) => {
-              const data = item.data as Partial<Serie>;
-              return `${item.ref.id}:${data.name ?? ''}`;
-            })
-            .sort()
-            .join('|'),
-        ),
-        distinctUntilChanged(),
-        skip(1),
-        takeUntilDestroyed(this.destroyRef),
-        switchMap(() => {
-          this.stopGameSubs$.next();
-          return from(this.loadSeries(tournamentRef));
-        }),
-      )
-      .subscribe((series) => {
-        this.series.set(series);
-        this.watchGames(series);
-      });
   }
 }

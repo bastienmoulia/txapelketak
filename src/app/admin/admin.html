@@ -30,3 +30,6 @@
     {{ 'admin.notFound' | transloco }}
   </p-message>
 }
+@if (isDev) {
+  <app-store-debug-panel />
+}

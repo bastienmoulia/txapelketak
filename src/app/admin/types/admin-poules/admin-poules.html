@@ -12,41 +12,67 @@
 
   <p-tabpanels class="px-0!">
     <p-tabpanel value="dashboard">
-      <app-tournament-dashboard [tournament]="tournament()" [teams]="teams()" [series]="series()" />
+      <app-tournament-dashboard
+        [tournament]="tournament()"
+        [teams]="teams()"
+        [series]="series()"
+        [loading]="loading()"
+      />
     </p-tabpanel>
     <p-tabpanel value="teams">
-      <app-teams
-        [teams]="teamsWithContext()"
-        [role]="role()"
-        (saveTeam)="onSaveTeam($event)"
-        (saveTeams)="onSaveTeams($event)"
-        (deleteTeam)="onDeleteTeam($event)"
-      />
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-teams
+          [teams]="teamsWithContext()"
+          [role]="role()"
+          (saveTeam)="onSaveTeam($event)"
+          (saveTeams)="onSaveTeams($event)"
+          (deleteTeam)="onDeleteTeam($event)"
+        />
+      }
     </p-tabpanel>
     <p-tabpanel value="poules">
-      <app-poules-tab
-        [series]="series()"
-        [teams]="teams()"
-        [role]="role()"
-        (saveSerie)="onSaveSerie($event)"
-        (deleteSerie)="onDeleteSerie($event)"
-        (savePoule)="onSavePoule($event)"
-        (deletePoule)="onDeletePoule($event)"
-        (addTeamToPoule)="onAddTeamToPoule($event)"
-        (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
-      />
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-poules-tab
+          [series]="series()"
+          [teams]="teams()"
+          [role]="role()"
+          (saveSerie)="onSaveSerie($event)"
+          (deleteSerie)="onDeleteSerie($event)"
+          (savePoule)="onSavePoule($event)"
+          (deletePoule)="onDeletePoule($event)"
+          (addTeamToPoule)="onAddTeamToPoule($event)"
+          (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
+        />
+      }
     </p-tabpanel>
 
     <p-tabpanel value="games">
-      <app-games
-        [tournament]="tournament()"
-        [series]="series()"
-        [teams]="teams()"
-        [role]="role()"
-        (saveGame)="onSaveGame($event)"
-        (generateAllGames)="onGenerateAllGames($event)"
-        (deleteGame)="onDeleteGame($event)"
-      />
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-games
+          [tournament]="tournament()"
+          [series]="series()"
+          [teams]="teams()"
+          [role]="role()"
+          (saveGame)="onSaveGame($event)"
+          (generateAllGames)="onGenerateAllGames($event)"
+          (deleteGame)="onDeleteGame($event)"
+        />
+      }
     </p-tabpanel>
     @if (role() === 'admin') {
       <p-tabpanel value="users">

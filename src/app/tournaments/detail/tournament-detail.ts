@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -6,11 +6,10 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
-import { Tournament } from '../../home/tournament.interface';
 import { Types } from '../types/types';
 import { injectParams } from 'ngxtension/inject-params';
 import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
-import { FirebaseService } from '../../shared/services/firebase.service';
+import { TournamentDetailStore } from '../../store/tournament-detail.store';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -30,12 +29,13 @@ import { FirebaseService } from '../../shared/services/firebase.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDetail {
-  firebaseService = inject(FirebaseService);
+  private tournamentDetailStore = inject(TournamentDetailStore);
+  private destroyRef = inject(DestroyRef);
 
   tournamentId = injectParams('tournamentId');
-  tournament = signal<Tournament | null>(null);
-  loading = signal(true);
-  notFound = signal(false);
+  tournament = this.tournamentDetailStore.tournament;
+  loading = this.tournamentDetailStore.loading;
+  notFound = this.tournamentDetailStore.notFound;
 
   resendEmailControl = new FormControl('', [Validators.required, Validators.email]);
   resendEmailSent = signal(false);
@@ -47,20 +47,16 @@ export class TournamentDetail {
   managerAddSuccess = signal(false);
 
   constructor() {
-    if (!this.firebaseService.isAvailable()) {
-      this.loading.set(false);
-      this.notFound.set(true);
+    const tournamentId = this.tournamentId();
+
+    if (!tournamentId) {
       return;
     }
 
-    this.firebaseService.watchTournamentById(this.tournamentId()!).subscribe((tournament) => {
-      if (tournament) {
-        this.tournament.set(tournament);
-        this.notFound.set(false);
-      } else {
-        this.notFound.set(true);
-      }
-      this.loading.set(false);
+    this.tournamentDetailStore.startWatching(tournamentId);
+
+    this.destroyRef.onDestroy(() => {
+      this.tournamentDetailStore.stopWatching();
     });
   }
 }

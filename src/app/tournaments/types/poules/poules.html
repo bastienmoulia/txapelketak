@@ -8,16 +8,42 @@
 
   <p-tabpanels class="px-0!">
     <p-tabpanel value="dashboard">
-      <app-tournament-dashboard [tournament]="tournament()" [teams]="teams()" [series]="series()" />
+      <app-tournament-dashboard
+        [tournament]="tournament()"
+        [teams]="teams()"
+        [series]="series()"
+        [loading]="loading()"
+      />
     </p-tabpanel>
     <p-tabpanel value="teams">
-      <app-teams [teams]="teamsWithContext()" />
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-teams [teams]="teamsWithContext()" />
+      }
     </p-tabpanel>
     <p-tabpanel value="poules">
-      <app-poules-tab [series]="series()" [teams]="teams()" />
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-poules-tab [series]="series()" [teams]="teams()" />
+      }
     </p-tabpanel>
     <p-tabpanel value="games">
-      <app-games [series]="series()" [teams]="teams()" [tournament]="tournament()" />
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-games [series]="series()" [teams]="teams()" [tournament]="tournament()" />
+      }
     </p-tabpanel>
   </p-tabpanels>
 </p-tabs>

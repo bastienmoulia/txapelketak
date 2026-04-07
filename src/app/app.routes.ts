@@ -14,8 +14,9 @@ function tournamentNameTitleResolver(fallbackKey: string): ResolveFn<string> {
     }
 
     const tournament = await firebaseService.getTournamentById(tournamentId);
+    const tournamentName = tournament?.name?.trim();
 
-    return tournament?.name?.trim() || translocoService.translate(fallbackKey);
+    return tournamentName || translocoService.translate(fallbackKey);
   };
 }
 

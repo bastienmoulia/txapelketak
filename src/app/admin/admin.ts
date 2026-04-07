@@ -58,7 +58,9 @@ export class Admin {
   readonly isDev = isDevMode();
   user = signal<User | null>(null);
   private loadingUser = signal(true);
-  loading = computed(() => this.loadingUser() || (!!this.user() && this.tournamentDetailStore.loading()));
+  loading = computed(
+    () => this.loadingUser() || (!!this.user() && this.tournamentDetailStore.loading()),
+  );
   accessDenied = signal(false);
   tournament = this.tournamentDetailStore.tournament;
   private waitingValidationHandledForTournamentId = signal<string | null>(null);

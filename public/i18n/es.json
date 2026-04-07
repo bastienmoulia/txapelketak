@@ -159,6 +159,7 @@
       "poules": "Grupos",
       "teams": "Equipos",
       "games": "Partidos",
+      "finale": "Fase final",
       "users": "Usuarios",
       "importExport": "Importar / Exportar"
     },
@@ -226,7 +227,8 @@
       "noDate": "Sin fecha",
       "serie": "Serie",
       "poule": "Grupo",
-      "time": "Hora"
+      "time": "Hora",
+      "finished": "Partido terminado"
     },
     "teams": {
       "empty": "No hay equipos",
@@ -289,6 +291,34 @@
       "importSuccessDetail": "Los datos del torneo se han importado correctamente.",
       "importError": "Error de importación",
       "importErrorDetail": "Se ha producido un error durante la importación. Por favor, inténtalo de nuevo."
+    },
+    "finale": {
+      "bracketTab": "Fase final",
+      "numberOfTeams": "Número de equipos",
+      "generateBracket": "Generar cuadro",
+      "noBracket": "No se ha generado ningún cuadro. Elige el número de equipos y genera el cuadro.",
+      "tbd": "Por definir",
+      "matchFinished": "Terminado",
+      "editMatch": "Editar partido",
+      "team1": "Equipo 1",
+      "team2": "Equipo 2",
+      "saved": "Configuración guardada",
+      "savedDetail": "La configuración de la fase final ha sido guardada.",
+      "generated": "Cuadro generado",
+      "generatedDetail": "Se han creado {{ count }} partidos con éxito.",
+      "matchEdited": "Partido actualizado",
+      "matchEditedDetail": "El partido ha sido actualizado con éxito.",
+      "confirmRegenerateTitle": "Confirmar regeneración",
+      "confirmRegenerateMessage": "Esta acción eliminará todos los partidos existentes y regenerará el cuadro. Esta operación es irreversible.",
+      "winnerOf": "Ganador {{ round }} {{ match }}",
+      "rounds": {
+        "final": "Final",
+        "semiFinal": "Semifinales",
+        "quarterFinal": "Cuartos de final",
+        "roundOf16": "Octavos de final",
+        "roundOf32": "Dieciseisavos de final",
+        "round": "Ronda"
+      }
     }
   },
   "shared": {

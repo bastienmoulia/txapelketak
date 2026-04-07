@@ -25,7 +25,7 @@ import {
   SaveSerieEvent,
   TeamInPouleEvent,
 } from '../../../tournaments/types/shared/poules-tab/poules-tab';
-import { Game, parseFirestoreDate, Poule, Serie } from '../../../tournaments/types/poules/poules';
+import { Game, parseFirestoreDate, Poule, PoulesData, Serie } from '../../../tournaments/types/poules/poules';
 import {
   Games,
   DeleteGameEvent,
@@ -101,7 +101,7 @@ export class AdminPoules {
 
     effect(async () => {
       const tournament = this.tournament();
-      this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
+      this.teams.set(((tournament.data as PoulesData | undefined)?.teams as Team[] | undefined) ?? []);
 
       if (!this.firebaseService.isAvailable()) {
         return;
@@ -264,6 +264,7 @@ export class AdminPoules {
       scoreTeam1: event.scoreTeam1 ?? undefined,
       scoreTeam2: event.scoreTeam2 ?? undefined,
       date: event.date ?? undefined,
+      finished: event.finished ?? false,
     };
     if (event.gameRef) {
       await this.firebaseService.updateGame(event.gameRef, gameData);

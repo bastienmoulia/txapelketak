@@ -1,5 +1,5 @@
 import type { DocumentReference } from '@angular/fire/firestore';
-import type { FinaleData } from '../tournaments/types/finale/finale';
+import type { FinaleData } from '../tournaments/types/finale/finale.model';
 import type { PoulesFinaleData } from '../tournaments/types/poules-finale/poules-finale';
 import type { PoulesData } from '../tournaments/types/poules/poules';
 

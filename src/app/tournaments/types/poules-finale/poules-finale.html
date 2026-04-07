@@ -1,1 +1,33 @@
-<p>poules-finale works!</p>
+<p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
+  <p-tablist>
+    <p-tab value="dashboard">{{ 'tournaments.dashboard.tab' | transloco }}</p-tab>
+    <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
+    <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
+    <p-tab value="finale">{{ 'admin.tabs.finale' | transloco }}</p-tab>
+  </p-tablist>
+
+  <p-tabpanels class="px-0!">
+    <p-tabpanel value="dashboard">
+      <app-tournament-dashboard [tournament]="tournament()" [teams]="teams()" [series]="series()" />
+    </p-tabpanel>
+    <p-tabpanel value="teams">
+      <app-teams [teams]="teamsWithContext()" />
+    </p-tabpanel>
+    <p-tabpanel value="poules">
+      <app-poules-tab [series]="series()" [teams]="teams()" />
+    </p-tabpanel>
+    <p-tabpanel value="games">
+      <app-games [series]="series()" [teams]="teams()" [tournament]="tournament()" />
+    </p-tabpanel>
+    <p-tabpanel value="finale">
+      @if (knockoutRounds().length === 0) {
+        <div class="text-center text-500 py-5">
+          <p>{{ 'admin.finale.noBracket' | transloco }}</p>
+        </div>
+      } @else {
+        <app-knockout-bracket [rounds]="knockoutRounds()" />
+      }
+    </p-tabpanel>
+  </p-tabpanels>
+</p-tabs>

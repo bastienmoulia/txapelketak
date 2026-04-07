@@ -1,1 +1,7 @@
-<p>finale works!</p>
+@if (knockoutRounds().length === 0) {
+  <div class="text-center text-500 py-5">
+    <p>{{ 'admin.finale.noBracket' | transloco }}</p>
+  </div>
+} @else {
+  <app-knockout-bracket [rounds]="knockoutRounds()" />
+}

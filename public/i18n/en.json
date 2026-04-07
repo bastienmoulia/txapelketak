@@ -159,6 +159,7 @@
       "poules": "Groups",
       "teams": "Teams",
       "games": "Games",
+      "finale": "Knockout stage",
       "users": "Users",
       "importExport": "Import / Export"
     },
@@ -226,7 +227,8 @@
       "noDate": "No date",
       "serie": "Series",
       "poule": "Pool",
-      "time": "Time"
+      "time": "Time",
+      "finished": "Match finished"
     },
     "teams": {
       "empty": "No teams",
@@ -289,6 +291,34 @@
       "importSuccessDetail": "The tournament data was imported successfully.",
       "importError": "Import error",
       "importErrorDetail": "An error occurred during import. Please try again."
+    },
+    "finale": {
+      "bracketTab": "Knockout stage",
+      "numberOfTeams": "Number of teams",
+      "generateBracket": "Generate bracket",
+      "noBracket": "No bracket generated. Choose the number of teams and generate the bracket.",
+      "tbd": "TBD",
+      "matchFinished": "Finished",
+      "editMatch": "Edit match",
+      "team1": "Team 1",
+      "team2": "Team 2",
+      "saved": "Settings saved",
+      "savedDetail": "The knockout stage configuration has been saved.",
+      "generated": "Bracket generated",
+      "generatedDetail": "{{ count }} matches were created successfully.",
+      "matchEdited": "Match updated",
+      "matchEditedDetail": "The match has been successfully updated.",
+      "confirmRegenerateTitle": "Confirm regeneration",
+      "confirmRegenerateMessage": "This action will delete all existing matches and regenerate the bracket. This operation is irreversible.",
+      "winnerOf": "Winner {{ round }} {{ match }}",
+      "rounds": {
+        "final": "Final",
+        "semiFinal": "Semi-finals",
+        "quarterFinal": "Quarter-finals",
+        "roundOf16": "Round of 16",
+        "roundOf32": "Round of 32",
+        "round": "Round"
+      }
     }
   },
   "shared": {

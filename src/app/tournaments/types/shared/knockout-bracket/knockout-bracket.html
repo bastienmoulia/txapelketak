@@ -1,0 +1,43 @@
+<div class="knockout-bracket overflow-x-auto">
+  <div class="flex gap-4 min-w-max p-2">
+    @for (round of rounds(); track round.roundIndex) {
+      <div class="flex flex-column gap-3 justify-content-around" [style.flex]="'1'">
+        <div class="text-center font-semibold text-sm text-500 mb-2">{{ round.roundName }}</div>
+        @for (match of round.matches; track match.matchIndex) {
+          @let winner = getWinnerTeam(match);
+          <div class="knockout-match border-1 border-round surface-card p-2 min-w-10rem">
+            <!-- Team 1 -->
+            <div
+              class="flex justify-content-between align-items-center py-1 px-2 border-round-sm"
+              [class.bg-green-100]="winner === 'team1'"
+              [class.text-green-700]="winner === 'team1'"
+              [class.text-red-400]="winner === 'team2'"
+            >
+              <span class="text-sm font-medium">{{ match.team1Name || ('admin.finale.tbd' | transloco) }}</span>
+              @if (match.scoreTeam1 != null) {
+                <span class="font-bold ml-2">{{ match.scoreTeam1 }}</span>
+              }
+            </div>
+            <!-- Separator -->
+            <div class="border-top-1 surface-border my-1"></div>
+            <!-- Team 2 -->
+            <div
+              class="flex justify-content-between align-items-center py-1 px-2 border-round-sm"
+              [class.bg-green-100]="winner === 'team2'"
+              [class.text-green-700]="winner === 'team2'"
+              [class.text-red-400]="winner === 'team1'"
+            >
+              <span class="text-sm font-medium">{{ match.team2Name || ('admin.finale.tbd' | transloco) }}</span>
+              @if (match.scoreTeam2 != null) {
+                <span class="font-bold ml-2">{{ match.scoreTeam2 }}</span>
+              }
+            </div>
+            @if (match.finished) {
+              <div class="text-xs text-center text-500 mt-1">✓ {{ 'admin.finale.matchFinished' | transloco }}</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

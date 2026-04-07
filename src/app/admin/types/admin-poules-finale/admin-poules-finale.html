@@ -1,1 +1,284 @@
-<p>admin-poules-finale works!</p>
+<p-toast />
+
+<p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
+  <p-tablist>
+    <p-tab value="dashboard">{{ 'tournaments.dashboard.tab' | transloco }}</p-tab>
+    <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
+    <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
+    <p-tab value="finale">{{ 'admin.tabs.finale' | transloco }}</p-tab>
+    @if (role() === 'admin') {
+      <p-tab value="users">{{ 'admin.tabs.users' | transloco }}</p-tab>
+      <p-tab value="import-export">{{ 'admin.tabs.importExport' | transloco }}</p-tab>
+    }
+  </p-tablist>
+
+  <p-tabpanels class="px-0!">
+    <p-tabpanel value="dashboard">
+      <app-tournament-dashboard [tournament]="tournament()" [teams]="teams()" [series]="series()" />
+    </p-tabpanel>
+    <p-tabpanel value="teams">
+      <app-teams
+        [teams]="teamsWithContext()"
+        [role]="role()"
+        (saveTeam)="onSaveTeam($event)"
+        (saveTeams)="onSaveTeams($event)"
+        (deleteTeam)="onDeleteTeam($event)"
+      />
+    </p-tabpanel>
+    <p-tabpanel value="poules">
+      <app-poules-tab
+        [series]="series()"
+        [teams]="teams()"
+        [role]="role()"
+        (saveSerie)="onSaveSerie($event)"
+        (deleteSerie)="onDeleteSerie($event)"
+        (savePoule)="onSavePoule($event)"
+        (deletePoule)="onDeletePoule($event)"
+        (addTeamToPoule)="onAddTeamToPoule($event)"
+        (removeTeamFromPoule)="onRemoveTeamFromPoule($event)"
+      />
+    </p-tabpanel>
+
+    <p-tabpanel value="games">
+      <app-games
+        [tournament]="tournament()"
+        [series]="series()"
+        [teams]="teams()"
+        [role]="role()"
+        (saveGame)="onSaveGame($event)"
+        (generateAllGames)="onGenerateAllGames($event)"
+        (deleteGame)="onDeleteGame($event)"
+      />
+    </p-tabpanel>
+
+    <!-- Phase finale tab -->
+    <p-tabpanel value="finale">
+      @if (role() === 'admin') {
+        <div class="flex align-items-center gap-3 mb-4 flex-wrap">
+          <p-select
+            [options]="teamSizes"
+            [(ngModel)]="numberOfTeams"
+            [placeholder]="'admin.finale.numberOfTeams' | transloco"
+            [style]="{ 'min-width': '10rem' }"
+          />
+          <p-button
+            [label]="'admin.finale.generateBracket' | transloco"
+            icon="pi pi-sitemap"
+            (onClick)="onRequestGenerate()"
+          />
+        </div>
+      }
+
+      @if (knockoutRounds().length === 0) {
+        <div class="text-center text-500 py-5">
+          <i class="pi pi-info-circle text-2xl mb-2"></i>
+          <p>{{ 'admin.finale.noBracket' | transloco }}</p>
+        </div>
+      } @else {
+        <div class="overflow-x-auto">
+          <div class="flex gap-4 min-w-max p-2 align-items-start">
+            @for (round of knockoutRounds(); track round.roundIndex) {
+              <div class="flex flex-column gap-2">
+                <div class="text-center font-semibold text-sm text-500 mb-2 px-2">
+                  {{ round.roundName }}
+                </div>
+                @for (match of round.matches; track match.matchIndex) {
+                  @let scoreT1 = match.scoreTeam1;
+                  @let scoreT2 = match.scoreTeam2;
+                  @let isFinished = match.finished;
+                  @let team1Wins = isFinished && scoreT1 != null && scoreT2 != null && scoreT1 > scoreT2;
+                  @let team2Wins = isFinished && scoreT1 != null && scoreT2 != null && scoreT2 > scoreT1;
+                  <div
+                    class="knockout-match border-1 surface-border border-round surface-card min-w-12rem"
+                  >
+                    <div
+                      class="flex justify-content-between align-items-center py-2 px-3"
+                      [class.text-green-600]="team1Wins"
+                      [class.font-bold]="team1Wins"
+                      [class.text-red-400]="team2Wins"
+                    >
+                      <span class="text-sm flex-1 mr-2">
+                        {{ match.team1Name || ('admin.finale.tbd' | transloco) }}
+                      </span>
+                      @if (scoreT1 != null) {
+                        <span class="font-bold">{{ scoreT1 }}</span>
+                      }
+                    </div>
+                    <div class="border-top-1 surface-border"></div>
+                    <div
+                      class="flex justify-content-between align-items-center py-2 px-3"
+                      [class.text-green-600]="team2Wins"
+                      [class.font-bold]="team2Wins"
+                      [class.text-red-400]="team1Wins"
+                    >
+                      <span class="text-sm flex-1 mr-2">
+                        {{ match.team2Name || ('admin.finale.tbd' | transloco) }}
+                      </span>
+                      @if (scoreT2 != null) {
+                        <span class="font-bold">{{ scoreT2 }}</span>
+                      }
+                    </div>
+                    @if (isFinished) {
+                      <div class="text-xs text-center text-500 border-top-1 surface-border py-1">
+                        ✓ {{ 'admin.finale.matchFinished' | transloco }}
+                      </div>
+                    }
+                    @if (role() === 'admin' || role() === 'organizer') {
+                      <div class="border-top-1 surface-border">
+                        <p-button
+                          [label]="'shared.actions.edit' | transloco"
+                          icon="pi pi-pencil"
+                          variant="text"
+                          size="small"
+                          styleClass="w-full border-round-bottom"
+                          (onClick)="onEditMatch(match)"
+                        />
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </p-tabpanel>
+
+    @if (role() === 'admin') {
+      <p-tabpanel value="users">
+        <app-admin-users [tournament]="tournament()" [currentUser]="currentUser()" />
+      </p-tabpanel>
+      <p-tabpanel value="import-export">
+        <app-admin-import-export
+          [tournament]="tournament()"
+          [teams]="teams()"
+          [series]="series()"
+        />
+      </p-tabpanel>
+    }
+  </p-tabpanels>
+</p-tabs>
+
+<!-- Edit match dialog -->
+<p-dialog
+  [(visible)]="matchDialogVisible"
+  [header]="'admin.finale.editMatch' | transloco"
+  [modal]="true"
+  [style]="{ width: '28rem', maxHeight: '90vh', overflowY: 'auto' }"
+>
+  <div class="flex flex-column gap-4 pt-2">
+    <div class="flex gap-3">
+      <div class="flex-2">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="editTeam1Name"
+            [(ngModel)]="editTeam1Name"
+            [style]="{ width: '100%' }"
+          />
+          <label for="editTeam1Name">{{ 'admin.finale.team1' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex-1">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            inputId="editScore1"
+            [(ngModel)]="editScoreTeam1"
+            [min]="0"
+            [style]="{ width: '100%' }"
+          />
+          <label for="editScore1">{{ 'admin.games.score' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="flex gap-3">
+      <div class="flex-2">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="editTeam2Name"
+            [(ngModel)]="editTeam2Name"
+            [style]="{ width: '100%' }"
+          />
+          <label for="editTeam2Name">{{ 'admin.finale.team2' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex-1">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            inputId="editScore2"
+            [(ngModel)]="editScoreTeam2"
+            [min]="0"
+            [style]="{ width: '100%' }"
+          />
+          <label for="editScore2">{{ 'admin.games.score' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div>
+      <p-floatlabel variant="on">
+        <p-datepicker
+          inputId="matchDate"
+          [(ngModel)]="editMatchDateModel"
+          pInputMask="99/99/9999 99:99"
+          [placeholder]="datePlaceholder()"
+          [style]="{ width: '100%' }"
+          [showClear]="true"
+          [showIcon]="true"
+          [showOnFocus]="false"
+          [showTime]="true"
+          appendTo="body"
+          (onComplete)="onDateMaskComplete()"
+          (onClear)="clearMatchDate()"
+        />
+        <label for="matchDate">{{ 'admin.games.date' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        inputId="matchFinished"
+        [(ngModel)]="editMatchFinished"
+        [binary]="true"
+      />
+      <label for="matchFinished">{{ 'admin.games.finished' | transloco }}</label>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="matchDialogVisible.set(false)"
+    />
+    <p-button
+      [label]="'shared.actions.save' | transloco"
+      (onClick)="onSaveMatch()"
+    />
+  </ng-template>
+</p-dialog>
+
+<!-- Confirm regenerate dialog -->
+<p-dialog
+  [(visible)]="confirmRegenerateVisible"
+  [header]="'admin.finale.confirmRegenerateTitle' | transloco"
+  [modal]="true"
+  [style]="{ width: '25rem' }"
+>
+  <p>{{ 'admin.finale.confirmRegenerateMessage' | transloco }}</p>
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="confirmRegenerateVisible.set(false)"
+    />
+    <p-button
+      [label]="'admin.finale.generateBracket' | transloco"
+      severity="danger"
+      (onClick)="onConfirmRegenerate()"
+    />
+  </ng-template>
+</p-dialog>

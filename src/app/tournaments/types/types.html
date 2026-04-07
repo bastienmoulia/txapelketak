@@ -3,10 +3,10 @@
     <app-poules [tournament]="tournament()" />
   }
   @case ('finale') {
-    <app-finale [tournamentData]="finaleData()" />
+    <app-finale [tournament]="tournament()" />
   }
   @case ('poules_finale') {
-    <app-poules-finale [tournamentData]="poulesFinaleData()" />
+    <app-poules-finale [tournament]="tournament()" />
   }
   @default {
     <p>{{ 'tournaments.types.unknown' | transloco }} : {{ tournament().type }}</p>

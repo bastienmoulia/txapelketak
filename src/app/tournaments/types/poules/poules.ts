@@ -48,6 +48,7 @@ export interface Game {
   scoreTeam1?: number;
   scoreTeam2?: number;
   date?: Date;
+  finished?: boolean;
 }
 
 export function parseFirestoreDate(value: unknown): Date | undefined {
@@ -111,7 +112,7 @@ export class Poules {
 
     effect(async () => {
       const tournament = this.tournament();
-      this.teams.set((tournament.data?.teams as Team[] | undefined) ?? []);
+      this.teams.set(((tournament.data as PoulesData | undefined)?.teams as Team[] | undefined) ?? []);
 
       if (!this.firebaseService.isAvailable()) {
         return;

@@ -1,4 +1,12 @@
-<div class="dashboard-grid">
+@if (loading()) {
+  <p-card styleClass="dashboard-card dashboard-card--main">
+    <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+      <i class="pi pi-spinner pi-spin mr-2"></i>
+      {{ 'tournaments.detail.loading' | transloco }}
+    </div>
+  </p-card>
+} @else {
+  <div class="dashboard-grid">
   <!-- Status & Description card -->
   <p-card styleClass="dashboard-card dashboard-card--main">
     <div class="flex flex-col gap-3">
@@ -222,4 +230,5 @@
       }
     </p-card>
   }
-</div>
+  </div>
+}

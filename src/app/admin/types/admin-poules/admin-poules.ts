@@ -71,6 +71,7 @@ export class AdminPoules {
 
   teams = this.poulesStore.teams;
   series = this.poulesStore.series;
+  loading = this.poulesStore.loading;
 
   role = computed(() => this.currentUser()?.role ?? '');
 

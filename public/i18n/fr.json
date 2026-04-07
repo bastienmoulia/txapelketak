@@ -301,6 +301,7 @@
         "poule": "Poule"
       },
       "open": "Ouvrir",
+      "loading": "Chargement des tournois...",
       "empty": "Aucun tournoi disponible"
     },
     "actions": {

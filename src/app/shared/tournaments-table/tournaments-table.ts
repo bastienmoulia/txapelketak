@@ -25,5 +25,6 @@ import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severit
 })
 export class TournamentsTable {
   tournaments = input.required<Tournament[]>();
+  loading = input(false);
   getTournamentLink = input.required<(tournament: Tournament) => string>();
 }

@@ -301,6 +301,7 @@
         "poule": "Pool"
       },
       "open": "Open",
+      "loading": "Loading tournaments...",
       "empty": "No tournaments available"
     },
     "actions": {

@@ -83,6 +83,7 @@
     </div>
     <app-tournaments-table
       [tournaments]="recentTournaments()"
+      [loading]="loading()"
       [getTournamentLink]="getTournamentLink"
     />
     @if (recentTournaments().length > 0) {

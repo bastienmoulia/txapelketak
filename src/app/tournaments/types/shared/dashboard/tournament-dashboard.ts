@@ -59,6 +59,7 @@ export class TournamentDashboard {
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
   series = input<Serie[]>([]);
+  loading = input(false);
 
   descriptionEl = viewChild<ElementRef<HTMLElement>>('descriptionEl');
 

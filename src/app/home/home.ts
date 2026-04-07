@@ -37,6 +37,7 @@ export class Home {
   messageService = inject(MessageService);
   translocoService = inject(TranslocoService);
   tournaments = this.tournamentsStore.tournaments;
+  loading = this.tournamentsStore.loading;
 
   recentTournaments = computed(() =>
     [...this.tournaments()]

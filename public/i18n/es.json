@@ -301,6 +301,7 @@
         "poule": "Grupo"
       },
       "open": "Abrir",
+      "loading": "Cargando torneos...",
       "empty": "No hay torneos disponibles"
     },
     "actions": {

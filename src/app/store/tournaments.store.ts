@@ -60,11 +60,15 @@ export const TournamentsStore = signalStore(
             });
           },
           error: (error: unknown) => {
+            tournamentsSubscription = null;
             patchState(store, {
               loading: false,
               loaded: false,
               error: error instanceof Error ? error.message : 'Unable to load tournaments',
             });
+          },
+          complete: () => {
+            tournamentsSubscription = null;
           },
         });
       },

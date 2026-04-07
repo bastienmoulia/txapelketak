@@ -94,6 +94,60 @@ describe('PoulesStore', () => {
     expect(store.teams()[0].name).toBe('Team A');
   });
 
+  it('should allow retry after teams watcher error', () => {
+    const ref = createRef('t1');
+    store.startWatching(ref);
+    teams$.error(new Error('teams failed'));
+
+    teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    firebaseService.watchCollectionFromDocumentRef.mockImplementation(
+      (_docRef: DocumentReference, collectionName: string) => {
+        if (collectionName === 'teams') {
+          return teams$.asObservable();
+        }
+        if (collectionName === 'series') {
+          return series$.asObservable();
+        }
+        return new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable();
+      },
+    );
+
+    store.startWatching(ref);
+
+    const teamsCalls = firebaseService.watchCollectionFromDocumentRef.mock.calls.filter(
+      ([, collectionName]) => collectionName === 'teams',
+    );
+    expect(teamsCalls.length).toBe(2);
+  });
+
+  it('should allow retry after series watcher error', () => {
+    const ref = createRef('t1');
+    store.startWatching(ref);
+    series$.error(new Error('series failed'));
+
+    teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    firebaseService.watchCollectionFromDocumentRef.mockImplementation(
+      (_docRef: DocumentReference, collectionName: string) => {
+        if (collectionName === 'teams') {
+          return teams$.asObservable();
+        }
+        if (collectionName === 'series') {
+          return series$.asObservable();
+        }
+        return new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable();
+      },
+    );
+
+    store.startWatching(ref);
+
+    const seriesCalls = firebaseService.watchCollectionFromDocumentRef.mock.calls.filter(
+      ([, collectionName]) => collectionName === 'series',
+    );
+    expect(seriesCalls.length).toBe(2);
+  });
+
   it('should allow local patch helpers', () => {
     const patchedTeams: Team[] = [{ ref: createRef('t-1'), name: 'Team 1' } as Team];
 

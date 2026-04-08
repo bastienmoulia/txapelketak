@@ -10,11 +10,9 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Game, Poule, Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
-import { AccordionModule } from 'primeng/accordion';
 import { Message } from 'primeng/message';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +24,6 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
 import { DatePicker } from 'primeng/datepicker';
 import { Tournament, UserRole } from '../../../../home/tournament.interface';
-import { SelectButton } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -68,18 +65,15 @@ export interface GamesDateGroup {
   games: GameByDate[];
 }
 
-export type GamesViewMode = 'by-pool' | 'by-date';
+export type GamesViewMode = 'by-date';
 
 export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
 
 @Component({
   selector: 'app-games',
   imports: [
-    AccordionModule,
     Message,
-    NgTemplateOutlet,
     TranslocoPipe,
-    Card,
     DatePipe,
     Button,
     DialogModule,
@@ -90,7 +84,6 @@ export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
     TableModule,
     DatePicker,
     InputMaskModule,
-    SelectButton,
     TooltipModule,
   ],
   templateUrl: './games.html',
@@ -255,34 +248,12 @@ export class Games {
     this.gamesByDate().flatMap((group) => group.games),
   );
 
-  viewMode = signal<GamesViewMode>('by-date');
-
-  viewOptions = computed(() => [
-    { label: this.translocoService.translate('admin.games.viewByDate'), value: 'by-date' },
-    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
-  ]);
-
   sortedTeams = computed(() => [...this.teams()].sort((a, b) => a.name.localeCompare(b.name)));
 
   selectedTeam = computed(() => {
     const teamId = this.selectedTeamId();
     if (!teamId) return null;
     return this.teams().find((t) => t.ref?.id === teamId) ?? null;
-  });
-
-  filteredSortedSeries = computed(() => {
-    const teamId = this.selectedTeamId();
-    const series = this.sortedSeries();
-    if (!teamId) return series;
-    return series.map((serie) => ({
-      ...serie,
-      poules: serie.poules.map((poule) => ({
-        ...poule,
-        games: (poule.games ?? []).filter(
-          (game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId,
-        ),
-      })),
-    }));
   });
 
   filteredFlatGamesByDate = computed((): GameByDate[] => {

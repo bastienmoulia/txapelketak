@@ -3,8 +3,9 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Poule } from '../../poules/poules';
 import { Team } from '../teams/teams';
 
-import { Games, GamesViewMode } from './games';
+import { Games, GAMES_TEAM_FILTER_QUERY_PARAM, GamesViewMode } from './games';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
+import { provideRouter, Router } from '@angular/router';
 
 describe('Games', () => {
   let component: Games;
@@ -13,7 +14,7 @@ describe('Games', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Games],
-      providers: [...provideTranslocoTesting()],
+      providers: [...provideTranslocoTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Games);
@@ -276,6 +277,147 @@ describe('Games', () => {
 
   it('should default viewMode to by-date', () => {
     expect(component.viewMode()).toBe('by-date' satisfies GamesViewMode);
+  });
+
+  it('should export GAMES_TEAM_FILTER_QUERY_PARAM constant', () => {
+    expect(GAMES_TEAM_FILTER_QUERY_PARAM).toBe('teamId');
+  });
+
+  it('should have null selectedTeamId by default', () => {
+    expect(component.selectedTeamId()).toBeNull();
+  });
+
+  it('should filter filteredFlatGamesByDate when teamId queryParam is set', async () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+      { ref: team3Ref, name: 'Charlie' },
+    ] satisfies Team[]);
+    fixture.componentRef.setInput('series', [
+      {
+        ref: createDocumentReference('serie-1'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [
+              {
+                ref: createDocumentReference('game-1'),
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                date: new Date('2026-03-22T10:00:00Z'),
+              },
+              {
+                ref: createDocumentReference('game-2'),
+                refTeam1: team2Ref,
+                refTeam2: team3Ref,
+                date: new Date('2026-03-22T14:00:00Z'),
+              },
+              {
+                ref: createDocumentReference('game-3'),
+                refTeam1: team1Ref,
+                refTeam2: team3Ref,
+                date: new Date('2026-03-23T10:00:00Z'),
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    fixture.detectChanges();
+
+    // No filter: all 3 games shown
+    expect(component.filteredFlatGamesByDate().length).toBe(3);
+
+    // Navigate with teamId queryParam for team-1 (Alpha)
+    const router = TestBed.inject(Router);
+    await router.navigate([], { queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: 'team-1' } });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // Only games involving team-1 (game-1 and game-3)
+    expect(component.selectedTeamId()).toBe('team-1');
+    expect(component.filteredFlatGamesByDate().length).toBe(2);
+
+    // Clear filter
+    await router.navigate([], { queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: null } });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.selectedTeamId()).toBeNull();
+    expect(component.filteredFlatGamesByDate().length).toBe(3);
+  });
+
+  it('should filter filteredSortedSeries by team when teamId queryParam is set', async () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+      { ref: team3Ref, name: 'Charlie' },
+    ] satisfies Team[]);
+    fixture.componentRef.setInput('series', [
+      {
+        ref: createDocumentReference('serie-1'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [
+              {
+                ref: createDocumentReference('game-1'),
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+              },
+              {
+                ref: createDocumentReference('game-2'),
+                refTeam1: team2Ref,
+                refTeam2: team3Ref,
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    fixture.detectChanges();
+
+    // Without filter: all 2 games in the poule
+    expect(component.filteredSortedSeries()[0].poules[0].games?.length).toBe(2);
+
+    // Navigate with teamId for team-3 (Charlie): only game-2 involves team-3
+    const router = TestBed.inject(Router);
+    await router.navigate([], { queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: 'team-3' } });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.filteredSortedSeries()[0].poules[0].games?.length).toBe(1);
+    expect(component.filteredSortedSeries()[0].poules[0].games?.[0].refTeam2?.id).toBe('team-3');
+  });
+
+  it('should return sortedTeams sorted alphabetically', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team3Ref, name: 'Charlie' },
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+    ] satisfies Team[]);
+    fixture.detectChanges();
+
+    const sorted = component.sortedTeams();
+    expect(sorted.map((t) => t.name)).toEqual(['Alpha', 'Bravo', 'Charlie']);
   });
 });
 

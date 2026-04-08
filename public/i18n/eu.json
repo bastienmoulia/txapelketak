@@ -226,7 +226,8 @@
       "noDate": "Datarik gabe",
       "serie": "Seriea",
       "poule": "Multzoa",
-      "time": "Ordua"
+      "time": "Ordua",
+      "filterByTeam": "Taldea iragazi"
     },
     "teams": {
       "empty": "Ez dago talderik",

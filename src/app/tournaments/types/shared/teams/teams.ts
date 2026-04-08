@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { form, FormField, required } from '@angular/forms/signals';
 import { DocumentReference } from '@firebase/firestore';
@@ -11,6 +11,9 @@ import { MessageModule } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
 import { TableModule } from 'primeng/table';
 import { UserRole } from '../../../../home/tournament.interface';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GAMES_TEAM_FILTER_QUERY_PARAM } from '../games/games';
+import { POULES_TAB_QUERY_PARAM } from '../../poules/poules.route';
 
 export interface Team {
   ref: DocumentReference;
@@ -38,6 +41,9 @@ export interface Team {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Teams {
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+
   teams = input.required<Team[]>();
   role = input<UserRole | ''>('');
 
@@ -109,5 +115,16 @@ export class Teams {
   onCancelDeleteTeam(): void {
     this.pendingDeleteTeam.set(null);
     this.deleteConfirmVisible.set(false);
+  }
+
+  onViewTeamGames(team: Team): void {
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        [POULES_TAB_QUERY_PARAM]: 'games',
+        [GAMES_TEAM_FILTER_QUERY_PARAM]: team.ref.id,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 }

@@ -241,6 +241,7 @@
       "bulkPlaceholder": "Un equipo por línea",
       "editAria": "Editar este equipo",
       "deleteAria": "Eliminar este equipo",
+      "viewGamesAria": "Ver los partidos de este equipo",
       "added": "Equipo añadido",
       "addedDetail": "El equipo ha sido añadido con éxito.",
       "edited": "Equipo actualizado",
@@ -309,7 +310,8 @@
       "save": "Guardar",
       "cancel": "Cancelar",
       "edit": "Editar",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "viewGames": "Partidos"
     },
     "confirm": {
       "deleteHeader": "Confirmar eliminación",

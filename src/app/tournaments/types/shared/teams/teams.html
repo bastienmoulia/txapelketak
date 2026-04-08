@@ -33,11 +33,9 @@
         <th pSortableColumn="pouleName">
           {{ 'shared.table.columns.poule' | transloco }} <p-sortIcon field="pouleName" />
         </th>
-        @if (role() === 'admin') {
-          <th class="w-px whitespace-nowrap">
-            {{ 'shared.table.columns.actions' | transloco }}
-          </th>
-        }
+        <th class="w-px whitespace-nowrap">
+          {{ 'shared.table.columns.actions' | transloco }}
+        </th>
       </tr>
       <tr>
         <th>
@@ -51,9 +49,7 @@
         </th>
         <th></th>
         <th></th>
-        @if (role() === 'admin') {
-          <th></th>
-        }
+        <th></th>
       </tr>
     </ng-template>
 
@@ -62,9 +58,20 @@
         <td>{{ team.name }}</td>
         <td>{{ team.serieName }}</td>
         <td>{{ team.pouleName }}</td>
-        @if (role() === 'admin') {
-          <td>
-            <div class="flex justify-end gap-2">
+        <td>
+          <div class="flex justify-end gap-2">
+            <p-button
+              type="button"
+              size="small"
+              severity="secondary"
+              [outlined]="true"
+              icon="pi pi-list"
+              [label]="'shared.actions.viewGames' | transloco"
+              [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
+              (onClick)="onViewTeamGames(team)"
+              data-testid="view-team-games-button"
+            />
+            @if (role() === 'admin') {
               <p-button
                 type="button"
                 size="small"
@@ -87,9 +94,9 @@
                 (onClick)="onDeleteTeam(team)"
                 data-testid="delete-team-button"
               />
-            </div>
-          </td>
-        }
+            }
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>

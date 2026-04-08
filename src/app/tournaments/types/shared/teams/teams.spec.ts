@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
+import { provideRouter, Router } from '@angular/router';
 
 import { Teams } from './teams';
+import { GAMES_TEAM_FILTER_QUERY_PARAM } from '../games/games';
+import { POULES_TAB_QUERY_PARAM } from '../../poules/poules.route';
 
 describe('Teams', () => {
   let component: Teams;
@@ -10,7 +13,7 @@ describe('Teams', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Teams],
-      providers: [...provideTranslocoTesting()],
+      providers: [...provideTranslocoTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Teams);
@@ -52,13 +55,16 @@ describe('Teams', () => {
   });
 
   it('should not render admin actions without admin role', async () => {
-    fixture.componentRef.setInput('teams', [{ ref: null!, name: 'Team A' }]);
+    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Team A' }]);
     fixture.detectChanges();
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="edit-team-button"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="delete-team-button"]')).toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="view-team-games-button"]'),
+    ).not.toBeNull();
   });
 
   it('should render admin actions with admin role', async () => {
@@ -73,13 +79,36 @@ describe('Teams', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="add-teams-bulk-button"]')).not.toBeNull();
 
+    const viewGamesButtons = fixture.nativeElement.querySelectorAll(
+      '[data-testid="view-team-games-button"]',
+    );
     const editButtons = fixture.nativeElement.querySelectorAll('[data-testid="edit-team-button"]');
     const deleteButtons = fixture.nativeElement.querySelectorAll(
       '[data-testid="delete-team-button"]',
     );
 
+    expect(viewGamesButtons.length).toBe(2);
     expect(editButtons.length).toBe(2);
     expect(deleteButtons.length).toBe(2);
+  });
+
+  it('should navigate to games tab with teamId when view games button is clicked', async () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    const team = { ref: { id: 'team-42' } as never, name: 'Équipe A' };
+    component.onViewTeamGames(team);
+
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      expect.objectContaining({
+        queryParams: {
+          [POULES_TAB_QUERY_PARAM]: 'games',
+          [GAMES_TEAM_FILTER_QUERY_PARAM]: 'team-42',
+        },
+        queryParamsHandling: 'merge',
+      }),
+    );
   });
 
   it('should open dialog when add team is triggered', () => {

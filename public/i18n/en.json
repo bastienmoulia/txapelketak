@@ -241,6 +241,7 @@
       "bulkPlaceholder": "One team per line",
       "editAria": "Edit this team",
       "deleteAria": "Delete this team",
+      "viewGamesAria": "View this team's games",
       "added": "Team added",
       "addedDetail": "The team has been successfully added.",
       "edited": "Team updated",
@@ -309,7 +310,8 @@
       "save": "Save",
       "cancel": "Cancel",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "viewGames": "Games"
     },
     "confirm": {
       "deleteHeader": "Confirm deletion",

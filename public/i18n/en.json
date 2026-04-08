@@ -226,7 +226,8 @@
       "noDate": "No date",
       "serie": "Series",
       "poule": "Pool",
-      "time": "Time"
+      "time": "Time",
+      "filterByTeam": "Filter by team"
     },
     "teams": {
       "empty": "No teams",

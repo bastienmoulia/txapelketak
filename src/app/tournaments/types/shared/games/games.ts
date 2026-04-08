@@ -10,11 +10,9 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Game, Poule, Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
-import { AccordionModule } from 'primeng/accordion';
 import { Message } from 'primeng/message';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
@@ -26,8 +24,9 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
 import { DatePicker } from 'primeng/datepicker';
 import { Tournament, UserRole } from '../../../../home/tournament.interface';
-import { SelectButton } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -66,16 +65,15 @@ export interface GamesDateGroup {
   games: GameByDate[];
 }
 
-export type GamesViewMode = 'by-pool' | 'by-date';
+export type GamesViewMode = 'by-date';
+
+export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
 
 @Component({
   selector: 'app-games',
   imports: [
-    AccordionModule,
     Message,
-    NgTemplateOutlet,
     TranslocoPipe,
-    Card,
     DatePipe,
     Button,
     DialogModule,
@@ -86,7 +84,6 @@ export type GamesViewMode = 'by-pool' | 'by-date';
     TableModule,
     DatePicker,
     InputMaskModule,
-    SelectButton,
     TooltipModule,
   ],
   templateUrl: './games.html',
@@ -95,6 +92,8 @@ export type GamesViewMode = 'by-pool' | 'by-date';
 })
 export class Games {
   private readonly translocoService = inject(TranslocoService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
@@ -108,6 +107,15 @@ export class Games {
   activeLanguage = toSignal(this.translocoService.langChanges$, {
     initialValue: this.translocoService.getActiveLang(),
   });
+
+  private teamIdFromUrl = toSignal(
+    this.activatedRoute.queryParamMap.pipe(
+      map((params) => params.get(GAMES_TEAM_FILTER_QUERY_PARAM)),
+    ),
+    { initialValue: null },
+  );
+
+  selectedTeamId = computed(() => this.teamIdFromUrl());
 
   firstDayOfWeek = computed(() => {
     this.activeLanguage(); // reactive dependency: re-evaluate on lang change
@@ -240,12 +248,22 @@ export class Games {
     this.gamesByDate().flatMap((group) => group.games),
   );
 
-  viewMode = signal<GamesViewMode>('by-date');
+  sortedTeams = computed(() => [...this.teams()].sort((a, b) => a.name.localeCompare(b.name)));
 
-  viewOptions = computed(() => [
-    { label: this.translocoService.translate('admin.games.viewByDate'), value: 'by-date' },
-    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
-  ]);
+  selectedTeam = computed(() => {
+    const teamId = this.selectedTeamId();
+    if (!teamId) return null;
+    return this.teams().find((t) => t.ref?.id === teamId) ?? null;
+  });
+
+  filteredFlatGamesByDate = computed((): GameByDate[] => {
+    const teamId = this.selectedTeamId();
+    const games = this.flatGamesByDate();
+    if (!teamId) return games;
+    return games.filter(
+      (game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId,
+    );
+  });
 
   byDateColumnCount = computed(() => {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
@@ -302,6 +320,18 @@ export class Games {
       team2Name: this.getTeamName(game.refTeam2),
       gameDateSortValue: game.date ? new Date(game.date).getTime() : 0,
     };
+  }
+
+  onTeamSelect(teamId: string | null): void {
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: teamId ?? null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  clearTeamFilter(): void {
+    this.onTeamSelect(null);
   }
 
   onAddGame(poule: Poule): void {

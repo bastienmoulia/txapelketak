@@ -57,6 +57,7 @@ export interface GameByDate extends SortableGame {
   pouleName: string;
   serieName: string;
   pouleRef: DocumentReference;
+  dateKey: string;
 }
 
 export interface GamesDateGroup {
@@ -208,13 +209,14 @@ export class Games {
       for (const poule of serie.poules) {
         for (const game of poule.games ?? []) {
           const sortable = this.toSortableGame(game);
+          const dateKey = this.getDateKey(game.date);
           const gameWithContext: GameByDate = {
             ...sortable,
             pouleName: poule.name,
             serieName: serie.name,
             pouleRef: poule.ref,
+            dateKey,
           };
-          const dateKey = game.date ? new Date(game.date).toISOString().substring(0, 10) : '';
           const existing = dateMap.get(dateKey);
           if (existing) {
             existing.push(gameWithContext);
@@ -234,12 +236,21 @@ export class Games {
       .sort((a, b) => a.dateSortValue - b.dateSortValue);
   });
 
-  viewMode = signal<GamesViewMode>('by-pool');
+  flatGamesByDate = computed((): GameByDate[] =>
+    this.gamesByDate().flatMap((group) => group.games),
+  );
+
+  viewMode = signal<GamesViewMode>('by-date');
 
   viewOptions = computed(() => [
-    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
     { label: this.translocoService.translate('admin.games.viewByDate'), value: 'by-date' },
+    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
   ]);
+
+  byDateColumnCount = computed(() => {
+    const hasActions = this.role() === 'admin' || this.role() === 'organizer';
+    return hasActions ? 7 : 6;
+  });
 
   // Dialog state
   gameDialogVisible = signal(false);
@@ -278,6 +289,10 @@ export class Games {
   getTeamName(ref: DocumentReference): string {
     if (!ref) return '?';
     return this.teamNameMap().get(ref.id) ?? '?';
+  }
+
+  private getDateKey(date: Date | undefined | null): string {
+    return date ? new Date(date).toISOString().substring(0, 10) : '';
   }
 
   private toSortableGame(game: Game): SortableGame {

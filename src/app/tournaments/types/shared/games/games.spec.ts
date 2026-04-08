@@ -274,8 +274,8 @@ describe('Games', () => {
     expect(game.team2Name).toBe('Bravo');
   });
 
-  it('should default viewMode to by-pool', () => {
-    expect(component.viewMode()).toBe('by-pool' satisfies GamesViewMode);
+  it('should default viewMode to by-date', () => {
+    expect(component.viewMode()).toBe('by-date' satisfies GamesViewMode);
   });
 });
 

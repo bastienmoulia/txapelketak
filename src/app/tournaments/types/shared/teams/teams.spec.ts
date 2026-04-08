@@ -3,8 +3,6 @@ import { provideTranslocoTesting } from '../../../../testing/transloco-testing.p
 import { provideRouter } from '@angular/router';
 
 import { Teams } from './teams';
-import { GAMES_TEAM_FILTER_QUERY_PARAM } from '../games/games';
-import { POULES_TAB_QUERY_PARAM } from '../../poules/poules.route';
 
 describe('Teams', () => {
   let component: Teams;
@@ -90,14 +88,6 @@ describe('Teams', () => {
     expect(viewGamesButtons.length).toBe(2);
     expect(editButtons.length).toBe(2);
     expect(deleteButtons.length).toBe(2);
-  });
-
-  it('should expose correct query params for games routerLink', () => {
-    const team = { ref: { id: 'team-42' } as never, name: 'Équipe A' };
-    const params = component.getTeamGamesQueryParams(team);
-
-    expect(params[POULES_TAB_QUERY_PARAM]).toBe('games');
-    expect(params[GAMES_TEAM_FILTER_QUERY_PARAM]).toBe('team-42');
   });
 
   it('should open dialog when add team is triggered', () => {

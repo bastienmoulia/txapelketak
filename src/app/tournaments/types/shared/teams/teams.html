@@ -69,7 +69,7 @@
               [label]="'shared.actions.viewGames' | transloco"
               [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
               [routerLink]="[]"
-              [queryParams]="getTeamGamesQueryParams(team)"
+              [queryParams]="{ tab: 'games', teamId: team.ref.id }"
               queryParamsHandling="merge"
               data-testid="view-team-games-button"
             />

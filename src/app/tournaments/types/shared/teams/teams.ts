@@ -12,8 +12,6 @@ import { Textarea } from 'primeng/textarea';
 import { TableModule } from 'primeng/table';
 import { UserRole } from '../../../../home/tournament.interface';
 import { RouterLink } from '@angular/router';
-import { GAMES_TEAM_FILTER_QUERY_PARAM } from '../games/games';
-import { POULES_TAB_QUERY_PARAM } from '../../poules/poules.route';
 
 export interface Team {
   ref: DocumentReference;
@@ -113,12 +111,5 @@ export class Teams {
   onCancelDeleteTeam(): void {
     this.pendingDeleteTeam.set(null);
     this.deleteConfirmVisible.set(false);
-  }
-
-  getTeamGamesQueryParams(team: Team): Record<string, string> {
-    return {
-      [POULES_TAB_QUERY_PARAM]: 'games',
-      [GAMES_TEAM_FILTER_QUERY_PARAM]: team.ref.id,
-    };
   }
 }

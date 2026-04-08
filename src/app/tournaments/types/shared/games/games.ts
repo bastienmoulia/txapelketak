@@ -234,11 +234,11 @@ export class Games {
       .sort((a, b) => a.dateSortValue - b.dateSortValue);
   });
 
-  viewMode = signal<GamesViewMode>('by-pool');
+  viewMode = signal<GamesViewMode>('by-date');
 
   viewOptions = computed(() => [
-    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
     { label: this.translocoService.translate('admin.games.viewByDate'), value: 'by-date' },
+    { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
   ]);
 
   // Dialog state

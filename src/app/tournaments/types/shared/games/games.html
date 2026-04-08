@@ -52,30 +52,19 @@
         </ng-template>
 
         <div class="games-table-shell">
-          <p-table [value]="group.games" class="games-table">
+          <p-table
+            [value]="group.games"
+            class="games-table games-table--by-date"
+            [tableStyle]="{ 'table-layout': 'fixed', 'width': '100%' }"
+          >
             <ng-template #header>
               <tr>
-                <th pSortableColumn="serieName">
-                  {{ 'admin.games.serie' | transloco }}
-                  <p-sortIcon field="serieName" />
-                </th>
-                <th pSortableColumn="pouleName">
-                  {{ 'admin.poules.poule' | transloco }}
-                  <p-sortIcon field="pouleName" />
-                </th>
-                <th pSortableColumn="team1Name">
-                  {{ 'admin.games.team1' | transloco }}
-                  <p-sortIcon field="team1Name" />
-                </th>
+                <th>{{ 'admin.games.serie' | transloco }}</th>
+                <th>{{ 'admin.poules.poule' | transloco }}</th>
+                <th>{{ 'admin.games.team1' | transloco }}</th>
                 <th>{{ 'admin.games.score' | transloco }}</th>
-                <th pSortableColumn="team2Name">
-                  {{ 'admin.games.team2' | transloco }}
-                  <p-sortIcon field="team2Name" />
-                </th>
-                <th pSortableColumn="gameDateSortValue">
-                  {{ 'admin.games.time' | transloco }}
-                  <p-sortIcon field="gameDateSortValue" />
-                </th>
+                <th>{{ 'admin.games.team2' | transloco }}</th>
+                <th>{{ 'admin.games.time' | transloco }}</th>
                 @if (role() === 'admin' || role() === 'organizer') {
                   <th class="games-table__actions-header">
                     {{ 'shared.table.columns.actions' | transloco }}

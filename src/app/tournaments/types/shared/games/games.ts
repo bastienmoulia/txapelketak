@@ -57,6 +57,7 @@ export interface GameByDate extends SortableGame {
   pouleName: string;
   serieName: string;
   pouleRef: DocumentReference;
+  dateKey: string;
 }
 
 export interface GamesDateGroup {
@@ -208,13 +209,14 @@ export class Games {
       for (const poule of serie.poules) {
         for (const game of poule.games ?? []) {
           const sortable = this.toSortableGame(game);
+          const dateKey = game.date ? new Date(game.date).toISOString().substring(0, 10) : '';
           const gameWithContext: GameByDate = {
             ...sortable,
             pouleName: poule.name,
             serieName: serie.name,
             pouleRef: poule.ref,
+            dateKey,
           };
-          const dateKey = game.date ? new Date(game.date).toISOString().substring(0, 10) : '';
           const existing = dateMap.get(dateKey);
           if (existing) {
             existing.push(gameWithContext);
@@ -233,6 +235,10 @@ export class Games {
       }))
       .sort((a, b) => a.dateSortValue - b.dateSortValue);
   });
+
+  flatGamesByDate = computed((): GameByDate[] =>
+    this.gamesByDate().flatMap((group) => group.games),
+  );
 
   viewMode = signal<GamesViewMode>('by-date');
 

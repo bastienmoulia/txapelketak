@@ -1,5 +1,21 @@
 @if (sortedSeries().length > 0) {
-  <div class="flex justify-end mx-3">
+  <div class="flex justify-between items-center mx-3 mb-3 flex-wrap gap-2">
+    <div class="flex items-center gap-2">
+      <p-select
+        [options]="sortedTeams()"
+        [ngModel]="selectedTeamId()"
+        optionLabel="name"
+        optionValue="ref.id"
+        [filter]="true"
+        [showClear]="true"
+        [placeholder]="'admin.games.filterByTeam' | transloco"
+        [style]="{ minWidth: '14rem' }"
+        appendTo="body"
+        (onChange)="onTeamSelect($event.value)"
+        (onClear)="clearTeamFilter()"
+        data-testid="team-filter-select"
+      />
+    </div>
     <p-selectbutton
       [options]="viewOptions()"
       [(ngModel)]="viewMode"
@@ -11,7 +27,7 @@
 
   @if (viewMode() === 'by-pool') {
     <p-accordion [multiple]="true" class="mb-3">
-      @for (serie of sortedSeries(); track serie.ref.id) {
+      @for (serie of filteredSortedSeries(); track serie.ref.id) {
         <p-accordion-panel [value]="serie.ref.id">
           <p-accordion-header>
             <div class="flex align-items-center justify-between w-full pr-2">
@@ -39,7 +55,7 @@
   } @else {
     <div class="games-table-shell mx-3 mb-3">
       <p-table
-        [value]="flatGamesByDate()"
+        [value]="filteredFlatGamesByDate()"
         class="games-table"
         rowGroupMode="subheader"
         groupRowsBy="dateKey"

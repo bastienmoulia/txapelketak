@@ -28,6 +28,8 @@ import { DatePicker } from 'primeng/datepicker';
 import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { SelectButton } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -68,6 +70,8 @@ export interface GamesDateGroup {
 
 export type GamesViewMode = 'by-pool' | 'by-date';
 
+export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
+
 @Component({
   selector: 'app-games',
   imports: [
@@ -95,6 +99,8 @@ export type GamesViewMode = 'by-pool' | 'by-date';
 })
 export class Games {
   private readonly translocoService = inject(TranslocoService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
@@ -108,6 +114,15 @@ export class Games {
   activeLanguage = toSignal(this.translocoService.langChanges$, {
     initialValue: this.translocoService.getActiveLang(),
   });
+
+  private teamIdFromUrl = toSignal(
+    this.activatedRoute.queryParamMap.pipe(
+      map((params) => params.get(GAMES_TEAM_FILTER_QUERY_PARAM)),
+    ),
+    { initialValue: null },
+  );
+
+  selectedTeamId = computed(() => this.teamIdFromUrl());
 
   firstDayOfWeek = computed(() => {
     this.activeLanguage(); // reactive dependency: re-evaluate on lang change
@@ -247,6 +262,38 @@ export class Games {
     { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
   ]);
 
+  sortedTeams = computed(() => [...this.teams()].sort((a, b) => a.name.localeCompare(b.name)));
+
+  selectedTeam = computed(() => {
+    const teamId = this.selectedTeamId();
+    if (!teamId) return null;
+    return this.teams().find((t) => t.ref?.id === teamId) ?? null;
+  });
+
+  filteredSortedSeries = computed(() => {
+    const teamId = this.selectedTeamId();
+    const series = this.sortedSeries();
+    if (!teamId) return series;
+    return series.map((serie) => ({
+      ...serie,
+      poules: serie.poules.map((poule) => ({
+        ...poule,
+        games: (poule.games ?? []).filter(
+          (game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId,
+        ),
+      })),
+    }));
+  });
+
+  filteredFlatGamesByDate = computed((): GameByDate[] => {
+    const teamId = this.selectedTeamId();
+    const games = this.flatGamesByDate();
+    if (!teamId) return games;
+    return games.filter(
+      (game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId,
+    );
+  });
+
   byDateColumnCount = computed(() => {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
     return hasActions ? 7 : 6;
@@ -302,6 +349,18 @@ export class Games {
       team2Name: this.getTeamName(game.refTeam2),
       gameDateSortValue: game.date ? new Date(game.date).getTime() : 0,
     };
+  }
+
+  onTeamSelect(teamId: string | null): void {
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: teamId ?? null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  clearTeamFilter(): void {
+    this.onTeamSelect(null);
   }
 
   onAddGame(poule: Poule): void {

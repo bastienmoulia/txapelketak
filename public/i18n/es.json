@@ -226,7 +226,8 @@
       "noDate": "Sin fecha",
       "serie": "Serie",
       "poule": "Grupo",
-      "time": "Hora"
+      "time": "Hora",
+      "filterByTeam": "Filtrar por equipo"
     },
     "teams": {
       "empty": "No hay equipos",

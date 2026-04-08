@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 import { Teams } from './teams';
 import { GAMES_TEAM_FILTER_QUERY_PARAM } from '../games/games';
@@ -28,7 +28,7 @@ describe('Teams', () => {
   });
 
   it('should have sortable column headers for Nom, Série and Poule', async () => {
-    fixture.componentRef.setInput('teams', [{ ref: null!, name: 'Team A' }]);
+    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Team A' }]);
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -41,7 +41,7 @@ describe('Teams', () => {
 
   it('should display serieName and pouleName for teams with context', async () => {
     fixture.componentRef.setInput('teams', [
-      { ref: null!, name: 'Team A', serieName: 'Série 1', pouleName: 'Poule A' },
+      { ref: { id: '1' } as never, name: 'Team A', serieName: 'Série 1', pouleName: 'Poule A' },
     ]);
     fixture.detectChanges();
     await fixture.whenStable();
@@ -92,23 +92,12 @@ describe('Teams', () => {
     expect(deleteButtons.length).toBe(2);
   });
 
-  it('should navigate to games tab with teamId when view games button is clicked', async () => {
-    const router = TestBed.inject(Router);
-    const navigateSpy = vi.spyOn(router, 'navigate');
-
+  it('should expose correct query params for games routerLink', () => {
     const team = { ref: { id: 'team-42' } as never, name: 'Équipe A' };
-    component.onViewTeamGames(team);
+    const params = component.getTeamGamesQueryParams(team);
 
-    expect(navigateSpy).toHaveBeenCalledWith(
-      [],
-      expect.objectContaining({
-        queryParams: {
-          [POULES_TAB_QUERY_PARAM]: 'games',
-          [GAMES_TEAM_FILTER_QUERY_PARAM]: 'team-42',
-        },
-        queryParamsHandling: 'merge',
-      }),
-    );
+    expect(params[POULES_TAB_QUERY_PARAM]).toBe('games');
+    expect(params[GAMES_TEAM_FILTER_QUERY_PARAM]).toBe('team-42');
   });
 
   it('should open dialog when add team is triggered', () => {

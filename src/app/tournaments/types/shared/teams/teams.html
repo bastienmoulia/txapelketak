@@ -68,7 +68,9 @@
               icon="pi pi-list"
               [label]="'shared.actions.viewGames' | transloco"
               [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
-              (onClick)="onViewTeamGames(team)"
+              [routerLink]="[]"
+              [queryParams]="getTeamGamesQueryParams(team)"
+              queryParamsHandling="merge"
               data-testid="view-team-games-button"
             />
             @if (role() === 'admin') {

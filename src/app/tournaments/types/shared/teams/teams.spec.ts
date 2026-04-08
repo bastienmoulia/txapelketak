@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
+import { provideRouter } from '@angular/router';
 
 import { Teams } from './teams';
 
@@ -10,7 +11,7 @@ describe('Teams', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Teams],
-      providers: [...provideTranslocoTesting()],
+      providers: [...provideTranslocoTesting(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Teams);
@@ -25,7 +26,7 @@ describe('Teams', () => {
   });
 
   it('should have sortable column headers for Nom, Série and Poule', async () => {
-    fixture.componentRef.setInput('teams', [{ ref: null!, name: 'Team A' }]);
+    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Team A' }]);
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -38,7 +39,7 @@ describe('Teams', () => {
 
   it('should display serieName and pouleName for teams with context', async () => {
     fixture.componentRef.setInput('teams', [
-      { ref: null!, name: 'Team A', serieName: 'Série 1', pouleName: 'Poule A' },
+      { ref: { id: '1' } as never, name: 'Team A', serieName: 'Série 1', pouleName: 'Poule A' },
     ]);
     fixture.detectChanges();
     await fixture.whenStable();
@@ -52,13 +53,16 @@ describe('Teams', () => {
   });
 
   it('should not render admin actions without admin role', async () => {
-    fixture.componentRef.setInput('teams', [{ ref: null!, name: 'Team A' }]);
+    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Team A' }]);
     fixture.detectChanges();
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="edit-team-button"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="delete-team-button"]')).toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="view-team-games-button"]'),
+    ).not.toBeNull();
   });
 
   it('should render admin actions with admin role', async () => {
@@ -73,11 +77,15 @@ describe('Teams', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="add-teams-bulk-button"]')).not.toBeNull();
 
+    const viewGamesButtons = fixture.nativeElement.querySelectorAll(
+      '[data-testid="view-team-games-button"]',
+    );
     const editButtons = fixture.nativeElement.querySelectorAll('[data-testid="edit-team-button"]');
     const deleteButtons = fixture.nativeElement.querySelectorAll(
       '[data-testid="delete-team-button"]',
     );
 
+    expect(viewGamesButtons.length).toBe(2);
     expect(editButtons.length).toBe(2);
     expect(deleteButtons.length).toBe(2);
   });

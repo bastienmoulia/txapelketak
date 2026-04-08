@@ -11,6 +11,7 @@ import { MessageModule } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
 import { TableModule } from 'primeng/table';
 import { UserRole } from '../../../../home/tournament.interface';
+import { RouterLink } from '@angular/router';
 
 export interface Team {
   ref: DocumentReference;
@@ -32,6 +33,7 @@ export interface Team {
     Textarea,
     FormField,
     FormsModule,
+    RouterLink,
   ],
   templateUrl: './teams.html',
   styleUrl: './teams.css',

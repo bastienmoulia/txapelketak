@@ -209,7 +209,7 @@ export class Games {
       for (const poule of serie.poules) {
         for (const game of poule.games ?? []) {
           const sortable = this.toSortableGame(game);
-          const dateKey = game.date ? new Date(game.date).toISOString().substring(0, 10) : '';
+          const dateKey = this.getDateKey(game.date);
           const gameWithContext: GameByDate = {
             ...sortable,
             pouleName: poule.name,
@@ -246,6 +246,11 @@ export class Games {
     { label: this.translocoService.translate('admin.games.viewByDate'), value: 'by-date' },
     { label: this.translocoService.translate('admin.games.viewByPool'), value: 'by-pool' },
   ]);
+
+  byDateColumnCount = computed(() => {
+    const hasActions = this.role() === 'admin' || this.role() === 'organizer';
+    return hasActions ? 7 : 6;
+  });
 
   // Dialog state
   gameDialogVisible = signal(false);
@@ -284,6 +289,10 @@ export class Games {
   getTeamName(ref: DocumentReference): string {
     if (!ref) return '?';
     return this.teamNameMap().get(ref.id) ?? '?';
+  }
+
+  private getDateKey(date: Date | undefined | null): string {
+    return date ? new Date(date).toISOString().substring(0, 10) : '';
   }
 
   private toSortableGame(game: Game): SortableGame {

@@ -63,7 +63,7 @@
         <ng-template #groupheader let-game>
           <tr>
             <td
-              [attr.colspan]="(role() === 'admin' || role() === 'organizer') ? 7 : 6"
+              [attr.colspan]="byDateColumnCount()"
               class="font-bold py-2 px-3"
             >
               @if (game.dateKey) {

@@ -31,11 +31,6 @@
   flex: 2 1 0%;
 }
 
-.games-table__date-day {
-  margin-right: 0.4em;
-  text-transform: capitalize;
-}
-
 @media (max-width: 768px) {
   .games-poule-card__header {
     flex-direction: column;

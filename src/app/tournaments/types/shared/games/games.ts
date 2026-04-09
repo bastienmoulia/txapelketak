@@ -127,6 +127,10 @@ export class Games {
     return this.translocoService.translate('datepicker.placeholder');
   });
 
+  datePickerFormat = computed(() => {
+    return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
+  });
+
   gameDateString = '';
 
   get gameDateModel(): Date | string | null {
@@ -260,9 +264,7 @@ export class Games {
     const teamId = this.selectedTeamId();
     const games = this.flatGamesByDate();
     if (!teamId) return games;
-    return games.filter(
-      (game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId,
-    );
+    return games.filter((game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId);
   });
 
   byDateColumnCount = computed(() => {

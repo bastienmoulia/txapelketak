@@ -264,9 +264,7 @@ export class Games {
     const teamId = this.selectedTeamId();
     const games = this.flatGamesByDate();
     if (!teamId) return games;
-    return games.filter(
-      (game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId,
-    );
+    return games.filter((game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId);
   });
 
   byDateColumnCount = computed(() => {

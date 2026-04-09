@@ -196,7 +196,15 @@
       "teamAddedDetail": "El equipo ha sido añadido al grupo con éxito.",
       "teamRemoved": "Equipo quitado",
       "teamRemovedDetail": "El equipo ha sido quitado del grupo con éxito.",
-      "poule": "Grupo"
+      "poule": "Grupo",
+      "standings": {
+        "playedShort": "J",
+        "played": "Partidos jugados",
+        "wonShort": "G",
+        "won": "Partidos ganados",
+        "pointsInLosses": "Pts (derrotas)",
+        "pointsConceded": "Pts concedidos"
+      }
     },
     "games": {
       "addGame": "Añadir un partido",

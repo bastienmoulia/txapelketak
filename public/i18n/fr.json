@@ -196,7 +196,15 @@
       "teamAddedDetail": "L'équipe a été ajoutée à la poule avec succès.",
       "teamRemoved": "Équipe retirée",
       "teamRemovedDetail": "L'équipe a été retirée de la poule avec succès.",
-      "poule": "Poule"
+      "poule": "Poule",
+      "standings": {
+        "playedShort": "J",
+        "played": "Matchs joués",
+        "wonShort": "G",
+        "won": "Matchs gagnés",
+        "pointsInLosses": "Pts (défaites)",
+        "pointsConceded": "Pts concédés"
+      }
     },
     "games": {
       "addGame": "Ajouter un match",

@@ -196,7 +196,15 @@
       "teamAddedDetail": "The team has been successfully added to the group.",
       "teamRemoved": "Team removed",
       "teamRemovedDetail": "The team has been successfully removed from the group.",
-      "poule": "Pool"
+      "poule": "Pool",
+      "standings": {
+        "playedShort": "P",
+        "played": "Games played",
+        "wonShort": "W",
+        "won": "Games won",
+        "pointsInLosses": "Pts (losses)",
+        "pointsConceded": "Pts conceded"
+      }
     },
     "games": {
       "addGame": "Add a game",

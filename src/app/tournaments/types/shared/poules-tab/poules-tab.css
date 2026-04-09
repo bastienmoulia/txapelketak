@@ -9,3 +9,38 @@
     grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
   }
 }
+
+.standings-table {
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.standings-table th,
+.standings-table td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+
+.standings-table thead th {
+  font-weight: 600;
+  color: var(--p-text-muted-color);
+  border-bottom: 2px solid var(--p-content-border-color);
+}
+
+.standings-table__name {
+  text-align: left;
+}
+
+.standings-table__stat {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.standings-table__actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.standings-table tbody tr:last-child td {
+  border-bottom: none;
+}

@@ -196,7 +196,15 @@
       "teamAddedDetail": "Taldea arrakastaz gehitu da multzora.",
       "teamRemoved": "Taldea kendu da",
       "teamRemovedDetail": "Taldea arrakastaz kendu da multzotik.",
-      "poule": "Multzoa"
+      "poule": "Multzoa",
+      "standings": {
+        "playedShort": "J",
+        "played": "Jokatutako partidak",
+        "wonShort": "I",
+        "won": "Irabazitako partidak",
+        "pointsInLosses": "Ptu. (galerak)",
+        "pointsConceded": "Ptu. kontrako"
+      }
     },
     "games": {
       "addGame": "Partida gehitu",

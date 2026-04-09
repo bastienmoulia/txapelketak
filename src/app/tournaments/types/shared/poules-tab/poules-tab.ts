@@ -38,6 +38,15 @@ export interface TeamInPouleEvent {
   teamRef: DocumentReference;
 }
 
+export interface TeamStanding {
+  ref: DocumentReference;
+  name: string;
+  played: number;
+  won: number;
+  pointsInLosses: number;
+  pointsConceded: number;
+}
+
 @Component({
   selector: 'app-poules-tab',
   imports: [
@@ -79,15 +88,53 @@ export class PoulesTab {
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((poule) => ({
             ...poule,
-            refTeams: [...(poule.refTeams ?? [])].sort((a, b) => {
-              const teams = this.teams();
-              const nameA = teams.find((t) => t.ref.id === a.id)?.name ?? '';
-              const nameB = teams.find((t) => t.ref.id === b.id)?.name ?? '';
-              return nameA.localeCompare(nameB);
-            }),
+            standings: this.computeStandings(poule),
           })),
       })),
   );
+
+  private computeStandings(poule: Poule): TeamStanding[] {
+    const teams = this.teams();
+    const standings: TeamStanding[] = (poule.refTeams ?? []).map((ref) => {
+      const team = teams.find((t) => t.ref.id === ref.id);
+      const name = team?.name ?? 'Unknown Team';
+      let played = 0;
+      let won = 0;
+      let pointsInLosses = 0;
+      let pointsConceded = 0;
+
+      for (const game of poule.games ?? []) {
+        const isTeam1 = game.refTeam1.id === ref.id;
+        const isTeam2 = game.refTeam2.id === ref.id;
+        const gameFinished =
+          game.scoreTeam1 !== undefined &&
+          game.scoreTeam1 !== null &&
+          game.scoreTeam2 !== undefined &&
+          game.scoreTeam2 !== null;
+
+        if ((isTeam1 || isTeam2) && gameFinished) {
+          played++;
+          const myScore = isTeam1 ? game.scoreTeam1! : game.scoreTeam2!;
+          const oppScore = isTeam1 ? game.scoreTeam2! : game.scoreTeam1!;
+
+          if (myScore > oppScore) {
+            won++;
+          } else if (myScore < oppScore) {
+            pointsInLosses += myScore;
+          }
+          pointsConceded += oppScore;
+        }
+      }
+
+      return { ref, name, played, won, pointsInLosses, pointsConceded };
+    });
+
+    return standings.sort((a, b) => {
+      if (b.won !== a.won) return b.won - a.won;
+      if (b.pointsInLosses !== a.pointsInLosses) return b.pointsInLosses - a.pointsInLosses;
+      return a.pointsConceded - b.pointsConceded;
+    });
+  }
 
   // Serie dialog state
   serieDialogVisible = signal(false);

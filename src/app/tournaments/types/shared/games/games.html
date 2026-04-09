@@ -57,7 +57,9 @@
         <ng-template #body let-game>
           <tr>
             <td [attr.data-label]="'admin.games.poule' | transloco">
-              <span class="text-color-secondary">{{ game.serieName }} - {{ game.pouleName }}</span>
+              <span class="text-color-secondary">{{
+                game.serieName ? game.serieName + ' - ' + game.pouleName : game.pouleName
+              }}</span>
             </td>
             <td [attr.data-label]="'admin.games.team1' | transloco">
               <span

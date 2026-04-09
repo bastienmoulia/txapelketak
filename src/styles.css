@@ -19,3 +19,16 @@ body {
   background-color: var(--p-content-background);
   color: var(--p-content-color);
 }
+
+.p-toast {
+  max-width: min(28rem, calc(100vw - 1.5rem));
+}
+
+@media (max-width: 640px) {
+  .p-toast {
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    max-width: calc(100vw - 1.5rem);
+  }
+}

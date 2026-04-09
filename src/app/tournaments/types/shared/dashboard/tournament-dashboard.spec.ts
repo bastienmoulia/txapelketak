@@ -492,6 +492,165 @@ describe('TournamentDashboard', () => {
     });
   });
 
+  describe('overdueGames', () => {
+    const pastDate1 = new Date('2020-01-01T10:00:00');
+    const pastDate2 = new Date('2020-01-02T10:00:00');
+    const futureDate = new Date('2027-06-01T10:00:00');
+
+    it('should return empty when no games have a past date without score', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: futureDate })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      expect(component.overdueGames()).toEqual([]);
+    });
+
+    it('should include past games without scores', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1 })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'Alpha'), makeTeam('b', 'Beta')], series });
+      const result = component.overdueGames();
+      expect(result.length).toBe(1);
+      expect(result[0].team1Name).toBe('Alpha');
+      expect(result[0].team2Name).toBe('Beta');
+    });
+
+    it('should include past games where only one score is defined', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1, scoreTeam1: 3 })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      expect(component.overdueGames().length).toBe(1);
+    });
+
+    it('should exclude past games where both scores are defined', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({
+                refTeam1Id: 'a',
+                refTeam2Id: 'b',
+                date: pastDate1,
+                scoreTeam1: 3,
+                scoreTeam2: 1,
+              }),
+            ],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      expect(component.overdueGames()).toEqual([]);
+    });
+
+    it('should exclude future games without scores', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: futureDate })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      expect(component.overdueGames()).toEqual([]);
+    });
+
+    it('should sort by date ascending (oldest overdue first)', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: pastDate2 }),
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1 }),
+            ],
+          },
+        ]),
+      ];
+      setInputs({
+        teams: [makeTeam('a', 'A'), makeTeam('b', 'B'), makeTeam('c', 'C'), makeTeam('d', 'D')],
+        series,
+      });
+      const result = component.overdueGames();
+      expect(result.length).toBe(2);
+      expect(result[0].date.getTime()).toBe(pastDate1.getTime());
+      expect(result[1].date.getTime()).toBe(pastDate2.getTime());
+    });
+
+    it('should include serie and poule names', () => {
+      const series: Serie[] = [
+        makeSerie('Serie X', [
+          {
+            ref: makeRef('p1'),
+            name: 'Poule 3',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1 })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.overdueGames();
+      expect(result[0].serieName).toBe('Serie X');
+      expect(result[0].pouleName).toBe('Poule 3');
+    });
+
+    it('should aggregate overdue games across multiple series and poules', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1 })],
+          },
+        ]),
+        makeSerie('S2', [
+          {
+            ref: makeRef('p2'),
+            name: 'P2',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: pastDate2 })],
+          },
+        ]),
+      ];
+      setInputs({
+        teams: [makeTeam('a', 'A'), makeTeam('b', 'B'), makeTeam('c', 'C'), makeTeam('d', 'D')],
+        series,
+      });
+      expect(component.overdueGames().length).toBe(2);
+    });
+  });
+
   describe('description', () => {
     it('should return empty string when tournament has no description', () => {
       setInputs({ tournament: makeTournament({ description: '' }) });

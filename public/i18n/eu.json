@@ -133,6 +133,7 @@
       "games": "Partidak",
       "playedGames": "Jokatutako partidak",
       "progress": "Aurrerabidea",
+      "overdueGames": "Martxan dauden partidak",
       "upcomingGames": "Hurrengo partidak",
       "noUpcomingGames": "Ez dago partida programaturik",
       "showMore": "Gehiago ikusi",

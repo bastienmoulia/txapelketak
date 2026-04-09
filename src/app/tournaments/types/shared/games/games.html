@@ -42,10 +42,13 @@
           <tr>
             <td
               [attr.colspan]="byDateColumnCount()"
-              class="font-bold py-2 px-3"
+              class="font-bold py-2 px-3 games-table__date-header-cell"
               [class.text-yellow-500]="!game.dateKey"
             >
               @if (game.dateKey) {
+                <span class="games-table__date-day">{{
+                  game.date | date: 'EEEE' : undefined : activeLanguage()
+                }}</span>
                 {{ game.date | date: 'longDate' : undefined : activeLanguage() }}
               } @else {
                 <i class="pi pi-exclamation-triangle mr-1"></i>{{ 'admin.games.noDate' | transloco }}

@@ -151,6 +151,34 @@ export class TournamentDashboard {
       .slice(0, MAX_UPCOMING_GAMES);
   });
 
+  overdueGames = computed((): UpcomingGame[] => {
+    const now = new Date();
+    const teamNameMap = this.buildTeamNameMap();
+    const overdue: UpcomingGame[] = [];
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (
+            game.date &&
+            new Date(game.date) <= now &&
+            (game.scoreTeam1 == null || game.scoreTeam2 == null)
+          ) {
+            overdue.push({
+              team1Name: this.getTeamName(game.refTeam1, teamNameMap),
+              team2Name: this.getTeamName(game.refTeam2, teamNameMap),
+              date: new Date(game.date),
+              serieName: serie.name,
+              pouleName: poule.name,
+            });
+          }
+        }
+      }
+    }
+
+    return overdue.sort((a, b) => a.date.getTime() - b.date.getTime());
+  });
+
   recentGames = computed((): RecentGame[] => {
     const teamNameMap = this.buildTeamNameMap();
     const recent: RecentGame[] = [];

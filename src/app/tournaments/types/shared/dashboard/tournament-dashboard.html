@@ -113,6 +113,47 @@
       </p-card>
     </div>
 
+    <!-- Overdue games card -->
+    @if (series().length > 0 && overdueGames().length > 0) {
+      <p-card class="dashboard-card--overdue" styleClass="dashboard-card">
+        <ng-template pTemplate="header">
+          <div class="dashboard-card-header">
+            <i class="pi pi-play-circle"></i>
+            <span>{{ 'tournaments.dashboard.overdueGames' | transloco }}</span>
+          </div>
+        </ng-template>
+
+        <ul class="upcoming-games-list">
+          @for (
+            game of overdueGames();
+            track game.date.getTime() +
+              '_' +
+              game.team1Name +
+              '_' +
+              game.team2Name +
+              '_' +
+              game.serieName +
+              '_' +
+              game.pouleName
+          ) {
+            <li class="upcoming-game-item overdue-game-item" data-testid="dashboard-overdue-game">
+              <div class="upcoming-game-teams">
+                <span class="font-semibold">{{ game.team1Name }}</span>
+                <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
+                <span class="font-semibold">{{ game.team2Name }}</span>
+              </div>
+              <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
+                <i class="pi pi-clock text-xs mr-1"></i>
+                {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                <span class="mx-1">·</span>
+                {{ game.serieName }} – {{ game.pouleName }}
+              </div>
+            </li>
+          }
+        </ul>
+      </p-card>
+    }
+
     <!-- Upcoming games card -->
     @if (series().length > 0) {
       <p-card styleClass="dashboard-card">

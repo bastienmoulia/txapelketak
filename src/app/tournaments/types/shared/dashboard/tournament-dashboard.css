@@ -99,6 +99,11 @@
   flex-wrap: wrap;
 }
 
+.overdue-game-item {
+  border-left: 3px solid var(--p-primary-color);
+  padding-left: 0.5rem;
+}
+
 .recent-game-score {
   font-weight: 700;
   font-size: 1.125rem;
@@ -115,6 +120,10 @@
   }
 
   .dashboard-card--main {
+    grid-column: 1 / -1;
+  }
+
+  .dashboard-card--overdue {
     grid-column: 1 / -1;
   }
 

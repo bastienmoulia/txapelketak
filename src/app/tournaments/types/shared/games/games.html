@@ -25,8 +25,7 @@
     >
         <ng-template #header>
           <tr>
-            <th>{{ 'admin.games.serie' | transloco }}</th>
-            <th>{{ 'admin.poules.poule' | transloco }}</th>
+            <th>{{ 'admin.games.poule' | transloco }}</th>
             <th>{{ 'admin.games.team1' | transloco }}</th>
             <th>{{ 'admin.games.score' | transloco }}</th>
             <th>{{ 'admin.games.team2' | transloco }}</th>
@@ -44,11 +43,12 @@
             <td
               [attr.colspan]="byDateColumnCount()"
               class="font-bold py-2 px-3"
+              [class.text-yellow-500]="!game.dateKey"
             >
               @if (game.dateKey) {
                 {{ game.date | date: 'longDate' : undefined : activeLanguage() }}
               } @else {
-                {{ 'admin.games.noDate' | transloco }}
+                <i class="pi pi-exclamation-triangle mr-1"></i>{{ 'admin.games.noDate' | transloco }}
               }
             </td>
           </tr>
@@ -56,11 +56,8 @@
 
         <ng-template #body let-game>
           <tr>
-            <td [attr.data-label]="'admin.games.serie' | transloco">
-              <span class="text-color-secondary">{{ game.serieName }}</span>
-            </td>
-            <td [attr.data-label]="'admin.poules.poule' | transloco">
-              <span class="text-color-secondary">{{ game.pouleName }}</span>
+            <td [attr.data-label]="'admin.games.poule' | transloco">
+              <span class="text-color-secondary">{{ game.serieName }} - {{ game.pouleName }}</span>
             </td>
             <td [attr.data-label]="'admin.games.team1' | transloco">
               <span

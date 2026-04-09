@@ -537,9 +537,7 @@ describe('TournamentDashboard', () => {
             ref: makeRef('p1'),
             name: 'P1',
             refTeams: [],
-            games: [
-              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1, scoreTeam1: 3 }),
-            ],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1, scoreTeam1: 3 })],
           },
         ]),
       ];

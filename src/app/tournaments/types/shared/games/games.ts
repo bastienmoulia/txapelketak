@@ -127,6 +127,10 @@ export class Games {
     return this.translocoService.translate('datepicker.placeholder');
   });
 
+  datePickerFormat = computed(() => {
+    return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
+  });
+
   gameDateString = '';
 
   get gameDateModel(): Date | string | null {

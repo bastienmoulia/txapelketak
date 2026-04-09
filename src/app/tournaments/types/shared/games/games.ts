@@ -267,7 +267,7 @@ export class Games {
 
   byDateColumnCount = computed(() => {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
-    return hasActions ? 7 : 6;
+    return hasActions ? 6 : 5;
   });
 
   // Dialog state

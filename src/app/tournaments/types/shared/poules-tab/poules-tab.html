@@ -121,27 +121,63 @@
             />
           </div>
         }
-        <ul class="m-0 pl-5">
-          @for (refTeam of poule.refTeams; track refTeam.id) {
-            <li class="mb-1">
-              {{ getTeamName | apply: refTeam : teams() }}
+        <table class="w-full standings-table">
+          <thead>
+            <tr>
+              <th class="standings-table__name">{{ 'shared.table.columns.name' | transloco }}</th>
+              <th
+                class="standings-table__stat"
+                [pTooltip]="'admin.poules.standings.played' | transloco"
+                tooltipPosition="top"
+              >
+                {{ 'admin.poules.standings.playedShort' | transloco }}
+              </th>
+              <th
+                class="standings-table__stat"
+                [pTooltip]="'admin.poules.standings.won' | transloco"
+                tooltipPosition="top"
+              >
+                {{ 'admin.poules.standings.wonShort' | transloco }}
+              </th>
               @if (role() === 'admin') {
-                <p-button
-                  type="button"
-                  size="small"
-                  severity="danger"
-                  [outlined]="true"
-                  icon="pi pi-times"
-                  [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
-                  [pTooltip]="'admin.poules.removeTeamAria' | transloco"
-                  tooltipPosition="top"
-                  (onClick)="onRemoveTeamFromPoule(poule, refTeam)"
-                  data-testid="remove-team-from-poule-button"
-                />
+                <th class="standings-table__stat">
+                  {{ 'admin.poules.standings.pointsInLosses' | transloco }}
+                </th>
+                <th class="standings-table__stat">
+                  {{ 'admin.poules.standings.pointsConceded' | transloco }}
+                </th>
+                <th class="standings-table__actions"></th>
               }
-            </li>
-          }
-        </ul>
+            </tr>
+          </thead>
+          <tbody>
+            @for (standing of poule.standings; track standing.ref.id) {
+              <tr>
+                <td class="standings-table__name">{{ standing.name }}</td>
+                <td class="standings-table__stat">{{ standing.played }}</td>
+                <td class="standings-table__stat">{{ standing.won }}</td>
+                @if (role() === 'admin') {
+                  <td class="standings-table__stat">{{ standing.pointsInLosses }}</td>
+                  <td class="standings-table__stat">{{ standing.pointsConceded }}</td>
+                  <td class="standings-table__actions">
+                    <p-button
+                      type="button"
+                      size="small"
+                      severity="danger"
+                      [outlined]="true"
+                      icon="pi pi-times"
+                      [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
+                      [pTooltip]="'admin.poules.removeTeamAria' | transloco"
+                      tooltipPosition="top"
+                      (onClick)="onRemoveTeamFromPoule(poule, standing.ref)"
+                      data-testid="remove-team-from-poule-button"
+                    />
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
       </p-card>
     }
   </div>

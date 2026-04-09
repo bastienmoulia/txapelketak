@@ -158,7 +158,7 @@
     "tabs": {
       "poules": "Poules",
       "teams": "Équipes",
-      "games": "Matchs",
+      "games": "Parties",
       "users": "Utilisateurs",
       "importExport": "Import / Export"
     },
@@ -319,7 +319,7 @@
       "cancel": "Annuler",
       "edit": "Modifier",
       "delete": "Supprimer",
-      "viewGames": "Matchs"
+      "viewGames": "Parties"
     },
     "confirm": {
       "deleteHeader": "Confirmer la suppression",

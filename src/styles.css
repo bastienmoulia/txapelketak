@@ -2,6 +2,17 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
+/* Override primeicons font-display to avoid render-blocking */
+@font-face {
+  font-family: 'primeicons';
+  font-display: swap;
+  src:
+    url('../node_modules/primeicons/fonts/primeicons.woff2') format('woff2'),
+    url('../node_modules/primeicons/fonts/primeicons.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   box-sizing: border-box;
 }

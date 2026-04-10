@@ -39,29 +39,16 @@
               <label class="text-sm font-medium text-[var(--p-text-color)]" for="description">{{
                 'tournaments.new.step1.description' | transloco
               }}</label>
-              <p-editor
-                inputId="description"
+              <textarea
+                id="description"
                 formControlName="description"
-                [style]="{ height: '160px' }"
+                rows="8"
+                class="w-full rounded-[var(--p-border-radius-md)] border border-[var(--p-content-border-color)] bg-[var(--p-surface-0)] px-3 py-2 text-[var(--p-text-color)]"
                 data-testid="field-description"
-              >
-                <ng-template #header>
-                  <!-- eslint-disable @angular-eslint/template/elements-content -->
-                  <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                  </span>
-                  <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                  </span>
-                  <span class="ql-formats">
-                    <button class="ql-link"></button>
-                  </span>
-                  <!-- eslint-enable @angular-eslint/template/elements-content -->
-                </ng-template>
-              </p-editor>
+              ></textarea>
+              <small class="text-[var(--p-text-muted-color)]">
+                {{ 'tournaments.new.step1.descriptionHelp' | transloco }}
+              </small>
             </div>
 
             <div class="field flex flex-col gap-2">

@@ -79,6 +79,7 @@
         "name": "Tournament name *",
         "nameRequired": "The tournament name is required.",
         "description": "Description (optional)",
+        "descriptionHelp": "Markdown format supported (headings, lists, links, bold, italic).",
         "type": "Tournament type *"
       },
       "step2": {

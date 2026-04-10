@@ -79,6 +79,7 @@
         "name": "Nom du tournoi *",
         "nameRequired": "Le nom du tournoi est obligatoire.",
         "description": "Description (optionnelle)",
+        "descriptionHelp": "Format Markdown accepté (titres, listes, liens, gras, italique).",
         "type": "Type de tournoi *"
       },
       "step2": {

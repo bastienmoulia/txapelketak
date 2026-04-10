@@ -651,15 +651,26 @@ describe('TournamentDashboard', () => {
     });
   });
 
-  describe('description', () => {
+  describe('descriptionHtml', () => {
     it('should return empty string when tournament has no description', () => {
       setInputs({ tournament: makeTournament({ description: '' }) });
-      expect(component.description()).toBe('');
+      expect(component.descriptionHtml()).toBe('');
     });
 
-    it('should return the tournament description', () => {
-      setInputs({ tournament: makeTournament({ description: '<p>Hello</p>' }) });
-      expect(component.description()).toBe('<p>Hello</p>');
+    it('should render markdown as HTML', () => {
+      setInputs({ tournament: makeTournament({ description: '## Hello\n\n**World**' }) });
+      const html = component.descriptionHtml();
+
+      expect(html).toContain('<h2>Hello</h2>');
+      expect(html).toContain('<strong>World</strong>');
+    });
+
+    it('should sanitize unsafe HTML', () => {
+      setInputs({ tournament: makeTournament({ description: 'safe<script>alert(1)</script>' }) });
+      const html = component.descriptionHtml();
+
+      expect(html).toContain('safe');
+      expect(html).not.toContain('<script>');
     });
   });
 

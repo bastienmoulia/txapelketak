@@ -690,7 +690,13 @@ describe('TournamentDashboard', () => {
             refTeams: [],
             games: [
               makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: staleDate }),
-              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: staleDate, scoreTeam1: 3, scoreTeam2: 1 }),
+              makeGame({
+                refTeam1Id: 'c',
+                refTeam2Id: 'd',
+                date: staleDate,
+                scoreTeam1: 3,
+                scoreTeam2: 1,
+              }),
             ],
           },
         ]),

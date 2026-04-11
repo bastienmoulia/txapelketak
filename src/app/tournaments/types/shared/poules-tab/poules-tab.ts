@@ -239,9 +239,11 @@ export class PoulesTab {
         const pairKey = this.getPairKey(team1Id, team2Id);
         if (!existingPairs.has(pairKey)) {
           const team1Name =
-            teamNameById.get(team1Id) ?? this.translocoService.translate('admin.poules.unknownTeam');
+            teamNameById.get(team1Id) ??
+            this.translocoService.translate('admin.poules.unknownTeam');
           const team2Name =
-            teamNameById.get(team2Id) ?? this.translocoService.translate('admin.poules.unknownTeam');
+            teamNameById.get(team2Id) ??
+            this.translocoService.translate('admin.poules.unknownTeam');
           missing.push(
             this.translocoService.translate('admin.poules.missingMatchupFormat', {
               team1: team1Name,

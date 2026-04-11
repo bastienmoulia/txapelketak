@@ -31,6 +31,10 @@ export class AppTitleStrategy extends TitleStrategy {
   }
 
   private applyTitle(routeTitle: string | undefined): void {
+    if (!this.hasLoadedActiveLang()) {
+      return;
+    }
+
     const applicationTitle = this.translate('app.title');
 
     if (!routeTitle) {
@@ -46,6 +50,13 @@ export class AppTitleStrategy extends TitleStrategy {
     }
 
     this.titleService.setTitle(`${pageTitle} | ${applicationTitle}`);
+  }
+
+  private hasLoadedActiveLang(): boolean {
+    const activeLang = this.translocoService.getActiveLang();
+    const translation = this.translocoService.getTranslation(activeLang);
+
+    return Object.keys(translation ?? {}).length > 0;
   }
 
   private translate(value: string): string {

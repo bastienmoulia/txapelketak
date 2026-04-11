@@ -12,7 +12,6 @@ import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { AppTitleStrategy } from './shared/router/app-title.strategy';
-import { provideServiceWorker } from '@angular/service-worker';
 
 const TxapelketaTheme = definePreset(Aura, {
   semantic: {
@@ -80,10 +79,6 @@ export const appConfig: ApplicationConfig = {
         prodMode: !isDevMode(),
       },
       loader: TranslocoHttpLoader,
-    }),
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:10000',
     }),
   ],
 };

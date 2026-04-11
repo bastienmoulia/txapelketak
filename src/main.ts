@@ -12,4 +12,22 @@ registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 registerLocaleData(localeEu, 'eu');
 
+async function cleanupLegacyServiceWorkers(): Promise<void> {
+  if (!('serviceWorker' in navigator)) {
+    return;
+  }
+
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  await Promise.all(registrations.map((registration) => registration.unregister()));
+
+  if ('caches' in window) {
+    const cacheKeys = await caches.keys();
+    await Promise.all(cacheKeys.map((cacheKey) => caches.delete(cacheKey)));
+  }
+}
+
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));
+
+void cleanupLegacyServiceWorkers().catch((error) =>
+  console.warn('Service worker cleanup failed', error)
+);

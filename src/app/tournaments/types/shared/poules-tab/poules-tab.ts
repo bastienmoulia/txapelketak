@@ -170,18 +170,18 @@ export class PoulesTab {
     return team ? team.name : 'Unknown Team';
   }
 
-  getAvailableTeams(poule: Poule, teams: Team[]): Team[] {
+  getAvailableTeams = (poule: Poule, teams: Team[]): Team[] => {
     return teams
       .filter((t) => !poule.refTeams?.some((ref) => ref.id === t.ref.id))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }
+  };
 
-  getExpectedGamesCount(poule: Poule): number {
+  getExpectedGamesCount = (poule: Poule): number => {
     const teamCount = poule.refTeams?.length ?? 0;
     return (teamCount * (teamCount - 1)) / 2;
-  }
+  };
 
-  getCoveredGamesCount(poule: Poule): number {
+  getCoveredGamesCount = (poule: Poule): number => {
     const currentTeamIds = new Set((poule.refTeams ?? []).map((refTeam) => refTeam.id));
     const pairs = new Set<string>();
 
@@ -203,11 +203,11 @@ export class PoulesTab {
     }
 
     return pairs.size;
-  }
+  };
 
-  getMissingGamesTooltip(poule: Poule): string {
+  getMissingGamesTooltip = (poule: Poule): string => {
     return this.getMissingMatchups(poule).join('\n');
-  }
+  };
 
   private getMissingMatchups(poule: Poule): string[] {
     const refTeams = poule.refTeams ?? [];
@@ -261,9 +261,9 @@ export class PoulesTab {
     return team1Id < team2Id ? `${team1Id}__${team2Id}` : `${team2Id}__${team1Id}`;
   }
 
-  hasCompleteRoundRobin(poule: Poule): boolean {
+  hasCompleteRoundRobin = (poule: Poule): boolean => {
     return this.getCoveredGamesCount(poule) >= this.getExpectedGamesCount(poule);
-  }
+  };
 
   onAddSerie(): void {
     this.isEditingSerie.set(false);

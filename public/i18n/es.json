@@ -79,6 +79,7 @@
         "name": "Nombre del torneo *",
         "nameRequired": "El nombre del torneo es obligatorio.",
         "description": "Descripción (opcional)",
+        "descriptionHelp": "Se admite formato Markdown (títulos, listas, enlaces, negrita, cursiva).",
         "type": "Tipo de torneo *"
       },
       "step2": {

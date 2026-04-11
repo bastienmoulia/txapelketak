@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   signal,
   viewChild,
@@ -11,13 +12,11 @@ import {
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../../../home/tournament.interface';
-import { TournamentStatusLabelPipe } from '../../../../shared/pipes/tournament-status-label.pipe';
-import { TournamentStatusSeverityPipe } from '../../../../shared/pipes/tournament-status-severity.pipe';
 import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
+import { MarkdownService } from '../../../../shared/services/markdown.service';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -42,20 +41,14 @@ export interface RecentGame {
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [
-    CardModule,
-    TagModule,
-    ButtonModule,
-    TranslocoPipe,
-    TournamentStatusLabelPipe,
-    TournamentStatusSeverityPipe,
-    DatePipe,
-  ],
+  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDashboard {
+  private markdownService = inject(MarkdownService);
+
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
   series = input<Serie[]>([]);
@@ -69,7 +62,7 @@ export class TournamentDashboard {
   constructor() {
     afterRenderEffect({
       read: () => {
-        this.description();
+        this.descriptionHtml();
         const el = this.descriptionEl()?.nativeElement;
         if (el && !this.descriptionExpanded()) {
           const originalDisplay = el.style.display;
@@ -212,6 +205,10 @@ export class TournamentDashboard {
   });
 
   description = computed(() => this.tournament().description ?? '');
+
+  hasDescription = computed(() => this.description().trim().length > 0);
+
+  descriptionHtml = computed(() => this.markdownService.toSafeHtml(this.description()));
 
   toggleDescription(): void {
     this.descriptionExpanded.update((v) => !v);

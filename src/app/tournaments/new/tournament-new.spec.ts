@@ -45,6 +45,12 @@ describe("TournamentNew", () => {
     expect(component.isStep1Valid()).toBe(true);
   });
 
+  it("should keep markdown text in description control", () => {
+    const markdown = "## Titre\n\n- item";
+    component.form.get("description")?.setValue(markdown);
+    expect(component.form.get("description")?.value).toBe(markdown);
+  });
+
   it("should not advance to step 2 when name is empty", () => {
     component.form.get("name")?.setValue("");
     component.nextStep();

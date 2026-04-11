@@ -79,6 +79,7 @@
         "name": "Txapelketaren izena *",
         "nameRequired": "Txapelketaren izena nahitaezkoa da.",
         "description": "Deskribapena (aukerazkoa)",
+        "descriptionHelp": "Markdown formatua onartzen da (izenburuak, zerrendak, estekak, lodia, etzana).",
         "type": "Txapelketa mota *"
       },
       "step2": {

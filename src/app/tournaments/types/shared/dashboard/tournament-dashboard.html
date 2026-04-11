@@ -10,20 +10,12 @@
     <!-- Status & Description card -->
     <p-card styleClass="dashboard-card dashboard-card--main">
       <div class="flex flex-col gap-3">
-        <div class="flex items-center gap-2 flex-wrap">
-          <p-tag
-            [value]="tournament().status | tournamentStatusLabel"
-            [severity]="tournament().status | tournamentStatusSeverity"
-            data-testid="dashboard-status"
-          />
-        </div>
-
-        @if (description()) {
+        @if (hasDescription()) {
           <div class="description-container" [class.description-expanded]="descriptionExpanded()">
             <div
               #descriptionEl
-              class="m-0 ql-editor !p-0 text-[var(--p-text-muted-color)]"
-              [innerHTML]="description()"
+              class="m-0 dashboard-description text-[var(--p-text-muted-color)]"
+              [innerHTML]="descriptionHtml()"
               data-testid="dashboard-description"
             ></div>
           </div>

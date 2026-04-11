@@ -57,6 +57,33 @@
   max-height: none;
 }
 
+.dashboard-description {
+  line-height: 1.5;
+}
+
+.dashboard-description :is(p, ul, ol, h1, h2, h3, h4, h5, h6, blockquote, pre) {
+  margin: 0 0 0.75rem;
+}
+
+.dashboard-description :is(ul, ol) {
+  padding-left: 1.25rem;
+}
+
+.dashboard-description :is(a, a:visited) {
+  color: var(--p-primary-color);
+  text-decoration: underline;
+}
+
+.dashboard-description :is(code, pre) {
+  background: var(--p-surface-100);
+  border-radius: var(--p-border-radius-sm);
+}
+
+.dashboard-description pre {
+  padding: 0.5rem;
+  overflow-x: auto;
+}
+
 .dashboard-card-header {
   display: flex;
   align-items: center;

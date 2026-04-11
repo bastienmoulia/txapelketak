@@ -5,7 +5,6 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Steps } from 'primeng/steps';
 import { InputText } from 'primeng/inputtext';
-import { Editor } from 'primeng/editor';
 import { SelectButton } from 'primeng/selectbutton';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -21,7 +20,6 @@ import { FirebaseService } from '../../shared/services/firebase.service';
     RouterLink,
     Steps,
     InputText,
-    Editor,
     SelectButton,
     Button,
     FloatLabel,

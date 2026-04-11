@@ -202,6 +202,8 @@
       "teamRemovedDetail": "El equipo ha sido quitado del grupo con éxito.",
       "gamesCoverageComplete": "Partidos: {{covered}} / {{expected}} (todos los equipos se enfrentan entre sí)",
       "gamesCoverageIncomplete": "Partidos: {{covered}} / {{expected}} (faltan enfrentamientos)",
+      "unknownTeam": "Equipo desconocido",
+      "missingMatchupFormat": "{{team1}} vs {{team2}}",
       "poule": "Grupo",
       "standings": {
         "playedShort": "J",

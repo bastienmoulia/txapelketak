@@ -202,6 +202,8 @@
       "teamRemovedDetail": "Taldea arrakastaz kendu da multzotik.",
       "gamesCoverageComplete": "Partidak: {{covered}} / {{expected}} (talde guztiek elkarren aurka jokatzen dute)",
       "gamesCoverageIncomplete": "Partidak: {{covered}} / {{expected}} (faltan diren norgehiagokak)",
+      "unknownTeam": "Talde ezezaguna",
+      "missingMatchupFormat": "{{team1}} vs {{team2}}",
       "poule": "Multzoa",
       "standings": {
         "playedShort": "J",

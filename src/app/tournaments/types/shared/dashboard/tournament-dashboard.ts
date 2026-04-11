@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
   signal,
@@ -49,6 +50,7 @@ export interface RecentGame {
 })
 export class TournamentDashboard {
   private markdownService = inject(MarkdownService);
+  private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
@@ -60,8 +62,14 @@ export class TournamentDashboard {
 
   descriptionExpanded = signal(false);
   descriptionOverflows = signal(false);
+  readonly nowMs = signal(Date.now());
 
   constructor() {
+    const staleGamesTickInterval = setInterval(() => {
+      this.nowMs.set(Date.now());
+    }, 60 * 1000);
+    this.destroyRef.onDestroy(() => clearInterval(staleGamesTickInterval));
+
     afterRenderEffect({
       read: () => {
         this.descriptionHtml();
@@ -189,7 +197,7 @@ export class TournamentDashboard {
   });
 
   staleUnscoredGamesCount = computed(() => {
-    const oneHourAgo = Date.now() - 60 * 60 * 1000;
+    const oneHourAgo = this.nowMs() - 60 * 60 * 1000;
     let count = 0;
 
     for (const serie of this.series()) {

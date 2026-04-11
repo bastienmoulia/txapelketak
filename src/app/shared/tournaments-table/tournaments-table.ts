@@ -3,10 +3,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 import { Tournament } from '../../home/tournament.interface';
-import { TournamentStatusLabelPipe } from '../pipes/tournament-status-label.pipe';
-import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severity.pipe';
 
 @Component({
   selector: 'app-tournaments-table',
@@ -14,9 +11,6 @@ import { TournamentStatusSeverityPipe } from '../pipes/tournament-status-severit
     RouterLink,
     ButtonModule,
     TableModule,
-    TagModule,
-    TournamentStatusLabelPipe,
-    TournamentStatusSeverityPipe,
     TranslocoModule,
   ],
   templateUrl: './tournaments-table.html',

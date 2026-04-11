@@ -4,21 +4,12 @@
       <th pSortableColumn="name">
         {{ 'shared.table.columns.name' | transloco }} <p-sortIcon field="name" />
       </th>
-      <th pSortableColumn="status">
-        {{ 'shared.table.columns.status' | transloco }} <p-sortIcon field="status" />
-      </th>
       <th>{{ 'shared.table.columns.actions' | transloco }}</th>
     </tr>
   </ng-template>
   <ng-template #body let-tournament>
     <tr>
       <td>{{ tournament.name }}</td>
-      <td>
-        <p-tag
-          [value]="tournament.status | tournamentStatusLabel"
-          [severity]="tournament.status | tournamentStatusSeverity"
-        />
-      </td>
       <td>
         <p-button
           [label]="'shared.table.open' | transloco"
@@ -30,7 +21,7 @@
   </ng-template>
   <ng-template #emptymessage>
     <tr>
-      <td colspan="3" class="text-center">
+      <td colspan="2" class="text-center">
         @if (loading()) {
           <span>{{ 'shared.table.loading' | transloco }}</span>
         } @else {

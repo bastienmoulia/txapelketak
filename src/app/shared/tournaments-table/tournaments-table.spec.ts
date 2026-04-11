@@ -79,12 +79,12 @@ describe('TournamentsTable', () => {
     expect(buttons[2].disabled).toBe(false);
   });
 
-  it('should have sortable column headers for Nom and Statut', async () => {
+  it('should have sortable column header for Nom', async () => {
     const sortIcons = Array.from(
       fixture.nativeElement.querySelectorAll('p-sorticon'),
     ) as HTMLElement[];
 
-    expect(sortIcons.length).toBe(2);
+    expect(sortIcons.length).toBe(1);
   });
 
   it('should sort tournaments by name when clicking Nom header', async () => {

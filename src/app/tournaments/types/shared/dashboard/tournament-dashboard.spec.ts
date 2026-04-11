@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TournamentDashboard } from './tournament-dashboard';
-import { Tournament, TournamentStatus } from '../../../../home/tournament.interface';
+import { Tournament, TournamentStatus, UserRole } from '../../../../home/tournament.interface';
 import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
@@ -54,10 +54,16 @@ describe('TournamentDashboard', () => {
     component = fixture.componentInstance;
   });
 
-  function setInputs(inputs: { tournament?: Tournament; teams?: Team[]; series?: Serie[] }): void {
+  function setInputs(inputs: {
+    tournament?: Tournament;
+    teams?: Team[];
+    series?: Serie[];
+    role?: UserRole | '';
+  }): void {
     fixture.componentRef.setInput('tournament', inputs.tournament ?? makeTournament());
     if (inputs.teams) fixture.componentRef.setInput('teams', inputs.teams);
     if (inputs.series) fixture.componentRef.setInput('series', inputs.series);
+    if (inputs.role !== undefined) fixture.componentRef.setInput('role', inputs.role);
     fixture.detectChanges();
   }
 
@@ -648,6 +654,70 @@ describe('TournamentDashboard', () => {
         series,
       });
       expect(component.overdueGames().length).toBe(2);
+    });
+  });
+
+  describe('warnings', () => {
+    it('should count games without a date', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b' }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: new Date('2026-01-01T10:00:00') }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.undatedGamesCount()).toBe(1);
+    });
+
+    it('should count stale unscored games and react to time updates', () => {
+      const now = new Date('2026-01-01T12:00:00').getTime();
+      const staleDate = new Date(now - 70 * 60 * 1000);
+
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: staleDate }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: staleDate, scoreTeam1: 3, scoreTeam2: 1 }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+      component.nowMs.set(now);
+
+      expect(component.staleUnscoredGamesCount()).toBe(1);
+
+      component.nowMs.set(now - 20 * 60 * 1000);
+
+      expect(component.staleUnscoredGamesCount()).toBe(0);
+    });
+
+    it('should show warnings only for admin and organizer roles', () => {
+      setInputs({ role: 'admin' });
+      expect(component.showWarnings()).toBe(true);
+
+      setInputs({ role: 'organizer' });
+      expect(component.showWarnings()).toBe(true);
+
+      setInputs({ role: 'observer' });
+      expect(component.showWarnings()).toBe(false);
+
+      setInputs({ role: '' });
+      expect(component.showWarnings()).toBe(false);
     });
   });
 

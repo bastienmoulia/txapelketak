@@ -227,6 +227,7 @@ describe('PoulesTab', () => {
     });
 
     it('should compute covered games count using unique team pairs', () => {
+      const removedTeamRef = createRef('teamRemoved');
       const poule = {
         ref: createRef('p1'),
         name: 'Poule 1',
@@ -235,6 +236,7 @@ describe('PoulesTab', () => {
           { ref: createRef('g1'), refTeam1: teamARef, refTeam2: teamBRef },
           { ref: createRef('g2'), refTeam1: teamBRef, refTeam2: teamARef },
           { ref: createRef('g3'), refTeam1: teamARef, refTeam2: teamCRef },
+          { ref: createRef('g4'), refTeam1: teamARef, refTeam2: removedTeamRef },
         ],
       };
 
@@ -286,8 +288,8 @@ describe('PoulesTab', () => {
       };
 
       const tooltip = component.getMissingGamesTooltip(poule);
-      expect(tooltip).toContain('Team A vs Team C');
-      expect(tooltip).toContain('Team B vs Team C');
+      expect(tooltip).toContain('Team A contre Team C');
+      expect(tooltip).toContain('Team B contre Team C');
     });
   });
 });

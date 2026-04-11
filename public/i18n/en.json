@@ -141,8 +141,8 @@
       "showLess": "Show less",
       "recentGames": "Recent results",
       "noRecentGames": "No results available",
-      "warningUndatedGames": "{{count}} game(s) without date",
-      "warningStaleUnscoredGames": "{{count}} game(s) started more than one hour ago without score"
+      "warningUndatedGames": "{{count}} game(s) without a date",
+      "warningStaleUnscoredGames": "{{count}} game(s) started more than one hour ago without a score"
     }
   },
   "admin": {
@@ -202,6 +202,8 @@
       "teamRemovedDetail": "The team has been successfully removed from the group.",
       "gamesCoverageComplete": "Games: {{covered}} / {{expected}} (all teams play each other)",
       "gamesCoverageIncomplete": "Games: {{covered}} / {{expected}} (missing matchups)",
+      "unknownTeam": "Unknown team",
+      "missingMatchupFormat": "{{team1}} vs {{team2}}",
       "poule": "Pool",
       "standings": {
         "playedShort": "P",

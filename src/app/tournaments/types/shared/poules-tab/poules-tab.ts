@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
@@ -7,7 +7,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Message } from 'primeng/message';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -68,6 +68,8 @@ export interface TeamStanding {
   styleUrl: './poules-tab.css',
 })
 export class PoulesTab {
+  private translocoService = inject(TranslocoService);
+
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
   role = input<UserRole | ''>('');
@@ -180,16 +182,26 @@ export class PoulesTab {
   }
 
   getCoveredGamesCount(poule: Poule): number {
+    const currentTeamIds = new Set((poule.refTeams ?? []).map((refTeam) => refTeam.id));
     const pairs = new Set<string>();
+
     for (const game of poule.games ?? []) {
       const team1Id = game.refTeam1?.id;
       const team2Id = game.refTeam2?.id;
-      if (!team1Id || !team2Id || team1Id === team2Id) {
+
+      if (
+        !team1Id ||
+        !team2Id ||
+        team1Id === team2Id ||
+        !currentTeamIds.has(team1Id) ||
+        !currentTeamIds.has(team2Id)
+      ) {
         continue;
       }
-      const key = team1Id < team2Id ? `${team1Id}__${team2Id}` : `${team2Id}__${team1Id}`;
-      pairs.add(key);
+
+      pairs.add(this.getPairKey(team1Id, team2Id));
     }
+
     return pairs.size;
   }
 
@@ -226,9 +238,16 @@ export class PoulesTab {
 
         const pairKey = this.getPairKey(team1Id, team2Id);
         if (!existingPairs.has(pairKey)) {
-          const team1Name = teamNameById.get(team1Id) ?? 'Unknown Team';
-          const team2Name = teamNameById.get(team2Id) ?? 'Unknown Team';
-          missing.push(`${team1Name} vs ${team2Name}`);
+          const team1Name =
+            teamNameById.get(team1Id) ?? this.translocoService.translate('admin.poules.unknownTeam');
+          const team2Name =
+            teamNameById.get(team2Id) ?? this.translocoService.translate('admin.poules.unknownTeam');
+          missing.push(
+            this.translocoService.translate('admin.poules.missingMatchupFormat', {
+              team1: team1Name,
+              team2: team2Name,
+            }),
+          );
         }
       }
     }

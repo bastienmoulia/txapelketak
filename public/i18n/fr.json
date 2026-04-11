@@ -233,6 +233,7 @@
       "deletedDetail": "La partie a été supprimée avec succès.",
       "viewByPool": "Par série",
       "viewByDate": "Par date",
+      "viewModeGroup": "Mode d'affichage des parties",
       "noDate": "Sans date",
       "serie": "Série",
       "poule": "Poule",

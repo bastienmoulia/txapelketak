@@ -233,6 +233,7 @@
       "deletedDetail": "El partido ha sido eliminado con éxito.",
       "viewByPool": "Por serie",
       "viewByDate": "Por fecha",
+      "viewModeGroup": "Modo de visualización de partidos",
       "noDate": "Sin fecha",
       "serie": "Serie",
       "poule": "Grupo",

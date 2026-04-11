@@ -1,10 +1,15 @@
 @if (sortedSeries().length > 0) {
-  <div class="flex justify-end mx-3 mb-3 gap-2">
+  <div
+    class="flex justify-end mx-3 mb-3 gap-2"
+    role="group"
+    [attr.aria-label]="'admin.games.viewModeGroup' | transloco"
+  >
     <p-button
       [label]="'admin.games.viewByPool' | transloco"
       [outlined]="viewMode() !== 'by-pool'"
       severity="primary"
       size="small"
+      [attr.aria-pressed]="viewMode() === 'by-pool'"
       (onClick)="viewMode.set('by-pool')"
       data-testid="view-by-pool-button"
     />
@@ -13,6 +18,7 @@
       [outlined]="viewMode() !== 'by-date'"
       severity="primary"
       size="small"
+      [attr.aria-pressed]="viewMode() === 'by-date'"
       (onClick)="viewMode.set('by-date')"
       data-testid="view-by-date-button"
     />

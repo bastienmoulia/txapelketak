@@ -233,6 +233,7 @@
       "deletedDetail": "The game has been successfully deleted.",
       "viewByPool": "By series",
       "viewByDate": "By date",
+      "viewModeGroup": "Games display mode",
       "noDate": "No date",
       "serie": "Series",
       "poule": "Pool",

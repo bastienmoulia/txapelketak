@@ -133,6 +133,12 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 - Tests d'intégration pour création tournoi et sauvegarde.
 - Jeux de données de test (petit, moyen, grand).
 
+## Conventions UI PrimeNG
+
+- Éviter les API dépréciées PrimeNG lors des développements et refactors.
+- Ne pas utiliser l'attribut `styleClass` sur les composants PrimeNG (déprécié) ; utiliser `class` ou des bindings de classe Angular (`[class]`, `[class.nom]`) à la place.
+- Lors d'une montée de version PrimeNG, vérifier systématiquement les notes de migration et remplacer les usages dépréciés dans les templates.
+
 ## Traductions et internationalisation
 
 - Les variables typescript doivent être en anglais, mais les textes affichés à l'utilisateur doivent être traduits.

@@ -140,7 +140,9 @@
       "showMore": "Ver más",
       "showLess": "Ver menos",
       "recentGames": "Últimos resultados",
-      "noRecentGames": "No hay resultados disponibles"
+      "noRecentGames": "No hay resultados disponibles",
+      "warningUndatedGames": "{{count}} partido(s) sin fecha",
+      "warningStaleUnscoredGames": "{{count}} partido(s) iniciado(s) hace más de una hora sin marcador"
     }
   },
   "admin": {
@@ -198,6 +200,8 @@
       "teamAddedDetail": "El equipo ha sido añadido al grupo con éxito.",
       "teamRemoved": "Equipo quitado",
       "teamRemovedDetail": "El equipo ha sido quitado del grupo con éxito.",
+      "gamesCoverageComplete": "Partidos: {{covered}} / {{expected}} (todos los equipos se enfrentan entre sí)",
+      "gamesCoverageIncomplete": "Partidos: {{covered}} / {{expected}} (faltan enfrentamientos)",
       "poule": "Grupo",
       "standings": {
         "playedShort": "J",

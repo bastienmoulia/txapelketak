@@ -17,6 +17,12 @@
   height: 100%;
 }
 
+.dashboard-warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .stat-content {
   display: flex;
   align-items: center;

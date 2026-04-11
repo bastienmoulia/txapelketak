@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
@@ -7,7 +7,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Message } from 'primeng/message';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -68,6 +68,8 @@ export interface TeamStanding {
   styleUrl: './poules-tab.css',
 })
 export class PoulesTab {
+  private translocoService = inject(TranslocoService);
+
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
   role = input<UserRole | ''>('');
@@ -172,6 +174,95 @@ export class PoulesTab {
     return teams
       .filter((t) => !poule.refTeams?.some((ref) => ref.id === t.ref.id))
       .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  getExpectedGamesCount(poule: Poule): number {
+    const teamCount = poule.refTeams?.length ?? 0;
+    return (teamCount * (teamCount - 1)) / 2;
+  }
+
+  getCoveredGamesCount(poule: Poule): number {
+    const currentTeamIds = new Set((poule.refTeams ?? []).map((refTeam) => refTeam.id));
+    const pairs = new Set<string>();
+
+    for (const game of poule.games ?? []) {
+      const team1Id = game.refTeam1?.id;
+      const team2Id = game.refTeam2?.id;
+
+      if (
+        !team1Id ||
+        !team2Id ||
+        team1Id === team2Id ||
+        !currentTeamIds.has(team1Id) ||
+        !currentTeamIds.has(team2Id)
+      ) {
+        continue;
+      }
+
+      pairs.add(this.getPairKey(team1Id, team2Id));
+    }
+
+    return pairs.size;
+  }
+
+  getMissingGamesTooltip(poule: Poule): string {
+    return this.getMissingMatchups(poule).join('\n');
+  }
+
+  private getMissingMatchups(poule: Poule): string[] {
+    const refTeams = poule.refTeams ?? [];
+    if (refTeams.length < 2) {
+      return [];
+    }
+
+    const teamNameById = new Map(this.teams().map((team) => [team.ref.id, team.name]));
+    const existingPairs = new Set<string>();
+
+    for (const game of poule.games ?? []) {
+      const team1Id = game.refTeam1?.id;
+      const team2Id = game.refTeam2?.id;
+      if (!team1Id || !team2Id || team1Id === team2Id) {
+        continue;
+      }
+      existingPairs.add(this.getPairKey(team1Id, team2Id));
+    }
+
+    const missing: string[] = [];
+    for (let i = 0; i < refTeams.length; i++) {
+      for (let j = i + 1; j < refTeams.length; j++) {
+        const team1Id = refTeams[i]?.id;
+        const team2Id = refTeams[j]?.id;
+        if (!team1Id || !team2Id) {
+          continue;
+        }
+
+        const pairKey = this.getPairKey(team1Id, team2Id);
+        if (!existingPairs.has(pairKey)) {
+          const team1Name =
+            teamNameById.get(team1Id) ??
+            this.translocoService.translate('admin.poules.unknownTeam');
+          const team2Name =
+            teamNameById.get(team2Id) ??
+            this.translocoService.translate('admin.poules.unknownTeam');
+          missing.push(
+            this.translocoService.translate('admin.poules.missingMatchupFormat', {
+              team1: team1Name,
+              team2: team2Name,
+            }),
+          );
+        }
+      }
+    }
+
+    return missing.sort((a, b) => a.localeCompare(b));
+  }
+
+  private getPairKey(team1Id: string, team2Id: string): string {
+    return team1Id < team2Id ? `${team1Id}__${team2Id}` : `${team2Id}__${team1Id}`;
+  }
+
+  hasCompleteRoundRobin(poule: Poule): boolean {
+    return this.getCoveredGamesCount(poule) >= this.getExpectedGamesCount(poule);
   }
 
   onAddSerie(): void {

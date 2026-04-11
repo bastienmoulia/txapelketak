@@ -209,4 +209,87 @@ describe('PoulesTab', () => {
       expect(standingC.pointsConceded).toBe(0);
     });
   });
+
+  describe('game coverage helpers', () => {
+    const teamARef = createRef('teamA');
+    const teamBRef = createRef('teamB');
+    const teamCRef = createRef('teamC');
+
+    it('should compute expected round-robin games count', () => {
+      const poule = {
+        ref: createRef('p1'),
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef, teamCRef],
+        games: [],
+      };
+
+      expect(component.getExpectedGamesCount(poule)).toBe(3);
+    });
+
+    it('should compute covered games count using unique team pairs', () => {
+      const removedTeamRef = createRef('teamRemoved');
+      const poule = {
+        ref: createRef('p1'),
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef, teamCRef],
+        games: [
+          { ref: createRef('g1'), refTeam1: teamARef, refTeam2: teamBRef },
+          { ref: createRef('g2'), refTeam1: teamBRef, refTeam2: teamARef },
+          { ref: createRef('g3'), refTeam1: teamARef, refTeam2: teamCRef },
+          { ref: createRef('g4'), refTeam1: teamARef, refTeam2: removedTeamRef },
+        ],
+      };
+
+      expect(component.getCoveredGamesCount(poule)).toBe(2);
+    });
+
+    it('should report complete round-robin when all pairs exist', () => {
+      const poule = {
+        ref: createRef('p1'),
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef, teamCRef],
+        games: [
+          { ref: createRef('g1'), refTeam1: teamARef, refTeam2: teamBRef },
+          { ref: createRef('g2'), refTeam1: teamARef, refTeam2: teamCRef },
+          { ref: createRef('g3'), refTeam1: teamBRef, refTeam2: teamCRef },
+        ],
+      };
+
+      expect(component.hasCompleteRoundRobin(poule)).toBe(true);
+    });
+
+    it('should report incomplete round-robin when a pair is missing', () => {
+      const poule = {
+        ref: createRef('p1'),
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef, teamCRef],
+        games: [
+          { ref: createRef('g1'), refTeam1: teamARef, refTeam2: teamBRef },
+          { ref: createRef('g2'), refTeam1: teamARef, refTeam2: teamCRef },
+        ],
+      };
+
+      expect(component.hasCompleteRoundRobin(poule)).toBe(false);
+    });
+
+    it('should provide tooltip with missing matchups list', () => {
+      fixture.componentRef.setInput('teams', [
+        { ref: teamARef, name: 'Team A' },
+        { ref: teamBRef, name: 'Team B' },
+        { ref: teamCRef, name: 'Team C' },
+      ]);
+      fixture.detectChanges();
+
+      const poule = {
+        ref: createRef('p1'),
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef, teamCRef],
+        games: [{ ref: createRef('g1'), refTeam1: teamARef, refTeam2: teamBRef }],
+      };
+
+      const tooltip = component.getMissingGamesTooltip(poule);
+      expect(tooltip).toContain('Team A contre Team C');
+      expect(tooltip).toContain('Team B contre Team C');
+    });
+  });
 });

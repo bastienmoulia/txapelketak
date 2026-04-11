@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
   signal,
@@ -11,9 +12,10 @@ import {
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { Tournament } from '../../../../home/tournament.interface';
+import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
 import { MarkdownService } from '../../../../shared/services/markdown.service';
@@ -41,25 +43,33 @@ export interface RecentGame {
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe],
+  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe, MessageModule],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDashboard {
   private markdownService = inject(MarkdownService);
+  private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
   series = input<Serie[]>([]);
   loading = input(false);
+  role = input<UserRole | ''>('');
 
   descriptionEl = viewChild<ElementRef<HTMLElement>>('descriptionEl');
 
   descriptionExpanded = signal(false);
   descriptionOverflows = signal(false);
+  readonly nowMs = signal(Date.now());
 
   constructor() {
+    const staleGamesTickInterval = setInterval(() => {
+      this.nowMs.set(Date.now());
+    }, 60 * 1000);
+    this.destroyRef.onDestroy(() => clearInterval(staleGamesTickInterval));
+
     afterRenderEffect({
       read: () => {
         this.descriptionHtml();
@@ -171,6 +181,42 @@ export class TournamentDashboard {
 
     return overdue.sort((a, b) => a.date.getTime() - b.date.getTime());
   });
+
+  undatedGamesCount = computed(() => {
+    let count = 0;
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (!game.date) {
+            count++;
+          }
+        }
+      }
+    }
+    return count;
+  });
+
+  staleUnscoredGamesCount = computed(() => {
+    const oneHourAgo = this.nowMs() - 60 * 60 * 1000;
+    let count = 0;
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (!game.date) continue;
+          const gameDateMs = new Date(game.date).getTime();
+          const hasNoScore = game.scoreTeam1 == null || game.scoreTeam2 == null;
+          if (gameDateMs <= oneHourAgo && hasNoScore) {
+            count++;
+          }
+        }
+      }
+    }
+
+    return count;
+  });
+
+  showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');
 
   recentGames = computed((): RecentGame[] => {
     const teamNameMap = this.buildTeamNameMap();

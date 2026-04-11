@@ -45,6 +45,28 @@
       </div>
     </p-card>
 
+    @if (showWarnings()) {
+      <div class="dashboard-warnings">
+        @if (undatedGamesCount() > 0) {
+          <p-message severity="warn" data-testid="dashboard-warning-undated-games">
+            {{
+              'tournaments.dashboard.warningUndatedGames'
+                | transloco: { count: undatedGamesCount() }
+            }}
+          </p-message>
+        }
+
+        @if (staleUnscoredGamesCount() > 0) {
+          <p-message severity="warn" data-testid="dashboard-warning-stale-unscored-games">
+            {{
+              'tournaments.dashboard.warningStaleUnscoredGames'
+                | transloco: { count: staleUnscoredGamesCount() }
+            }}
+          </p-message>
+        }
+      </div>
+    }
+
     <!-- Stats cards -->
     <div class="stats-grid">
       <!-- Teams count -->

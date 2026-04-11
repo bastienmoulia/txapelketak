@@ -65,7 +65,7 @@ export interface GamesDateGroup {
   games: GameByDate[];
 }
 
-export type GamesViewMode = 'by-date';
+export type GamesViewMode = 'by-date' | 'by-pool';
 
 export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
 
@@ -271,6 +271,8 @@ export class Games {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
     return hasActions ? 6 : 5;
   });
+
+  viewMode = signal<GamesViewMode>('by-pool');
 
   // Dialog state
   gameDialogVisible = signal(false);

@@ -174,6 +174,76 @@ export class PoulesTab {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
+  getExpectedGamesCount(poule: Poule): number {
+    const teamCount = poule.refTeams?.length ?? 0;
+    return (teamCount * (teamCount - 1)) / 2;
+  }
+
+  getCoveredGamesCount(poule: Poule): number {
+    const pairs = new Set<string>();
+    for (const game of poule.games ?? []) {
+      const team1Id = game.refTeam1?.id;
+      const team2Id = game.refTeam2?.id;
+      if (!team1Id || !team2Id || team1Id === team2Id) {
+        continue;
+      }
+      const key = team1Id < team2Id ? `${team1Id}__${team2Id}` : `${team2Id}__${team1Id}`;
+      pairs.add(key);
+    }
+    return pairs.size;
+  }
+
+  getMissingGamesTooltip(poule: Poule): string {
+    return this.getMissingMatchups(poule).join('\n');
+  }
+
+  private getMissingMatchups(poule: Poule): string[] {
+    const refTeams = poule.refTeams ?? [];
+    if (refTeams.length < 2) {
+      return [];
+    }
+
+    const teamNameById = new Map(this.teams().map((team) => [team.ref.id, team.name]));
+    const existingPairs = new Set<string>();
+
+    for (const game of poule.games ?? []) {
+      const team1Id = game.refTeam1?.id;
+      const team2Id = game.refTeam2?.id;
+      if (!team1Id || !team2Id || team1Id === team2Id) {
+        continue;
+      }
+      existingPairs.add(this.getPairKey(team1Id, team2Id));
+    }
+
+    const missing: string[] = [];
+    for (let i = 0; i < refTeams.length; i++) {
+      for (let j = i + 1; j < refTeams.length; j++) {
+        const team1Id = refTeams[i]?.id;
+        const team2Id = refTeams[j]?.id;
+        if (!team1Id || !team2Id) {
+          continue;
+        }
+
+        const pairKey = this.getPairKey(team1Id, team2Id);
+        if (!existingPairs.has(pairKey)) {
+          const team1Name = teamNameById.get(team1Id) ?? 'Unknown Team';
+          const team2Name = teamNameById.get(team2Id) ?? 'Unknown Team';
+          missing.push(`${team1Name} vs ${team2Name}`);
+        }
+      }
+    }
+
+    return missing.sort((a, b) => a.localeCompare(b));
+  }
+
+  private getPairKey(team1Id: string, team2Id: string): string {
+    return team1Id < team2Id ? `${team1Id}__${team2Id}` : `${team2Id}__${team1Id}`;
+  }
+
+  hasCompleteRoundRobin(poule: Poule): boolean {
+    return this.getCoveredGamesCount(poule) >= this.getExpectedGamesCount(poule);
+  }
+
   onAddSerie(): void {
     this.isEditingSerie.set(false);
     this.serieName.set('');

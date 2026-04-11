@@ -120,6 +120,35 @@
               data-testid="add-team-to-poule-button"
             />
           </div>
+
+          @if (hasCompleteRoundRobin | apply: poule) {
+            <p-message severity="success" class="mb-2" data-testid="poule-games-coverage-success">
+              {{
+                'admin.poules.gamesCoverageComplete'
+                  | transloco
+                    : {
+                        covered: (getCoveredGamesCount | apply: poule),
+                        expected: (getExpectedGamesCount | apply: poule),
+                      }
+              }}
+            </p-message>
+          } @else {
+            <p-message
+              severity="error"
+              class="mb-2"
+              [pTooltip]="getMissingGamesTooltip | apply: poule"
+              data-testid="poule-games-coverage-error"
+            >
+              {{
+                'admin.poules.gamesCoverageIncomplete'
+                  | transloco
+                    : {
+                        covered: (getCoveredGamesCount | apply: poule),
+                        expected: (getExpectedGamesCount | apply: poule),
+                      }
+              }}
+            </p-message>
+          }
         }
         <table class="w-full standings-table">
           <thead>

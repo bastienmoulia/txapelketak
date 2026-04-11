@@ -140,7 +140,9 @@
       "showMore": "Gehiago ikusi",
       "showLess": "Gutxiago ikusi",
       "recentGames": "Azken emaitzak",
-      "noRecentGames": "Ez dago emaitzarik"
+      "noRecentGames": "Ez dago emaitzarik",
+      "warningUndatedGames": "{{count}} partida datarik gabe",
+      "warningStaleUnscoredGames": "{{count}} partida duela ordubete baino gehiago hasita eta puntuaziorik gabe"
     }
   },
   "admin": {
@@ -198,6 +200,8 @@
       "teamAddedDetail": "Taldea arrakastaz gehitu da multzora.",
       "teamRemoved": "Taldea kendu da",
       "teamRemovedDetail": "Taldea arrakastaz kendu da multzotik.",
+      "gamesCoverageComplete": "Partidak: {{covered}} / {{expected}} (talde guztiek elkarren aurka jokatzen dute)",
+      "gamesCoverageIncomplete": "Partidak: {{covered}} / {{expected}} (faltan diren norgehiagokak)",
       "poule": "Multzoa",
       "standings": {
         "playedShort": "J",

@@ -237,7 +237,8 @@
       "serie": "Serie",
       "poule": "Grupo",
       "time": "Hora",
-      "filterByTeam": "Filtrar por equipo"
+      "filterByTeam": "Filtrar por equipo",
+      "dialogSelectPoule": "Seleccionar la serie y el grupo"
     },
     "teams": {
       "empty": "No hay equipos",

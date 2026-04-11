@@ -1,5 +1,5 @@
 @if (sortedSeries().length > 0) {
-  <div class="flex justify-start mx-3 mb-3">
+  <div class="flex justify-between items-center mx-3 mb-3">
     <p-select
       [options]="sortedTeams()"
       [ngModel]="selectedTeamId()"
@@ -14,6 +14,16 @@
       (onClear)="clearTeamFilter()"
       data-testid="team-filter-select"
     />
+    @if (role() === 'admin') {
+      <p-button
+        icon="pi pi-plus"
+        [label]="'admin.games.addGame' | transloco"
+        [ariaLabel]="'admin.games.addGame' | transloco"
+        size="small"
+        (onClick)="onOpenAddGame()"
+        data-testid="add-game-button"
+      />
+    }
   </div>
 
   <div class="games-table-shell mx-3 mb-3">
@@ -252,6 +262,7 @@
           [(ngModel)]="gameDateModel"
           pInputMask="99/99/9999 99:99"
           [dateFormat]="datePickerFormat()"
+          [firstDayOfWeek]="firstDayOfWeek()"
           [placeholder]="datePlaceholder()"
           [style]="{ width: '100%' }"
           [showClear]="true"
@@ -277,6 +288,53 @@
       [label]="'shared.actions.save' | transloco"
       [disabled]="!selectedTeam1Ref() || !selectedTeam2Ref()"
       (onClick)="onSaveGame()"
+    />
+  </ng-template>
+</p-dialog>
+
+<!-- Add game step 1: pick serie + poule -->
+<p-dialog
+  [(visible)]="addGamePickPouleVisible"
+  [header]="'admin.games.dialogSelectPoule' | transloco"
+  [modal]="true"
+  [style]="{ width: '26rem' }"
+>
+  <div class="flex flex-column gap-4 pt-2">
+    <p-floatlabel variant="on">
+      <p-select
+        inputId="newSerie"
+        [options]="sortedSeries()"
+        [(ngModel)]="selectedNewSerie"
+        optionLabel="name"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+        (onChange)="onNewSerieChange()"
+      />
+      <label for="newSerie">{{ 'admin.games.serie' | transloco }}</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+      <p-select
+        inputId="newPoule"
+        [options]="poulesForSelectedSerie()"
+        [(ngModel)]="selectedNewPoule"
+        optionLabel="name"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+        [disabled]="!selectedNewSerie()"
+      />
+      <label for="newPoule">{{ 'admin.games.poule' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="addGamePickPouleVisible.set(false)"
+    />
+    <p-button
+      [label]="'shared.actions.next' | transloco"
+      [disabled]="!selectedNewSerie() || !selectedNewPoule()"
+      (onClick)="onConfirmSelectPoule()"
     />
   </ng-template>
 </p-dialog>

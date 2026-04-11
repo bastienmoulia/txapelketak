@@ -12,7 +12,6 @@ import {
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../../../home/tournament.interface';
 import { Team } from '../teams/teams';
@@ -42,7 +41,7 @@ export interface RecentGame {
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [CardModule, TagModule, ButtonModule, TranslocoPipe, DatePipe],
+  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

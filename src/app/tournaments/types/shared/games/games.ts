@@ -302,6 +302,36 @@ export class Games {
     return map;
   });
 
+  // Add game — step 1: pick serie + poule
+  addGamePickPouleVisible = signal(false);
+  selectedNewSerie = signal<Serie | null>(null);
+  selectedNewPoule = signal<Poule | null>(null);
+
+  poulesForSelectedSerie = computed(() => {
+    const serie = this.selectedNewSerie();
+    if (!serie) return [];
+    return [...serie.poules].sort((a, b) => a.name.localeCompare(b.name));
+  });
+
+  onOpenAddGame(): void {
+    const series = this.sortedSeries();
+    const preSerie = series.length === 1 ? series[0] : null;
+    this.selectedNewSerie.set(preSerie);
+    this.selectedNewPoule.set(null);
+    this.addGamePickPouleVisible.set(true);
+  }
+
+  onNewSerieChange(): void {
+    this.selectedNewPoule.set(null);
+  }
+
+  onConfirmSelectPoule(): void {
+    const poule = this.selectedNewPoule();
+    if (!poule) return;
+    this.addGamePickPouleVisible.set(false);
+    this.onAddGame(poule);
+  }
+
   // Delete confirmation dialog state
   deleteConfirmVisible = signal(false);
   pendingDeleteGameRef = signal<DocumentReference | null>(null);

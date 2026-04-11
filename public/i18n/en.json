@@ -237,7 +237,8 @@
       "serie": "Series",
       "poule": "Pool",
       "time": "Time",
-      "filterByTeam": "Filter by team"
+      "filterByTeam": "Filter by team",
+      "dialogSelectPoule": "Select series and pool"
     },
     "teams": {
       "empty": "No teams",

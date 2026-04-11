@@ -237,7 +237,8 @@
       "serie": "Seriea",
       "poule": "Multzoa",
       "time": "Ordua",
-      "filterByTeam": "Taldea iragazi"
+      "filterByTeam": "Taldea iragazi",
+      "dialogSelectPoule": "Seriea eta taldea aukeratu"
     },
     "teams": {
       "empty": "Ez dago talderik",

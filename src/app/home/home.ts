@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Toast } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { Tournament } from './tournament.interface';
 import { TournamentsTable } from '../shared/tournaments-table/tournaments-table';
 import { HeaderActions } from '../shared/header-actions/header-actions';
@@ -18,24 +16,13 @@ interface Feature {
 
 @Component({
   selector: 'app-home',
-  imports: [
-    RouterLink,
-    ButtonModule,
-    CardModule,
-    Toast,
-    TournamentsTable,
-    HeaderActions,
-    TranslocoModule,
-  ],
+  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MessageService],
 })
 export class Home {
   tournamentsStore = inject(TournamentsStore);
-  messageService = inject(MessageService);
-  translocoService = inject(TranslocoService);
   tournaments = this.tournamentsStore.tournaments;
   loading = this.tournamentsStore.loading;
 
@@ -88,14 +75,5 @@ export class Home {
 
   getTournamentLink(tournament: Tournament): string {
     return `/tournaments/${tournament.ref.id}`;
-  }
-
-  createSoonAvailable(): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: this.translocoService.translate('home.createSoonAvailable.title'),
-      detail: this.translocoService.translate('home.createSoonAvailable.detail'),
-      life: 3000,
-    });
   }
 }

@@ -157,7 +157,7 @@
     "archived": "Txapelketa hau artxibatuta dago. Aldaketak ez daude baimenduta.",
     "notFound": "Txapelketa ez da aurkitu edo ez da zehaztu.",
     "validated": "Txapelketa balioztatua",
-    "validatedDetail": "Txapelketa balioztatua eta geldituta dago. Jarri 'Abian' prest zaudenean.",
+    "validatedDetail": "Txapelketa balioztatu da eta orain abian dago.",
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
       "poules": "Multzoak",
@@ -338,7 +338,6 @@
     },
     "status": {
       "ongoing": "Abian",
-      "paused": "Geldituta",
       "archived": "Artxibatuta",
       "waitingValidation": "Balioztapen zain"
     },

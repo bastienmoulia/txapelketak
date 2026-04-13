@@ -22,7 +22,7 @@ describe('AdminTypes', () => {
       name: 'Test Tournoi',
       description: '',
       type: 'poules',
-      status: 'paused',
+      status: 'ongoing',
       createdAt: '2024-01-01',
     });
     fixture.detectChanges();

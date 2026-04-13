@@ -131,8 +131,8 @@ export class Admin {
     tournamentId: string,
   ): Promise<void> {
     try {
-      console.debug('Tournament is waiting validation, updating status to paused');
-      await this.firebaseService.updateTournamentStatus(tournamentRef, 'paused');
+      console.debug('Tournament is waiting validation, updating status to ongoing');
+      await this.firebaseService.updateTournamentStatus(tournamentRef, 'ongoing');
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.validated'),

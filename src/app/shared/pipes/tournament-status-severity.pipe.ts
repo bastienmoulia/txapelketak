@@ -10,8 +10,6 @@ export class TournamentStatusSeverityPipe implements PipeTransform {
     switch (status) {
       case 'ongoing':
         return 'success';
-      case 'paused':
-        return 'warn';
       case 'waitingValidation':
         return 'danger';
       case 'archived':

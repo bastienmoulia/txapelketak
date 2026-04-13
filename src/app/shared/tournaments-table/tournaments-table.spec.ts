@@ -40,14 +40,14 @@ describe('TournamentsTable', () => {
     expect(compiled.textContent).toContain('Aucun tournoi disponible');
   });
 
-  it('should disable open button for paused and waitingValidation tournaments', async () => {
+  it('should disable open button for waitingValidation tournaments', async () => {
     fixture.componentRef.setInput('tournaments', [
       {
         ref: createRef('1'),
         name: 'T1',
         description: '',
         type: 'poules',
-        status: 'paused',
+        status: 'ongoing',
         createdAt: '2024-01-01',
       },
       {
@@ -74,7 +74,7 @@ describe('TournamentsTable', () => {
       fixture.nativeElement.querySelectorAll('button'),
     ) as HTMLButtonElement[];
 
-    expect(buttons[0].disabled).toBe(true);
+    expect(buttons[0].disabled).toBe(false);
     expect(buttons[1].disabled).toBe(true);
     expect(buttons[2].disabled).toBe(false);
   });

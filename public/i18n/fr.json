@@ -157,7 +157,7 @@
     "archived": "Ce tournoi est archivé. Les modifications ne sont pas autorisées.",
     "notFound": "Tournoi introuvable ou non spécifié.",
     "validated": "Tournoi validé",
-    "validatedDetail": "Le tournoi a été validé et mis en pause. Passez-le à 'En cours' lorsque vous êtes prêt.",
+    "validatedDetail": "Le tournoi a été validé et est maintenant en cours.",
     "unknownType": "Type de tournoi inconnu",
     "tabs": {
       "poules": "Poules",
@@ -338,7 +338,6 @@
     },
     "status": {
       "ongoing": "En cours",
-      "paused": "En pause",
       "archived": "Archivé",
       "waitingValidation": "En attente de validation"
     },

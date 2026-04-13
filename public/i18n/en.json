@@ -157,7 +157,7 @@
     "archived": "This tournament is archived. Modifications are not allowed.",
     "notFound": "Tournament not found or not specified.",
     "validated": "Tournament validated",
-    "validatedDetail": "The tournament has been validated and put on pause. Set it to 'In progress' when you are ready.",
+    "validatedDetail": "The tournament has been validated and is now in progress.",
     "unknownType": "Unknown tournament type",
     "tabs": {
       "poules": "Groups",
@@ -338,7 +338,6 @@
     },
     "status": {
       "ongoing": "In progress",
-      "paused": "Paused",
       "archived": "Archived",
       "waitingValidation": "Awaiting validation"
     },

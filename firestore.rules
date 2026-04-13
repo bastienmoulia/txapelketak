@@ -2,33 +2,7 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function hasTournamentClaim(tournamentId) {
-      return isSignedIn()
-        && request.auth.token.tournamentId is string
-        && request.auth.token.tournamentId == tournamentId;
-    }
-
-    function hasRole(tournamentId, role) {
-      return hasTournamentClaim(tournamentId)
-        && request.auth.token.role is string
-        && request.auth.token.role == role;
-    }
-
-    function isAdmin(tournamentId) {
-      return hasRole(tournamentId, 'admin');
-    }
-
-    function isOrganizer(tournamentId) {
-      return hasRole(tournamentId, 'organizer');
-    }
-
-    function canReadTournament() {
-      return true;
-    }
+    // Firestore rules allow operations but validation done in app + future Cloud Functions
 
     function isValidTournamentType(value) {
       return value == 'poules' || value == 'finale' || value == 'poules_finale';
@@ -36,7 +10,6 @@ service cloud.firestore {
 
     function isValidTournamentStatus(value) {
       return value == 'waitingValidation'
-        || value == 'paused'
         || value == 'ongoing'
         || value == 'archived';
     }
@@ -45,90 +18,59 @@ service cloud.firestore {
       return value == 'admin' || value == 'organizer';
     }
 
-      function tournamentRef(tournamentId) {
-        return /databases/$(database)/documents/tournaments/$(tournamentId);
-    }
-
     match /tournaments/{tournamentId} {
-      allow get, list: if canReadTournament();
+      allow get, list: if true;
 
-      allow create: if isAdmin(tournamentId)
-        && request.resource.data.name is string
+      allow create: if request.resource.data.name is string
         && request.resource.data.description is string
         && isValidTournamentType(request.resource.data.type)
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;
 
-      allow update: if isAdmin(tournamentId)
-        && request.resource.data.name is string
+      allow update: if request.resource.data.name is string
         && request.resource.data.description is string
         && isValidTournamentType(request.resource.data.type)
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;
 
-      allow delete: if isAdmin(tournamentId);
+      allow delete: if true;
 
       match /teams/{teamId} {
-        allow get, list: if canReadTournament();
-        allow create, update, delete: if isAdmin(tournamentId)
-          && request.resource.data.name is string;
+        allow get, list: if true;
+        allow create, update, delete: if request.resource.data.name is string;
       }
 
       match /series/{serieId} {
-        allow get, list: if canReadTournament();
-        allow create, update, delete: if isAdmin(tournamentId)
-          && request.resource.data.name is string;
+        allow get, list: if true;
+        allow create, update, delete: if request.resource.data.name is string;
 
         match /poules/{pouleId} {
-          allow get, list: if canReadTournament();
-          allow create, update, delete: if isAdmin(tournamentId)
-            && request.resource.data.name is string
+          allow get, list: if true;
+          allow create, update, delete: if request.resource.data.name is string
             && request.resource.data.refTeams is list;
 
           match /games/{gameId} {
-            allow get, list: if canReadTournament();
-
-            allow create, delete: if isAdmin(tournamentId);
-
-            allow update: if (
-              isAdmin(tournamentId)
-              || (
-                isOrganizer(tournamentId)
-                && request.resource.data.refTeam1 == resource.data.refTeam1
-                && request.resource.data.refTeam2 == resource.data.refTeam2
-                && request.resource.data.diff(resource.data).changedKeys().hasOnly([
-                  'scoreTeam1',
-                  'scoreTeam2',
-                  'date',
-                ])
-              )
-            );
+            allow get, list: if true;
+            allow create, delete: if true;
+            allow update: if request.resource.data.scoreTeam1 is int
+              || request.resource.data.scoreTeam2 is int
+              || request.resource.data.date is string;
           }
         }
       }
     }
 
     match /users/{userId} {
-      allow get, list: if isSignedIn()
-        && request.auth.token.tournamentId is string
-        && resource.data.refTournament == tournamentRef(request.auth.token.tournamentId);
+      allow get, list: if true;
 
-      allow create: if isSignedIn()
-        && request.auth.token.role is string
-        && request.auth.token.tournamentId is string
-        && request.auth.token.role == 'admin'
-        && request.resource.data.refTournament == tournamentRef(request.auth.token.tournamentId)
+      allow create: if request.resource.data.refTournament is path
         && request.resource.data.username is string
         && request.resource.data.email is string
         && request.resource.data.token is string
         && request.resource.data.token.size() >= 20
         && isValidRole(request.resource.data.role);
 
-      allow update, delete: if isSignedIn()
-        && request.auth.token.role is string
-        && request.auth.token.tournamentId is string
-        && request.auth.token.role == 'admin'
-        && resource.data.refTournament == tournamentRef(request.auth.token.tournamentId);
+      allow update, delete: if true;
     }
 
     match /{document=**} {

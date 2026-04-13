@@ -14,8 +14,6 @@ export class TournamentStatusLabelPipe implements PipeTransform {
     switch (status) {
       case 'ongoing':
         return this.translocoService.translate('shared.status.ongoing');
-      case 'paused':
-        return this.translocoService.translate('shared.status.paused');
       case 'archived':
         return this.translocoService.translate('shared.status.archived');
       case 'waitingValidation':

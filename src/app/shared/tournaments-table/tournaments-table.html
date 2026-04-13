@@ -14,7 +14,7 @@
         <p-button
           [label]="'shared.table.open' | transloco"
           [routerLink]="getTournamentLink()(tournament)"
-          [disabled]="tournament.status === 'paused' || tournament.status === 'waitingValidation'"
+          [disabled]="tournament.status === 'waitingValidation'"
         />
       </td>
     </tr>

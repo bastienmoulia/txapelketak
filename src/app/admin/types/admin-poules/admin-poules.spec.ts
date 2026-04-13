@@ -22,7 +22,7 @@ describe('AdminPoules', () => {
       name: 'Tournoi test',
       description: '',
       type: 'poules',
-      status: 'paused',
+      status: 'ongoing',
       createdAt: new Date().toISOString(),
       data: { teams: [] },
     });

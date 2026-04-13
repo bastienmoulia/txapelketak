@@ -15,10 +15,6 @@ describe('TournamentStatusSeverityPipe', () => {
     expect(pipe.transform('ongoing')).toBe('success');
   });
 
-  it("should return 'warn' for paused", () => {
-    expect(pipe.transform('paused')).toBe('warn');
-  });
-
   it("should return 'danger' for waitingValidation", () => {
     expect(pipe.transform('waitingValidation')).toBe('danger');
   });

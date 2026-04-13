@@ -36,16 +36,19 @@
             </div>
 
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-medium text-[var(--p-text-color)]" for="description">{{
-                'tournaments.new.step1.description' | transloco
-              }}</label>
-              <textarea
-                id="description"
-                formControlName="description"
-                rows="8"
-                class="w-full rounded-[var(--p-border-radius-md)] border border-[var(--p-content-border-color)] bg-[var(--p-surface-0)] px-3 py-2 text-[var(--p-text-color)]"
-                data-testid="field-description"
-              ></textarea>
+              <p-floatlabel variant="on">
+                <textarea
+                  pTextarea
+                  id="description"
+                  formControlName="description"
+                  rows="8"
+                  class="w-full"
+                  data-testid="field-description"
+                ></textarea>
+                <label for="description">{{
+                  'tournaments.new.step1.description' | transloco
+                }}</label>
+              </p-floatlabel>
               <small class="text-[var(--p-text-muted-color)]">
                 {{ 'tournaments.new.step1.descriptionHelp' | transloco }}
               </small>
@@ -174,7 +177,7 @@
           </div>
         </div>
       </form>
-    } @else if(adminUrl()) {
+    } @else if (adminUrl()) {
       <!-- Success state -->
       <div class="flex flex-col items-center gap-5 py-8 text-center" data-testid="success-state">
         <div class="text-[4rem]! text-[var(--p-green-500)]">

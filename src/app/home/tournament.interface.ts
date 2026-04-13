@@ -35,4 +35,4 @@ export interface TournamentDataByType {
 export type TournamentData<T extends TournamentType = TournamentType> =
   T extends keyof TournamentDataByType ? TournamentDataByType[T] : never;
 
-export type TournamentStatus = 'waitingValidation' | 'paused' | 'ongoing' | 'archived';
+export type TournamentStatus = 'waitingValidation' | 'ongoing' | 'archived';

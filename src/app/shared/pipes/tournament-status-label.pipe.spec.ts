@@ -20,10 +20,6 @@ describe('TournamentStatusLabelPipe', () => {
     expect(pipe.transform('ongoing')).toBe('En cours');
   });
 
-  it("should return 'En pause' for paused", () => {
-    expect(pipe.transform('paused')).toBe('En pause');
-  });
-
   it("should return 'Archivé' for archived", () => {
     expect(pipe.transform('archived')).toBe('Archivé');
   });

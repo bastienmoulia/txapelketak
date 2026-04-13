@@ -99,7 +99,8 @@
       },
       "success": {
         "title": "Tournoi créé",
-        "message": "Votre tournoi est en attente de validation.",
+        "message": "Votre tournoi est en attente de validation. L'URL d'administration ci-dessous n'est affichée qu'une seule fois: sauvegardez-la immédiatement.",
+        "downloadAdminLink": "Télécharger le lien d'administration",
         "backHome": "Retour à l'accueil",
         "openAdmin": "Ouvrir l'administration"
       },

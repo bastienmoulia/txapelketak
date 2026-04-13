@@ -99,7 +99,8 @@
       },
       "success": {
         "title": "Tournament created",
-        "message": "Your tournament is awaiting validation.",
+        "message": "Your tournament is awaiting validation. The administration URL below is shown only once: save it immediately.",
+        "downloadAdminLink": "Download administration link",
         "backHome": "Back to home",
         "openAdmin": "Open admin page"
       },

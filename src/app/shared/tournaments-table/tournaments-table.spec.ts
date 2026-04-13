@@ -40,14 +40,14 @@ describe('TournamentsTable', () => {
     expect(compiled.textContent).toContain('Aucun tournoi disponible');
   });
 
-  it('should disable open button for paused and waitingValidation tournaments', async () => {
+  it('should hide waitingValidation tournaments', async () => {
     fixture.componentRef.setInput('tournaments', [
       {
         ref: createRef('1'),
         name: 'T1',
         description: '',
         type: 'poules',
-        status: 'paused',
+        status: 'ongoing',
         createdAt: '2024-01-01',
       },
       {
@@ -73,10 +73,12 @@ describe('TournamentsTable', () => {
     const buttons = Array.from(
       fixture.nativeElement.querySelectorAll('button'),
     ) as HTMLButtonElement[];
+    const content = (fixture.nativeElement as HTMLElement).textContent ?? '';
 
-    expect(buttons[0].disabled).toBe(true);
-    expect(buttons[1].disabled).toBe(true);
-    expect(buttons[2].disabled).toBe(false);
+    expect(buttons.length).toBe(2);
+    expect(content).toContain('T1');
+    expect(content).not.toContain('T2');
+    expect(content).toContain('T3');
   });
 
   it('should have sortable column header for Nom', async () => {

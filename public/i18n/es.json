@@ -99,7 +99,8 @@
       },
       "success": {
         "title": "Torneo creado",
-        "message": "Su torneo está a la espera de validación.",
+        "message": "Su torneo está a la espera de validación. La URL de administración mostrada abajo solo se muestra una vez: guárdela inmediatamente.",
+        "downloadAdminLink": "Descargar enlace de administración",
         "backHome": "Volver al inicio",
         "openAdmin": "Abrir administración"
       },
@@ -157,7 +158,7 @@
     "archived": "Este torneo está archivado. No se permiten modificaciones.",
     "notFound": "Torneo no encontrado o no especificado.",
     "validated": "Torneo validado",
-    "validatedDetail": "El torneo ha sido validado y pausado. Cámbialo a 'En curso' cuando estés listo.",
+    "validatedDetail": "El torneo ha sido validado y ahora está en curso.",
     "unknownType": "Tipo de torneo desconocido",
     "tabs": {
       "poules": "Grupos",
@@ -338,7 +339,6 @@
     },
     "status": {
       "ongoing": "En curso",
-      "paused": "En pausa",
       "archived": "Archivado",
       "waitingValidation": "En espera de validación"
     },

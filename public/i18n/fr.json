@@ -99,7 +99,8 @@
       },
       "success": {
         "title": "Tournoi créé",
-        "message": "Votre tournoi est en attente de validation.",
+        "message": "Votre tournoi est en attente de validation. L'URL d'administration ci-dessous n'est affichée qu'une seule fois: sauvegardez-la immédiatement.",
+        "downloadAdminLink": "Télécharger le lien d'administration",
         "backHome": "Retour à l'accueil",
         "openAdmin": "Ouvrir l'administration"
       },
@@ -157,7 +158,7 @@
     "archived": "Ce tournoi est archivé. Les modifications ne sont pas autorisées.",
     "notFound": "Tournoi introuvable ou non spécifié.",
     "validated": "Tournoi validé",
-    "validatedDetail": "Le tournoi a été validé et mis en pause. Passez-le à 'En cours' lorsque vous êtes prêt.",
+    "validatedDetail": "Le tournoi a été validé et est maintenant en cours.",
     "unknownType": "Type de tournoi inconnu",
     "tabs": {
       "poules": "Poules",
@@ -338,7 +339,6 @@
     },
     "status": {
       "ongoing": "En cours",
-      "paused": "En pause",
       "archived": "Archivé",
       "waitingValidation": "En attente de validation"
     },

@@ -8,6 +8,7 @@ import { InputText } from 'primeng/inputtext';
 import { SelectButton } from 'primeng/selectbutton';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
+import { Textarea } from 'primeng/textarea';
 import { MessageModule } from 'primeng/message';
 import { startWith } from 'rxjs';
 import { Tournament, TournamentType, User } from '../../home/tournament.interface';
@@ -23,6 +24,7 @@ import { FirebaseService } from '../../shared/services/firebase.service';
     SelectButton,
     Button,
     FloatLabel,
+    Textarea,
     MessageModule,
     TranslocoModule,
   ],
@@ -46,11 +48,11 @@ export class TournamentNew {
   get typeOptions(): { label: string; value: TournamentType }[] {
     return [
       { label: this.translocoService.translate('tournaments.new.type.poules'), value: 'poules' },
-      { label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
+      /*{ label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
       {
         label: this.translocoService.translate('tournaments.new.type.poulesFinale'),
         value: 'poules_finale',
-      },
+      },*/
     ];
   }
 
@@ -96,12 +98,28 @@ export class TournamentNew {
     }
   }
 
-  openAdmin(): void {
+  downloadAdminLink(): void {
     const url = this.adminUrl();
     if (!url) {
       return;
     }
-    window.location.href = url;
+
+    const tournamentName = (this.form.get('name')?.value ?? 'tournament').toString().trim();
+    const safeTournamentName =
+      tournamentName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'tournament';
+    const filename = `admin-link-${safeTournamentName}.txt`;
+    const content = `${this.translocoService.translate('admin.tournament')}: ${tournamentName}\n${url}\n`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(objectUrl);
   }
 
   async onSubmit(): Promise<void> {
@@ -145,18 +163,6 @@ export class TournamentNew {
       await this.firebaseService.createUser(user);
 
       this.adminUrl.set(`${window.location.origin}/tournaments/${tournamentRef.id}/${user.token}`);
-
-      /*await this.firebaseService.queueMail(
-        creatorEmail,
-        `Accès admin - ${tournamentName}`,
-        `
-          <p>Bonjour ${creatorUsername},</p>
-          <p>Votre tournoi <strong>${tournamentName}</strong> a été créé.</p>
-          <p>Voici votre lien d'administration :</p>
-          <p><a href="${adminUrl}">${adminUrl}</a></p>
-          <p>Conservez ce lien de manière privée.</p>
-        `,
-      );*/
     }
   }
 }

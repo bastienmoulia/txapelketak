@@ -1,4 +1,4 @@
-<p-table [value]="tournaments()" [loading]="loading()" class="p-datatable-striped">
+<p-table [value]="visibleTournaments()" [loading]="loading()" class="p-datatable-striped">
   <ng-template #header>
     <tr>
       <th pSortableColumn="name">
@@ -14,7 +14,6 @@
         <p-button
           [label]="'shared.table.open' | transloco"
           [routerLink]="getTournamentLink()(tournament)"
-          [disabled]="tournament.status === 'paused' || tournament.status === 'waitingValidation'"
         />
       </td>
     </tr>

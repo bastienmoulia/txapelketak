@@ -11,6 +11,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "e2e:ui": "ng e2e --ui",
     "emulators": "npx firebase emulators:start --only firestore --import=.firebase/emulator-data --export-on-exit",
     "emulators:stop": "pkill -f \"firebase emulators:start\" || true; pkill -f \"cloud-firestore-emulator.*txapelketak-ac529\" || true; pkill -f \"/emulators/ui-v.*server.mjs\" || true",
     "emulators:reset": "npm run emulators:stop && npm run emulators",

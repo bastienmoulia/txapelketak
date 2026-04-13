@@ -5,19 +5,5 @@
       {{ tournament().name }}
       <app-role-badge [role]="role()" />
     </h2>
-
-    <div class="flex items-center gap-2 max-sm:w-full max-sm:flex-wrap">
-      @if (role() === 'admin') {
-        <p-button
-          type="button"
-          severity="primary"
-          icon="pi pi-pencil"
-          [label]="'shared.tournamentHeader.edit' | transloco"
-          [ariaLabel]="'shared.tournamentHeader.editAria' | transloco"
-          data-testid="edit-tournament-button"
-          (onClick)="edit()"
-        />
-      }
-    </div>
   </div>
 </section>

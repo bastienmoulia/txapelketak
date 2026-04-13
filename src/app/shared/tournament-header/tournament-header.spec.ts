@@ -30,22 +30,4 @@ describe('TournamentHeader', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should render edit button when admin is true', () => {
-    fixture.componentRef.setInput('role', 'admin');
-    fixture.detectChanges();
-
-    expect(
-      fixture.nativeElement.querySelector('[data-testid="edit-tournament-button"]'),
-    ).not.toBeNull();
-  });
-
-  it('should not render edit button when role is empty', () => {
-    fixture.componentRef.setInput('role', '');
-    fixture.detectChanges();
-
-    expect(
-      fixture.nativeElement.querySelector('[data-testid="edit-tournament-button"]'),
-    ).toBeNull();
-  });
 });

@@ -99,7 +99,8 @@
       },
       "success": {
         "title": "Torneo creado",
-        "message": "Su torneo está a la espera de validación.",
+        "message": "Su torneo está a la espera de validación. La URL de administración mostrada abajo solo se muestra una vez: guárdela inmediatamente.",
+        "downloadAdminLink": "Descargar enlace de administración",
         "backHome": "Volver al inicio",
         "openAdmin": "Abrir administración"
       },

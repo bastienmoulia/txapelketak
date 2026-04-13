@@ -98,6 +98,29 @@ export class TournamentNew {
     }
   }
 
+  downloadAdminLink(): void {
+    const url = this.adminUrl();
+    if (!url) {
+      return;
+    }
+
+    const tournamentName = (this.form.get('name')?.value ?? 'tournament').toString().trim();
+    const safeTournamentName = tournamentName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'tournament';
+    const filename = `admin-link-${safeTournamentName}.txt`;
+    const content = `${this.translocoService.translate('admin.tournament')}: ${tournamentName}\n${url}\n`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(objectUrl);
+  }
+
   async onSubmit(): Promise<void> {
     this.form.get('creatorUsername')?.markAsTouched();
     this.form.get('creatorEmail')?.markAsTouched();

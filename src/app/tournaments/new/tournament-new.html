@@ -195,6 +195,12 @@
 
         <div class="flex gap-4 flex-wrap justify-center">
           <p-button
+            [label]="'tournaments.new.success.downloadAdminLink' | transloco"
+            icon="pi pi-download"
+            (onClick)="downloadAdminLink()"
+            data-testid="btn-download-admin-link"
+          />
+          <p-button
             [label]="'tournaments.new.success.backHome' | transloco"
             icon="pi pi-home"
             severity="secondary"

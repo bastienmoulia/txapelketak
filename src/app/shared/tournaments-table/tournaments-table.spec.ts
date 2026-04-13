@@ -40,7 +40,7 @@ describe('TournamentsTable', () => {
     expect(compiled.textContent).toContain('Aucun tournoi disponible');
   });
 
-  it('should disable open button for waitingValidation tournaments', async () => {
+  it('should hide waitingValidation tournaments', async () => {
     fixture.componentRef.setInput('tournaments', [
       {
         ref: createRef('1'),
@@ -73,10 +73,12 @@ describe('TournamentsTable', () => {
     const buttons = Array.from(
       fixture.nativeElement.querySelectorAll('button'),
     ) as HTMLButtonElement[];
+    const content = (fixture.nativeElement as HTMLElement).textContent ?? '';
 
-    expect(buttons[0].disabled).toBe(false);
-    expect(buttons[1].disabled).toBe(true);
-    expect(buttons[2].disabled).toBe(false);
+    expect(buttons.length).toBe(2);
+    expect(content).toContain('T1');
+    expect(content).not.toContain('T2');
+    expect(content).toContain('T3');
   });
 
   it('should have sortable column header for Nom', async () => {

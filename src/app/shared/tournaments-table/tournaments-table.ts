@@ -7,12 +7,7 @@ import { Tournament } from '../../home/tournament.interface';
 
 @Component({
   selector: 'app-tournaments-table',
-  imports: [
-    RouterLink,
-    ButtonModule,
-    TableModule,
-    TranslocoModule,
-  ],
+  imports: [RouterLink, ButtonModule, TableModule, TranslocoModule],
   templateUrl: './tournaments-table.html',
   styleUrl: './tournaments-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

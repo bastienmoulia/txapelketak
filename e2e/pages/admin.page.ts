@@ -258,7 +258,7 @@ export class AdminPage {
       .locator('.p-datatable-tbody tr')
       .filter({ hasText: team1Name })
       .filter({ hasText: team2Name });
-    await row.locator('[aria-label*="upprimer"]').click();
+    await row.locator('[aria-label*="Supprimer"]').click();
     const dialog = this.page.locator('.p-dialog');
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();

@@ -105,10 +105,11 @@ export class TournamentNew {
     }
 
     const tournamentName = (this.form.get('name')?.value ?? 'tournament').toString().trim();
-    const safeTournamentName = tournamentName
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'tournament';
+    const safeTournamentName =
+      tournamentName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'tournament';
     const filename = `admin-link-${safeTournamentName}.txt`;
     const content = `${this.translocoService.translate('admin.tournament')}: ${tournamentName}\n${url}\n`;
 

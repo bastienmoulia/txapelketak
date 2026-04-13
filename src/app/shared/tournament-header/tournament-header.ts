@@ -1,19 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { Tournament, UserRole } from '../../home/tournament.interface';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { RoleBadge } from '../role-badge/role-badge';
 
 @Component({
   selector: 'app-tournament-header',
-  imports: [
-    ButtonModule,
-    TranslocoPipe,
-    ToastModule,
-    RoleBadge,
-  ],
+  imports: [ButtonModule, ToastModule, RoleBadge],
   providers: [MessageService],
   templateUrl: './tournament-header.html',
   styleUrl: './tournament-header.css',

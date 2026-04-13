@@ -1,0 +1,33 @@
+import { type Locator, type Page } from '@playwright/test';
+
+export class TournamentListPage {
+  readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
+
+  async goto(): Promise<void> {
+    await this.page.goto('/tournaments');
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  tournamentRow(name: string): Locator {
+    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
+  }
+
+  async hasTournament(name: string): Promise<boolean> {
+    return (await this.tournamentRow(name).count()) > 0;
+  }
+
+  async openTournament(name: string): Promise<void> {
+    await this.tournamentRow(name).locator('button').click();
+  }
+
+  async waitForTournamentToAppear(name: string, timeout = 10000): Promise<void> {
+    await this.page
+      .locator('.p-datatable-tbody tr')
+      .filter({ hasText: name })
+      .waitFor({ timeout });
+  }
+}

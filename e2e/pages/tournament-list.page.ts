@@ -9,7 +9,6 @@ export class TournamentListPage {
 
   async goto(): Promise<void> {
     await this.page.goto('/tournaments');
-    await this.page.waitForLoadState('networkidle');
   }
 
   tournamentRow(name: string): Locator {
@@ -25,9 +24,6 @@ export class TournamentListPage {
   }
 
   async waitForTournamentToAppear(name: string, timeout = 10000): Promise<void> {
-    await this.page
-      .locator('.p-datatable-tbody tr')
-      .filter({ hasText: name })
-      .waitFor({ timeout });
+    await this.page.locator('.p-datatable-tbody tr').filter({ hasText: name }).waitFor({ timeout });
   }
 }

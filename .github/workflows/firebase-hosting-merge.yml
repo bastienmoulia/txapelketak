@@ -21,10 +21,19 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
+      - name: Start Firebase emulators
+        run: firebase emulators:start --only firestore &
+      - name: Wait for emulators to be ready
+        run: sleep 5
       - name: Lint
         run: npm run lint
       - name: Test
         run: npm run test -- --watch=false
+      - name: E2E
+        run: npm run e2e
+        env:
+          FIREBASE_EMULATOR_HOST: localhost:8080
+          FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
       - name: Build
         run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0

@@ -10,7 +10,7 @@ import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from './transloco-loader';
+import { TranslocoHttpLoader } from './shared/services/transloco-loader.service';
 import { AppTitleStrategy } from './shared/router/app-title.strategy';
 
 const TxapelketaTheme = definePreset(Aura, {

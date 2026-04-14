@@ -1,6 +1,7 @@
 <div class="header-actions flex items-center justify-end gap-3 flex-wrap">
   <p-menu #themeMenu [model]="themeItems()" [popup]="true" appendTo="body" />
   <p-button
+    data-testid="theme-button"
     type="button"
     severity="secondary"
     [outlined]="true"
@@ -12,6 +13,7 @@
 
   <p-menu #languageMenu [model]="languageItems()" [popup]="true" appendTo="body" />
   <p-button
+    data-testid="language-button"
     type="button"
     severity="secondary"
     [outlined]="true"

@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
+declare const process: {
+  env: Record<string, string | undefined>;
+};
+
+const isCI = Boolean(process.env['CI']);
+const ciWorkers = Number(process.env['PLAYWRIGHT_CI_WORKERS'] ?? 2);
+const ciRetries = Number(process.env['PLAYWRIGHT_CI_RETRIES'] ?? 1);
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -14,15 +22,19 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env['CI'],
+  forbidOnly: isCI,
   /* Retry on CI only */
-  retries: process.env['CI'] ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env['CI'] ? 1 : undefined,
+  retries: isCI ? ciRetries : 0,
+  /* Keep CI parallel by default; override with PLAYWRIGHT_CI_WORKERS when needed. */
+  workers: isCI ? ciWorkers : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['list'], ['html']],
   /* Global timeout for each test */
-  timeout: 60000,
+  timeout: 20000,
+  /* Fail faster on slow selectors/assertions to reduce total suite duration. */
+  expect: {
+    timeout: 5000,
+  },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

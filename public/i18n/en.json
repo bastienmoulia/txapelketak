@@ -143,7 +143,8 @@
       "recentGames": "Recent results",
       "noRecentGames": "No results available",
       "warningUndatedGames": "{{count}} game(s) without a date",
-      "warningStaleUnscoredGames": "{{count}} game(s) started more than one hour ago without a score"
+      "warningStaleUnscoredGames": "{{count}} game(s) started more than one hour ago without a score",
+      "warningGamesWithoutReferees": "{{count}} game(s) in the coming week without referees"
     }
   },
   "admin": {

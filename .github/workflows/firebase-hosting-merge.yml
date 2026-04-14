@@ -22,7 +22,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
       - name: Start Firebase emulators
-        run: firebase emulators:start --only firestore &
+        run: npx firebase emulators:start --only firestore &
       - name: Wait for emulators to be ready
         run: sleep 5
       - name: Lint

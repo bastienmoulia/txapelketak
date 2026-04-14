@@ -712,6 +712,63 @@ describe('TournamentDashboard', () => {
       expect(component.staleUnscoredGamesCount()).toBe(0);
     });
 
+    it('should count only games in the coming week without referees', () => {
+      const now = new Date('2026-01-01T12:00:00').getTime();
+      const inThreeDays = new Date(now + 3 * 24 * 60 * 60 * 1000);
+      const inEightDays = new Date(now + 8 * 24 * 60 * 60 * 1000);
+      const yesterday = new Date(now - 24 * 60 * 60 * 1000);
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: inThreeDays }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: inEightDays, referees: [] }),
+              makeGame({ refTeam1Id: 'e', refTeam2Id: 'f', date: yesterday, referees: [] }),
+              makeGame({
+                refTeam1Id: 'g',
+                refTeam2Id: 'h',
+                date: inThreeDays,
+                referees: ['Ref A'],
+              }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+      component.nowMs.set(now);
+
+      expect(component.gamesWithoutRefereesCount()).toBe(1);
+    });
+
+    it('should not count games outside the coming week even without referees', () => {
+      const now = new Date('2026-01-01T12:00:00').getTime();
+      const inEightDays = new Date(now + 8 * 24 * 60 * 60 * 1000);
+      const yesterday = new Date(now - 24 * 60 * 60 * 1000);
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: inEightDays }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: yesterday, referees: [] }),
+              makeGame({ refTeam1Id: 'e', refTeam2Id: 'f' }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+      component.nowMs.set(now);
+
+      expect(component.gamesWithoutRefereesCount()).toBe(0);
+    });
+
     it('should show warnings only for admin and organizer roles', () => {
       setInputs({ role: 'admin' });
       expect(component.showWarnings()).toBe(true);

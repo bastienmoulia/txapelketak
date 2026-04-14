@@ -216,6 +216,29 @@ export class TournamentDashboard {
     return count;
   });
 
+  gamesWithoutRefereesCount = computed(() => {
+    const now = this.nowMs();
+    const oneWeekAhead = now + 7 * 24 * 60 * 60 * 1000;
+    let count = 0;
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (!game.date) continue;
+          const gameDateMs = new Date(game.date).getTime();
+          const isInNextWeek = gameDateMs >= now && gameDateMs <= oneWeekAhead;
+          const hasNoReferees = !game.referees || game.referees.length === 0;
+
+          if (isInNextWeek && hasNoReferees) {
+            count++;
+          }
+        }
+      }
+    }
+
+    return count;
+  });
+
   showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');
 
   recentGames = computed((): RecentGame[] => {

@@ -547,6 +547,11 @@ export class FirebaseService {
           if (yamlGame.score1 != null) gameData['scoreTeam1'] = yamlGame.score1;
           if (yamlGame.score2 != null) gameData['scoreTeam2'] = yamlGame.score2;
           if (yamlGame.date != null) gameData['date'] = new Date(yamlGame.date);
+          if (Array.isArray(yamlGame.referees) && yamlGame.referees.length > 0) {
+            gameData['referees'] = yamlGame.referees
+              .map((referee) => referee.trim())
+              .filter((referee) => referee.length > 0);
+          }
           await runInInjectionContext(this.environmentInjector, async () => {
             console.debug(`[Firestore] setDoc: game (batch import)`);
             await setDoc(gameDocRef, gameData);

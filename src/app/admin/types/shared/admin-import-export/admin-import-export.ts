@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -28,6 +22,7 @@ export interface TournamentYamlGame {
   score1?: number;
   score2?: number;
   date?: string;
+  referees?: string[];
 }
 
 export interface TournamentYamlPoule {
@@ -79,7 +74,9 @@ export class AdminImportExport {
     const blob = new Blob([yamlContent], { type: 'text/yaml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const tournamentName = this.tournament().name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const tournamentName = this.tournament()
+      .name.replace(/[^a-z0-9]/gi, '_')
+      .toLowerCase();
     const today = new Date().toISOString().slice(0, 10);
     a.href = url;
     a.download = `${tournamentName}_export_${today}.yaml`;
@@ -172,6 +169,9 @@ export class AdminImportExport {
           if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
           if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
           if (game.date != null) yamlGame.date = game.date.toISOString();
+          if (game.referees && game.referees.length > 0) {
+            yamlGame.referees = game.referees;
+          }
           return yamlGame;
         }),
       })),

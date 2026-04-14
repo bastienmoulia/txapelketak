@@ -238,6 +238,9 @@ test.describe.serial('Admin – tournament lifecycle', () => {
   // --- Games management (requires teams + serie + poule) ---
 
   test('should set up data for game management', async ({ page }) => {
+    // This test does a lot of setup: add team, add series+poule, assign teams.
+    test.setTimeout(90000);
+
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
 
@@ -252,6 +255,7 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await adminPage.addPoule(serieName, pouleName);
 
     // Add both teams to the poule
+    await adminPage.ensureSerieExpanded(serieName);
     const seriePanel = adminPage.seriePanel(serieName);
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
     await pouleCard.getByTestId('add-team-to-poule-button').click();

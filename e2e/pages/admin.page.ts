@@ -9,12 +9,16 @@ export class AdminPage {
 
   async goto(adminUrl: string): Promise<void> {
     await this.page.goto(adminUrl);
-    // await this.waitForLoad();
+    await this.waitForLoad();
   }
 
   async waitForLoad(): Promise<void> {
-    // Wait for the success toast "Tournoi validé" after automatic validation
-    await this.page.getByText('Tournoi validé').waitFor({ timeout: 15000 });
+    // Wait for the admin page to finish loading: the "Tableau de bord" tab appears
+    // once the user has been authenticated and the tournament data has been fetched.
+    await this.page.getByRole('tab', { name: 'Tableau de bord' }).waitFor({
+      state: 'visible',
+      timeout: 30000,
+    });
   }
 
   isAccessDenied(): Locator {
@@ -118,12 +122,8 @@ export class AdminPage {
   }
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
     const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
-    // Expand accordion if needed
-    const accordionHeader = seriePanel.locator('.p-accordionheader, p-accordion-header');
-    if ((await accordionHeader.getAttribute('aria-expanded')) === 'false') {
-      await accordionHeader.click();
-    }
     await seriePanel.getByTestId('add-poule-button').click();
     const dialog = this.page.locator('.p-dialog');
     await dialog.waitFor({ state: 'visible' });
@@ -137,6 +137,7 @@ export class AdminPage {
     currentPouleName: string,
     newPouleName: string,
   ): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
     const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
     await pouleCard.getByTestId('edit-poule-button').click();
@@ -150,6 +151,7 @@ export class AdminPage {
   }
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
     const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
     await pouleCard.getByTestId('delete-poule-button').click();
@@ -161,6 +163,20 @@ export class AdminPage {
 
   seriePanel(name: string): Locator {
     return this.page.locator('p-accordion-panel').filter({ hasText: name });
+  }
+
+  /**
+   * Ensures that the accordion panel for a given serie is expanded, so that
+   * its poule cards are visible and interactable.
+   */
+  async ensureSerieExpanded(serieName: string): Promise<void> {
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
+    const content = seriePanel.locator('p-accordion-content');
+    const isVisible = await content.isVisible();
+    if (!isVisible) {
+      await seriePanel.locator('.p-accordionheader').click();
+      await content.waitFor({ state: 'visible' });
+    }
   }
 
   poulesWarningMessage(): Locator {

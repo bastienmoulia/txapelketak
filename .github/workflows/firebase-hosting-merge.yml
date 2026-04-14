@@ -24,7 +24,17 @@ jobs:
       - name: Start Firebase emulators
         run: npx firebase emulators:start --only firestore &
       - name: Wait for emulators to be ready
-        run: sleep 5
+        run: |
+          for attempt in {1..30}; do
+            if (echo > /dev/tcp/localhost/8080) >/dev/null 2>&1; then
+              echo "Firestore emulator is ready on localhost:8080."
+              exit 0
+            fi
+            echo "Waiting for Firestore emulator on localhost:8080..."
+            sleep 1
+          done
+          echo "Firestore emulator did not become ready in time." >&2
+          exit 1
       - name: Lint
         run: npm run lint
       - name: Test

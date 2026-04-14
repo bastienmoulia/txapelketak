@@ -9,7 +9,6 @@ export class TournamentDetailPage {
 
   async goto(tournamentId: string): Promise<void> {
     await this.page.goto(`/tournaments/${tournamentId}`);
-    await this.page.waitForLoadState('networkidle');
   }
 
   async waitForLoad(): Promise<void> {
@@ -28,7 +27,6 @@ export class TournamentDetailPage {
 
   async clickTab(tabLabel: string): Promise<void> {
     await this.page.getByRole('tab', { name: tabLabel }).click();
-    await this.page.waitForLoadState('networkidle');
   }
 
   // --- Dashboard ---

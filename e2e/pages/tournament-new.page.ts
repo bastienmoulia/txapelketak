@@ -9,7 +9,6 @@ export class TournamentNewPage {
 
   async goto(): Promise<void> {
     await this.page.goto('/tournaments/new');
-    await this.page.waitForLoadState('networkidle');
   }
 
   async fillStep1(name: string, description?: string): Promise<void> {
@@ -24,7 +23,6 @@ export class TournamentNewPage {
 
   async goToNextStep(): Promise<void> {
     await this.page.getByTestId('btn-next').click();
-    await this.page.waitForLoadState('networkidle');
   }
 
   async fillStep2(username: string, email: string): Promise<void> {

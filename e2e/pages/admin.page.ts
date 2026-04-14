@@ -9,13 +9,12 @@ export class AdminPage {
 
   async goto(adminUrl: string): Promise<void> {
     await this.page.goto(adminUrl);
-    await this.waitForLoad();
+    // await this.waitForLoad();
   }
 
   async waitForLoad(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-    // Wait until neither loading indicator nor access denied is shown
-    await this.page.getByTestId('admin-loading').waitFor({ state: 'hidden', timeout: 15000 });
+    // Wait for the success toast "Tournoi validé" after automatic validation
+    await this.page.getByText('Tournoi validé').waitFor({ timeout: 15000 });
   }
 
   isAccessDenied(): Locator {
@@ -26,7 +25,6 @@ export class AdminPage {
 
   async clickTab(tabLabel: string): Promise<void> {
     await this.page.getByRole('tab', { name: tabLabel }).click();
-    await this.page.waitForLoadState('networkidle');
   }
 
   // --- Dashboard ---
@@ -134,7 +132,11 @@ export class AdminPage {
     await dialog.waitFor({ state: 'hidden' });
   }
 
-  async editPoule(serieName: string, currentPouleName: string, newPouleName: string): Promise<void> {
+  async editPoule(
+    serieName: string,
+    currentPouleName: string,
+    newPouleName: string,
+  ): Promise<void> {
     const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
     await pouleCard.getByTestId('edit-poule-button').click();
@@ -175,10 +177,7 @@ export class AdminPage {
     await dialog.locator('input#email').fill(email);
     // Select role via p-select
     await this.selectRole(dialog, role);
-    await dialog
-      .locator('button')
-      .filter({ hasText: 'Enregistrer' })
-      .click();
+    await dialog.locator('button').filter({ hasText: 'Enregistrer' }).click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
@@ -210,14 +209,14 @@ export class AdminPage {
     return this.page.locator('.p-datatable-tbody tr').filter({ hasText: username });
   }
 
-  private async selectRole(
-    dialog: Locator,
-    role: 'admin' | 'organizer',
-  ): Promise<void> {
+  private async selectRole(dialog: Locator, role: 'admin' | 'organizer'): Promise<void> {
     const roleLabel = role === 'admin' ? 'Administrateur' : 'Organisateur';
     await dialog.locator('.p-select').click();
     // Wait for dropdown
-    await this.page.locator('.p-select-overlay .p-select-option').filter({ hasText: roleLabel }).click();
+    await this.page
+      .locator('.p-select-overlay .p-select-option')
+      .filter({ hasText: roleLabel })
+      .click();
   }
 
   // --- Games ---

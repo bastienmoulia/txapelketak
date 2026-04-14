@@ -143,7 +143,8 @@
       "recentGames": "Azken emaitzak",
       "noRecentGames": "Ez dago emaitzarik",
       "warningUndatedGames": "{{count}} partida datarik gabe",
-      "warningStaleUnscoredGames": "{{count}} partida duela ordubete baino gehiago hasita eta puntuaziorik gabe"
+      "warningStaleUnscoredGames": "{{count}} partida duela ordubete baino gehiago hasita eta puntuaziorik gabe",
+      "warningGamesWithoutReferees": "{{count}} datorren asteko partida arbitrorik gabe"
     }
   },
   "admin": {

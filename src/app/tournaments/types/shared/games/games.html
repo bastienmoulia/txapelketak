@@ -40,6 +40,7 @@
           <th>{{ 'admin.games.score' | transloco }}</th>
           <th>{{ 'admin.games.team2' | transloco }}</th>
           <th>{{ 'admin.games.time' | transloco }}</th>
+          <th>{{ 'admin.games.referees' | transloco }}</th>
           @if (role() === 'admin' || role() === 'organizer') {
             <th class="games-table__actions-header">
               {{ 'shared.table.columns.actions' | transloco }}
@@ -140,6 +141,13 @@
               <span class="text-color-secondary">
                 {{ game.date | date: 'shortTime' : undefined : activeLanguage() }}
               </span>
+            } @else {
+              <span class="text-color-secondary">-</span>
+            }
+          </td>
+          <td [attr.data-label]="'admin.games.referees' | transloco">
+            @if (game.referees && game.referees.length > 0) {
+              <span class="text-color-secondary">{{ game.referees.join(', ') }}</span>
             } @else {
               <span class="text-color-secondary">-</span>
             }
@@ -274,6 +282,21 @@
           (onClear)="clearGameDate()"
         />
         <label for="gameDate">{{ 'admin.games.date' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Row 4: Referees (optional) -->
+    <div>
+      <p-floatlabel variant="on">
+        <p-autocomplete
+          inputId="referees"
+          [(ngModel)]="gameReferees"
+          [multiple]="true"
+          [typeahead]="false"
+          [addOnBlur]="true"
+          class="w-full"
+        />
+        <label for="referees">{{ 'admin.games.referees' | transloco }}</label>
       </p-floatlabel>
     </div>
   </div>

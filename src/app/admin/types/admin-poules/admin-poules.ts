@@ -133,6 +133,7 @@ export class AdminPoules {
       scoreTeam1: event.scoreTeam1 ?? undefined,
       scoreTeam2: event.scoreTeam2 ?? undefined,
       date: event.date ?? undefined,
+      referees: event.referees ?? undefined,
     };
     if (event.gameRef) {
       await this.firebaseService.updateGame(event.gameRef, gameData);

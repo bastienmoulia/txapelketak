@@ -365,6 +365,96 @@ describe('Games', () => {
     const sorted = component.sortedTeams();
     expect(sorted.map((t) => t.name)).toEqual(['Alpha', 'Bravo', 'Charlie']);
   });
+
+  it('should populate gameReferees when editing a game with referees', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const pouleRef = createDocumentReference('poule-1');
+
+    const poule = {
+      ref: pouleRef,
+      name: 'Poule A',
+      refTeams: [team1Ref, team2Ref],
+      games: [],
+    } as Poule;
+
+    const game = {
+      ref: createDocumentReference('game-1'),
+      refTeam1: team1Ref,
+      refTeam2: team2Ref,
+      referees: ['Alice', 'Bob'],
+    };
+
+    component.onEditGame(poule, game);
+
+    expect(component.gameReferees()).toEqual(['Alice', 'Bob']);
+  });
+
+  it('should reset gameReferees to empty array when adding a new game', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const pouleRef = createDocumentReference('poule-1');
+
+    const poule = {
+      ref: pouleRef,
+      name: 'Poule A',
+      refTeams: [team1Ref, team2Ref],
+      games: [],
+    } as Poule;
+
+    component.onAddGame(poule);
+
+    expect(component.gameReferees()).toEqual([]);
+  });
+
+  it('should include referees in saveGame event', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const pouleRef = createDocumentReference('poule-1');
+
+    const poule = {
+      ref: pouleRef,
+      name: 'Poule A',
+      refTeams: [team1Ref, team2Ref],
+      games: [],
+    } as Poule;
+
+    component.onAddGame(poule);
+    component.gameReferees.set(['Charlie']);
+    component.selectedTeam1Ref.set(team1Ref);
+    component.selectedTeam2Ref.set(team2Ref);
+
+    const emitSpy = vi.spyOn(component.saveGame, 'emit');
+    component.onSaveGame();
+
+    expect(emitSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ referees: ['Charlie'] }),
+    );
+  });
+
+  it('should emit null referees when no referees are entered', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const pouleRef = createDocumentReference('poule-1');
+
+    const poule = {
+      ref: pouleRef,
+      name: 'Poule A',
+      refTeams: [team1Ref, team2Ref],
+      games: [],
+    } as Poule;
+
+    component.onAddGame(poule);
+    component.selectedTeam1Ref.set(team1Ref);
+    component.selectedTeam2Ref.set(team2Ref);
+
+    const emitSpy = vi.spyOn(component.saveGame, 'emit');
+    component.onSaveGame();
+
+    expect(emitSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ referees: null }),
+    );
+  });
 });
 
 function createDocumentReference(id: string): DocumentReference {

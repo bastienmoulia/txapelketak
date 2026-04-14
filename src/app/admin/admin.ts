@@ -24,7 +24,6 @@ import { AdminTypes } from './types/admin-types';
 import { TournamentHeader } from '../shared/tournament-header/tournament-header';
 import { FirebaseService } from '../shared/services/firebase.service';
 import { TournamentDetailStore } from '../store/tournament-detail.store';
-import { StoreDebugPanel } from '../shared/store-debug-panel/store-debug-panel';
 
 @Component({
   selector: 'app-admin',
@@ -38,7 +37,6 @@ import { StoreDebugPanel } from '../shared/store-debug-panel/store-debug-panel';
     AdminTypes,
     TranslocoModule,
     TournamentHeader,
-    StoreDebugPanel,
   ],
   providers: [MessageService],
   templateUrl: './admin.html',

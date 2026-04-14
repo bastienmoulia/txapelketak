@@ -22,19 +22,29 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium firefox webkit
       - name: Start Firebase emulators
-        run: npx --yes firebase-tools emulators:start --only firestore &
-      - name: Wait for emulators to be ready
         continue-on-error: true
         run: |
-          for attempt in {1..30}; do
-            if (echo > /dev/tcp/localhost/8080) >/dev/null 2>&1; then
+          npx --yes firebase-tools emulators:start --only firestore --project txapelketak-ac529 > firebase-emulators.log 2>&1 &
+          echo $! > firebase-emulators.pid
+
+          for attempt in {1..90}; do
+            if ! kill -0 "$(cat firebase-emulators.pid)" >/dev/null 2>&1; then
+              echo "Firestore emulator process exited unexpectedly." >&2
+              tail -n 200 firebase-emulators.log || true
+              exit 1
+            fi
+
+            if (echo > /dev/tcp/127.0.0.1/8080) >/dev/null 2>&1; then
               echo "Firestore emulator is ready on localhost:8080."
               exit 0
             fi
+
             echo "Waiting for Firestore emulator on localhost:8080..."
             sleep 1
           done
+
           echo "Firestore emulator did not become ready in time." >&2
+          tail -n 200 firebase-emulators.log || true
           exit 1
       - name: Lint
         run: npm run lint

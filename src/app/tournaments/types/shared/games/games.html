@@ -285,7 +285,7 @@
       </p-floatlabel>
     </div>
 
-    <!-- Ligne 4 : Arbitres (optionnel) -->
+    <!-- Row 4: Referees (optional) -->
     <div>
       <p-floatlabel variant="on">
         <p-autocomplete
@@ -294,7 +294,7 @@
           [multiple]="true"
           [typeahead]="false"
           [addOnBlur]="true"
-          [style]="{ width: '100%' }"
+          class="w-full"
         />
         <label for="referees">{{ 'admin.games.referees' | transloco }}</label>
       </p-floatlabel>

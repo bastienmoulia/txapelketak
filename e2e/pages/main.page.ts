@@ -12,11 +12,15 @@ export class MainPage {
   }
 
   themeButton(): Locator {
-    return this.page.locator('.header-actions button').nth(0);
+    return this.page
+      .locator('.header-actions')
+      .getByRole('button', { name: /theme|thème|tema/i });
   }
 
   languageButton(): Locator {
-    return this.page.locator('.header-actions button').nth(1);
+    return this.page
+      .locator('.header-actions')
+      .getByRole('button', { name: /language|langue|idioma|hizkuntza/i });
   }
 
   async selectDarkTheme(): Promise<void> {

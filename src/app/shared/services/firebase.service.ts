@@ -440,6 +440,8 @@ export class FirebaseService {
     if (gameData.scoreTeam1 != null) data['scoreTeam1'] = gameData.scoreTeam1;
     if (gameData.scoreTeam2 != null) data['scoreTeam2'] = gameData.scoreTeam2;
     if (gameData.date != null) data['date'] = gameData.date;
+    if (gameData.referees != null && gameData.referees.length > 0)
+      data['referees'] = gameData.referees;
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] setDoc: game`);
       await setDoc(gameDocRef, data);
@@ -458,6 +460,7 @@ export class FirebaseService {
     data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
     data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
     data['date'] = gameData.date ?? null;
+    data['referees'] = gameData.referees?.length ? gameData.referees : null;
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] updateDoc: game`);
       await updateDoc(gameRef, data);

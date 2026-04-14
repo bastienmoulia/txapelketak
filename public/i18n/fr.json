@@ -245,7 +245,8 @@
       "poule": "Poule",
       "time": "Heure",
       "filterByTeam": "Filtrer par équipe",
-      "dialogSelectPoule": "Sélectionner la série et la poule"
+      "dialogSelectPoule": "Sélectionner la série et la poule",
+      "referees": "Arbitres"
     },
     "teams": {
       "empty": "Aucune équipe",

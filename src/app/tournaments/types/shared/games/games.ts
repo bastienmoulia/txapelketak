@@ -20,6 +20,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputMaskModule } from 'primeng/inputmask';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
 import { DatePicker } from 'primeng/datepicker';
@@ -35,6 +36,7 @@ export interface SaveGameEvent {
   scoreTeam1?: number | null;
   scoreTeam2?: number | null;
   date?: Date | null;
+  referees?: string[] | null;
   gameRef?: DocumentReference;
 }
 
@@ -84,6 +86,7 @@ export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
     TableModule,
     DatePicker,
     InputMaskModule,
+    AutoCompleteModule,
     TooltipModule,
   ],
   templateUrl: './games.html',
@@ -269,7 +272,7 @@ export class Games {
 
   byDateColumnCount = computed(() => {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
-    return hasActions ? 6 : 5;
+    return hasActions ? 7 : 6;
   });
 
   // Dialog state
@@ -284,6 +287,7 @@ export class Games {
   scoreTeam1 = signal<number | null>(null);
   scoreTeam2 = signal<number | null>(null);
   gameDate = signal<Date | null>(null);
+  gameReferees = signal<string[]>([]);
 
   // Teams available for the current poule dialog
   dialogTeams = computed(() => {
@@ -376,6 +380,7 @@ export class Games {
     this.scoreTeam1.set(null);
     this.scoreTeam2.set(null);
     this.clearGameDate();
+    this.gameReferees.set([]);
     this.gameDialogVisible.set(true);
   }
 
@@ -391,6 +396,7 @@ export class Games {
     const editDate = game.date ? new Date(game.date) : null;
     this.gameDate.set(editDate);
     this.gameDateString = this.formatDateForMask(editDate);
+    this.gameReferees.set(game.referees ? [...game.referees] : []);
     this.gameDialogVisible.set(true);
   }
 
@@ -413,6 +419,7 @@ export class Games {
       scoreTeam1: this.scoreTeam1(),
       scoreTeam2: this.scoreTeam2(),
       date: this.gameDate(),
+      referees: this.gameReferees().length > 0 ? this.gameReferees() : null,
       gameRef: this.editingGameRef() ?? undefined,
     });
     this.gameDialogVisible.set(false);

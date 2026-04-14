@@ -245,7 +245,8 @@
       "poule": "Multzoa",
       "time": "Ordua",
       "filterByTeam": "Taldea iragazi",
-      "dialogSelectPoule": "Seriea eta taldea aukeratu"
+      "dialogSelectPoule": "Seriea eta taldea aukeratu",
+      "referees": "Arbitroak"
     },
     "teams": {
       "empty": "Ez dago talderik",

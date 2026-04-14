@@ -245,7 +245,8 @@
       "poule": "Pool",
       "time": "Time",
       "filterByTeam": "Filter by team",
-      "dialogSelectPoule": "Select series and pool"
+      "dialogSelectPoule": "Select series and pool",
+      "referees": "Referees"
     },
     "teams": {
       "empty": "No teams",

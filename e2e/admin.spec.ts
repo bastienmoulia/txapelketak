@@ -152,12 +152,16 @@ test.describe.serial('Admin – tournament lifecycle', () => {
 
     await test.step('add first poule', async () => {
       await adminPage.addPoule(serieName, pouleName);
-      await expect(adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleName })).toBeVisible();
+      await expect(
+        adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleName }),
+      ).toBeVisible();
     });
 
     await test.step('add second poule', async () => {
       await adminPage.addPoule(serieName, pouleNameB);
-      await expect(adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleNameB })).toBeVisible();
+      await expect(
+        adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleNameB }),
+      ).toBeVisible();
     });
   });
 
@@ -167,8 +171,12 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await adminPage.clickTab('Poules');
 
     await adminPage.editPoule(serieName, pouleName, poulesNameEdited);
-    await expect(adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: poulesNameEdited })).toBeVisible();
-    await expect(adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleName })).not.toBeVisible();
+    await expect(
+      adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: poulesNameEdited }),
+    ).toBeVisible();
+    await expect(
+      adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleName }),
+    ).not.toBeVisible();
   });
 
   test('should delete a poule', async ({ page }) => {
@@ -177,7 +185,9 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await adminPage.clickTab('Poules');
 
     await adminPage.deletePoule(serieName, pouleNameB);
-    await expect(adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleNameB })).not.toBeVisible();
+    await expect(
+      adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleNameB }),
+    ).not.toBeVisible();
   });
 
   test('should edit a serie', async ({ page }) => {

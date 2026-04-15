@@ -141,7 +141,9 @@ export class AdminPage {
   }
 
   async editSerie(currentName: string, newName: string): Promise<void> {
-    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: currentName });
+    const seriePanel = this.poulesPanel()
+      .locator('p-accordion-panel')
+      .filter({ hasText: currentName });
     await seriePanel.getByTestId('edit-serie-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -167,7 +169,9 @@ export class AdminPage {
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel()
+      .locator('p-accordion-panel')
+      .filter({ hasText: serieName });
     await seriePanel.getByTestId('add-poule-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -184,7 +188,9 @@ export class AdminPage {
     newPouleName: string,
   ): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel()
+      .locator('p-accordion-panel')
+      .filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
     await pouleCard.getByTestId('edit-poule-button').click();
     const dialog = this.page
@@ -200,7 +206,9 @@ export class AdminPage {
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel()
+      .locator('p-accordion-panel')
+      .filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
     await pouleCard.getByTestId('delete-poule-button').click();
     const dialog = this.page
@@ -220,7 +228,9 @@ export class AdminPage {
    * its poule cards are visible and interactable.
    */
   async ensureSerieExpanded(serieName: string): Promise<void> {
-    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel()
+      .locator('p-accordion-panel')
+      .filter({ hasText: serieName });
     const content = seriePanel.locator('p-accordion-content');
     const isVisible = await content.isVisible();
     if (!isVisible) {
@@ -250,7 +260,9 @@ export class AdminPage {
   }
 
   async editUser(currentUsername: string, newUsername: string, newEmail: string): Promise<void> {
-    const row = this.usersPanel().locator('.p-datatable-tbody tr').filter({ hasText: currentUsername });
+    const row = this.usersPanel()
+      .locator('.p-datatable-tbody tr')
+      .filter({ hasText: currentUsername });
     await row.locator('button').filter({ hasText: 'Modifier' }).click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -296,7 +308,10 @@ export class AdminPage {
   async addGame(team1Name: string, team2Name: string): Promise<void> {
     await this.gamesPanel().getByTestId('add-game-button').click();
     // Step 1: pick serie + poule
-    let dialog = this.page.locator('.p-dialog').filter({ has: this.page.locator('.p-select') }).first();
+    let dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('.p-select') })
+      .first();
     await dialog.waitFor({ state: 'visible' });
     // Select the first available serie
     await dialog.locator('.p-select').first().click();
@@ -306,7 +321,10 @@ export class AdminPage {
     await this.page.locator('.p-select-overlay .p-select-option').first().click();
     await dialog.locator('button').filter({ hasText: 'Suivant' }).click();
     // Step 2: fill teams
-    dialog = this.page.locator('.p-dialog').filter({ has: this.page.locator('.p-select') }).first();
+    dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('.p-select') })
+      .first();
     await dialog.waitFor({ state: 'visible' });
     // Select team 1
     await dialog.locator('.p-select').first().click();

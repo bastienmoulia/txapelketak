@@ -246,6 +246,9 @@
       "poule": "Pool",
       "time": "Time",
       "filterByTeam": "Filter by team",
+      "filterByDate": "Filter by date",
+      "filterTeamShort": "Team",
+      "filterDateShort": "Date",
       "dialogSelectPoule": "Select series and pool",
       "referees": "Referees"
     },

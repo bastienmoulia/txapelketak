@@ -1,24 +1,44 @@
 @if (sortedSeries().length > 0) {
-  <div class="flex justify-between items-center mx-3 mb-3">
+  <div class="games-filters flex flex-wrap items-center gap-2 mx-3 mb-3">
     <p-select
+      class="games-filter-control games-team-filter"
       [options]="sortedTeams()"
       [ngModel]="selectedTeamId()"
       optionLabel="name"
       optionValue="ref.id"
       [filter]="true"
       [showClear]="true"
-      [placeholder]="'admin.games.filterByTeam' | transloco"
-      [style]="{ minWidth: '14rem' }"
+      [placeholder]="'admin.games.filterTeamShort' | transloco"
       appendTo="body"
       (onChange)="onTeamSelect($event.value)"
       (onClear)="clearTeamFilter()"
       data-testid="team-filter-select"
     />
+
+    <p-datepicker
+      class="games-filter-control games-date-filter"
+      [ngModel]="selectedDateFilter()"
+      (ngModelChange)="onDateFilterChange($event)"
+      [placeholder]="'admin.games.filterDateShort' | transloco"
+      [showButtonBar]="true"
+      [showClear]="true"
+      [showIcon]="true"
+      [dateFormat]="datePickerFormat()"
+      [firstDayOfWeek]="firstDayOfWeek()"
+      appendTo="body"
+      (onClear)="clearDateFilter()"
+      data-testid="date-filter-picker"
+    />
+
     @if (role() === 'admin') {
       <p-button
+        class="ml-auto games-add-button"
         icon="pi pi-plus"
-        [label]="'admin.games.addGame' | transloco"
         [ariaLabel]="'admin.games.addGame' | transloco"
+        [pTooltip]="'admin.games.addGame' | transloco"
+        tooltipPosition="top"
+        [text]="true"
+        [rounded]="true"
         size="small"
         (onClick)="onOpenAddGame()"
         data-testid="add-game-button"

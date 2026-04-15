@@ -119,6 +119,7 @@ export class Games {
   );
 
   selectedTeamId = computed(() => this.teamIdFromUrl());
+  selectedDateFilter = signal<Date | null>(null);
 
   firstDayOfWeek = computed(() => {
     this.activeLanguage(); // reactive dependency: re-evaluate on lang change
@@ -265,9 +266,13 @@ export class Games {
 
   filteredFlatGamesByDate = computed((): GameByDate[] => {
     const teamId = this.selectedTeamId();
+    const selectedDate = this.selectedDateFilter();
     const games = this.flatGamesByDate();
-    if (!teamId) return games;
-    return games.filter((game) => game.refTeam1?.id === teamId || game.refTeam2?.id === teamId);
+    return games.filter((game) => {
+      const matchesTeam = !teamId || game.refTeam1?.id === teamId || game.refTeam2?.id === teamId;
+      const matchesDate = !selectedDate || game.dateKey === this.getDateKey(selectedDate);
+      return matchesTeam && matchesDate;
+    });
   });
 
   byDateColumnCount = computed(() => {
@@ -368,6 +373,14 @@ export class Games {
 
   clearTeamFilter(): void {
     this.onTeamSelect(null);
+  }
+
+  onDateFilterChange(value: Date | null): void {
+    this.selectedDateFilter.set(value);
+  }
+
+  clearDateFilter(): void {
+    this.selectedDateFilter.set(null);
   }
 
   onAddGame(poule: Poule): void {

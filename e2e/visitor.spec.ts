@@ -21,6 +21,10 @@ test.describe('Visitor – read-only navigation', () => {
   let tournamentId = '';
 
   test.beforeAll(async ({ browser }) => {
+    // This setup involves many async operations (create tournament, add teams, series, poule,
+    // assign teams, add game). Extend the timeout to allow for Firebase roundtrips in CI.
+    test.setTimeout(120000);
+
     // Use a dedicated browser context for setup
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -52,6 +56,7 @@ test.describe('Visitor – read-only navigation', () => {
     await adminPage.addPoule(serieName, pouleName);
 
     // 5. Add both teams to the poule
+    await adminPage.ensureSerieExpanded(serieName);
     const seriePanel = adminPage.seriePanel(serieName);
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
     await pouleCard.getByTestId('add-team-to-poule-button').click();

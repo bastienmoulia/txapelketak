@@ -275,6 +275,95 @@ describe('Games', () => {
     expect(game.team2Name).toBe('Bravo');
   });
 
+  it('should keep same local day when applying date filter', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+    const localGameDate = new Date(2026, 2, 22, 0, 30);
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+      { ref: team3Ref, name: 'Charlie' },
+    ] satisfies Team[]);
+    fixture.componentRef.setInput('series', [
+      {
+        ref: createDocumentReference('serie-1'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [
+              {
+                ref: createDocumentReference('game-1'),
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                date: localGameDate,
+              },
+              {
+                ref: createDocumentReference('game-2'),
+                refTeam1: team2Ref,
+                refTeam2: team3Ref,
+                date: new Date(2026, 2, 23, 10, 0),
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    fixture.detectChanges();
+
+    component.onDateFilterChange(new Date(2026, 2, 22, 12, 0));
+
+    const filtered = component.filteredFlatGamesByDate();
+    expect(filtered.length).toBe(1);
+    expect(filtered[0].ref.id).toBe('game-1');
+  });
+
+  it('should display empty filtered message when active filters return no game', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+    ] satisfies Team[]);
+    fixture.componentRef.setInput('series', [
+      {
+        ref: createDocumentReference('serie-1'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref],
+            games: [
+              {
+                ref: createDocumentReference('game-1'),
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                date: new Date(2026, 2, 22, 10, 0),
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    fixture.detectChanges();
+
+    component.onDateFilterChange(new Date(2026, 2, 23, 10, 0));
+    fixture.detectChanges();
+
+    const rootElement: HTMLElement = fixture.nativeElement;
+    expect(component.hasActiveFilters()).toBe(true);
+    expect(component.filteredFlatGamesByDate().length).toBe(0);
+    expect(rootElement.textContent).toContain(
+      'Aucune partie ne correspond aux filtres sélectionnés.',
+    );
+  });
+
   it('should export GAMES_TEAM_FILTER_QUERY_PARAM constant', () => {
     expect(GAMES_TEAM_FILTER_QUERY_PARAM).toBe('teamId');
   });
@@ -427,9 +516,7 @@ describe('Games', () => {
     const emitSpy = vi.spyOn(component.saveGame, 'emit');
     component.onSaveGame();
 
-    expect(emitSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ referees: ['Charlie'] }),
-    );
+    expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ referees: ['Charlie'] }));
   });
 
   it('should emit null referees when no referees are entered', () => {
@@ -451,9 +538,7 @@ describe('Games', () => {
     const emitSpy = vi.spyOn(component.saveGame, 'emit');
     component.onSaveGame();
 
-    expect(emitSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ referees: null }),
-    );
+    expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ referees: null }));
   });
 });
 

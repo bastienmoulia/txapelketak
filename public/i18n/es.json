@@ -249,6 +249,7 @@
       "filterByDate": "Filtrar por fecha",
       "filterTeamShort": "Equipo",
       "filterDateShort": "Fecha",
+      "noGamesForFilters": "Ningún partido coincide con los filtros seleccionados.",
       "dialogSelectPoule": "Seleccionar la serie y el grupo",
       "referees": "Árbitros"
     },

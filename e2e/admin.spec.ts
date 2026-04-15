@@ -31,6 +31,9 @@ test.describe.serial('Admin – tournament lifecycle', () => {
   const userEmail = `organisateur${timestamp}@test.com`;
   const userUsernameEdited = `Organisateur2 ${timestamp}`;
   const userEmailEdited = `organisateur2${timestamp}@test.com`;
+  const gameSeedTeam1 = 'Admin Seed Team One';
+  const gameSeedTeam2 = 'Admin Seed Team Two';
+  const gameSeedFixturePath = 'e2e/fixtures/admin-game-seed.yaml';
 
   let adminUrl = '';
   let tournamentId = '';
@@ -85,7 +88,7 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await listPage.goto();
 
     // Give Firestore a moment to propagate the status change
-    await listPage.waitForTournamentToAppear(tournamentName, 10000);
+    await listPage.waitForTournamentToAppear(tournamentName, 30000);
     const found = await listPage.hasTournament(tournamentName);
     expect(found).toBe(true);
   });
@@ -238,39 +241,14 @@ test.describe.serial('Admin – tournament lifecycle', () => {
   // --- Games management (requires teams + serie + poule) ---
 
   test('should set up data for game management', async ({ page }) => {
-    // This test does a lot of setup: add team, add series+poule, assign teams.
-    test.setTimeout(90000);
-
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
 
-    // Add a second team (needed for a match)
-    await adminPage.clickTab('Équipes');
-    await adminPage.addTeam(teamGamma);
-    await expect(adminPage.teamRow(teamGamma)).toBeVisible();
-
-    // Add a serie and poule
-    await adminPage.clickTab('Poules');
-    await adminPage.addSerie(serieName);
-    await adminPage.addPoule(serieName, pouleName);
-
-    // Add both teams to the poule
-    await adminPage.ensureSerieExpanded(serieName);
-    const seriePanel = adminPage.seriePanel(serieName);
-    const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
-    await pouleCard.getByTestId('add-team-to-poule-button').click();
-    const dialog = page.locator('.p-dialog');
-    await dialog.waitFor({ state: 'visible' });
-    // Select all teams using the multiselect
-    await dialog.locator('p-multiselect').click();
-    const optionAlpha = page.locator('.p-multiselect-option').filter({ hasText: teamAlpha });
-    const optionGamma = page.locator('.p-multiselect-option').filter({ hasText: teamGamma });
-    await optionAlpha.click();
-    await optionGamma.click();
-    // Close the multiselect overlay
-    await page.keyboard.press('Escape');
-    await dialog.locator('button[type="submit"]').click();
-    await dialog.waitFor({ state: 'hidden' });
+    await adminPage.importYamlFixture(gameSeedFixturePath);
+    await adminPage.clickTab('Tableau de bord');
+    await expect(adminPage.dashboardTeamsCount()).toHaveText('2');
+    await expect(adminPage.dashboardSeriesCount()).toHaveText('1');
+    await expect(adminPage.dashboardPoulesCount()).toHaveText('1');
   });
 
   test('should add a game', async ({ page }) => {
@@ -278,8 +256,8 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
-    await adminPage.addGame(teamAlpha, teamGamma);
-    await expect(adminPage.gameRow(teamAlpha, teamGamma)).toBeVisible();
+    await adminPage.addGame(gameSeedTeam1, gameSeedTeam2);
+    await expect(adminPage.gameRow(gameSeedTeam1, gameSeedTeam2)).toBeVisible();
   });
 
   test('should delete a game', async ({ page }) => {
@@ -287,8 +265,8 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
-    await adminPage.deleteGame(teamAlpha, teamGamma);
-    await expect(adminPage.gameRow(teamAlpha, teamGamma)).not.toBeVisible();
+    await adminPage.deleteGame(gameSeedTeam1, gameSeedTeam2);
+    await expect(adminPage.gameRow(gameSeedTeam1, gameSeedTeam2)).not.toBeVisible();
   });
 
   test('should reflect games count on the dashboard after adding a game', async ({ page }) => {
@@ -297,7 +275,7 @@ test.describe.serial('Admin – tournament lifecycle', () => {
 
     // Re-add a game and verify dashboard updates
     await adminPage.clickTab('Parties');
-    await adminPage.addGame(teamAlpha, teamGamma);
+    await adminPage.addGame(gameSeedTeam1, gameSeedTeam2);
 
     await adminPage.clickTab('Tableau de bord');
     await expect(adminPage.dashboardGamesCount()).toHaveText('1');

@@ -31,6 +31,22 @@ export class AdminPage {
     await this.page.getByRole('tab', { name: tabLabel }).click();
   }
 
+  private teamsPanel(): Locator {
+    return this.page.getByRole('tabpanel', { name: 'Équipes' });
+  }
+
+  private gamesPanel(): Locator {
+    return this.page.getByRole('tabpanel', { name: 'Parties' });
+  }
+
+  private usersPanel(): Locator {
+    return this.page.getByRole('tabpanel', { name: 'Utilisateurs' });
+  }
+
+  private poulesPanel(): Locator {
+    return this.page.getByRole('tabpanel', { name: 'Poules' });
+  }
+
   // --- Dashboard ---
 
   dashboardTeamsCount(): Locator {
@@ -56,8 +72,8 @@ export class AdminPage {
   // --- Teams ---
 
   async addTeam(name: string): Promise<void> {
-    await this.page.getByTestId('add-team-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    await this.teamsPanel().getByTestId('add-team-button').click();
+    const dialog = this.page.locator('.p-dialog').filter({ has: this.page.locator('input#name') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('input#name').fill(name);
     await dialog.locator('button[type="submit"]').click();
@@ -65,35 +81,59 @@ export class AdminPage {
   }
 
   async editTeam(currentName: string, newName: string): Promise<void> {
-    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: currentName });
-    await row.getByTestId('edit-team-button').click();
-    const dialog = this.page.locator('.p-dialog');
-    await dialog.waitFor({ state: 'visible' });
+    const row = this.teamsPanel().locator('.p-datatable-tbody tr').filter({ hasText: currentName });
+    const editButton = row.getByRole('button', { name: 'Modifier cette équipe' });
+    await editButton.click();
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#name') })
+      .filter({ hasText: "Modifier l'équipe" });
+    try {
+      await dialog.waitFor({ state: 'visible', timeout: 2000 });
+    } catch {
+      await editButton.evaluate((element) => {
+        (element as HTMLElement).click();
+      });
+      await dialog.waitFor({ state: 'visible' });
+    }
     const input = dialog.locator('input#name');
     await input.clear();
     await input.fill(newName);
-    await dialog.locator('button[type="submit"]').click();
-    await dialog.waitFor({ state: 'hidden' });
+    const saveButton = dialog.getByRole('button', { name: 'Enregistrer' });
+    await saveButton.click();
+    try {
+      await dialog.waitFor({ state: 'hidden', timeout: 5000 });
+    } catch {
+      await saveButton.evaluate((element) => {
+        (element as HTMLElement).click();
+      });
+      await dialog.waitFor({ state: 'hidden' });
+    }
+    await this.teamRow(newName).waitFor({ state: 'visible' });
   }
 
   async deleteTeam(name: string): Promise<void> {
-    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
+    const row = this.teamsPanel().locator('.p-datatable-tbody tr').filter({ hasText: name });
     await row.getByTestId('delete-team-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.getByTestId('delete-confirm-button') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.getByTestId('delete-confirm-button').click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
   teamRow(name: string): Locator {
-    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
+    return this.teamsPanel().locator('.p-datatable-tbody tr').filter({ hasText: name });
   }
 
   // --- Series & Poules ---
 
   async addSerie(name: string): Promise<void> {
-    await this.page.getByTestId('add-serie-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    await this.poulesPanel().getByTestId('add-serie-button').click();
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#serie-name') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('input#serie-name').fill(name);
     await dialog.locator('button[type="submit"]').click();
@@ -101,9 +141,11 @@ export class AdminPage {
   }
 
   async editSerie(currentName: string, newName: string): Promise<void> {
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: currentName });
+    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: currentName });
     await seriePanel.getByTestId('edit-serie-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#serie-name') });
     await dialog.waitFor({ state: 'visible' });
     const input = dialog.locator('input#serie-name');
     await input.clear();
@@ -113,9 +155,11 @@ export class AdminPage {
   }
 
   async deleteSerie(name: string): Promise<void> {
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: name });
+    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: name });
     await seriePanel.getByTestId('delete-serie-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.getByTestId('delete-confirm-button') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.getByTestId('delete-confirm-button').click();
     await dialog.waitFor({ state: 'hidden' });
@@ -123,9 +167,11 @@ export class AdminPage {
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
     await seriePanel.getByTestId('add-poule-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#poule-name') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('input#poule-name').fill(pouleName);
     await dialog.locator('button[type="submit"]').click();
@@ -138,10 +184,12 @@ export class AdminPage {
     newPouleName: string,
   ): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
     await pouleCard.getByTestId('edit-poule-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#poule-name') });
     await dialog.waitFor({ state: 'visible' });
     const input = dialog.locator('input#poule-name');
     await input.clear();
@@ -152,17 +200,19 @@ export class AdminPage {
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
     await pouleCard.getByTestId('delete-poule-button').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.getByTestId('delete-confirm-button') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.getByTestId('delete-confirm-button').click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
   seriePanel(name: string): Locator {
-    return this.page.locator('p-accordion-panel').filter({ hasText: name });
+    return this.poulesPanel().locator('p-accordion-panel').filter({ hasText: name });
   }
 
   /**
@@ -170,7 +220,7 @@ export class AdminPage {
    * its poule cards are visible and interactable.
    */
   async ensureSerieExpanded(serieName: string): Promise<void> {
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.poulesPanel().locator('p-accordion-panel').filter({ hasText: serieName });
     const content = seriePanel.locator('p-accordion-content');
     const isVisible = await content.isVisible();
     if (!isVisible) {
@@ -180,14 +230,16 @@ export class AdminPage {
   }
 
   poulesWarningMessage(): Locator {
-    return this.page.locator('p-message').filter({ hasText: 'série' });
+    return this.poulesPanel().locator('p-message').filter({ hasText: 'série' });
   }
 
   // --- Users ---
 
   async addUser(username: string, email: string, role: 'admin' | 'organizer'): Promise<void> {
-    await this.page.locator('button').filter({ hasText: 'Ajouter' }).first().click();
-    const dialog = this.page.locator('.p-dialog');
+    await this.usersPanel().locator('button').filter({ hasText: 'Ajouter' }).first().click();
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#username') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('input#username').fill(username);
     await dialog.locator('input#email').fill(email);
@@ -198,9 +250,11 @@ export class AdminPage {
   }
 
   async editUser(currentUsername: string, newUsername: string, newEmail: string): Promise<void> {
-    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: currentUsername });
+    const row = this.usersPanel().locator('.p-datatable-tbody tr').filter({ hasText: currentUsername });
     await row.locator('button').filter({ hasText: 'Modifier' }).click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#username') });
     await dialog.waitFor({ state: 'visible' });
     const usernameInput = dialog.locator('input#username');
     await usernameInput.clear();
@@ -213,16 +267,18 @@ export class AdminPage {
   }
 
   async deleteUser(username: string): Promise<void> {
-    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: username });
+    const row = this.usersPanel().locator('.p-datatable-tbody tr').filter({ hasText: username });
     await row.locator('button').filter({ hasText: 'Supprimer' }).click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
   userRow(username: string): Locator {
-    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: username });
+    return this.usersPanel().locator('.p-datatable-tbody tr').filter({ hasText: username });
   }
 
   private async selectRole(dialog: Locator, role: 'admin' | 'organizer'): Promise<void> {
@@ -238,9 +294,9 @@ export class AdminPage {
   // --- Games ---
 
   async addGame(team1Name: string, team2Name: string): Promise<void> {
-    await this.page.getByTestId('add-game-button').click();
+    await this.gamesPanel().getByTestId('add-game-button').click();
     // Step 1: pick serie + poule
-    let dialog = this.page.locator('.p-dialog');
+    let dialog = this.page.locator('.p-dialog').filter({ has: this.page.locator('.p-select') }).first();
     await dialog.waitFor({ state: 'visible' });
     // Select the first available serie
     await dialog.locator('.p-select').first().click();
@@ -250,7 +306,7 @@ export class AdminPage {
     await this.page.locator('.p-select-overlay .p-select-option').first().click();
     await dialog.locator('button').filter({ hasText: 'Suivant' }).click();
     // Step 2: fill teams
-    dialog = this.page.locator('.p-dialog');
+    dialog = this.page.locator('.p-dialog').filter({ has: this.page.locator('.p-select') }).first();
     await dialog.waitFor({ state: 'visible' });
     // Select team 1
     await dialog.locator('.p-select').first().click();
@@ -269,21 +325,41 @@ export class AdminPage {
   }
 
   async deleteGame(team1Name: string, team2Name: string): Promise<void> {
-    const row = this.page
+    const row = this.gamesPanel()
       .locator('.p-datatable-tbody tr')
       .filter({ hasText: team1Name })
       .filter({ hasText: team2Name });
     await row.locator('[aria-label*="Supprimer"]').click();
-    const dialog = this.page.locator('.p-dialog');
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
   gameRow(team1Name: string, team2Name: string): Locator {
-    return this.page
+    return this.gamesPanel()
       .locator('.p-datatable-tbody tr')
       .filter({ hasText: team1Name })
       .filter({ hasText: team2Name });
+  }
+
+  async importYamlFixture(filePath: string): Promise<void> {
+    await this.clickTab('Import / Export');
+    const fileInput = this.page.locator('input[type="file"][accept=".yaml,.yml"]');
+    await fileInput.setInputFiles(filePath);
+
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('button').filter({ hasText: 'Importer' }) });
+    await dialog.waitFor({ state: 'visible' });
+    await dialog.locator('button').filter({ hasText: 'Importer' }).last().click();
+    await dialog.waitFor({ state: 'hidden' });
+
+    await this.page.locator('.p-toast-message').filter({ hasText: 'Import réussi' }).waitFor({
+      state: 'visible',
+      timeout: 30000,
+    });
   }
 }

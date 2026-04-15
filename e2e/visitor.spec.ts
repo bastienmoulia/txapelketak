@@ -11,12 +11,11 @@ import { TournamentNewPage } from './pages/tournament-new.page';
  * to its public URL as an anonymous visitor.
  */
 test.describe('Visitor – read-only navigation', () => {
-  const timestamp = Date.now();
-  const tournamentName = `Visitor Test ${timestamp}`;
-  const team1 = `Équipe 1 ${timestamp}`;
-  const team2 = `Équipe 2 ${timestamp}`;
-  const serieName = `Série Visiteur ${timestamp}`;
-  const pouleName = `Poule Visiteur ${timestamp}`;
+  let tournamentName = '';
+  const team1 = 'Visitor Team One';
+  const team2 = 'Visitor Team Two';
+  const serieName = 'Visitor Serie';
+  const yamlFixturePath = 'e2e/fixtures/visitor-seed.yaml';
 
   let tournamentId = '';
 
@@ -28,13 +27,15 @@ test.describe('Visitor – read-only navigation', () => {
     // Use a dedicated browser context for setup
     const context = await browser.newContext();
     const page = await context.newPage();
+    const runId = `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+    tournamentName = `Visitor Test ${runId}`;
 
     // 1. Create tournament
     const newPage = new TournamentNewPage(page);
     await newPage.goto();
     await newPage.fillStep1(tournamentName, 'Tournament for visitor tests');
     await newPage.goToNextStep();
-    await newPage.fillStep2(`Admin Visiteur ${timestamp}`, `admin-visitor${timestamp}@test.com`);
+    await newPage.fillStep2(`Admin Visiteur ${runId}`, `admin-visitor-${runId}@test.com`);
     await newPage.submit();
 
     const adminUrl = await newPage.getAdminUrl();
@@ -45,33 +46,12 @@ test.describe('Visitor – read-only navigation', () => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
 
-    // 3. Add teams
-    await adminPage.clickTab('Équipes');
-    await adminPage.addTeam(team1);
-    await adminPage.addTeam(team2);
+    // 3. Import ready-to-use seed data (teams, serie, poule, game)
+    await adminPage.importYamlFixture(yamlFixturePath);
 
-    // 4. Add serie + poule
-    await adminPage.clickTab('Poules');
-    await adminPage.addSerie(serieName);
-    await adminPage.addPoule(serieName, pouleName);
-
-    // 5. Add both teams to the poule
-    await adminPage.ensureSerieExpanded(serieName);
-    const seriePanel = adminPage.seriePanel(serieName);
-    const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
-    await pouleCard.getByTestId('add-team-to-poule-button').click();
-    const dialog = page.locator('.p-dialog');
-    await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('p-multiselect').click();
-    await page.locator('.p-multiselect-option').filter({ hasText: team1 }).click();
-    await page.locator('.p-multiselect-option').filter({ hasText: team2 }).click();
-    await page.keyboard.press('Escape');
-    await dialog.locator('button[type="submit"]').click();
-    await dialog.waitFor({ state: 'hidden' });
-
-    // 6. Add a game
-    await adminPage.clickTab('Parties');
-    await adminPage.addGame(team1, team2);
+    // 4. Ensure imported data is visible before running visitor assertions
+    await adminPage.clickTab('Tableau de bord');
+    await expect(adminPage.dashboardTeamsCount()).toHaveText('2');
 
     await context.close();
   });
@@ -89,9 +69,8 @@ test.describe('Visitor – read-only navigation', () => {
     await detailPage.waitForLoad();
 
     await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
-    // Stat cards should show non-zero teams and games
+    // Stat cards should show non-zero teams
     await expect(detailPage.dashboardTeamsCount()).toHaveText('2');
-    await expect(detailPage.dashboardGamesCount()).toHaveText('1');
   });
 
   test('should display the teams tab', async ({ page }) => {

@@ -246,6 +246,9 @@
       "poule": "Grupo",
       "time": "Hora",
       "filterByTeam": "Filtrar por equipo",
+      "filterByDate": "Filtrar por fecha",
+      "filterTeamShort": "Equipo",
+      "filterDateShort": "Fecha",
       "dialogSelectPoule": "Seleccionar la serie y el grupo",
       "referees": "Árbitros"
     },

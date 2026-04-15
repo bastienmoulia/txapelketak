@@ -1,12 +1,16 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
 
 declare const process: {
   env: Record<string, string | undefined>;
 };
 
 const isCI = Boolean(process.env['CI']);
+const isGitHubActions = Boolean(process.env['GITHUB_ACTIONS']);
 const ciWorkers = Number(process.env['PLAYWRIGHT_CI_WORKERS'] ?? 2);
 const ciRetries = Number(process.env['PLAYWRIGHT_CI_RETRIES'] ?? 1);
+const reporter: ReporterDescription[] = isGitHubActions
+  ? [['github'], ['dot']]
+  : [['list'], ['html']];
 
 /**
  * Read environment variables from file.
@@ -28,7 +32,7 @@ export default defineConfig({
   /* Keep CI parallel by default; override with PLAYWRIGHT_CI_WORKERS when needed. */
   workers: isCI ? ciWorkers : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['list'], ['html']],
+  reporter,
   /* Global timeout for each test */
   timeout: 45000,
   /* Increased assertion timeout to handle slow Firebase emulator and Angular operations on CI. */

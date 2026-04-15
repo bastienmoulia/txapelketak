@@ -52,6 +52,7 @@ export class Teams {
   isEditing = signal(false);
   deleteConfirmVisible = signal(false);
   pendingDeleteTeam = signal<Team | null>(null);
+  editingTeamRef = signal<DocumentReference | null>(null);
 
   bulkText = signal('');
 
@@ -62,6 +63,7 @@ export class Teams {
 
   onAddTeam(): void {
     this.isEditing.set(false);
+    this.editingTeamRef.set(null);
     this.team.set({ ref: null!, name: '' });
     this.visible.set(true);
   }
@@ -73,7 +75,11 @@ export class Teams {
 
   onSaveTeam(): void {
     if (this.teamForm().valid()) {
-      this.saveTeam.emit(this.team());
+      const team = this.team();
+      this.saveTeam.emit({
+        ref: this.editingTeamRef() ?? team.ref,
+        name: team.name,
+      });
       this.visible.set(false);
     }
   }
@@ -90,7 +96,8 @@ export class Teams {
 
   onEditTeam(team: Team): void {
     this.isEditing.set(true);
-    this.team.set({ ...team });
+    this.editingTeamRef.set(team.ref);
+    this.team.set({ ref: team.ref, name: team.name });
     this.visible.set(true);
   }
 

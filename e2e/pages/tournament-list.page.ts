@@ -12,7 +12,9 @@ export class TournamentListPage {
   }
 
   tournamentRow(name: string): Locator {
-    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
+    return this.page
+      .locator('.p-datatable-tbody tr')
+      .filter({ has: this.page.locator('td').first().filter({ hasText: name }) });
   }
 
   async hasTournament(name: string): Promise<boolean> {
@@ -20,10 +22,10 @@ export class TournamentListPage {
   }
 
   async openTournament(name: string): Promise<void> {
-    await this.tournamentRow(name).locator('button').click();
+    await this.tournamentRow(name).first().locator('button').click();
   }
 
   async waitForTournamentToAppear(name: string, timeout = 10000): Promise<void> {
-    await this.page.locator('.p-datatable-tbody tr').filter({ hasText: name }).waitFor({ timeout });
+    await this.tournamentRow(name).first().waitFor({ timeout });
   }
 }

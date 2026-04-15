@@ -1,0 +1,18 @@
+tournament:
+  name: Admin Game Seed
+  description: Seed data for admin game management E2E tests
+  type: poules
+  status: ongoing
+teams:
+  - id: admin-seed-team-1
+    name: Admin Seed Team One
+  - id: admin-seed-team-2
+    name: Admin Seed Team Two
+series:
+  - name: Admin Seed Serie
+    poules:
+      - name: Admin Seed Poule
+        teams:
+          - admin-seed-team-1
+          - admin-seed-team-2
+        games: []

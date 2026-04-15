@@ -50,7 +50,10 @@ export class TournamentDetailPage {
   // --- Teams tab ---
 
   teamRow(name: string): Locator {
-    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
+    return this.page
+      .getByRole('tabpanel', { name: 'Équipes' })
+      .locator('.p-datatable-tbody tr')
+      .filter({ hasText: name });
   }
 
   async hasTeam(name: string): Promise<boolean> {
@@ -71,6 +74,7 @@ export class TournamentDetailPage {
 
   gameRow(team1Name: string, team2Name: string): Locator {
     return this.page
+      .getByRole('tabpanel', { name: 'Parties' })
       .locator('.p-datatable-tbody tr')
       .filter({ hasText: team1Name })
       .filter({ hasText: team2Name });

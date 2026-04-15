@@ -249,6 +249,7 @@
       "filterByDate": "Filter by date",
       "filterTeamShort": "Team",
       "filterDateShort": "Date",
+      "noGamesForFilters": "No games match the selected filters.",
       "dialogSelectPoule": "Select series and pool",
       "referees": "Referees"
     },

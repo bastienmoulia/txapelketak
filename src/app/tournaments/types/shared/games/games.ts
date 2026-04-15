@@ -275,6 +275,8 @@ export class Games {
     });
   });
 
+  hasActiveFilters = computed(() => Boolean(this.selectedTeamId() || this.selectedDateFilter()));
+
   byDateColumnCount = computed(() => {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
     return hasActions ? 7 : 6;
@@ -351,7 +353,15 @@ export class Games {
   }
 
   private getDateKey(date: Date | undefined | null): string {
-    return date ? new Date(date).toISOString().substring(0, 10) : '';
+    if (!date) {
+      return '';
+    }
+
+    const value = new Date(date);
+    const year = String(value.getFullYear());
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private toSortableGame(game: Game): SortableGame {

@@ -246,6 +246,9 @@
       "poule": "Multzoa",
       "time": "Ordua",
       "filterByTeam": "Taldea iragazi",
+      "filterByDate": "Data iragazi",
+      "filterTeamShort": "Taldea",
+      "filterDateShort": "Data",
       "dialogSelectPoule": "Seriea eta taldea aukeratu",
       "referees": "Arbitroak"
     },

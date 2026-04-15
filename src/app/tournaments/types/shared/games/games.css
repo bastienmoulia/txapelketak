@@ -31,6 +31,37 @@
   flex: 2 1 0%;
 }
 
+.games-filters {
+  align-items: center;
+}
+
+:host ::ng-deep .games-filters .games-filter-control {
+  flex: 0 1 auto;
+}
+
+:host ::ng-deep .games-filters .games-team-filter {
+  min-width: 10rem;
+}
+
+:host ::ng-deep .games-filters .games-date-filter {
+  min-width: 9rem;
+}
+
+@media (max-width: 640px) {
+  :host ::ng-deep .games-filters .games-filter-control {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+    width: calc(50% - 0.25rem);
+  }
+
+  :host ::ng-deep .games-filters .games-add-button {
+    margin-left: auto;
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
 @media (max-width: 768px) {
   .games-poule-card__header {
     flex-direction: column;

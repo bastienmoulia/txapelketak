@@ -18,6 +18,8 @@ export class TournamentsTable {
   getTournamentLink = input.required<(tournament: Tournament) => string>();
 
   visibleTournaments = computed(() =>
-    this.tournaments().filter((tournament) => tournament.status !== 'waitingValidation'),
+    this.tournaments().filter(
+      (tournament) => tournament.status !== 'waitingValidation' && !tournament.name.startsWith('_'),
+    ),
   );
 }

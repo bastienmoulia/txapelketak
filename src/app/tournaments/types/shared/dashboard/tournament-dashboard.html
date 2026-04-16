@@ -131,6 +131,21 @@
           </div>
         </div>
       </p-card>
+
+      <!-- Total scored points -->
+      <p-card class="dashboard-card dashboard-card--stat">
+        <div class="stat-content">
+          <i class="pi pi-sparkles stat-icon"></i>
+          <div class="stat-text">
+            <span class="stat-value" data-testid="dashboard-total-scored-points">{{
+              totalScoredPoints()
+            }}</span>
+            <span class="stat-label">{{
+              'tournaments.dashboard.totalScoredPoints' | transloco
+            }}</span>
+          </div>
+        </div>
+      </p-card>
     </div>
 
     <!-- Overdue games card -->

@@ -134,6 +134,7 @@
       "poules": "Taldekatzeak",
       "games": "Partidak",
       "playedGames": "Jokatutako partidak",
+      "totalScoredPoints": "Points",
       "progress": "Aurrerabidea",
       "overdueGames": "Martxan dauden partidak",
       "upcomingGames": "Hurrengo partidak",
@@ -333,6 +334,7 @@
     "actions": {
       "save": "Gorde",
       "cancel": "Utzi",
+      "next": "Hurrengoa",
       "edit": "Editatu",
       "delete": "Ezabatu",
       "viewGames": "Partidak"

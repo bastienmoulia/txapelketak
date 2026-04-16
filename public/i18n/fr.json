@@ -134,6 +134,7 @@
       "poules": "Poules",
       "games": "Parties",
       "playedGames": "Parties jouées",
+      "totalScoredPoints": "Points",
       "progress": "Progression",
       "overdueGames": "Parties en cours",
       "upcomingGames": "Prochaines parties",
@@ -333,6 +334,7 @@
     "actions": {
       "save": "Enregistrer",
       "cancel": "Annuler",
+      "next": "Suivant",
       "edit": "Modifier",
       "delete": "Supprimer",
       "viewGames": "Parties"

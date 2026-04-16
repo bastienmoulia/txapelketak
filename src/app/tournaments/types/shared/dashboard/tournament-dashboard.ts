@@ -112,6 +112,20 @@ export class TournamentDashboard {
     return count;
   });
 
+  totalScoredPoints = computed(() => {
+    let total = 0;
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
+            total += game.scoreTeam1 + game.scoreTeam2;
+          }
+        }
+      }
+    }
+    return total;
+  });
+
   progressPercent = computed(() => {
     const total = this.gamesCount();
     if (total === 0) return 0;

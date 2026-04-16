@@ -110,6 +110,68 @@ describe('TournamentDashboard', () => {
     });
   });
 
+  describe('totalScoredPoints', () => {
+    it('should return 0 when no games are scored', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b' }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', scoreTeam1: 5 }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.totalScoredPoints()).toBe(0);
+    });
+
+    it('should sum both teams scores for all completed games', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', scoreTeam1: 3, scoreTeam2: 1 }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', scoreTeam1: 2, scoreTeam2: 2 }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.totalScoredPoints()).toBe(8);
+    });
+
+    it('should include score 0 in the total', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', scoreTeam1: 0, scoreTeam2: 4 }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', scoreTeam1: 0, scoreTeam2: 0 }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.totalScoredPoints()).toBe(4);
+    });
+  });
+
   describe('upcomingGames', () => {
     const futureDate1 = new Date('2027-06-01T10:00:00');
     const futureDate2 = new Date('2027-06-02T10:00:00');

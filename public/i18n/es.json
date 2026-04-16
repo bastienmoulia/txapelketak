@@ -134,6 +134,7 @@
       "poules": "Grupos",
       "games": "Partidos",
       "playedGames": "Partidos jugados",
+      "totalScoredPoints": "Points",
       "progress": "Progreso",
       "overdueGames": "Partidos en curso",
       "upcomingGames": "Próximos partidos",
@@ -333,6 +334,7 @@
     "actions": {
       "save": "Guardar",
       "cancel": "Cancelar",
+        "next": "Siguiente",
       "edit": "Editar",
       "delete": "Eliminar",
       "viewGames": "Partidos"

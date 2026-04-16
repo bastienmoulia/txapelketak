@@ -134,6 +134,7 @@
       "poules": "Groups",
       "games": "Games",
       "playedGames": "Played games",
+      "totalScoredPoints": "Points",
       "progress": "Progress",
       "overdueGames": "Games in progress",
       "upcomingGames": "Upcoming games",
@@ -333,6 +334,7 @@
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
+        "next": "Next",
       "edit": "Edit",
       "delete": "Delete",
       "viewGames": "Games"

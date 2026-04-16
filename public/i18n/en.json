@@ -167,7 +167,15 @@
       "teams": "Teams",
       "games": "Games",
       "users": "Users",
-      "importExport": "Import / Export"
+      "importExport": "Import / Export",
+      "administration": "Administration"
+    },
+    "general": {
+      "title": "General",
+      "name": "Tournament name",
+      "description": "Description",
+      "saved": "Tournament updated",
+      "savedDetail": "Tournament information has been saved successfully."
     },
     "poules": {
       "addSerie": "Add a series",

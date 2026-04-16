@@ -223,6 +223,17 @@ export class FirebaseService {
     );
   }
 
+  async updateTournamentInfo(
+    ref: DocumentReference,
+    info: { name: string; description: string },
+  ): Promise<void> {
+    console.debug(`[Firestore] updateTournamentInfo: name=${info.name}`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: tournament info`);
+      await updateDoc(ref, { name: info.name, description: info.description });
+    });
+  }
+
   async updateTournamentStatus(ref: DocumentReference, status: TournamentStatus): Promise<void> {
     console.debug(`[Firestore] updateTournamentStatus: status=${status}`);
     await runInInjectionContext(this.environmentInjector, async () => {

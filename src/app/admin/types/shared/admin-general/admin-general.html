@@ -1,0 +1,38 @@
+<p-toast />
+
+<div class="flex flex-col gap-4 mx-3">
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      id="tournament-name"
+      class="w-full"
+      autocomplete="off"
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event)"
+    />
+    <label for="tournament-name">{{ 'admin.general.name' | transloco }}</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <textarea
+      pTextarea
+      id="tournament-description"
+      class="w-full"
+      rows="4"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+    ></textarea>
+    <label for="tournament-description">{{ 'admin.general.description' | transloco }}</label>
+  </p-floatlabel>
+
+  <div>
+    <p-button
+      type="button"
+      icon="pi pi-save"
+      [label]="'shared.actions.save' | transloco"
+      [loading]="isSaving()"
+      [disabled]="!name()"
+      (onClick)="onSave()"
+    />
+  </div>
+</div>

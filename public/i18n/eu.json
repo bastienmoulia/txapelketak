@@ -334,7 +334,7 @@
     "actions": {
       "save": "Gorde",
       "cancel": "Utzi",
-        "next": "Hurrengoa",
+      "next": "Hurrengoa",
       "edit": "Editatu",
       "delete": "Ezabatu",
       "viewGames": "Partidak"

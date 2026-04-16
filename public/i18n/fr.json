@@ -334,7 +334,7 @@
     "actions": {
       "save": "Enregistrer",
       "cancel": "Annuler",
-        "next": "Suivant",
+      "next": "Suivant",
       "edit": "Modifier",
       "delete": "Supprimer",
       "viewGames": "Parties"

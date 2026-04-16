@@ -334,7 +334,7 @@
     "actions": {
       "save": "Save",
       "cancel": "Cancel",
-        "next": "Next",
+      "next": "Next",
       "edit": "Edit",
       "delete": "Delete",
       "viewGames": "Games"

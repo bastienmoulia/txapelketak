@@ -78,15 +78,19 @@
       <p-tabpanel value="administration">
         <div class="flex flex-col gap-8">
           <section>
-            <h2 class="text-xl font-semibold mb-4! mx-3">{{ 'admin.general.title' | transloco }}</h2>
+            <h2 class="text-xl font-semibold mb-4! mx-3!">
+              {{ 'admin.general.title' | transloco }}
+            </h2>
             <app-admin-general [tournament]="tournament()" />
           </section>
           <section>
-            <h2 class="text-xl font-semibold mb-4! mx-3">{{ 'admin.tabs.users' | transloco }}</h2>
+            <h2 class="text-xl font-semibold mb-4! mx-3!">{{ 'admin.tabs.users' | transloco }}</h2>
             <app-admin-users [tournament]="tournament()" [currentUser]="currentUser()" />
           </section>
           <section>
-            <h2 class="text-xl font-semibold mb-4! mx-3">{{ 'admin.tabs.importExport' | transloco }}</h2>
+            <h2 class="text-xl font-semibold mb-4! mx-3!">
+              {{ 'admin.tabs.importExport' | transloco }}
+            </h2>
             <app-admin-import-export
               [tournament]="tournament()"
               [teams]="teams()"

@@ -1,53 +1,37 @@
 <p-toast />
 
-@if (!isEditing()) {
-  <div class="flex flex-col gap-2 mx-3">
-    <div class="flex items-start justify-between gap-4">
-      <div class="flex flex-col gap-2 min-w-0">
-        <span class="text-lg font-medium">{{ tournament().name }}</span>
-        @if (tournament().description) {
-          <span class="text-surface-500 whitespace-pre-line">{{ tournament().description }}</span>
-        } @else {
-          <span class="text-surface-400 italic">{{ 'admin.general.noDescription' | transloco }}</span>
-        }
-      </div>
-      <p-button
-        type="button"
-        severity="secondary"
-        [outlined]="true"
-        icon="pi pi-pencil"
-        [label]="'shared.actions.edit' | transloco"
-        (onClick)="onEdit()"
-      />
-    </div>
-  </div>
-} @else {
-  <div class="flex flex-col gap-4 mx-3">
-    <p-floatlabel variant="on">
-      <input
-        pInputText
-        id="tournament-name"
-        class="w-full"
-        autocomplete="off"
-        [ngModel]="name()"
-        (ngModelChange)="name.set($event)"
-      />
-      <label for="tournament-name">{{ 'admin.general.name' | transloco }}</label>
-    </p-floatlabel>
+<div class="flex flex-col gap-4 mx-3">
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      id="tournament-name"
+      class="w-full"
+      autocomplete="off"
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event)"
+      [disabled]="!isEditing()"
+    />
+    <label for="tournament-name">{{ 'admin.general.name' | transloco }}</label>
+  </p-floatlabel>
 
-    <p-floatlabel variant="on">
-      <textarea
-        pTextarea
-        id="tournament-description"
-        class="w-full"
-        rows="4"
-        [ngModel]="description()"
-        (ngModelChange)="description.set($event)"
-      ></textarea>
-      <label for="tournament-description">{{ 'admin.general.description' | transloco }}</label>
-    </p-floatlabel>
+  <p-floatlabel variant="on">
+    <textarea
+      pTextarea
+      id="tournament-description"
+      class="w-full"
+      rows="8"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+      [disabled]="!isEditing()"
+    ></textarea>
+    <label for="tournament-description">{{ 'admin.general.description' | transloco }}</label>
+  </p-floatlabel>
+  <small class="text-[var(--p-text-muted-color)]">
+    {{ 'tournaments.new.step1.descriptionHelp' | transloco }}
+  </small>
 
-    <div class="flex gap-2">
+  <div class="flex gap-2">
+    @if (isEditing()) {
       <p-button
         type="button"
         severity="secondary"
@@ -63,6 +47,15 @@
         [disabled]="!name()"
         (onClick)="onSave()"
       />
-    </div>
+    } @else {
+      <p-button
+        type="button"
+        severity="secondary"
+        [outlined]="true"
+        icon="pi pi-pencil"
+        [label]="'shared.actions.edit' | transloco"
+        (onClick)="onEdit()"
+      />
+    }
   </div>
-}
+</div>

@@ -1,0 +1,61 @@
+<p-toast />
+
+<div class="flex flex-col gap-4 mx-3">
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      id="tournament-name"
+      class="w-full"
+      autocomplete="off"
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event)"
+      [disabled]="!isEditing()"
+    />
+    <label for="tournament-name">{{ 'admin.general.name' | transloco }}</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <textarea
+      pTextarea
+      id="tournament-description"
+      class="w-full"
+      rows="8"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+      [disabled]="!isEditing()"
+    ></textarea>
+    <label for="tournament-description">{{ 'admin.general.description' | transloco }}</label>
+  </p-floatlabel>
+  <small class="text-[var(--p-text-muted-color)]">
+    {{ 'tournaments.new.step1.descriptionHelp' | transloco }}
+  </small>
+
+  <div class="flex gap-2">
+    @if (isEditing()) {
+      <p-button
+        type="button"
+        severity="secondary"
+        [label]="'shared.actions.cancel' | transloco"
+        [disabled]="isSaving()"
+        (onClick)="onCancel()"
+      />
+      <p-button
+        type="button"
+        icon="pi pi-save"
+        [label]="'shared.actions.save' | transloco"
+        [loading]="isSaving()"
+        [disabled]="!name()"
+        (onClick)="onSave()"
+      />
+    } @else {
+      <p-button
+        type="button"
+        severity="secondary"
+        [outlined]="true"
+        icon="pi pi-pencil"
+        [label]="'shared.actions.edit' | transloco"
+        (onClick)="onEdit()"
+      />
+    }
+  </div>
+</div>

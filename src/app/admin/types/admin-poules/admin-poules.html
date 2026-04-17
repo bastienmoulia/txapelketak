@@ -5,8 +5,7 @@
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
     <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
     @if (role() === 'admin') {
-      <p-tab value="users">{{ 'admin.tabs.users' | transloco }}</p-tab>
-      <p-tab value="import-export">{{ 'admin.tabs.importExport' | transloco }}</p-tab>
+      <p-tab value="administration">{{ 'admin.tabs.administration' | transloco }}</p-tab>
     }
   </p-tablist>
 
@@ -76,15 +75,29 @@
       }
     </p-tabpanel>
     @if (role() === 'admin') {
-      <p-tabpanel value="users">
-        <app-admin-users [tournament]="tournament()" [currentUser]="currentUser()" />
-      </p-tabpanel>
-      <p-tabpanel value="import-export">
-        <app-admin-import-export
-          [tournament]="tournament()"
-          [teams]="teams()"
-          [series]="series()"
-        />
+      <p-tabpanel value="administration">
+        <div class="flex flex-col gap-8">
+          <section>
+            <h2 class="text-xl font-semibold mb-4! mx-3!">
+              {{ 'admin.general.title' | transloco }}
+            </h2>
+            <app-admin-general [tournament]="tournament()" />
+          </section>
+          <section>
+            <h2 class="text-xl font-semibold mb-4! mx-3!">{{ 'admin.tabs.users' | transloco }}</h2>
+            <app-admin-users [tournament]="tournament()" [currentUser]="currentUser()" />
+          </section>
+          <section>
+            <h2 class="text-xl font-semibold mb-4! mx-3!">
+              {{ 'admin.tabs.importExport' | transloco }}
+            </h2>
+            <app-admin-import-export
+              [tournament]="tournament()"
+              [teams]="teams()"
+              [series]="series()"
+            />
+          </section>
+        </div>
       </p-tabpanel>
     }
   </p-tabpanels>

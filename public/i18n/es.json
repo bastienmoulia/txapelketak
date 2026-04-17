@@ -167,7 +167,16 @@
       "teams": "Equipos",
       "games": "Partidos",
       "users": "Usuarios",
-      "importExport": "Importar / Exportar"
+      "importExport": "Importar / Exportar",
+      "administration": "Administración"
+    },
+    "general": {
+      "title": "General",
+      "name": "Nombre del torneo",
+      "description": "Descripción",
+      "noDescription": "Sin descripción",
+      "saved": "Torneo actualizado",
+      "savedDetail": "La información del torneo se ha guardado correctamente."
     },
     "poules": {
       "addSerie": "Añadir una serie",

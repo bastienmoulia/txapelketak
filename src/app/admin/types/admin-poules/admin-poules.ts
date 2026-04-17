@@ -38,6 +38,7 @@ import {
 } from '../../../tournaments/types/poules/poules.route';
 import { AdminUsers } from '../shared/admin-users/admin-users';
 import { AdminImportExport } from '../shared/admin-import-export/admin-import-export';
+import { AdminGeneral } from '../shared/admin-general/admin-general';
 import { TournamentDashboard } from '../../../tournaments/types/shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
 
@@ -51,6 +52,7 @@ import { PoulesStore } from '../../../store/poules.store';
     Games,
     AdminUsers,
     AdminImportExport,
+    AdminGeneral,
     TournamentDashboard,
   ],
   templateUrl: './admin-poules.html',

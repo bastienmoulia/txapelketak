@@ -167,7 +167,16 @@
       "teams": "Équipes",
       "games": "Parties",
       "users": "Utilisateurs",
-      "importExport": "Import / Export"
+      "importExport": "Import / Export",
+      "administration": "Administration"
+    },
+    "general": {
+      "title": "Général",
+      "name": "Nom du tournoi",
+      "description": "Description",
+      "noDescription": "Aucune description",
+      "saved": "Tournoi mis à jour",
+      "savedDetail": "Les informations du tournoi ont été enregistrées avec succès."
     },
     "poules": {
       "addSerie": "Ajouter une série",

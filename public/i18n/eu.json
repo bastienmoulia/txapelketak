@@ -167,7 +167,16 @@
       "teams": "Taldeak",
       "games": "Partidak",
       "users": "Erabiltzaileak",
-      "importExport": "Inportatu / Esportatu"
+      "importExport": "Inportatu / Esportatu",
+      "administration": "Administrazioa"
+    },
+    "general": {
+      "title": "Orokorra",
+      "name": "Txapelketaren izena",
+      "description": "Deskribapena",
+      "noDescription": "Deskribapenik ez",
+      "saved": "Txapelketa eguneratua",
+      "savedDetail": "Txapelketaren informazioa arrakastaz gorde da."
     },
     "poules": {
       "addSerie": "Serie bat gehitu",

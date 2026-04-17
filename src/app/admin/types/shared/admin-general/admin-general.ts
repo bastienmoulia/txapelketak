@@ -41,6 +41,7 @@ export class AdminGeneral {
 
   name = signal('');
   description = signal('');
+  isEditing = signal(false);
   isSaving = signal(false);
 
   private loadedTournamentId = signal<string | null>(null);
@@ -57,6 +58,16 @@ export class AdminGeneral {
     });
   }
 
+  onEdit(): void {
+    this.name.set(this.tournament().name);
+    this.description.set(this.tournament().description ?? '');
+    this.isEditing.set(true);
+  }
+
+  onCancel(): void {
+    this.isEditing.set(false);
+  }
+
   async onSave(): Promise<void> {
     const tournament = this.tournament();
     if (!tournament.ref) {
@@ -69,6 +80,7 @@ export class AdminGeneral {
         name: this.name(),
         description: this.description(),
       });
+      this.isEditing.set(false);
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.general.saved'),

@@ -103,10 +103,19 @@
 
 .upcoming-game-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 0.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--p-content-border-color);
+}
+
+.upcoming-game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .upcoming-game-item:last-child {

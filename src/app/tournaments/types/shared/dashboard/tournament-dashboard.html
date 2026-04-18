@@ -172,17 +172,33 @@
               game.pouleName
           ) {
             <li class="upcoming-game-item overdue-game-item" data-testid="dashboard-overdue-game">
-              <div class="upcoming-game-teams">
-                <span class="font-semibold">{{ game.team1Name }}</span>
-                <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
-                <span class="font-semibold">{{ game.team2Name }}</span>
+              <div class="upcoming-game-info">
+                <div class="upcoming-game-teams">
+                  <span class="font-semibold">{{ game.team1Name }}</span>
+                  <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
+                  <span class="font-semibold">{{ game.team2Name }}</span>
+                </div>
+                <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
+                  <i class="pi pi-clock text-xs mr-1"></i>
+                  {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                  <span class="mx-1">·</span>
+                  {{ game.serieName }} – {{ game.pouleName }}
+                </div>
               </div>
-              <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
-                <i class="pi pi-clock text-xs mr-1"></i>
-                {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
-                <span class="mx-1">·</span>
-                {{ game.serieName }} – {{ game.pouleName }}
-              </div>
+              @if (role() === 'admin' || role() === 'organizer') {
+                <p-button
+                  icon="pi pi-pencil"
+                  [ariaLabel]="'admin.games.editAria' | transloco"
+                  [pTooltip]="'shared.actions.edit' | transloco"
+                  tooltipPosition="top"
+                  severity="secondary"
+                  size="small"
+                  [rounded]="true"
+                  [text]="true"
+                  (onClick)="onEditGame(game)"
+                  data-testid="dashboard-edit-overdue-game-button"
+                />
+              }
             </li>
           }
         </ul>
@@ -214,17 +230,33 @@
                 game.pouleName
             ) {
               <li class="upcoming-game-item" data-testid="dashboard-upcoming-game">
-                <div class="upcoming-game-teams">
-                  <span class="font-semibold">{{ game.team1Name }}</span>
-                  <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
-                  <span class="font-semibold">{{ game.team2Name }}</span>
+                <div class="upcoming-game-info">
+                  <div class="upcoming-game-teams">
+                    <span class="font-semibold">{{ game.team1Name }}</span>
+                    <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
+                    <span class="font-semibold">{{ game.team2Name }}</span>
+                  </div>
+                  <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
+                    <i class="pi pi-clock text-xs mr-1"></i>
+                    {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                    <span class="mx-1">·</span>
+                    {{ game.serieName }} – {{ game.pouleName }}
+                  </div>
                 </div>
-                <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
-                  <i class="pi pi-clock text-xs mr-1"></i>
-                  {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
-                  <span class="mx-1">·</span>
-                  {{ game.serieName }} – {{ game.pouleName }}
-                </div>
+                @if (role() === 'admin' || role() === 'organizer') {
+                  <p-button
+                    icon="pi pi-pencil"
+                    [ariaLabel]="'admin.games.editAria' | transloco"
+                    [pTooltip]="'shared.actions.edit' | transloco"
+                    tooltipPosition="top"
+                    severity="secondary"
+                    size="small"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="onEditGame(game)"
+                    data-testid="dashboard-edit-upcoming-game-button"
+                  />
+                }
               </li>
             }
           </ul>
@@ -264,40 +296,42 @@
                 game.pouleName
             ) {
               <li class="upcoming-game-item" data-testid="dashboard-recent-game">
-                <div class="upcoming-game-teams">
-                  <span
-                    class="font-semibold"
-                    [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
-                    [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
-                    >{{ game.team1Name }}</span
-                  >
-                  <span
-                    class="recent-game-score"
-                    [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
-                    [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
-                    >{{ game.scoreTeam1 }}</span
-                  >
-                  <span class="text-[var(--p-text-muted-color)]">-</span>
-                  <span
-                    class="recent-game-score"
-                    [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
-                    [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
-                    >{{ game.scoreTeam2 }}</span
-                  >
-                  <span
-                    class="font-semibold"
-                    [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
-                    [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
-                    >{{ game.team2Name }}</span
-                  >
-                </div>
-                <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
-                  @if (game.date) {
-                    <i class="pi pi-clock text-xs mr-1"></i>
-                    {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
-                    <span class="mx-1">·</span>
-                  }
-                  {{ game.serieName }} – {{ game.pouleName }}
+                <div class="upcoming-game-info">
+                  <div class="upcoming-game-teams">
+                    <span
+                      class="font-semibold"
+                      [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
+                      [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                      >{{ game.team1Name }}</span
+                    >
+                    <span
+                      class="recent-game-score"
+                      [class.text-green-500]="game.scoreTeam1 > game.scoreTeam2"
+                      [class.text-red-500]="game.scoreTeam1 < game.scoreTeam2"
+                      >{{ game.scoreTeam1 }}</span
+                    >
+                    <span class="text-[var(--p-text-muted-color)]">-</span>
+                    <span
+                      class="recent-game-score"
+                      [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
+                      [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                      >{{ game.scoreTeam2 }}</span
+                    >
+                    <span
+                      class="font-semibold"
+                      [class.text-green-500]="game.scoreTeam2 > game.scoreTeam1"
+                      [class.text-red-500]="game.scoreTeam2 < game.scoreTeam1"
+                      >{{ game.team2Name }}</span
+                    >
+                  </div>
+                  <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
+                    @if (game.date) {
+                      <i class="pi pi-clock text-xs mr-1"></i>
+                      {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                      <span class="mx-1">·</span>
+                    }
+                    {{ game.serieName }} – {{ game.pouleName }}
+                  </div>
                 </div>
               </li>
             }
@@ -311,3 +345,118 @@
     }
   </div>
 }
+
+<!-- Edit game dialog -->
+<p-dialog
+  [(visible)]="gameDialogVisible"
+  [header]="'admin.games.dialogEditGame' | transloco"
+  [modal]="true"
+  [style]="{ width: '30rem', maxHeight: '90vh', overflowY: 'auto' }"
+  appendTo="body"
+>
+  <div class="flex flex-column gap-4 pt-2">
+    <!-- Ligne 1 : Équipe 1 + Score 1 -->
+    <div class="flex gap-3">
+      <div class="flex-2">
+        <p-floatlabel variant="on">
+          <p-select
+            inputId="dashboard-team1"
+            [options]="dialogTeams()"
+            [(ngModel)]="selectedTeam1Ref"
+            optionLabel="name"
+            optionValue="ref"
+            [style]="{ width: '100%' }"
+            appendTo="body"
+            [disabled]="role() !== 'admin'"
+          />
+          <label for="dashboard-team1">{{ 'admin.games.team1' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex-1">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            inputId="dashboard-score1"
+            [(ngModel)]="scoreTeam1"
+            [min]="0"
+            [style]="{ width: '100%' }"
+          />
+          <label for="dashboard-score1">{{ 'admin.games.score' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <!-- Ligne 2 : Équipe 2 + Score 2 -->
+    <div class="flex gap-3">
+      <div class="flex-2">
+        <p-floatlabel variant="on">
+          <p-select
+            inputId="dashboard-team2"
+            [options]="dialogTeams()"
+            [(ngModel)]="selectedTeam2Ref"
+            optionLabel="name"
+            optionValue="ref"
+            [style]="{ width: '100%' }"
+            appendTo="body"
+            [disabled]="role() !== 'admin'"
+          />
+          <label for="dashboard-team2">{{ 'admin.games.team2' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+      <div class="flex-1">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            inputId="dashboard-score2"
+            [(ngModel)]="scoreTeam2"
+            [min]="0"
+            [style]="{ width: '100%' }"
+          />
+          <label for="dashboard-score2">{{ 'admin.games.score' | transloco }}</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <!-- Ligne 3 : Date -->
+    <div>
+      <p-floatlabel variant="on">
+        <p-inputmask
+          inputId="dashboard-gameDate"
+          [(ngModel)]="gameDateModel"
+          [mask]="activeLanguage() === 'en' ? '99/99/9999 99:99' : '99/99/9999 99:99'"
+          [placeholder]="datePlaceholder()"
+          [showClear]="true"
+          [style]="{ width: '100%' }"
+          (onComplete)="onDateMaskComplete()"
+          (onClear)="clearGameDate()"
+        />
+        <label for="dashboard-gameDate">{{ 'admin.games.date' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Ligne 4 : Arbitres (optionnel) -->
+    <div>
+      <p-floatlabel variant="on">
+        <p-autocomplete
+          inputId="dashboard-referees"
+          [(ngModel)]="gameReferees"
+          [multiple]="true"
+          [typeahead]="false"
+          [addOnBlur]="true"
+          class="w-full"
+        />
+        <label for="dashboard-referees">{{ 'admin.games.referees' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="gameDialogVisible.set(false)"
+    />
+    <p-button
+      [label]="'shared.actions.save' | transloco"
+      (onClick)="onSaveGame()"
+    />
+  </ng-template>
+</p-dialog>

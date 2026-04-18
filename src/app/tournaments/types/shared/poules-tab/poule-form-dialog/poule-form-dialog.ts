@@ -7,12 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Poule } from '../../../poules/poules';
-
-export interface SavePouleEvent {
-  serieRef: DocumentReference;
-  name: string;
-  ref?: DocumentReference;
-}
+import type { SavePouleEvent } from '../poules-tab';
 
 interface PouleFormDialogData {
   isEditing: boolean;

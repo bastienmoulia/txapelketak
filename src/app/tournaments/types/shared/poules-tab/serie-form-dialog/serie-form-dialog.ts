@@ -7,11 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Serie } from '../../../poules/poules';
-
-export interface SaveSerieEvent {
-  name: string;
-  ref?: DocumentReference;
-}
+import type { SaveSerieEvent } from '../poules-tab';
 
 interface SerieFormDialogData {
   isEditing: boolean;

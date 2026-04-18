@@ -10,7 +10,7 @@ import { UserRole } from '../../../../home/tournament.interface';
 import { RouterLink } from '@angular/router';
 import { TeamFormDialog } from './team-form-dialog/team-form-dialog';
 import { TeamBulkDialog } from './team-bulk-dialog/team-bulk-dialog';
-import { DocumentReference } from '@firebase/firestore';
+import { DocumentReference } from '@angular/fire/firestore';
 
 export interface Team {
   ref: DocumentReference;

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -14,7 +14,7 @@ interface TeamFormDialogData {
 
 @Component({
   selector: 'app-team-form-dialog',
-  imports: [TranslocoPipe, FloatLabel, InputTextModule, FormField, Button],
+  imports: [TranslocoPipe, FloatLabel, InputTextModule, FormsModule, Button],
   templateUrl: './team-form-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -24,19 +24,16 @@ export class TeamFormDialog {
 
   data = this.config.data ?? { isEditing: false, team: { ref: null!, name: '' } };
 
-  team = signal<{ ref: DocumentReference; name: string }>(this.data.team);
-  teamForm = form(this.team, (path) => {
-    required(path.name);
-  });
+  teamName = signal(this.data.team.name);
+  private readonly teamRef = this.data.team.ref;
 
   onCancel(): void {
     this.dialogRef.close(undefined);
   }
 
   onSave(): void {
-    if (this.teamForm().valid()) {
-      const team = this.team();
-      this.dialogRef.close({ ref: team.ref, name: team.name });
-    }
+    const name = this.teamName().trim();
+    if (!name) return;
+    this.dialogRef.close({ ref: this.teamRef, name });
   }
 }

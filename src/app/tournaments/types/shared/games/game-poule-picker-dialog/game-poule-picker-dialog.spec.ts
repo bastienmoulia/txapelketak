@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GamePoulePickerDialog } from './game-poule-picker-dialog';
 import { Serie, Poule } from '../../../poules/poules';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DocumentReference } from '@angular/fire/firestore';
 import { provideTranslocoTesting } from '../../../../../testing/transloco-testing.providers';
 
@@ -11,6 +11,7 @@ describe('GamePoulePickerDialog', () => {
   let component: GamePoulePickerDialog;
   let fixture: ComponentFixture<GamePoulePickerDialog>;
   let mockConfig: DynamicDialogConfig;
+  let mockRef: { close: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     const serieRef = { id: 'serie-1' } as DocumentReference;
@@ -32,10 +33,13 @@ describe('GamePoulePickerDialog', () => {
       },
     } as DynamicDialogConfig;
 
+    mockRef = { close: vi.fn() };
+
     await TestBed.configureTestingModule({
       imports: [GamePoulePickerDialog],
       providers: [
         { provide: DynamicDialogConfig, useValue: mockConfig },
+        { provide: DynamicDialogRef, useValue: mockRef },
         ...provideTranslocoTesting(),
         provideAnimationsAsync(),
       ],
@@ -71,22 +75,12 @@ describe('GamePoulePickerDialog', () => {
   });
 
   it('should close dialog on cancel', () => {
-    let closedValue: any;
-    mockConfig.close = (value: any) => {
-      closedValue = value;
-    };
-
     component.onCancel();
 
-    expect(closedValue).toBeUndefined();
+    expect(mockRef.close).toHaveBeenCalledWith(undefined);
   });
 
   it('should return selected poule on next', () => {
-    let closedValue: any;
-    mockConfig.close = (value: any) => {
-      closedValue = value;
-    };
-
     const serie = mockConfig.data.series[0];
     const poule = serie.poules[0];
     component.selectedSerie.set(serie);
@@ -94,6 +88,6 @@ describe('GamePoulePickerDialog', () => {
 
     component.onNext();
 
-    expect(closedValue).toEqual(poule);
+    expect(mockRef.close).toHaveBeenCalledWith(poule);
   });
 });

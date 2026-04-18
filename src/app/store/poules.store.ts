@@ -29,6 +29,7 @@ export const PoulesStore = signalStore(
     let teamsSubscription: Subscription | null = null;
     let seriesSubscription: Subscription | null = null;
     const gameSubscriptions: Subscription[] = [];
+    const pouleSubscriptions: Subscription[] = [];
     let watchedTournamentId: string | null = null;
 
     function stopGameWatchers(): void {
@@ -36,11 +37,17 @@ export const PoulesStore = signalStore(
       gameSubscriptions.length = 0;
     }
 
+    function stopPouleWatchers(): void {
+      pouleSubscriptions.forEach((s) => s.unsubscribe());
+      pouleSubscriptions.length = 0;
+    }
+
     function resetWatchingState(): void {
       teamsSubscription?.unsubscribe();
       teamsSubscription = null;
       seriesSubscription?.unsubscribe();
       seriesSubscription = null;
+      stopPouleWatchers();
       stopGameWatchers();
       watchedTournamentId = null;
     }
@@ -83,6 +90,47 @@ export const PoulesStore = signalStore(
           });
           gameSubscriptions.push(sub);
         }
+      }
+    }
+
+    function watchPoules(series: Serie[]): void {
+      stopPouleWatchers();
+      for (const serie of series) {
+        const sub = firebaseService.watchCollectionFromDocumentRef(serie.ref, 'poules').subscribe({
+          next: (items) => {
+            const updatedPoules: Poule[] = items.map((item) => ({
+              ...(item.data as Partial<Poule>),
+              ref: item.ref,
+              games: [],
+            })) as Poule[];
+
+            const currentSeries = store.series();
+            const currentSerie = currentSeries.find((s) => s.ref.id === serie.ref.id);
+
+            const poulesWithGames = updatedPoules.map((poule) => {
+              const existingPoule = currentSerie?.poules?.find((p) => p.ref.id === poule.ref.id);
+              return existingPoule ? { ...poule, games: existingPoule.games } : poule;
+            });
+
+            const newSeries = currentSeries.map((s) =>
+              s.ref.id === serie.ref.id ? { ...s, poules: poulesWithGames } : s,
+            );
+            patchState(store, { series: newSeries, error: null });
+            watchGames(newSeries);
+          },
+          error: (err: unknown) => {
+            patchState(store, {
+              error: err instanceof Error ? err.message : 'Unable to watch poules',
+            });
+          },
+          complete: () => {
+            const index = pouleSubscriptions.indexOf(sub);
+            if (index >= 0) {
+              pouleSubscriptions.splice(index, 1);
+            }
+          },
+        });
+        pouleSubscriptions.push(sub);
       }
     }
 
@@ -165,6 +213,7 @@ export const PoulesStore = signalStore(
             distinctUntilChanged((a, b) => a.signature === b.signature),
             switchMap(({ items }) => {
               stopGameWatchers();
+              stopPouleWatchers();
               const series = items.map((item) => ({
                 ...(item.data as Partial<Serie>),
                 ref: item.ref,
@@ -183,6 +232,7 @@ export const PoulesStore = signalStore(
             next: (series) => {
               patchState(store, { series, loading: false });
               watchGames(series);
+              watchPoules(series);
             },
             error: (err: unknown) => {
               resetWatchingState();
@@ -202,6 +252,7 @@ export const PoulesStore = signalStore(
         teamsSubscription = null;
         seriesSubscription?.unsubscribe();
         seriesSubscription = null;
+        stopPouleWatchers();
         stopGameWatchers();
         watchedTournamentId = null;
         patchState(store, initialState);

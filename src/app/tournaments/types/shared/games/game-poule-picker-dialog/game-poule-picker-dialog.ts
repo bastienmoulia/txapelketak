@@ -24,7 +24,7 @@ export class GamePoulePickerDialog {
 
   data = this.config.data ?? { series: [] };
 
-  selectedSerie = signal<Serie | null>(null);
+  selectedSerie = signal<Serie | null>(this.data.series.length === 1 ? this.data.series[0] : null);
   selectedPoule = signal<Poule | null>(null);
 
   sortedSeries = computed(() =>

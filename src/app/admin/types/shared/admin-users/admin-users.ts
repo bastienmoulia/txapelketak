@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -15,8 +8,7 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { DialogService } from 'primeng/dynamicdialog';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
-import { Tournament, User, UserRole } from '../../../../home/tournament.interface';
-import { DocumentReference } from '@angular/fire/firestore';
+import { Tournament, User } from '../../../../home/tournament.interface';
 import { TooltipModule } from 'primeng/tooltip';
 import { RoleBadge } from '../../../../shared/role-badge/role-badge';
 import { UserFormDialog, UserFormResult } from './user-form-dialog/user-form-dialog';

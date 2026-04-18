@@ -284,7 +284,7 @@ export class Games {
       header: this.translocoService.translate('admin.games.addGame'),
       modal: true,
       closable: true,
-      width: '30rem',
+      width: 'min(30rem, 100%)',
       data: { series },
     });
     dialogRef?.onClose.subscribe((poule: Poule | undefined) => {
@@ -331,7 +331,7 @@ export class Games {
         : this.translocoService.translate('admin.games.addGame'),
       modal: true,
       closable: true,
-      width: '30rem',
+      width: 'min(30rem, 100%)',
       data: {
         teams: this.teams(),
         role: this.role(),
@@ -356,6 +356,7 @@ export class Games {
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         this.deleteGame.emit({ gameRef });
       },

@@ -1,9 +1,9 @@
 <p-confirmdialog></p-confirmdialog>
 
 @if (sortedSeries().length > 0) {
-  <div class="games-filters flex flex-wrap items-center gap-2 mx-3 mb-3">
+  <div class="flex flex-wrap items-center gap-2 mx-3 mb-3">
     <p-select
-      class="games-filter-control games-team-filter"
+      class="w-[calc(50%-0.25rem)] sm:w-auto min-w-0 sm:min-w-40 flex-none"
       [options]="sortedTeams()"
       [ngModel]="selectedTeamId()"
       optionLabel="name"
@@ -18,7 +18,7 @@
     />
 
     <p-datepicker
-      class="games-filter-control games-date-filter"
+      class="w-[calc(50%-0.25rem)] sm:w-auto min-w-0 sm:min-w-36 flex-none"
       [ngModel]="selectedDateFilter()"
       (onDateSelect)="onDateFilterChange($event)"
       [placeholder]="'admin.games.filterDateShort' | transloco"
@@ -34,7 +34,7 @@
 
     @if (role() === 'admin') {
       <p-button
-        class="ml-auto"
+        class="ml-auto w-full flex justify-end sm:w-auto"
         icon="pi pi-plus"
         [ariaLabel]="'admin.games.addGame' | transloco"
         [pTooltip]="'admin.games.addGame' | transloco"
@@ -46,7 +46,7 @@
     }
   </div>
 
-  <div class="games-table-shell mx-3 mb-3">
+  <div class="mx-3 mb-3">
     @if (filteredFlatGamesByDate().length > 0 || !hasActiveFilters()) {
       <p-table
         [value]="filteredFlatGamesByDate()"
@@ -63,7 +63,7 @@
             <th>{{ 'admin.games.time' | transloco }}</th>
             <th>{{ 'admin.games.referees' | transloco }}</th>
             @if (role() === 'admin' || role() === 'organizer') {
-              <th class="games-table__actions-header">
+              <th>
                 {{ 'shared.table.columns.actions' | transloco }}
               </th>
             }
@@ -74,7 +74,7 @@
           <tr>
             <td
               [attr.colspan]="byDateColumnCount()"
-              class="font-bold py-2 px-3 games-table__date-header-cell first-letter:uppercase"
+              class="block text-left font-bold py-2 px-3 first-letter:uppercase"
               [class.text-yellow-500]="!game.dateKey"
             >
               @if (game.dateKey) {

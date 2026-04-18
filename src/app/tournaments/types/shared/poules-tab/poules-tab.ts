@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
@@ -9,13 +9,14 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Message } from 'primeng/message';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabel } from 'primeng/floatlabel';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { FormsModule } from '@angular/forms';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { UserRole } from '../../../../home/tournament.interface';
 import { TooltipModule } from 'primeng/tooltip';
+import { SerieFormDialog } from './serie-form-dialog/serie-form-dialog';
+import { PouleFormDialog } from './poule-form-dialog/poule-form-dialog';
+import { TeamPouleDialog } from './team-poule-dialog/team-poule-dialog';
 
 export interface SaveSerieEvent {
   name: string;
@@ -57,18 +58,17 @@ export interface TeamStanding {
     Button,
     TranslocoPipe,
     Message,
-    DialogModule,
-    InputTextModule,
-    FloatLabel,
-    MultiSelectModule,
-    FormsModule,
+    ConfirmDialogModule,
     TooltipModule,
   ],
+  providers: [DialogService, ConfirmationService],
   templateUrl: './poules-tab.html',
   styleUrl: './poules-tab.css',
 })
 export class PoulesTab {
   private translocoService = inject(TranslocoService);
+  private dialogService = inject(DialogService);
+  private confirmationService = inject(ConfirmationService);
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
@@ -138,30 +138,6 @@ export class PoulesTab {
     });
   }
 
-  // Serie dialog state
-  serieDialogVisible = signal(false);
-  isEditingSerie = signal(false);
-  serieName = signal('');
-  editingSerie = signal<Serie | null>(null);
-
-  // Poule dialog state
-  pouleDialogVisible = signal(false);
-  isEditingPoule = signal(false);
-  pouleName = signal('');
-  editingPoule = signal<Poule | null>(null);
-  pouleParentSerieRef = signal<DocumentReference | null>(null);
-
-  // Team in poule dialog state
-  teamPouleDialogVisible = signal(false);
-  teamPouleTarget = signal<Poule | null>(null);
-  selectedTeamRefs = signal<DocumentReference[]>([]);
-  readonly emptyPoule: Poule = { ref: null!, name: '', refTeams: [] };
-
-  // Delete confirmation dialog state
-  deleteConfirmVisible = signal(false);
-  deleteConfirmName = signal('');
-  private pendingDeleteAction: (() => void) | null = null;
-
   getTeamName(ref: DocumentReference, teams: Team[]): string {
     if (!ref) {
       return 'Unknown Team';
@@ -169,12 +145,6 @@ export class PoulesTab {
     const team = teams.find((t) => t.ref.id === ref.id);
     return team ? team.name : 'Unknown Team';
   }
-
-  getAvailableTeams = (poule: Poule, teams: Team[]): Team[] => {
-    return teams
-      .filter((t) => !poule.refTeams?.some((ref) => ref.id === t.ref.id))
-      .sort((a, b) => a.name.localeCompare(b.name));
-  };
 
   getExpectedGamesCount = (poule: Poule): number => {
     const teamCount = poule.refTeams?.length ?? 0;
@@ -266,97 +236,129 @@ export class PoulesTab {
   };
 
   onAddSerie(): void {
-    this.isEditingSerie.set(false);
-    this.serieName.set('');
-    this.editingSerie.set(null);
-    this.serieDialogVisible.set(true);
+    const dialogRef = this.dialogService.open(SerieFormDialog, {
+      header: this.translocoService.translate('admin.poules.dialogAddSerie'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { isEditing: false, serieName: '', editingSerie: null },
+    });
+    dialogRef?.onClose.subscribe((result: { name: string; ref?: DocumentReference } | undefined) => {
+      if (result) {
+        this.saveSerie.emit(result);
+      }
+    });
   }
 
   onEditSerie(serie: Serie): void {
-    this.isEditingSerie.set(true);
-    this.serieName.set(serie.name);
-    this.editingSerie.set(serie);
-    this.serieDialogVisible.set(true);
-  }
-
-  onSaveSerie(): void {
-    const name = this.serieName().trim();
-    if (!name) return;
-    const editing = this.editingSerie();
-    this.saveSerie.emit({ name, ref: editing?.ref });
-    this.serieDialogVisible.set(false);
+    const dialogRef = this.dialogService.open(SerieFormDialog, {
+      header: this.translocoService.translate('admin.poules.dialogEditSerie'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { isEditing: true, serieName: serie.name, editingSerie: serie },
+    });
+    dialogRef?.onClose.subscribe((result: { name: string; ref?: DocumentReference } | undefined) => {
+      if (result) {
+        this.saveSerie.emit(result);
+      }
+    });
   }
 
   onDeleteSerie(serie: Serie): void {
-    this.deleteConfirmName.set(serie.name);
-    this.pendingDeleteAction = () => this.deleteSerie.emit(serie);
-    this.deleteConfirmVisible.set(true);
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: serie.name }),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.deleteSerie.emit(serie);
+      },
+    });
   }
 
   onAddPoule(serieRef: DocumentReference): void {
-    this.isEditingPoule.set(false);
-    this.pouleName.set('');
-    this.editingPoule.set(null);
-    this.pouleParentSerieRef.set(serieRef);
-    this.pouleDialogVisible.set(true);
+    const dialogRef = this.dialogService.open(PouleFormDialog, {
+      header: this.translocoService.translate('admin.poules.dialogAddPoule'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { isEditing: false, pouleName: '', editingPoule: null, serieRef },
+    });
+    dialogRef?.onClose.subscribe(
+      (result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined) => {
+        if (result) {
+          this.savePoule.emit(result);
+        }
+      },
+    );
   }
 
   onEditPoule(serieRef: DocumentReference, poule: Poule): void {
-    this.isEditingPoule.set(true);
-    this.pouleName.set(poule.name);
-    this.editingPoule.set(poule);
-    this.pouleParentSerieRef.set(serieRef);
-    this.pouleDialogVisible.set(true);
-  }
-
-  onSavePoule(): void {
-    const name = this.pouleName().trim();
-    const serieRef = this.pouleParentSerieRef();
-    if (!name || !serieRef) return;
-    const editing = this.editingPoule();
-    this.savePoule.emit({ serieRef, name, ref: editing?.ref });
-    this.pouleDialogVisible.set(false);
+    const dialogRef = this.dialogService.open(PouleFormDialog, {
+      header: this.translocoService.translate('admin.poules.dialogEditPoule'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { isEditing: true, pouleName: poule.name, editingPoule: poule, serieRef },
+    });
+    dialogRef?.onClose.subscribe(
+      (result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined) => {
+        if (result) {
+          this.savePoule.emit(result);
+        }
+      },
+    );
   }
 
   onDeletePoule(serieRef: DocumentReference, poule: Poule): void {
-    this.deleteConfirmName.set(poule.name);
-    this.pendingDeleteAction = () => this.deletePoule.emit({ serieRef, poule });
-    this.deleteConfirmVisible.set(true);
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: poule.name }),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.deletePoule.emit({ serieRef, poule });
+      },
+    });
   }
 
   onAddTeamToPoule(poule: Poule): void {
-    this.teamPouleTarget.set(poule);
-    this.selectedTeamRefs.set([]);
-    this.teamPouleDialogVisible.set(true);
-  }
-
-  onSaveTeamToPoule(): void {
-    const poule = this.teamPouleTarget();
-    const teamRefs = this.selectedTeamRefs();
-    if (!poule || teamRefs.length === 0) return;
-
-    for (const teamRef of teamRefs) {
-      this.addTeamToPoule.emit({ poule, teamRef });
-    }
-
-    this.teamPouleDialogVisible.set(false);
+    const dialogRef = this.dialogService.open(TeamPouleDialog, {
+      header: this.translocoService.translate('admin.poules.dialogAddTeam'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { poule, teams: this.teams() },
+    });
+    dialogRef?.onClose.subscribe((result: DocumentReference[] | undefined) => {
+      if (result && result.length > 0) {
+        for (const teamRef of result) {
+          this.addTeamToPoule.emit({ poule, teamRef });
+        }
+      }
+    });
   }
 
   onRemoveTeamFromPoule(poule: Poule, teamRef: DocumentReference): void {
     const teamName = this.getTeamName(teamRef, this.teams());
-    this.deleteConfirmName.set(teamName);
-    this.pendingDeleteAction = () => this.removeTeamFromPoule.emit({ poule, teamRef });
-    this.deleteConfirmVisible.set(true);
-  }
-
-  onConfirmDelete(): void {
-    this.pendingDeleteAction?.();
-    this.pendingDeleteAction = null;
-    this.deleteConfirmVisible.set(false);
-  }
-
-  onCancelDelete(): void {
-    this.pendingDeleteAction = null;
-    this.deleteConfirmVisible.set(false);
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: teamName }),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.removeTeamFromPoule.emit({ poule, teamRef });
+      },
+    });
   }
 }

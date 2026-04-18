@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
 import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 
 import { AdminImportExport } from './admin-import-export';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
@@ -19,6 +20,7 @@ describe('AdminImportExport', () => {
       imports: [AdminImportExport],
       providers: [
         MessageService,
+        DialogService,
         ...provideTranslocoTesting(),
         { provide: FirebaseService, useValue: firebaseServiceStub },
       ],

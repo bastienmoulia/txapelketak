@@ -1,0 +1,24 @@
+<div class="mb-4">
+  <p-multiselect
+    [options]="availableTeams()"
+    optionLabel="name"
+    optionValue="ref"
+    [placeholder]="'admin.poules.selectTeam' | transloco"
+    [ngModel]="selectedTeamRefs()"
+    (ngModelChange)="selectedTeamRefs.set($event)"
+    name="team-select"
+    class="w-full"
+    appendTo="body"
+    [showToggleAll]="false"
+    [filter]="true"
+  />
+</div>
+
+<div class="p-dialog-footer px-0! mt-5">
+  <p-button [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
+  <p-button
+    [label]="'shared.actions.save' | transloco"
+    [disabled]="selectedTeamRefs().length === 0"
+    (onClick)="onSave()"
+  />
+</div>

@@ -28,13 +28,13 @@ export const PoulesStore = signalStore(
   withMethods((store, firebaseService = inject(FirebaseService)) => {
     let teamsSubscription: Subscription | null = null;
     let seriesSubscription: Subscription | null = null;
-    const gameSubscriptions: Subscription[] = [];
+    const gameSubscriptionMap = new Map<string, Subscription>(); // key: poule ref ID
     const pouleSubscriptions: Subscription[] = [];
     let watchedTournamentId: string | null = null;
 
     function stopGameWatchers(): void {
-      gameSubscriptions.forEach((s) => s.unsubscribe());
-      gameSubscriptions.length = 0;
+      gameSubscriptionMap.forEach((sub) => sub.unsubscribe());
+      gameSubscriptionMap.clear();
     }
 
     function stopPouleWatchers(): void {
@@ -52,43 +52,65 @@ export const PoulesStore = signalStore(
       watchedTournamentId = null;
     }
 
+    function startGameWatcher(poule: Poule): void {
+      if (gameSubscriptionMap.has(poule.ref.id)) {
+        return;
+      }
+      const sub = firebaseService.watchCollectionFromDocumentRef(poule.ref, 'games').subscribe({
+        next: (items) => {
+          const games: Game[] = items.map((item) => {
+            const data = item.data as Partial<Game>;
+            return {
+              ...data,
+              ref: item.ref,
+              date: parseFirestoreDate(data.date),
+            } as Game;
+          });
+          patchState(store, {
+            series: store.series().map((s) => ({
+              ...s,
+              poules: (s.poules ?? []).map((p) =>
+                p.ref.id === poule.ref.id ? { ...p, games } : p,
+              ),
+            })),
+            error: null,
+          });
+        },
+        error: (err: unknown) => {
+          patchState(store, {
+            error: err instanceof Error ? err.message : 'Unable to watch games',
+          });
+        },
+        complete: () => {
+          gameSubscriptionMap.delete(poule.ref.id);
+        },
+      });
+      gameSubscriptionMap.set(poule.ref.id, sub);
+    }
+
     function watchGames(series: Serie[]): void {
       stopGameWatchers();
       for (const serie of series) {
         for (const poule of serie.poules ?? []) {
-          const sub = firebaseService.watchCollectionFromDocumentRef(poule.ref, 'games').subscribe({
-            next: (items) => {
-              const games: Game[] = items.map((item) => {
-                const data = item.data as Partial<Game>;
-                return {
-                  ...data,
-                  ref: item.ref,
-                  date: parseFirestoreDate(data.date),
-                } as Game;
-              });
-              patchState(store, {
-                series: store.series().map((s) => ({
-                  ...s,
-                  poules: (s.poules ?? []).map((p) =>
-                    p.ref.id === poule.ref.id ? { ...p, games } : p,
-                  ),
-                })),
-                error: null,
-              });
-            },
-            error: (err: unknown) => {
-              patchState(store, {
-                error: err instanceof Error ? err.message : 'Unable to watch games',
-              });
-            },
-            complete: () => {
-              const index = gameSubscriptions.indexOf(sub);
-              if (index >= 0) {
-                gameSubscriptions.splice(index, 1);
-              }
-            },
-          });
-          gameSubscriptions.push(sub);
+          startGameWatcher(poule);
+        }
+      }
+    }
+
+    function syncGameWatchers(oldPoules: Poule[], newPoules: Poule[]): void {
+      const oldIds = new Set(oldPoules.map((p) => p.ref.id));
+      const newIds = new Set(newPoules.map((p) => p.ref.id));
+
+      for (const id of oldIds) {
+        if (!newIds.has(id)) {
+          gameSubscriptionMap.get(id)?.unsubscribe();
+          gameSubscriptionMap.delete(id);
+        }
+      }
+
+      for (const poule of newPoules) {
+        if (!oldIds.has(poule.ref.id)) {
+          startGameWatcher(poule);
         }
       }
     }
@@ -98,25 +120,24 @@ export const PoulesStore = signalStore(
       for (const serie of series) {
         const sub = firebaseService.watchCollectionFromDocumentRef(serie.ref, 'poules').subscribe({
           next: (items) => {
-            const updatedPoules: Poule[] = items.map((item) => ({
-              ...(item.data as Partial<Poule>),
-              ref: item.ref,
-              games: [],
-            })) as Poule[];
-
             const currentSeries = store.series();
             const currentSerie = currentSeries.find((s) => s.ref.id === serie.ref.id);
+            const oldPoules = currentSerie?.poules ?? [];
 
-            const poulesWithGames = updatedPoules.map((poule) => {
-              const existingPoule = currentSerie?.poules?.find((p) => p.ref.id === poule.ref.id);
-              return existingPoule ? { ...poule, games: existingPoule.games } : poule;
+            const poulesWithGames: Poule[] = items.map((item) => {
+              const existingPoule = oldPoules.find((p) => p.ref.id === item.ref.id);
+              return {
+                ...(item.data as Partial<Poule>),
+                ref: item.ref,
+                games: existingPoule?.games ?? [],
+              } as Poule;
             });
 
             const newSeries = currentSeries.map((s) =>
               s.ref.id === serie.ref.id ? { ...s, poules: poulesWithGames } : s,
             );
             patchState(store, { series: newSeries, error: null });
-            watchGames(newSeries);
+            syncGameWatchers(oldPoules, poulesWithGames);
           },
           error: (err: unknown) => {
             patchState(store, {

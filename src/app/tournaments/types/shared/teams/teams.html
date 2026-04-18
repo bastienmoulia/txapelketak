@@ -1,3 +1,5 @@
+<p-confirmdialog></p-confirmdialog>
+
 @if (role() === 'admin') {
   <div class="mb-3 flex flex-wrap gap-2 mx-3">
     <p-button
@@ -108,81 +110,3 @@
   </p-message>
 }
 
-<p-dialog
-  [header]="(isEditing() ? 'admin.teams.dialogEdit' : 'admin.teams.dialogAdd') | transloco"
-  [modal]="true"
-  [(visible)]="visible"
->
-  <form (submit)="$event.preventDefault(); onSaveTeam()">
-    <div class="mb-4">
-      <p-floatlabel variant="on">
-        <input pInputText [formField]="teamForm.name" id="name" class="w-full" autocomplete="off" />
-        <label for="name">{{ 'shared.table.columns.name' | transloco }}</label>
-      </p-floatlabel>
-    </div>
-    <div class="flex justify-end gap-2">
-      <p-button
-        [label]="'shared.actions.cancel' | transloco"
-        severity="secondary"
-        (click)="visible.set(false)"
-      />
-      <p-button type="submit" [label]="'shared.actions.save' | transloco" />
-    </div>
-  </form>
-</p-dialog>
-
-<p-dialog
-  [header]="'admin.teams.dialogAddBulk' | transloco"
-  [modal]="true"
-  [(visible)]="visibleBulk"
->
-  <form (submit)="$event.preventDefault(); onSaveTeams()">
-    <div class="mb-4">
-      <p-floatlabel variant="on">
-        <textarea
-          pTextarea
-          id="bulk-names"
-          class="w-full"
-          rows="6"
-          [placeholder]="'admin.teams.bulkPlaceholder' | transloco"
-          name="bulk-names"
-          [ngModel]="bulkText()"
-          (ngModelChange)="bulkText.set($event)"
-        ></textarea>
-        <label for="bulk-names">{{ 'admin.teams.bulkLabel' | transloco }}</label>
-      </p-floatlabel>
-    </div>
-    <div class="flex justify-end gap-2">
-      <p-button
-        [label]="'shared.actions.cancel' | transloco"
-        severity="secondary"
-        (click)="visibleBulk.set(false)"
-      />
-      <p-button type="submit" [label]="'shared.actions.save' | transloco" />
-    </div>
-  </form>
-</p-dialog>
-
-<p-dialog
-  [header]="'shared.confirm.deleteHeader' | transloco"
-  [modal]="true"
-  [(visible)]="deleteConfirmVisible"
->
-  <p>{{ 'shared.confirm.deleteMessage' | transloco: { name: pendingDeleteTeam()?.name } }}</p>
-  <div class="flex justify-end gap-2 mt-4">
-    <p-button
-      [label]="'shared.confirm.cancel' | transloco"
-      severity="secondary"
-      type="button"
-      (click)="onCancelDeleteTeam()"
-      data-testid="delete-cancel-button"
-    />
-    <p-button
-      [label]="'shared.confirm.confirm' | transloco"
-      severity="danger"
-      type="button"
-      (click)="onConfirmDeleteTeam()"
-      data-testid="delete-confirm-button"
-    />
-  </div>
-</p-dialog>

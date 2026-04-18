@@ -6,6 +6,7 @@ import { Team } from '../teams/teams';
 import { Games, GAMES_TEAM_FILTER_QUERY_PARAM } from './games';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 import { provideRouter, Router } from '@angular/router';
+import { DialogService } from 'primeng/dynamicdialog';
 
 describe('Games', () => {
   let component: Games;
@@ -14,7 +15,7 @@ describe('Games', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Games],
-      providers: [...provideTranslocoTesting(), provideRouter([])],
+      providers: [...provideTranslocoTesting(), provideRouter([]), DialogService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Games);
@@ -141,35 +142,6 @@ describe('Games', () => {
     expect(firstGame.gameDateSortValue).toBe(new Date('2026-03-22T10:00:00Z').getTime());
     expect(secondGame.team1Name).toBe('Charlie');
     expect(secondGame.team2Name).toBe('Bravo');
-  });
-
-  it('should populate the datepicker model when editing a game with a date', () => {
-    const team1Ref = createDocumentReference('team-1');
-    const team2Ref = createDocumentReference('team-2');
-    const pouleRef = createDocumentReference('poule-1');
-    const gameDate = new Date('2026-03-22T10:15:00');
-
-    const poule = {
-      ref: pouleRef,
-      name: 'Poule A',
-      refTeams: [team1Ref, team2Ref],
-      games: [],
-    } as Poule;
-
-    const game = {
-      ref: createDocumentReference('game-1'),
-      refTeam1: team1Ref,
-      refTeam2: team2Ref,
-      scoreTeam1: 10,
-      scoreTeam2: 8,
-      date: gameDate,
-    };
-
-    component.onEditGame(poule, game);
-
-    expect(component.gameDate()).toEqual(gameDate);
-    expect(component.gameDateModel).toBeInstanceOf(Date);
-    expect(component.gameDateString).not.toBe('');
   });
 
   it('should group games by date in gamesByDate computed', () => {
@@ -453,92 +425,6 @@ describe('Games', () => {
 
     const sorted = component.sortedTeams();
     expect(sorted.map((t) => t.name)).toEqual(['Alpha', 'Bravo', 'Charlie']);
-  });
-
-  it('should populate gameReferees when editing a game with referees', () => {
-    const team1Ref = createDocumentReference('team-1');
-    const team2Ref = createDocumentReference('team-2');
-    const pouleRef = createDocumentReference('poule-1');
-
-    const poule = {
-      ref: pouleRef,
-      name: 'Poule A',
-      refTeams: [team1Ref, team2Ref],
-      games: [],
-    } as Poule;
-
-    const game = {
-      ref: createDocumentReference('game-1'),
-      refTeam1: team1Ref,
-      refTeam2: team2Ref,
-      referees: ['Alice', 'Bob'],
-    };
-
-    component.onEditGame(poule, game);
-
-    expect(component.gameReferees()).toEqual(['Alice', 'Bob']);
-  });
-
-  it('should reset gameReferees to empty array when adding a new game', () => {
-    const team1Ref = createDocumentReference('team-1');
-    const team2Ref = createDocumentReference('team-2');
-    const pouleRef = createDocumentReference('poule-1');
-
-    const poule = {
-      ref: pouleRef,
-      name: 'Poule A',
-      refTeams: [team1Ref, team2Ref],
-      games: [],
-    } as Poule;
-
-    component.onAddGame(poule);
-
-    expect(component.gameReferees()).toEqual([]);
-  });
-
-  it('should include referees in saveGame event', () => {
-    const team1Ref = createDocumentReference('team-1');
-    const team2Ref = createDocumentReference('team-2');
-    const pouleRef = createDocumentReference('poule-1');
-
-    const poule = {
-      ref: pouleRef,
-      name: 'Poule A',
-      refTeams: [team1Ref, team2Ref],
-      games: [],
-    } as Poule;
-
-    component.onAddGame(poule);
-    component.gameReferees.set(['Charlie']);
-    component.selectedTeam1Ref.set(team1Ref);
-    component.selectedTeam2Ref.set(team2Ref);
-
-    const emitSpy = vi.spyOn(component.saveGame, 'emit');
-    component.onSaveGame();
-
-    expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ referees: ['Charlie'] }));
-  });
-
-  it('should emit null referees when no referees are entered', () => {
-    const team1Ref = createDocumentReference('team-1');
-    const team2Ref = createDocumentReference('team-2');
-    const pouleRef = createDocumentReference('poule-1');
-
-    const poule = {
-      ref: pouleRef,
-      name: 'Poule A',
-      refTeams: [team1Ref, team2Ref],
-      games: [],
-    } as Poule;
-
-    component.onAddGame(poule);
-    component.selectedTeam1Ref.set(team1Ref);
-    component.selectedTeam2Ref.set(team2Ref);
-
-    const emitSpy = vi.spyOn(component.saveGame, 'emit');
-    component.onSaveGame();
-
-    expect(emitSpy).toHaveBeenCalledWith(expect.objectContaining({ referees: null }));
   });
 });
 

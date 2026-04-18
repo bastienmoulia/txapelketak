@@ -12,22 +12,22 @@ import { Game, Poule, Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
 import { Message } from 'primeng/message';
 import { DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Button } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
-import { FloatLabel } from 'primeng/floatlabel';
-import { Select } from 'primeng/select';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputMaskModule } from 'primeng/inputmask';
-import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
-import { DatePicker } from 'primeng/datepicker';
 import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
+import { DialogService } from 'primeng/dynamicdialog';
+import { GameFormDialog } from './game-form-dialog/game-form-dialog';
+import { GamePoulePickerDialog } from './game-poule-picker-dialog/game-poule-picker-dialog';
+import { Select } from 'primeng/select';
+import { DatePicker } from 'primeng/datepicker';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -78,17 +78,14 @@ export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
     TranslocoPipe,
     DatePipe,
     Button,
-    DialogModule,
-    FormsModule,
-    FloatLabel,
-    Select,
-    InputNumberModule,
     TableModule,
-    DatePicker,
-    InputMaskModule,
-    AutoCompleteModule,
     TooltipModule,
+    Select,
+    DatePicker,
+    FormsModule,
+    ConfirmDialogModule,
   ],
+  providers: [DialogService, ConfirmationService],
   templateUrl: './games.html',
   styleUrl: './games.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -97,6 +94,8 @@ export class Games {
   private readonly translocoService = inject(TranslocoService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+  private readonly confirmationService = inject(ConfirmationService);
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
@@ -134,73 +133,6 @@ export class Games {
   datePickerFormat = computed(() => {
     return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
   });
-
-  gameDateString = '';
-
-  get gameDateModel(): Date | string | null {
-    return this.gameDate() ?? (this.gameDateString || null);
-  }
-
-  set gameDateModel(value: Date | string | null) {
-    if (value instanceof Date && !isNaN(value.getTime())) {
-      this.gameDate.set(value);
-      this.gameDateString = this.formatDateForMask(value);
-      return;
-    }
-
-    if (typeof value === 'string') {
-      this.gameDateString = value;
-      if (!value) {
-        this.gameDate.set(null);
-      }
-      return;
-    }
-
-    this.clearGameDate();
-  }
-
-  private formatDateForMask(date: Date | null): string {
-    if (!date) return '';
-    const d = String(date.getDate()).padStart(2, '0');
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const y = String(date.getFullYear());
-    const h = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-    if (this.activeLanguage() === 'en') {
-      return `${m}/${d}/${y} ${h}:${min}`;
-    }
-    return `${d}/${m}/${y} ${h}:${min}`;
-  }
-
-  onDateMaskComplete(): void {
-    const value = this.gameDateString;
-    const parts = value.split(' ');
-    if (parts.length < 2) return;
-    const dateParts = parts[0].split('/');
-    const timeParts = parts[1].split(':');
-    if (dateParts.length < 3 || timeParts.length < 2) return;
-    let day: number, month: number;
-    if (this.activeLanguage() === 'en') {
-      month = parseInt(dateParts[0]) - 1;
-      day = parseInt(dateParts[1]);
-    } else {
-      day = parseInt(dateParts[0]);
-      month = parseInt(dateParts[1]) - 1;
-    }
-    const year = parseInt(dateParts[2]);
-    const hours = parseInt(timeParts[0]);
-    const minutes = parseInt(timeParts[1]);
-    const date = new Date(year, month, day, hours, minutes);
-    if (!isNaN(date.getTime())) {
-      this.gameDate.set(date);
-      this.gameDateString = this.formatDateForMask(date);
-    }
-  }
-
-  clearGameDate(): void {
-    this.gameDate.set(null);
-    this.gameDateString = '';
-  }
 
   sortedSeries = computed(() =>
     [...this.series()]
@@ -282,28 +214,6 @@ export class Games {
     return hasActions ? 7 : 6;
   });
 
-  // Dialog state
-  gameDialogVisible = signal(false);
-  isEditingGame = signal(false);
-  editingGameRef = signal<DocumentReference | null>(null);
-  currentPouleRef = signal<DocumentReference | null>(null);
-  currentPouleRefTeams = signal<DocumentReference[]>([]);
-
-  selectedTeam1Ref = signal<DocumentReference | null>(null);
-  selectedTeam2Ref = signal<DocumentReference | null>(null);
-  scoreTeam1 = signal<number | null>(null);
-  scoreTeam2 = signal<number | null>(null);
-  gameDate = signal<Date | null>(null);
-  gameReferees = signal<string[]>([]);
-
-  // Teams available for the current poule dialog
-  dialogTeams = computed(() => {
-    const refTeams = this.currentPouleRefTeams();
-    return this.teams()
-      .filter((t) => refTeams.some((ref) => ref.id === t.ref?.id))
-      .sort((a, b) => a.name.localeCompare(b.name));
-  });
-
   // Map of team ref.id → team name for fast lookup in template
   teamNameMap = computed(() => {
     const map = new Map<string, string>();
@@ -312,40 +222,6 @@ export class Games {
     }
     return map;
   });
-
-  // Add game — step 1: pick serie + poule
-  addGamePickPouleVisible = signal(false);
-  selectedNewSerie = signal<Serie | null>(null);
-  selectedNewPoule = signal<Poule | null>(null);
-
-  poulesForSelectedSerie = computed(() => {
-    const serie = this.selectedNewSerie();
-    if (!serie) return [];
-    return [...serie.poules].sort((a, b) => a.name.localeCompare(b.name));
-  });
-
-  onOpenAddGame(): void {
-    const series = this.sortedSeries();
-    const preSerie = series.length === 1 ? series[0] : null;
-    this.selectedNewSerie.set(preSerie);
-    this.selectedNewPoule.set(null);
-    this.addGamePickPouleVisible.set(true);
-  }
-
-  onNewSerieChange(): void {
-    this.selectedNewPoule.set(null);
-  }
-
-  onConfirmSelectPoule(): void {
-    const poule = this.selectedNewPoule();
-    if (!poule) return;
-    this.addGamePickPouleVisible.set(false);
-    this.onAddGame(poule);
-  }
-
-  // Delete confirmation dialog state
-  deleteConfirmVisible = signal(false);
-  pendingDeleteGameRef = signal<DocumentReference | null>(null);
 
   getTeamName(ref: DocumentReference): string {
     if (!ref) return '?';
@@ -373,7 +249,8 @@ export class Games {
     };
   }
 
-  onTeamSelect(teamId: string | null): void {
+  onTeamSelect(event: { value?: string }): void {
+    const teamId = event?.value ?? null;
     void this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: teamId ?? null },
@@ -382,75 +259,107 @@ export class Games {
   }
 
   clearTeamFilter(): void {
-    this.onTeamSelect(null);
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { [GAMES_TEAM_FILTER_QUERY_PARAM]: null },
+      queryParamsHandling: 'merge',
+    });
   }
 
-  onDateFilterChange(value: Date | null): void {
-    this.selectedDateFilter.set(value);
+  onDateFilterChange(event: Event | Date | null | undefined): void {
+    let date: Date | null = null;
+    if (event instanceof Date) {
+      date = event;
+    }
+    this.selectedDateFilter.set(date);
   }
 
   clearDateFilter(): void {
     this.selectedDateFilter.set(null);
   }
 
-  onAddGame(poule: Poule): void {
-    this.isEditingGame.set(false);
-    this.editingGameRef.set(null);
-    this.currentPouleRef.set(poule.ref);
-    this.currentPouleRefTeams.set(poule.refTeams ?? []);
-    this.selectedTeam1Ref.set(null);
-    this.selectedTeam2Ref.set(null);
-    this.scoreTeam1.set(null);
-    this.scoreTeam2.set(null);
-    this.clearGameDate();
-    this.gameReferees.set([]);
-    this.gameDialogVisible.set(true);
-  }
-
-  onEditGame(poule: Poule, game: Game): void {
-    this.isEditingGame.set(true);
-    this.editingGameRef.set(game.ref);
-    this.currentPouleRef.set(poule.ref);
-    this.currentPouleRefTeams.set(poule.refTeams ?? []);
-    this.selectedTeam1Ref.set(game.refTeam1 ?? null);
-    this.selectedTeam2Ref.set(game.refTeam2 ?? null);
-    this.scoreTeam1.set(game.scoreTeam1 ?? null);
-    this.scoreTeam2.set(game.scoreTeam2 ?? null);
-    const editDate = game.date ? new Date(game.date) : null;
-    this.gameDate.set(editDate);
-    this.gameDateString = this.formatDateForMask(editDate);
-    this.gameReferees.set(game.referees ? [...game.referees] : []);
-    this.gameDialogVisible.set(true);
+  onOpenAddGame(): void {
+    const series = this.sortedSeries();
+    const dialogRef = this.dialogService.open(GamePoulePickerDialog, {
+      header: this.translocoService.translate('admin.games.addGame'),
+      modal: true,
+      closable: true,
+      width: '30rem',
+      data: { series },
+    });
+    dialogRef?.onClose.subscribe((poule: Poule | undefined) => {
+      if (poule) {
+        this.openFormDialog({
+          isEditing: false,
+          currentPoule: poule,
+        });
+      }
+    });
   }
 
   onEditGameFromDate(game: GameByDate): void {
     const poule = this.findPouleByRef(game.pouleRef);
-    if (!poule) return;
-    this.onEditGame(poule, game);
+    if (poule) {
+      this.openFormDialog({
+        isEditing: true,
+        currentPoule: poule,
+        initialTeam1Ref: game.refTeam1,
+        initialTeam2Ref: game.refTeam2,
+        initialScoreTeam1: game.scoreTeam1,
+        initialScoreTeam2: game.scoreTeam2,
+        initialDate: game.date,
+        initialReferees: game.referees,
+        gameRef: game.ref,
+      });
+    }
   }
 
-  onSaveGame(): void {
-    const team1Ref = this.selectedTeam1Ref();
-    const team2Ref = this.selectedTeam2Ref();
-    const pouleRef = this.currentPouleRef();
-    if (!team1Ref || !team2Ref || !pouleRef) return;
-
-    this.saveGame.emit({
-      pouleRef,
-      refTeam1: team1Ref,
-      refTeam2: team2Ref,
-      scoreTeam1: this.scoreTeam1(),
-      scoreTeam2: this.scoreTeam2(),
-      date: this.gameDate(),
-      referees: this.gameReferees().length > 0 ? this.gameReferees() : null,
-      gameRef: this.editingGameRef() ?? undefined,
+  private openFormDialog(data: {
+    isEditing: boolean;
+    currentPoule: Poule;
+    initialTeam1Ref?: DocumentReference | null;
+    initialTeam2Ref?: DocumentReference | null;
+    initialScoreTeam1?: number | null;
+    initialScoreTeam2?: number | null;
+    initialDate?: Date | null;
+    initialReferees?: string[] | null;
+    gameRef?: DocumentReference | null;
+  }): void {
+    const dialogRef = this.dialogService.open(GameFormDialog, {
+      header: data.isEditing
+        ? this.translocoService.translate('admin.games.editGame')
+        : this.translocoService.translate('admin.games.addGame'),
+      modal: true,
+      closable: true,
+      width: '30rem',
+      data: {
+        teams: this.teams(),
+        role: this.role(),
+        ...data,
+      },
     });
-    this.gameDialogVisible.set(false);
+    dialogRef?.onClose.subscribe((result: SaveGameEvent | undefined) => {
+      if (result) {
+        if (data.isEditing && data.gameRef) {
+          result.gameRef = data.gameRef;
+        }
+        this.saveGame.emit(result);
+      }
+    });
   }
 
-  onDeleteGame(gameRef: DocumentReference): void {
-    this.pendingDeleteGameRef.set(gameRef);
-    this.deleteConfirmVisible.set(true);
+  onRequestDeleteGame(gameRef: DocumentReference): void {
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('admin.games.deleteGame'),
+      message: this.translocoService.translate('admin.games.deleteConfirm'),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.deleteGame.emit({ gameRef });
+      },
+    });
   }
 
   getMissingGamesCount(poule: Poule): number {
@@ -464,20 +373,6 @@ export class Games {
     }
 
     this.generateAllGames.emit({ games });
-  }
-
-  onConfirmDelete(): void {
-    const gameRef = this.pendingDeleteGameRef();
-    if (gameRef) {
-      this.deleteGame.emit({ gameRef });
-      this.pendingDeleteGameRef.set(null);
-    }
-    this.deleteConfirmVisible.set(false);
-  }
-
-  onCancelDelete(): void {
-    this.pendingDeleteGameRef.set(null);
-    this.deleteConfirmVisible.set(false);
   }
 
   private buildGeneratedGames(poule: Poule): SaveGameEvent[] {

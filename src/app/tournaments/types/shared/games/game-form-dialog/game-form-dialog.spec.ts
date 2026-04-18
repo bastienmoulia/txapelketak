@@ -1,17 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GameFormDialog } from './game-form-dialog';
 import { Team } from '../../teams/teams';
 import { Poule } from '../../../poules/poules';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideTranslocoTesting } from '../../../../../testing/transloco-testing.providers';
 
 describe('GameFormDialog', () => {
   let component: GameFormDialog;
   let fixture: ComponentFixture<GameFormDialog>;
   let mockConfig: DynamicDialogConfig;
+  let mockRef: { close: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     const team1Ref = { id: 'team-1' } as DocumentReference;
@@ -34,10 +35,13 @@ describe('GameFormDialog', () => {
       },
     } as DynamicDialogConfig;
 
+    mockRef = { close: vi.fn() };
+
     await TestBed.configureTestingModule({
       imports: [GameFormDialog],
       providers: [
         { provide: DynamicDialogConfig, useValue: mockConfig },
+        { provide: DynamicDialogRef, useValue: mockRef },
         ...provideTranslocoTesting(),
         provideAnimationsAsync(),
       ],
@@ -65,14 +69,18 @@ describe('GameFormDialog', () => {
     expect(component.isSaveDisabled()).toBe(false);
   });
 
-  it('should close dialog on cancel', () => {
-    let closedValue: any;
-    mockConfig.close = (value: any) => {
-      closedValue = value;
-    };
+  it('should disable save button when both teams are the same', () => {
+    const teamRef = { id: 'team-1' } as DocumentReference;
+    component.selectedTeam1Ref.set(teamRef);
+    component.selectedTeam2Ref.set(teamRef);
 
+    expect(component.isSameTeam()).toBe(true);
+    expect(component.isSaveDisabled()).toBe(true);
+  });
+
+  it('should close dialog on cancel', () => {
     component.onCancel();
 
-    expect(closedValue).toBeUndefined();
+    expect(mockRef.close).toHaveBeenCalledWith(undefined);
   });
 });

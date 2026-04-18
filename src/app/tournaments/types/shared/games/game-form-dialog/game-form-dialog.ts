@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
-import { DialogModule } from 'primeng/dialog';
 import { Message } from 'primeng/message';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputMaskModule } from 'primeng/inputmask';
@@ -36,7 +35,6 @@ interface GameFormDialogData {
   selector: 'app-game-form-dialog',
   imports: [
     TranslocoPipe,
-    DialogModule,
     FormsModule,
     FloatLabel,
     Select,

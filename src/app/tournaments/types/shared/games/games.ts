@@ -327,7 +327,7 @@ export class Games {
   }): void {
     const dialogRef = this.dialogService.open(GameFormDialog, {
       header: data.isEditing
-        ? this.translocoService.translate('admin.games.editGame')
+        ? this.translocoService.translate('admin.games.dialogEditGame')
         : this.translocoService.translate('admin.games.addGame'),
       modal: true,
       closable: true,

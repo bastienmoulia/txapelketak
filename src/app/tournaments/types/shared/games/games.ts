@@ -350,7 +350,7 @@ export class Games {
 
   onRequestDeleteGame(gameRef: DocumentReference): void {
     this.confirmationService.confirm({
-      header: this.translocoService.translate('admin.games.deleteGame'),
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
       message: this.translocoService.translate('admin.games.deleteConfirm'),
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),

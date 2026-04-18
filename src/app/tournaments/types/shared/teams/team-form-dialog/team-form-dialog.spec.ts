@@ -11,6 +11,8 @@ describe('TeamFormDialog', () => {
   let fixture: ComponentFixture<TeamFormDialog>;
   let mockRef: { close: ReturnType<typeof vi.fn> };
 
+  const teamRef = { id: 'team-1' } as DocumentReference;
+
   beforeEach(async () => {
     mockRef = { close: vi.fn() };
 
@@ -22,7 +24,7 @@ describe('TeamFormDialog', () => {
         {
           provide: DynamicDialogConfig,
           useValue: {
-            data: { isEditing: false, team: { ref: { id: 'team-1' } as DocumentReference, name: '' } },
+            data: { isEditing: false, team: { ref: teamRef, name: '' } },
           },
         },
         { provide: DynamicDialogRef, useValue: mockRef },
@@ -44,16 +46,70 @@ describe('TeamFormDialog', () => {
     expect(mockRef.close).toHaveBeenCalledWith(undefined);
   });
 
-  it('should not save when form is invalid (empty name)', () => {
-    component.team.set({ ref: { id: 'team-1' } as DocumentReference, name: '' });
+  it('should not save when name is empty', () => {
+    component.teamName.set('');
     component.onSave();
     expect(mockRef.close).not.toHaveBeenCalled();
   });
 
-  it('should close with team data on save when form is valid', () => {
-    const ref = { id: 'team-1' } as DocumentReference;
-    component.team.set({ ref, name: 'Team A' });
+  it('should not save when name is only whitespace', () => {
+    component.teamName.set('   ');
     component.onSave();
-    expect(mockRef.close).toHaveBeenCalledWith({ ref, name: 'Team A' });
+    expect(mockRef.close).not.toHaveBeenCalled();
+  });
+
+  it('should close with team data on save when name is valid', () => {
+    component.teamName.set('Team A');
+    component.onSave();
+    expect(mockRef.close).toHaveBeenCalledWith({ ref: teamRef, name: 'Team A' });
+  });
+
+  it('should trim whitespace from name on save', () => {
+    component.teamName.set('  Team B  ');
+    component.onSave();
+    expect(mockRef.close).toHaveBeenCalledWith({ ref: teamRef, name: 'Team B' });
   });
 });
+
+describe('TeamFormDialog (edit mode)', () => {
+  let component: TeamFormDialog;
+  let fixture: ComponentFixture<TeamFormDialog>;
+  let mockRef: { close: ReturnType<typeof vi.fn> };
+
+  const teamRef = { id: 'team-edit' } as DocumentReference;
+
+  beforeEach(async () => {
+    mockRef = { close: vi.fn() };
+
+    await TestBed.configureTestingModule({
+      imports: [TeamFormDialog],
+      providers: [
+        provideAnimationsAsync(),
+        ...provideTranslocoTesting(),
+        {
+          provide: DynamicDialogConfig,
+          useValue: {
+            data: { isEditing: true, team: { ref: teamRef, name: 'Équipe A' } },
+          },
+        },
+        { provide: DynamicDialogRef, useValue: mockRef },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TeamFormDialog);
+    fixture.detectChanges();
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should pre-fill team name when editing', () => {
+    expect(component.teamName()).toBe('Équipe A');
+  });
+
+  it('should save updated name and preserve original ref', () => {
+    component.teamName.set('Équipe B');
+    component.onSave();
+    expect(mockRef.close).toHaveBeenCalledWith({ ref: teamRef, name: 'Équipe B' });
+  });
+});
+

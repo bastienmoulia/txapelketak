@@ -11,17 +11,15 @@ describe('Teams', () => {
   let component: Teams;
   let fixture: ComponentFixture<Teams>;
   let mockDialogService: { open: ReturnType<typeof vi.fn> };
+  let mockOnClose: { subscribe: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    mockDialogService = { open: vi.fn().mockReturnValue({ onClose: { subscribe: vi.fn() } }) };
+    mockOnClose = { subscribe: vi.fn() };
+    mockDialogService = { open: vi.fn().mockReturnValue({ onClose: mockOnClose }) };
 
     await TestBed.configureTestingModule({
       imports: [Teams],
-      providers: [
-        ...provideTranslocoTesting(),
-        provideRouter([]),
-        ConfirmationService,
-      ],
+      providers: [...provideTranslocoTesting(), provideRouter([]), ConfirmationService],
     })
       .overrideComponent(Teams, {
         set: {
@@ -94,7 +92,9 @@ describe('Teams', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('[data-testid="add-team-button"]')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-testid="add-teams-bulk-button"]')).not.toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="add-teams-bulk-button"]'),
+    ).not.toBeNull();
 
     const viewGamesButtons = fixture.nativeElement.querySelectorAll(
       '[data-testid="view-team-games-button"]',
@@ -129,5 +129,71 @@ describe('Teams', () => {
   it('should open bulk dialog when onAddTeams is triggered', () => {
     component.onAddTeams();
     expect(mockDialogService.open).toHaveBeenCalled();
+  });
+
+  it('should emit saveTeam when dialog closes with a result', () => {
+    const emitted: { ref: unknown; name: string }[] = [];
+    component.saveTeam.subscribe((team) => emitted.push(team));
+
+    let closeCallback: ((result: unknown) => void) | undefined;
+    mockOnClose.subscribe.mockImplementation((cb: (result: unknown) => void) => {
+      closeCallback = cb;
+    });
+
+    component.onAddTeam();
+    closeCallback?.({ ref: { id: '1' } as never, name: 'New Team' });
+
+    expect(emitted.length).toBe(1);
+    expect(emitted[0].name).toBe('New Team');
+  });
+
+  it('should not emit saveTeam when dialog closes without a result (cancelled)', () => {
+    const emitted: unknown[] = [];
+    component.saveTeam.subscribe((team) => emitted.push(team));
+
+    let closeCallback: ((result: unknown) => void) | undefined;
+    mockOnClose.subscribe.mockImplementation((cb: (result: unknown) => void) => {
+      closeCallback = cb;
+    });
+
+    component.onAddTeam();
+    closeCallback?.(undefined);
+
+    expect(emitted.length).toBe(0);
+  });
+
+  it('should emit deleteTeam when confirmation is accepted', () => {
+    const emitted: { ref: unknown; name: string }[] = [];
+    component.deleteTeam.subscribe((team) => emitted.push(team));
+
+    // Spy on the component-level ConfirmationService instance
+    const confirmService = fixture.debugElement.injector.get(ConfirmationService);
+    vi.spyOn(confirmService, 'confirm').mockImplementation(
+      (config: { accept?: () => void }) => {
+        config.accept?.();
+      },
+    );
+
+    const team = { ref: { id: '1' } as never, name: 'Équipe A' };
+    component.onDeleteTeam(team);
+
+    expect(confirmService.confirm).toHaveBeenCalled();
+    expect(emitted.length).toBe(1);
+    expect(emitted[0]).toEqual(team);
+  });
+
+  it('should not emit deleteTeam when confirmation is rejected', () => {
+    const emitted: unknown[] = [];
+    component.deleteTeam.subscribe((team) => emitted.push(team));
+
+    const confirmService = fixture.debugElement.injector.get(ConfirmationService);
+    vi.spyOn(confirmService, 'confirm').mockImplementation(() => {
+      // reject = do nothing (accept is never called)
+    });
+
+    const team = { ref: { id: '1' } as never, name: 'Équipe A' };
+    component.onDeleteTeam(team);
+
+    expect(emitted.length).toBe(0);
   });
 });

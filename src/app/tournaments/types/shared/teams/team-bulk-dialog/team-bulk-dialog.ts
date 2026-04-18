@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Textarea } from 'primeng/textarea';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-team-bulk-dialog',
@@ -14,7 +14,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamBulkDialog {
-  private readonly config = inject(DynamicDialogConfig);
   private readonly dialogRef = inject(DynamicDialogRef);
 
   bulkNames = signal('');

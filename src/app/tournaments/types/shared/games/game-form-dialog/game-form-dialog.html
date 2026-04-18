@@ -45,7 +45,9 @@
         <label for="team2">{{ 'admin.games.team2' | transloco }}</label>
       </p-floatlabel>
       @if (isSameTeam()) {
-        <p-message severity="error" class="mt-1">{{ 'admin.games.sameTeamError' | transloco }}</p-message>
+        <p-message severity="error" class="mt-1">{{
+          'admin.games.sameTeamError' | transloco
+        }}</p-message>
       }
     </div>
     <div class="flex-1 min-w-0">

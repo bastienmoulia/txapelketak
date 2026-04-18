@@ -1,0 +1,115 @@
+<div class="flex flex-col gap-4 pt-2">
+  <div class="flex gap-3">
+    <div class="flex-[2] min-w-0">
+      <p-floatlabel variant="on">
+        <p-select
+          inputId="team1"
+          [options]="dialogTeams()"
+          [(ngModel)]="selectedTeam1Ref"
+          optionLabel="name"
+          optionValue="ref"
+          [style]="{ width: '100%' }"
+          appendTo="body"
+          [disabled]="data.role !== 'admin'"
+        />
+        <label for="team1">{{ 'admin.games.team1' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          inputId="score1"
+          [(ngModel)]="scoreTeam1"
+          [min]="0"
+          [style]="{ width: '100%' }"
+          [inputStyle]="{ width: '100%' }"
+        />
+        <label for="score1">{{ 'admin.games.score' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <div class="flex gap-3">
+    <div class="flex-[2] min-w-0">
+      <p-floatlabel variant="on">
+        <p-select
+          inputId="team2"
+          [options]="dialogTeams()"
+          [(ngModel)]="selectedTeam2Ref"
+          optionLabel="name"
+          optionValue="ref"
+          [style]="{ width: '100%' }"
+          appendTo="body"
+          [disabled]="data.role !== 'admin'"
+        />
+        <label for="team2">{{ 'admin.games.team2' | transloco }}</label>
+      </p-floatlabel>
+      @if (isSameTeam()) {
+        <p-message severity="error" class="mt-1">{{
+          'admin.games.sameTeamError' | transloco
+        }}</p-message>
+      }
+    </div>
+    <div class="flex-1 min-w-0">
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          inputId="score2"
+          [(ngModel)]="scoreTeam2"
+          [min]="0"
+          [style]="{ width: '100%' }"
+          [inputStyle]="{ width: '100%' }"
+        />
+        <label for="score2">{{ 'admin.games.score' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+  </div>
+
+  <div>
+    <p-floatlabel variant="on">
+      <p-datepicker
+        inputId="gameDate"
+        [(ngModel)]="gameDateModel"
+        pInputMask="99/99/9999 99:99"
+        [dateFormat]="datePickerFormat()"
+        [firstDayOfWeek]="firstDayOfWeek()"
+        [placeholder]="datePlaceholder()"
+        [style]="{ width: '100%' }"
+        [showClear]="true"
+        [showIcon]="true"
+        [showOnFocus]="false"
+        [showTime]="true"
+        appendTo="body"
+        (onComplete)="onDateMaskComplete()"
+        (onClear)="clearGameDate()"
+      />
+      <label for="gameDate">{{ 'admin.games.date' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div>
+    <p-floatlabel variant="on">
+      <p-autocomplete
+        inputId="referees"
+        [(ngModel)]="gameReferees"
+        [multiple]="true"
+        [typeahead]="false"
+        [addOnBlur]="true"
+        class="w-full"
+      />
+      <label for="referees">{{ 'admin.games.referees' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+</div>
+
+<div class="p-dialog-footer px-0! mt-5">
+  <p-button
+    [label]="'shared.actions.cancel' | transloco"
+    severity="secondary"
+    (onClick)="onCancel()"
+  />
+  <p-button
+    [label]="'shared.actions.save' | transloco"
+    [disabled]="isSaveDisabled()"
+    (onClick)="onSave()"
+  />
+</div>

@@ -261,7 +261,8 @@
       "filterDateShort": "Data",
       "noGamesForFilters": "Ez dago hautatutako iragazkiekin bat datorren partidarik.",
       "dialogSelectPoule": "Seriea eta taldea aukeratu",
-      "referees": "Arbitroak"
+      "referees": "Arbitroak",
+      "sameTeamError": "Bi taldeak ezin dira berdinak izan."
     },
     "teams": {
       "empty": "Ez dago talderik",

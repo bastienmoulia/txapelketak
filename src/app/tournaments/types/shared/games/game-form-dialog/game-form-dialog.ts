@@ -5,6 +5,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
+import { Message } from 'primeng/message';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -44,6 +45,7 @@ interface GameFormDialogData {
     InputMaskModule,
     AutoCompleteModule,
     Button,
+    Message,
   ],
   templateUrl: './game-form-dialog.html',
   styleUrl: './game-form-dialog.css',
@@ -119,7 +121,15 @@ export class GameFormDialog {
       .sort((a: Team, b: Team) => a.name.localeCompare(b.name));
   });
 
-  isSaveDisabled = computed(() => !this.selectedTeam1Ref() || !this.selectedTeam2Ref());
+  isSameTeam = computed(() => {
+    const ref1 = this.selectedTeam1Ref();
+    const ref2 = this.selectedTeam2Ref();
+    return !!ref1 && !!ref2 && ref1.id === ref2.id;
+  });
+
+  isSaveDisabled = computed(
+    () => !this.selectedTeam1Ref() || !this.selectedTeam2Ref() || this.isSameTeam(),
+  );
 
   constructor() {
     if (this.data.initialDate) {

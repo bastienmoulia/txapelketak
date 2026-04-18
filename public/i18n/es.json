@@ -261,7 +261,8 @@
       "filterDateShort": "Fecha",
       "noGamesForFilters": "Ningún partido coincide con los filtros seleccionados.",
       "dialogSelectPoule": "Seleccionar la serie y el grupo",
-      "referees": "Árbitros"
+      "referees": "Árbitros",
+      "sameTeamError": "Los dos equipos no pueden ser iguales."
     },
     "teams": {
       "empty": "No hay equipos",

@@ -261,7 +261,8 @@
       "filterDateShort": "Date",
       "noGamesForFilters": "No games match the selected filters.",
       "dialogSelectPoule": "Select series and pool",
-      "referees": "Referees"
+      "referees": "Referees",
+      "sameTeamError": "Both teams cannot be the same."
     },
     "teams": {
       "empty": "No teams",

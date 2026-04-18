@@ -1,0 +1,19 @@
+<div class="mb-4">
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      id="poule-name"
+      class="w-full"
+      autocomplete="off"
+      [ngModel]="pouleName()"
+      (ngModelChange)="pouleName.set($event)"
+      name="poule-name"
+    />
+    <label for="poule-name">{{ 'admin.poules.pouleName' | transloco }}</label>
+  </p-floatlabel>
+</div>
+
+<div class="p-dialog-footer px-0! mt-5">
+  <p-button [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
+  <p-button [label]="'shared.actions.save' | transloco" [disabled]="!pouleName().trim()" (onClick)="onSave()" />
+</div>

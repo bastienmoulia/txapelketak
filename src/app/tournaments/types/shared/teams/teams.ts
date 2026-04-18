@@ -1,17 +1,16 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { form, FormField, required } from '@angular/forms/signals';
-import { DocumentReference } from '@firebase/firestore';
-import { TranslocoModule } from '@jsverse/transloco';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { FloatLabel } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageModule } from 'primeng/message';
-import { Textarea } from 'primeng/textarea';
 import { TableModule } from 'primeng/table';
+import { DialogService } from 'primeng/dynamicdialog';
 import { UserRole } from '../../../../home/tournament.interface';
 import { RouterLink } from '@angular/router';
+import { TeamFormDialog } from './team-form-dialog/team-form-dialog';
+import { TeamBulkDialog } from './team-bulk-dialog/team-bulk-dialog';
+import { DocumentReference } from '@firebase/firestore';
 
 export interface Team {
   ref: DocumentReference;
@@ -27,19 +26,19 @@ export interface Team {
     TranslocoModule,
     MessageModule,
     ButtonModule,
-    DialogModule,
-    InputTextModule,
-    FloatLabel,
-    Textarea,
-    FormField,
-    FormsModule,
+    ConfirmDialogModule,
     RouterLink,
   ],
+  providers: [DialogService, ConfirmationService],
   templateUrl: './teams.html',
   styleUrl: './teams.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Teams {
+  private readonly dialogService = inject(DialogService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly translocoService = inject(TranslocoService);
+
   teams = input.required<Team[]>();
   role = input<UserRole | ''>('');
 
@@ -47,76 +46,63 @@ export class Teams {
   saveTeams = output<Team[]>();
   deleteTeam = output<Team>();
 
-  visible = signal(false);
-  visibleBulk = signal(false);
-  isEditing = signal(false);
-  deleteConfirmVisible = signal(false);
-  pendingDeleteTeam = signal<Team | null>(null);
-  editingTeamRef = signal<DocumentReference | null>(null);
-
-  bulkText = signal('');
-
-  team = signal<Team>({ ref: null!, name: '' });
-  teamForm = form(this.team, (path) => {
-    required(path.name);
-  });
-
   onAddTeam(): void {
-    this.isEditing.set(false);
-    this.editingTeamRef.set(null);
-    this.team.set({ ref: null!, name: '' });
-    this.visible.set(true);
+    const dialogRef = this.dialogService.open(TeamFormDialog, {
+      header: this.translocoService.translate('admin.teams.dialogAdd'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { isEditing: false, team: { ref: null!, name: '' } },
+    });
+    dialogRef?.onClose.subscribe((result: Team | undefined) => {
+      if (result) {
+        this.saveTeam.emit(result);
+      }
+    });
   }
 
   onAddTeams(): void {
-    this.bulkText.set('');
-    this.visibleBulk.set(true);
-  }
-
-  onSaveTeam(): void {
-    if (this.teamForm().valid()) {
-      const team = this.team();
-      this.saveTeam.emit({
-        ref: this.editingTeamRef() ?? team.ref,
-        name: team.name,
-      });
-      this.visible.set(false);
-    }
-  }
-
-  onSaveTeams(): void {
-    const names = this.bulkText()
-      .split('\n')
-      .map((name) => name.trim())
-      .filter((name) => name.length > 0);
-    const newTeams: Team[] = names.map((name) => ({ ref: null!, name }));
-    this.saveTeams.emit(newTeams);
-    this.visibleBulk.set(false);
+    const dialogRef = this.dialogService.open(TeamBulkDialog, {
+      header: this.translocoService.translate('admin.teams.dialogAddBulk'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: {},
+    });
+    dialogRef?.onClose.subscribe((result: Team[] | undefined) => {
+      if (result) {
+        this.saveTeams.emit(result);
+      }
+    });
   }
 
   onEditTeam(team: Team): void {
-    this.isEditing.set(true);
-    this.editingTeamRef.set(team.ref);
-    this.team.set({ ref: team.ref, name: team.name });
-    this.visible.set(true);
+    const dialogRef = this.dialogService.open(TeamFormDialog, {
+      header: this.translocoService.translate('admin.teams.dialogEdit'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { isEditing: true, team: { ref: team.ref, name: team.name } },
+    });
+    dialogRef?.onClose.subscribe((result: Team | undefined) => {
+      if (result) {
+        this.saveTeam.emit(result);
+      }
+    });
   }
 
   onDeleteTeam(team: Team): void {
-    this.pendingDeleteTeam.set(team);
-    this.deleteConfirmVisible.set(true);
-  }
-
-  onConfirmDeleteTeam(): void {
-    const team = this.pendingDeleteTeam();
-    if (team) {
-      this.deleteTeam.emit(team);
-      this.pendingDeleteTeam.set(null);
-    }
-    this.deleteConfirmVisible.set(false);
-  }
-
-  onCancelDeleteTeam(): void {
-    this.pendingDeleteTeam.set(null);
-    this.deleteConfirmVisible.set(false);
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: team.name }),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.deleteTeam.emit(team);
+      },
+    });
   }
 }

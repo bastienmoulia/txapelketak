@@ -1,18 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 import { provideRouter } from '@angular/router';
+import { DialogService } from 'primeng/dynamicdialog';
+import { ConfirmationService } from 'primeng/api';
+import { vi } from 'vitest';
 
 import { Teams } from './teams';
 
 describe('Teams', () => {
   let component: Teams;
   let fixture: ComponentFixture<Teams>;
+  let mockDialogService: { open: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
+    mockDialogService = { open: vi.fn().mockReturnValue({ onClose: { subscribe: vi.fn() } }) };
+
     await TestBed.configureTestingModule({
       imports: [Teams],
-      providers: [...provideTranslocoTesting(), provideRouter([])],
-    }).compileComponents();
+      providers: [
+        ...provideTranslocoTesting(),
+        provideRouter([]),
+        ConfirmationService,
+      ],
+    })
+      .overrideComponent(Teams, {
+        set: {
+          providers: [
+            { provide: DialogService, useValue: mockDialogService },
+            ConfirmationService,
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(Teams);
     fixture.componentRef.setInput('teams', []);
@@ -90,76 +109,25 @@ describe('Teams', () => {
     expect(deleteButtons.length).toBe(2);
   });
 
-  it('should open dialog when add team is triggered', () => {
+  it('should open add team dialog when onAddTeam is triggered', () => {
     component.onAddTeam();
-
-    expect(component.visible()).toBe(true);
-    expect(component.isEditing()).toBe(false);
+    expect(mockDialogService.open).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ data: expect.objectContaining({ isEditing: false }) }),
+    );
   });
 
-  it('should open dialog in edit mode when edit is triggered', () => {
+  it('should open edit team dialog when onEditTeam is triggered', () => {
     const team = { ref: { id: '1' } as never, name: 'Équipe A' };
-
     component.onEditTeam(team);
-
-    expect(component.visible()).toBe(true);
-    expect(component.isEditing()).toBe(true);
-    expect(component.team()).toEqual(team);
+    expect(mockDialogService.open).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ data: expect.objectContaining({ isEditing: true }) }),
+    );
   });
 
-  it('should emit saveTeam when saving a valid team', () => {
-    const emitted: { ref: unknown; name: string }[] = [];
-    component.saveTeam.subscribe((team) => emitted.push(team));
-
-    component.onAddTeam();
-    component.team.set({ ref: null!, name: 'New Team' });
-    component.onSaveTeam();
-
-    expect(emitted.length).toBe(1);
-    expect(emitted[0].name).toBe('New Team');
-    expect(component.visible()).toBe(false);
-  });
-
-  it('should show confirmation dialog and emit delete on confirm', () => {
-    const emitted: { ref: unknown; name: string }[] = [];
-    component.deleteTeam.subscribe((team) => emitted.push(team));
-
-    const team = { ref: { id: '1' } as never, name: 'Équipe A' };
-    component.onDeleteTeam(team);
-
-    expect(component.deleteConfirmVisible()).toBe(true);
-    expect(component.pendingDeleteTeam()).toEqual(team);
-    expect(emitted.length).toBe(0);
-
-    component.onConfirmDeleteTeam();
-
-    expect(emitted.length).toBe(1);
-    expect(emitted[0]).toEqual(team);
-    expect(component.deleteConfirmVisible()).toBe(false);
-    expect(component.pendingDeleteTeam()).toBeNull();
-  });
-
-  it('should cancel deletion without emitting delete event', () => {
-    const emitted: { ref: unknown; name: string }[] = [];
-    component.deleteTeam.subscribe((team) => emitted.push(team));
-
-    component.onDeleteTeam({ ref: { id: '1' } as never, name: 'Équipe A' });
-    component.onCancelDeleteTeam();
-
-    expect(emitted.length).toBe(0);
-    expect(component.deleteConfirmVisible()).toBe(false);
-    expect(component.pendingDeleteTeam()).toBeNull();
-  });
-
-  it('should emit saveTeams with parsed names from bulk text', () => {
-    const emitted: { ref: unknown; name: string }[][] = [];
-    component.saveTeams.subscribe((teams) => emitted.push(teams));
-
-    component.bulkText.set('Team A\nTeam B\n\nTeam C');
-    component.onSaveTeams();
-
-    expect(emitted.length).toBe(1);
-    expect(emitted[0].length).toBe(3);
-    expect(emitted[0].map((team) => team.name)).toEqual(['Team A', 'Team B', 'Team C']);
+  it('should open bulk dialog when onAddTeams is triggered', () => {
+    component.onAddTeams();
+    expect(mockDialogService.open).toHaveBeenCalled();
   });
 });

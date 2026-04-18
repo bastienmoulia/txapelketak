@@ -1,46 +1,39 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { FloatLabel } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageModule } from 'primeng/message';
-import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
+import { DialogService } from 'primeng/dynamicdialog';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament, User, UserRole } from '../../../../home/tournament.interface';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TooltipModule } from 'primeng/tooltip';
 import { RoleBadge } from '../../../../shared/role-badge/role-badge';
+import { UserFormDialog, UserFormResult } from './user-form-dialog/user-form-dialog';
 
 @Component({
   selector: 'app-admin-users',
   imports: [
     ButtonModule,
-    DialogModule,
-    FloatLabel,
-    FormsModule,
-    InputTextModule,
+    ConfirmDialogModule,
     MessageModule,
-    Select,
     TableModule,
     ToastModule,
     TranslocoModule,
     TooltipModule,
     RoleBadge,
   ],
+  providers: [DialogService, ConfirmationService],
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +43,8 @@ export class AdminUsers {
   private firebaseService = inject(FirebaseService);
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
+  private dialogService = inject(DialogService);
+  private confirmationService = inject(ConfirmationService);
 
   tournament = input.required<Tournament>();
   currentUser = input<User | null>(null);
@@ -57,41 +52,6 @@ export class AdminUsers {
   users = signal<User[]>([]);
 
   private loadedTournamentId = signal<string | null>(null);
-  private activeLanguage = toSignal(this.translocoService.langChanges$, {
-    initialValue: this.translocoService.getActiveLang(),
-  });
-
-  roleOptions = computed(() => {
-    this.activeLanguage();
-    return [
-      { value: 'admin', label: this.translocoService.translate('admin.users.role.admin') },
-      {
-        value: 'organizer',
-        label: this.translocoService.translate('admin.users.role.organizer'),
-      },
-    ];
-  });
-
-  isEditingCurrentUser = computed(() => {
-    const editRef = this.editingRef();
-    const currUser = this.currentUser();
-    if (!editRef || !currUser?.ref) {
-      return false;
-    }
-    return editRef.id === currUser.ref.id;
-  });
-
-  // Dialog state
-  dialogVisible = signal(false);
-  isEditing = signal(false);
-  editingRef = signal<DocumentReference | null>(null);
-  username = signal('');
-  email = signal('');
-  selectedRole = signal<UserRole>(null!);
-
-  // Delete confirm
-  deleteConfirmVisible = signal(false);
-  pendingDeleteUser = signal<User | null>(null);
 
   constructor() {
     effect(async () => {
@@ -111,44 +71,65 @@ export class AdminUsers {
   }
 
   onAddUser(): void {
-    this.isEditing.set(false);
-    this.editingRef.set(null);
-    this.username.set('');
-    this.email.set('');
-    this.selectedRole.set(null!);
-    this.dialogVisible.set(true);
+    const dialogRef = this.dialogService.open(UserFormDialog, {
+      header: this.translocoService.translate('admin.users.dialogAdd'),
+      modal: true,
+      closable: true,
+      width: 'min(28rem, 100%)',
+      data: {
+        isEditing: false,
+        username: '',
+        email: '',
+        selectedRole: null,
+        editingRef: null,
+        isEditingCurrentUser: false,
+      },
+    });
+    dialogRef?.onClose.subscribe((result: UserFormResult | undefined) => {
+      if (result) {
+        void this.saveUser(result);
+      }
+    });
   }
 
   onEditUser(user: User): void {
-    this.isEditing.set(true);
-    this.editingRef.set(user.ref ?? null);
-    this.username.set(user.username);
-    this.email.set(user.email);
-    this.selectedRole.set(user.role);
-    this.dialogVisible.set(true);
+    const dialogRef = this.dialogService.open(UserFormDialog, {
+      header: this.translocoService.translate('admin.users.dialogEdit'),
+      modal: true,
+      closable: true,
+      width: 'min(28rem, 100%)',
+      data: {
+        isEditing: true,
+        username: user.username,
+        email: user.email,
+        selectedRole: user.role,
+        editingRef: user.ref ?? null,
+        isEditingCurrentUser: user.ref?.id === this.currentUser()?.ref?.id,
+      },
+    });
+    dialogRef?.onClose.subscribe((result: UserFormResult | undefined) => {
+      if (result) {
+        void this.saveUser(result);
+      }
+    });
   }
 
-  async onSaveUser(): Promise<void> {
-    if (!this.username() || !this.email() || !this.selectedRole()) {
+  private async saveUser(data: UserFormResult): Promise<void> {
+    if (!data.username || !data.email || !data.role) {
       return;
     }
 
-    const ref = this.editingRef();
-    if (this.isEditing() && ref) {
+    const ref = data.ref;
+    if (ref) {
       await this.firebaseService.updateUser(ref, {
-        username: this.username(),
-        email: this.email(),
-        role: this.selectedRole(),
+        username: data.username,
+        email: data.email,
+        role: data.role,
       });
       this.users.update((list) =>
         list.map((u) =>
           u.ref?.id === ref.id
-            ? {
-                ...u,
-                username: this.username(),
-                email: this.email(),
-                role: this.selectedRole(),
-              }
+            ? { ...u, username: data.username, email: data.email, role: data.role }
             : u,
         ),
       );
@@ -157,15 +138,15 @@ export class AdminUsers {
         severity: 'success',
         summary: this.translocoService.translate('admin.users.edited'),
         detail: this.translocoService.translate('admin.users.editedDetail', {
-          username: this.username(),
+          username: data.username,
         }),
       });
     } else {
       const newUser: User = {
         refTournament: this.tournament().ref,
-        username: this.username(),
-        email: this.email(),
-        role: this.selectedRole(),
+        username: data.username,
+        email: data.email,
+        role: data.role,
         token: crypto.randomUUID(),
       };
       const createdRef = await this.firebaseService.createUser(newUser);
@@ -184,16 +165,24 @@ export class AdminUsers {
         sticky: true,
       });
     }
-    this.dialogVisible.set(false);
   }
 
   onDeleteUser(user: User): void {
-    this.pendingDeleteUser.set(user);
-    this.deleteConfirmVisible.set(true);
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
+      message: this.translocoService.translate('admin.users.deleteConfirm'),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        void this.deleteUser(user);
+      },
+    });
   }
 
-  async onConfirmDelete(): Promise<void> {
-    const user = this.pendingDeleteUser();
+  private async deleteUser(user: User): Promise<void> {
     if (user?.ref) {
       await this.firebaseService.deleteUserDoc(user.ref);
       this.users.update((list) => list.filter((u) => u.ref?.id !== user.ref!.id));
@@ -206,13 +195,6 @@ export class AdminUsers {
         }),
       });
     }
-    this.pendingDeleteUser.set(null);
-    this.deleteConfirmVisible.set(false);
-  }
-
-  onCancelDelete(): void {
-    this.pendingDeleteUser.set(null);
-    this.deleteConfirmVisible.set(false);
   }
 
   private buildAdminUrl(token: string): string {

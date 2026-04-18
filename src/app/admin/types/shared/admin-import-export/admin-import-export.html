@@ -39,32 +39,3 @@
   </div>
 </div>
 
-<!-- Import confirmation dialog -->
-<p-dialog
-  [header]="'admin.importExport.importConfirmTitle' | transloco"
-  [modal]="true"
-  [(visible)]="importDialogVisible"
-  [style]="{ width: '30rem' }"
->
-  <p>{{ 'admin.importExport.importConfirmMessage' | transloco }}</p>
-  @if (parsedImportData(); as data) {
-    <ul class="mt-3 list-disc pl-5 text-surface-600">
-      <li>{{ 'admin.importExport.teamsCount' | transloco: { count: data.teams.length } }}</li>
-      <li>{{ 'admin.importExport.seriesCount' | transloco: { count: data.series.length } }}</li>
-    </ul>
-  }
-  <ng-template #footer>
-    <p-button
-      [label]="'shared.actions.cancel' | transloco"
-      severity="secondary"
-      [disabled]="isImporting()"
-      (onClick)="onCancelImport()"
-    />
-    <p-button
-      [label]="'admin.importExport.importConfirm' | transloco"
-      severity="danger"
-      [loading]="isImporting()"
-      (onClick)="onConfirmImport()"
-    />
-  </ng-template>
-</p-dialog>

@@ -13,7 +13,9 @@
         [ngModel]="confirmationName()"
         (ngModelChange)="confirmationName.set($event)"
       />
-      <label for="confirmationName">{{ 'admin.deleteTournament.dialogNameLabel' | transloco }}</label>
+      <label for="confirmationName">{{
+        'admin.deleteTournament.dialogNameLabel' | transloco
+      }}</label>
     </p-floatlabel>
   </div>
 

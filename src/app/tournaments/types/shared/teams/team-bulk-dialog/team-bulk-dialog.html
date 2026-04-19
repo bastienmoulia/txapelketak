@@ -16,7 +16,16 @@
   </div>
 
   <div class="p-dialog-footer px-0! mt-5">
-    <p-button type="button" [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
-    <p-button type="submit" [label]="'shared.actions.save' | transloco" [disabled]="!bulkNames().trim()" />
+    <p-button
+      type="button"
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="onCancel()"
+    />
+    <p-button
+      type="submit"
+      [label]="'shared.actions.save' | transloco"
+      [disabled]="!bulkNames().trim()"
+    />
   </div>
 </form>

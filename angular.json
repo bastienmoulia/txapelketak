@@ -50,6 +50,14 @@
               ],
               "outputHashing": "all"
             },
+            "test": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -63,6 +71,9 @@
           "configurations": {
             "production": {
               "buildTarget": "txapelketak:build:production"
+            },
+            "test": {
+              "buildTarget": "txapelketak:build:test"
             },
             "development": {
               "buildTarget": "txapelketak:build:development"
@@ -85,12 +96,7 @@
         "e2e": {
           "builder": "playwright-ng-schematics:playwright",
           "options": {
-            "devServerTarget": "txapelketak:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "txapelketak:serve:production"
-            }
+            "devServerTarget": "txapelketak:serve:test"
           }
         }
       }

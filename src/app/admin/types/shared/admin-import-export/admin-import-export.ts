@@ -133,6 +133,8 @@ export class AdminImportExport {
       },
       onHide: () => {
         this.pendingImportCounts.set(null);
+        this.parsedImportData.set(null);
+        this.importError.set(null);
       },
     });
   }

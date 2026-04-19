@@ -183,6 +183,14 @@
                 <span class="mx-1">·</span>
                 {{ game.serieName }} – {{ game.pouleName }}
               </div>
+              @if (role() === 'admin' || role() === 'organizer') {
+                <div class="upcoming-game-meta text-sm" data-testid="dashboard-overdue-game-referees">
+                  @if (game.referees.length > 0) {
+                    <i class="pi pi-user text-xs mr-1 text-[var(--p-text-muted-color)]" aria-hidden="true"></i>
+                    <span class="text-[var(--p-text-muted-color)]">{{ game.referees.join(', ') }}</span>
+                  }
+                </div>
+              }
             </li>
           }
         </ul>
@@ -225,6 +233,17 @@
                   <span class="mx-1">·</span>
                   {{ game.serieName }} – {{ game.pouleName }}
                 </div>
+                @if (role() === 'admin' || role() === 'organizer') {
+                  <div class="upcoming-game-meta text-sm" data-testid="dashboard-upcoming-game-referees">
+                    @if (game.referees.length > 0) {
+                      <i class="pi pi-user text-xs mr-1 text-[var(--p-text-muted-color)]" aria-hidden="true"></i>
+                      <span class="text-[var(--p-text-muted-color)]">{{ game.referees.join(', ') }}</span>
+                    } @else {
+                      <i class="pi pi-exclamation-triangle text-xs mr-1 text-yellow-500" aria-hidden="true"></i>
+                      <span class="text-yellow-500">{{ 'tournaments.dashboard.noReferees' | transloco }}</span>
+                    }
+                  </div>
+                }
               </li>
             }
           </ul>
@@ -299,6 +318,12 @@
                   }
                   {{ game.serieName }} – {{ game.pouleName }}
                 </div>
+                @if ((role() === 'admin' || role() === 'organizer') && game.referees.length > 0) {
+                  <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm" data-testid="dashboard-recent-game-referees">
+                    <i class="pi pi-user text-xs mr-1" aria-hidden="true"></i>
+                    <span>{{ game.referees.join(', ') }}</span>
+                  </div>
+                }
               </li>
             }
           </ul>

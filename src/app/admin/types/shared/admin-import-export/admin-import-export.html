@@ -1,10 +1,11 @@
 <p-confirmdialog>
   <ng-template #message let-message>
     <p>{{ message.message }}</p>
-    @if (pendingImportCounts()) {
+    @let counts = pendingImportCounts();
+    @if (counts) {
       <ul class="mt-3 list-disc pl-5 text-surface-600">
-        <li>{{ 'admin.importExport.teamsCount' | transloco: { count: pendingImportCounts()!.teamsCount } }}</li>
-        <li>{{ 'admin.importExport.seriesCount' | transloco: { count: pendingImportCounts()!.seriesCount } }}</li>
+        <li>{{ 'admin.importExport.teamsCount' | transloco: { count: counts.teamsCount } }}</li>
+        <li>{{ 'admin.importExport.seriesCount' | transloco: { count: counts.seriesCount } }}</li>
       </ul>
     }
   </ng-template>

@@ -131,6 +131,26 @@ describe('Teams', () => {
     expect(mockDialogService.open).toHaveBeenCalled();
   });
 
+  it('should emit saveTeams when bulk dialog closes with a result', () => {
+    const emitted: { ref: unknown; name: string }[][] = [];
+    component.saveTeams.subscribe((teams) => emitted.push(teams));
+
+    let closeCallback: ((result: unknown) => void) | undefined;
+    mockOnClose.subscribe.mockImplementation((cb: (result: unknown) => void) => {
+      closeCallback = cb;
+    });
+
+    const teams = [
+      { ref: { id: '1' } as never, name: 'Équipe A' },
+      { ref: { id: '2' } as never, name: 'Équipe B' },
+    ];
+
+    component.onAddTeams();
+    closeCallback?.(teams);
+
+    expect(emitted.length).toBe(1);
+    expect(emitted[0]).toEqual(teams);
+  });
   it('should emit saveTeam when dialog closes with a result', () => {
     const emitted: { ref: unknown; name: string }[] = [];
     component.saveTeam.subscribe((team) => emitted.push(team));

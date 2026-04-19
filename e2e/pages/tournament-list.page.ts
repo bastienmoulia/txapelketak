@@ -11,6 +11,14 @@ export class TournamentListPage {
     await this.page.goto('/tournaments');
   }
 
+  createButton(): Locator {
+    return this.page.getByRole('button', { name: 'Créer' });
+  }
+
+  async clickCreate(): Promise<void> {
+    await this.createButton().click();
+  }
+
   tournamentRow(name: string): Locator {
     return this.page
       .locator('.p-datatable-tbody tr')

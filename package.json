@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "concurrently \"npm run serve\" \"npm run emulators\"",
     "serve": "ng serve -o",
+    "serve:test": "ng serve -o --configuration test",
     "serve:prod": "ng serve -o --configuration production",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",

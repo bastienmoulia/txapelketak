@@ -1,16 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
-import { DialogService } from 'primeng/dynamicdialog';
 import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
 import { Team } from '../../../../tournaments/types/shared/teams/teams';
 import { Game, Serie } from '../../../../tournaments/types/poules/poules';
-import { ImportConfirmDialog } from './import-confirm-dialog/import-confirm-dialog';
 
 export interface TournamentYamlTeam {
   id: string;
@@ -50,8 +49,8 @@ export interface TournamentYamlData {
 
 @Component({
   selector: 'app-admin-import-export',
-  imports: [ButtonModule, DividerModule, MessageModule, TranslocoModule],
-  providers: [DialogService],
+  imports: [ButtonModule, ConfirmDialogModule, DividerModule, MessageModule, TranslocoModule],
+  providers: [ConfirmationService],
   templateUrl: './admin-import-export.html',
   styleUrl: './admin-import-export.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,7 +59,7 @@ export class AdminImportExport {
   private firebaseService = inject(FirebaseService);
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
-  private dialogService = inject(DialogService);
+  private confirmationService = inject(ConfirmationService);
 
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
@@ -69,6 +68,7 @@ export class AdminImportExport {
   importError = signal<string | null>(null);
   parsedImportData = signal<TournamentYamlData | null>(null);
   isImporting = signal(false);
+  pendingImportCounts = signal<{ teamsCount: number; seriesCount: number } | null>(null);
 
   onExport(): void {
     const data = this.buildExportData();
@@ -116,22 +116,21 @@ export class AdminImportExport {
   }
 
   private openImportConfirmDialog(data: TournamentYamlData): void {
-    const dialogRef = this.dialogService.open(ImportConfirmDialog, {
+    this.pendingImportCounts.set({ teamsCount: data.teams.length, seriesCount: data.series.length });
+    this.confirmationService.confirm({
       header: this.translocoService.translate('admin.importExport.importConfirmTitle'),
-      modal: true,
-      closable: true,
-      width: 'min(30rem, 100%)',
-      data: {
-        teamsCount: data.teams.length,
-        seriesCount: data.series.length,
-      },
-    });
-    dialogRef?.onClose.subscribe((result: true | undefined) => {
-      if (result) {
+      message: this.translocoService.translate('admin.importExport.importConfirmMessage'),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('admin.importExport.importConfirm'),
+      rejectLabel: this.translocoService.translate('shared.actions.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
         void this.confirmImport();
-      } else {
+      },
+      reject: () => {
         this.cancelImport();
-      }
+      },
     });
   }
 
@@ -158,12 +157,14 @@ export class AdminImportExport {
     } finally {
       this.isImporting.set(false);
       this.parsedImportData.set(null);
+      this.pendingImportCounts.set(null);
     }
   }
 
   private cancelImport(): void {
     this.parsedImportData.set(null);
     this.importError.set(null);
+    this.pendingImportCounts.set(null);
   }
 
   private buildExportData(): TournamentYamlData {

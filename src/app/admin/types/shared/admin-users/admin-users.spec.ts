@@ -3,6 +3,7 @@ import { MessageService } from 'primeng/api';
 import { DocumentReference } from '@angular/fire/firestore';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
+import { DialogService } from 'primeng/dynamicdialog';
 
 import { AdminUsers } from './admin-users';
 
@@ -19,6 +20,7 @@ describe('AdminUsers', () => {
       imports: [AdminUsers],
       providers: [
         MessageService,
+        DialogService,
         ...provideTranslocoTesting(),
         { provide: FirebaseService, useValue: firebaseServiceStub },
       ],

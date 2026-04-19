@@ -1,0 +1,20 @@
+<div class="mb-4">
+  <p-floatlabel variant="on">
+    <textarea
+      pTextarea
+      id="bulk-names"
+      class="w-full"
+      rows="6"
+      [placeholder]="'admin.teams.bulkPlaceholder' | transloco"
+      name="bulk-names"
+      [ngModel]="bulkNames()"
+      (ngModelChange)="bulkNames.set($event)"
+    ></textarea>
+    <label for="bulk-names">{{ 'admin.teams.bulkLabel' | transloco }}</label>
+  </p-floatlabel>
+</div>
+
+<div class="p-dialog-footer px-0! mt-5">
+  <p-button [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
+  <p-button [label]="'shared.actions.save' | transloco" [disabled]="!bulkNames().trim()" (onClick)="onSave()" />
+</div>

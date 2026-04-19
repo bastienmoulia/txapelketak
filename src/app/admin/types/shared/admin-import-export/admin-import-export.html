@@ -1,3 +1,16 @@
+<p-confirmdialog>
+  <ng-template #message let-message>
+    <p>{{ message.message }}</p>
+    @let counts = pendingImportCounts();
+    @if (counts) {
+      <ul class="mt-3 list-disc pl-5 text-surface-600">
+        <li>{{ 'admin.importExport.teamsCount' | transloco: { count: counts.teamsCount } }}</li>
+        <li>{{ 'admin.importExport.seriesCount' | transloco: { count: counts.seriesCount } }}</li>
+      </ul>
+    }
+  </ng-template>
+</p-confirmdialog>
+
 <div class="flex flex-col gap-6 mx-3">
   <div class="flex flex-col gap-2">
     <h3 class="text-lg font-semibold">{{ 'admin.importExport.exportTitle' | transloco }}</h3>
@@ -39,32 +52,3 @@
   </div>
 </div>
 
-<!-- Import confirmation dialog -->
-<p-dialog
-  [header]="'admin.importExport.importConfirmTitle' | transloco"
-  [modal]="true"
-  [(visible)]="importDialogVisible"
-  [style]="{ width: '30rem' }"
->
-  <p>{{ 'admin.importExport.importConfirmMessage' | transloco }}</p>
-  @if (parsedImportData(); as data) {
-    <ul class="mt-3 list-disc pl-5 text-surface-600">
-      <li>{{ 'admin.importExport.teamsCount' | transloco: { count: data.teams.length } }}</li>
-      <li>{{ 'admin.importExport.seriesCount' | transloco: { count: data.series.length } }}</li>
-    </ul>
-  }
-  <ng-template #footer>
-    <p-button
-      [label]="'shared.actions.cancel' | transloco"
-      severity="secondary"
-      [disabled]="isImporting()"
-      (onClick)="onCancelImport()"
-    />
-    <p-button
-      [label]="'admin.importExport.importConfirm' | transloco"
-      severity="danger"
-      [loading]="isImporting()"
-      (onClick)="onConfirmImport()"
-    />
-  </ng-template>
-</p-dialog>

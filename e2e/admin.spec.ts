@@ -17,7 +17,7 @@ import { TournamentNewPage } from './pages/tournament-new.page';
  */
 test.describe.serial('Admin – tournament lifecycle', () => {
   const timestamp = Date.now();
-  const tournamentName = `Test Tournament ${timestamp}`;
+  const tournamentName = `_Test Tournament ${timestamp}`;
   const teamAlpha = `Équipe Alpha ${timestamp}`;
   const teamBeta = `Équipe Beta ${timestamp}`;
   const teamBetaEdited = `Équipe B ${timestamp}`;

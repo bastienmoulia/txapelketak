@@ -28,7 +28,7 @@ test.describe('Visitor – read-only navigation', () => {
     const context = await browser.newContext();
     const page = await context.newPage();
     const runId = `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
-    tournamentName = `Visitor Test ${runId}`;
+    tournamentName = `_Visitor Test ${runId}`;
 
     // 1. Create tournament
     const newPage = new TournamentNewPage(page);
@@ -132,5 +132,24 @@ test.describe('Visitor – read-only navigation', () => {
 
     await detailPage.clickTab('Parties');
     await expect(page.getByTestId('add-game-button')).not.toBeVisible();
+  });
+});
+
+test.describe('Visitor - inactive tournament', () => {
+  const inactiveTournamentId = 'Xs012BBYIlVjWjNnKgZ7';
+  const waitingValidationMessage =
+    "L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre patience.";
+
+  test('should show waiting validation warning and hide tabs', async ({ page }) => {
+    const detailPage = new TournamentDetailPage(page);
+
+    await detailPage.goto(inactiveTournamentId);
+    await detailPage.waitForLoad();
+
+    await expect(detailPage.isWaitingValidation()).toBeVisible();
+    await expect(detailPage.isWaitingValidation()).toHaveText(waitingValidationMessage);
+
+    // The tabs container is not rendered while the tournament is waiting for admin validation.
+    await expect(page.getByRole('tab')).toHaveCount(0);
   });
 });

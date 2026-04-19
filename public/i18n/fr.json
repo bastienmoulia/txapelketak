@@ -145,7 +145,8 @@
       "noRecentGames": "Aucun résultat disponible",
       "warningUndatedGames": "{{count}} partie(s) sans date",
       "warningStaleUnscoredGames": "{{count}} partie(s) commencée(s) depuis plus d'une heure sans score",
-      "warningGamesWithoutReferees": "{{count}} partie(s) de la semaine à venir sans arbitres"
+      "warningGamesWithoutReferees": "{{count}} partie(s) de la semaine à venir sans arbitres",
+      "noReferees": "Aucun arbitre"
     }
   },
   "admin": {

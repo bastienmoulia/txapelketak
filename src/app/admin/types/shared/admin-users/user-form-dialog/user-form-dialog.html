@@ -1,46 +1,48 @@
-<div class="flex flex-col gap-4 pt-2">
-  <p-floatlabel variant="on">
-    <input
-      pInputText
-      id="username"
-      class="w-full"
-      autocomplete="off"
-      [ngModel]="username()"
-      (ngModelChange)="username.set($event)"
-    />
-    <label for="username">{{ 'admin.users.username' | transloco }}</label>
-  </p-floatlabel>
+<form (ngSubmit)="onSave()">
+  <div class="flex flex-col gap-4 pt-2">
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        id="username"
+        class="w-full"
+        autocomplete="off"
+        [ngModel]="username()"
+        (ngModelChange)="username.set($event)"
+      />
+      <label for="username">{{ 'admin.users.username' | transloco }}</label>
+    </p-floatlabel>
 
-  <p-floatlabel variant="on">
-    <input
-      pInputText
-      id="email"
-      type="email"
-      class="w-full"
-      autocomplete="off"
-      [ngModel]="email()"
-      (ngModelChange)="email.set($event)"
-    />
-    <label for="email">{{ 'admin.users.email' | transloco }}</label>
-  </p-floatlabel>
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        id="email"
+        type="email"
+        class="w-full"
+        autocomplete="off"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+      />
+      <label for="email">{{ 'admin.users.email' | transloco }}</label>
+    </p-floatlabel>
 
-  <p-floatlabel variant="on">
-    <p-select
-      inputId="role"
-      [options]="roleOptions()"
-      optionLabel="label"
-      optionValue="value"
-      [ngModel]="selectedRole()"
-      (ngModelChange)="selectedRole.set($event)"
-      [style]="{ width: '100%' }"
-      appendTo="body"
-      [disabled]="data.isEditingCurrentUser"
-    />
-    <label for="role">{{ 'admin.users.role.label' | transloco }}</label>
-  </p-floatlabel>
-</div>
+    <p-floatlabel variant="on">
+      <p-select
+        inputId="role"
+        [options]="roleOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="selectedRole()"
+        (ngModelChange)="selectedRole.set($event)"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+        [disabled]="data.isEditingCurrentUser"
+      />
+      <label for="role">{{ 'admin.users.role.label' | transloco }}</label>
+    </p-floatlabel>
+  </div>
 
-<div class="p-dialog-footer px-0! mt-5">
-  <p-button [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
-  <p-button [label]="'shared.actions.save' | transloco" [disabled]="isSaveDisabled()" (onClick)="onSave()" />
-</div>
+  <div class="p-dialog-footer px-0! mt-5">
+    <p-button type="button" [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
+    <p-button type="submit" [label]="'shared.actions.save' | transloco" [disabled]="isSaveDisabled()" />
+  </div>
+</form>

@@ -1,19 +1,21 @@
-<div class="mb-4">
-  <p-floatlabel variant="on">
-    <input
-      pInputText
-      id="name"
-      class="w-full"
-      autocomplete="off"
-      [ngModel]="teamName()"
-      (ngModelChange)="teamName.set($event)"
-      name="name"
-    />
-    <label for="name">{{ 'shared.table.columns.name' | transloco }}</label>
-  </p-floatlabel>
-</div>
+<form (ngSubmit)="onSave()">
+  <div class="mb-4">
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        id="name"
+        class="w-full"
+        autocomplete="off"
+        [ngModel]="teamName()"
+        (ngModelChange)="teamName.set($event)"
+        name="name"
+      />
+      <label for="name">{{ 'shared.table.columns.name' | transloco }}</label>
+    </p-floatlabel>
+  </div>
 
-<div class="p-dialog-footer px-0! mt-5">
-  <p-button [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
-  <p-button [label]="'shared.actions.save' | transloco" [disabled]="!teamName().trim()" (onClick)="onSave()" />
-</div>
+  <div class="p-dialog-footer px-0! mt-5">
+    <p-button type="button" [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
+    <p-button type="submit" [label]="'shared.actions.save' | transloco" [disabled]="!teamName().trim()" />
+  </div>
+</form>

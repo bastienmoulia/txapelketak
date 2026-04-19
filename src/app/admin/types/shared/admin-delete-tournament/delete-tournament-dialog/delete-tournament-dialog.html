@@ -1,31 +1,34 @@
-<div class="flex flex-col gap-4 pt-2">
-  <p-message severity="warn" icon="pi pi-exclamation-triangle">
-    {{ 'admin.deleteTournament.dialogWarning' | transloco }}
-  </p-message>
+<form (ngSubmit)="onConfirm()">
+  <div class="flex flex-col gap-4 pt-2">
+    <p-message severity="warn" icon="pi pi-exclamation-triangle">
+      {{ 'admin.deleteTournament.dialogWarning' | transloco }}
+    </p-message>
 
-  <p-floatlabel variant="on">
-    <input
-      pInputText
-      id="confirmationName"
-      class="w-full"
-      autocomplete="off"
-      [ngModel]="confirmationName()"
-      (ngModelChange)="confirmationName.set($event)"
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        id="confirmationName"
+        class="w-full"
+        autocomplete="off"
+        [ngModel]="confirmationName()"
+        (ngModelChange)="confirmationName.set($event)"
+      />
+      <label for="confirmationName">{{ 'admin.deleteTournament.dialogNameLabel' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="p-dialog-footer px-0! mt-5">
+    <p-button
+      type="button"
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="onCancel()"
     />
-    <label for="confirmationName">{{ 'admin.deleteTournament.dialogNameLabel' | transloco }}</label>
-  </p-floatlabel>
-</div>
-
-<div class="p-dialog-footer px-0! mt-5">
-  <p-button
-    [label]="'shared.actions.cancel' | transloco"
-    severity="secondary"
-    (onClick)="onCancel()"
-  />
-  <p-button
-    [label]="'admin.deleteTournament.dialogConfirm' | transloco"
-    severity="danger"
-    [disabled]="isConfirmDisabled()"
-    (onClick)="onConfirm()"
-  />
-</div>
+    <p-button
+      type="submit"
+      [label]="'admin.deleteTournament.dialogConfirm' | transloco"
+      severity="danger"
+      [disabled]="isConfirmDisabled()"
+    />
+  </div>
+</form>

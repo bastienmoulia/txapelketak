@@ -16,5 +16,5 @@
 
 <div class="p-dialog-footer px-0! mt-5">
   <p-button [label]="'shared.actions.cancel' | transloco" severity="secondary" (onClick)="onCancel()" />
-  <p-button [label]="'shared.actions.save' | transloco" (onClick)="onSave()" />
+  <p-button [label]="'shared.actions.save' | transloco" [disabled]="!bulkNames().trim()" (onClick)="onSave()" />
 </div>

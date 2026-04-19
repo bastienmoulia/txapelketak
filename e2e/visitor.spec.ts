@@ -153,3 +153,15 @@ test.describe('Visitor - inactive tournament', () => {
     await expect(page.getByRole('tab')).toHaveCount(0);
   });
 });
+
+test.describe('Visitor - tournaments list actions', () => {
+  test('should navigate to new tournament page when clicking create button', async ({ page }) => {
+    const listPage = new TournamentListPage(page);
+
+    await listPage.goto();
+    await listPage.clickCreate();
+
+    await expect(page).toHaveURL(/\/tournaments\/new$/);
+    await expect(page.getByTestId('field-name')).toBeVisible();
+  });
+});

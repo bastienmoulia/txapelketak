@@ -55,7 +55,8 @@ export class AdminDeleteTournament {
     try {
       await this.firebaseService.deleteTournament(tournamentRef);
       await this.router.navigate(['/']);
-    } catch {
+    } catch (error) {
+      console.error('Failed to delete tournament', error);
       this.messageService.add({
         severity: 'error',
         summary: this.translocoService.translate('admin.deleteTournament.errorTitle'),

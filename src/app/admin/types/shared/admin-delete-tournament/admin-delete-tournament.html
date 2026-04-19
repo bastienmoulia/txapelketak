@@ -1,0 +1,16 @@
+<p-toast />
+<section class="border border-red-500 rounded-lg p-4">
+  <h2 class="text-xl font-semibold text-red-600 mb-2!">
+    {{ 'admin.deleteTournament.title' | transloco }}
+  </h2>
+  <p class="text-[var(--p-text-muted-color)] mb-4!">
+    {{ 'admin.deleteTournament.description' | transloco }}
+  </p>
+  <p-button
+    [label]="'admin.deleteTournament.button' | transloco"
+    severity="danger"
+    icon="pi pi-trash"
+    [loading]="isDeleting()"
+    (onClick)="onDelete()"
+  />
+</section>

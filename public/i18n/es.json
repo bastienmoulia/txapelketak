@@ -327,6 +327,17 @@
       "importSuccessDetail": "Los datos del torneo se han importado correctamente.",
       "importError": "Error de importación",
       "importErrorDetail": "Se ha producido un error durante la importación. Por favor, inténtalo de nuevo."
+    },
+    "deleteTournament": {
+      "title": "Zona de peligro",
+      "description": "La eliminación del torneo es irreversible. Todos los datos (equipos, partidos, series) y todos los usuarios serán eliminados permanentemente.",
+      "button": "Eliminar torneo",
+      "dialogTitle": "Eliminar torneo",
+      "dialogWarning": "Esta acción es irreversible. El torneo y todos sus datos serán eliminados permanentemente.",
+      "dialogNameLabel": "Nombre del torneo (confirmación)",
+      "dialogConfirm": "Eliminar permanentemente",
+      "errorTitle": "Error de eliminación",
+      "errorDetail": "Se produjo un error durante la eliminación. Por favor, inténtalo de nuevo."
     }
   },
   "shared": {

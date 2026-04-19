@@ -486,6 +486,38 @@ export class FirebaseService {
     });
   }
 
+  async deleteTournament(tournamentRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteTournament: deleting all tournament data`);
+    if (!this.firestore) {
+      return;
+    }
+
+    // Delete all users associated with this tournament
+    const users = await this.getUsersByTournament(tournamentRef);
+    await Promise.all(users.map((user) => this.deleteUserDoc(user.ref!)));
+
+    // Delete all teams
+    const teams = await this.getCollectionFromDocumentRef(tournamentRef, 'teams');
+    await Promise.all(
+      teams.map((item) =>
+        runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] deleteDoc: team (deleteTournament)`);
+          await deleteDoc(item.ref);
+        }),
+      ),
+    );
+
+    // Delete all series (with their poules and games)
+    const series = await this.getCollectionFromDocumentRef(tournamentRef, 'series');
+    await Promise.all(series.map((item) => this.deleteSerieFromTournament(item.ref)));
+
+    // Delete the tournament document itself
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] deleteDoc: tournament`);
+      await deleteDoc(tournamentRef);
+    });
+  }
+
   async importTournamentData(
     tournamentRef: DocumentReference,
     data: TournamentYamlData,

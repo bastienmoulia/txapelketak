@@ -131,6 +131,9 @@ export class AdminImportExport {
       reject: () => {
         this.cancelImport();
       },
+      onHide: () => {
+        this.pendingImportCounts.set(null);
+      },
     });
   }
 

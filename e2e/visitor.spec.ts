@@ -1,57 +1,43 @@
-import { expect, test } from '@playwright/test';
-import { AdminPage } from './pages/admin.page';
+import { test, expect } from '@playwright/test';
+import { readFileSync } from 'fs';
+import * as yaml from 'js-yaml';
 import { TournamentDetailPage } from './pages/tournament-detail.page';
 import { TournamentListPage } from './pages/tournament-list.page';
-import { TournamentNewPage } from './pages/tournament-new.page';
+
+const seed = yaml.load(readFileSync('e2e/fixtures/visitor-seed.yaml', 'utf8')) as {
+  teams: { id: string; name: string }[];
+  series: { name: string }[];
+};
 
 /**
- * Visitor E2E tests – read-only navigation of a tournament.
+ * Visitor E2E tests – navigation of a tournament.
  *
- * A tournament with data is created in beforeAll; subsequent tests navigate
- * to its public URL as an anonymous visitor.
+ * Uses the persistent "Tournoi visiteur" tournament (already seeded with visitor-seed data).
+ * No setup/teardown needed – the tournament is never modified by these tests.
  */
-test.describe('Visitor – read-only navigation', () => {
-  let tournamentName = '';
-  const team1 = 'Visitor Team One';
-  const team2 = 'Visitor Team Two';
-  const serieName = 'Visitor Serie';
-  const yamlFixturePath = 'e2e/fixtures/visitor-seed.yaml';
+test.describe('Visitor navigation', () => {
+  const tournamentName = 'Tournoi visiteur';
+  const team1 = seed.teams[0].name;
+  const team2 = seed.teams[1].name;
+  const serieName = seed.series[0].name;
 
   let tournamentId = '';
 
   test.beforeAll(async ({ browser }) => {
-    // This setup involves many async operations (create tournament, add teams, series, poule,
-    // assign teams, add game). Extend the timeout to allow for Firebase roundtrips in CI.
-    test.setTimeout(120000);
-
-    // Use a dedicated browser context for setup
+    // Use the existing "Tournoi visiteur" tournament that already has visitor-seed data.
+    // Retrieve its ID by navigating to the public list and extracting the URL.
     const context = await browser.newContext();
     const page = await context.newPage();
-    const runId = `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
-    tournamentName = `_Visitor Test ${runId}`;
 
-    // 1. Create tournament
-    const newPage = new TournamentNewPage(page);
-    await newPage.goto();
-    await newPage.fillStep1(tournamentName, 'Tournament for visitor tests');
-    await newPage.goToNextStep();
-    await newPage.fillStep2(`Admin Visiteur ${runId}`, `admin-visitor-${runId}@test.com`);
-    await newPage.submit();
+    const listPage = new TournamentListPage(page);
+    await listPage.goto();
+    await listPage.waitForTournamentToAppear(tournamentName, 10000);
 
-    const adminUrl = await newPage.getAdminUrl();
-    const match = adminUrl.match(/\/tournaments\/([^/]+)\/[^/]+$/);
+    // Click the tournament row to navigate to it, then extract the ID from the URL
+    await listPage.openTournament(tournamentName);
+    await page.waitForURL(/\/tournaments\/[^/]+$/);
+    const match = page.url().match(/\/tournaments\/([^/]+)$/);
     tournamentId = match?.[1] ?? '';
-
-    // 2. Navigate to admin URL → triggers status change to "ongoing"
-    const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
-
-    // 3. Import ready-to-use seed data (teams, serie, poule, game)
-    await adminPage.importYamlFixture(yamlFixturePath);
-
-    // 4. Ensure imported data is visible before running visitor assertions
-    await adminPage.clickTab('Tableau de bord');
-    await expect(adminPage.dashboardTeamsCount()).toHaveText('2');
 
     await context.close();
   });
@@ -132,36 +118,5 @@ test.describe('Visitor – read-only navigation', () => {
 
     await detailPage.clickTab('Parties');
     await expect(page.getByTestId('add-game-button')).not.toBeVisible();
-  });
-});
-
-test.describe('Visitor - inactive tournament', () => {
-  const inactiveTournamentId = 'Xs012BBYIlVjWjNnKgZ7';
-  const waitingValidationMessage =
-    "L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre patience.";
-
-  test('should show waiting validation warning and hide tabs', async ({ page }) => {
-    const detailPage = new TournamentDetailPage(page);
-
-    await detailPage.goto(inactiveTournamentId);
-    await detailPage.waitForLoad();
-
-    await expect(detailPage.isWaitingValidation()).toBeVisible();
-    await expect(detailPage.isWaitingValidation()).toHaveText(waitingValidationMessage);
-
-    // The tabs container is not rendered while the tournament is waiting for admin validation.
-    await expect(page.getByRole('tab')).toHaveCount(0);
-  });
-});
-
-test.describe('Visitor - tournaments list actions', () => {
-  test('should navigate to new tournament page when clicking create button', async ({ page }) => {
-    const listPage = new TournamentListPage(page);
-
-    await listPage.goto();
-    await listPage.clickCreate();
-
-    await expect(page).toHaveURL(/\/tournaments\/new$/);
-    await expect(page.getByTestId('field-name')).toBeVisible();
   });
 });

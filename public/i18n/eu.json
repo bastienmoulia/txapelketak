@@ -54,10 +54,6 @@
         "description": "Kode irekia, iragarkiik gabe, mugarik gabe. Jolastu!"
       }
     },
-    "createSoonAvailable": {
-      "title": "Laster eskuragarri",
-      "detail": "Txapelketen sorrera oso laster eskuragarri egingo da"
-    },
     "tournaments": {
       "title": "Txapelketak",
       "seeAll": "Ikusi txapelketa guztiak"
@@ -101,8 +97,7 @@
         "title": "Txapelketa sortua",
         "message": "Zure txapelketa balioztapen zain dago. Beheko administrazio URLa behin bakarrik erakusten da: gorde ezazu berehala.",
         "downloadAdminLink": "Deskargatu administrazio esteka",
-        "backHome": "Hasierara itzuli",
-        "openAdmin": "Ireki administrazioa"
+        "backHome": "Hasierara itzuli"
       },
       "error": {
         "title": "Ezin izan da sortu",
@@ -134,8 +129,7 @@
       "poules": "Taldekatzeak",
       "games": "Partidak",
       "playedGames": "Jokatutako partidak",
-      "totalScoredPoints": "Points",
-      "progress": "Aurrerabidea",
+      "totalScoredPoints": "Puntuak",
       "overdueGames": "Martxan dauden partidak",
       "upcomingGames": "Hurrengo partidak",
       "noUpcomingGames": "Ez dago partida programaturik",
@@ -150,15 +144,10 @@
     }
   },
   "admin": {
-    "title": "Administrazio sarbidea",
     "loading": "Sarbideak egiaztatzen...",
     "denied": "Sarbidea ukatua: esteka baliogabea edo iraungita.",
     "backHome": "Hasierara itzuli",
-    "welcome": "Ongi etorri {{ username }}",
     "tournament": "Txapelketa",
-    "email": "Emaila",
-    "role": "Rola",
-    "archived": "Txapelketa hau artxibatuta dago. Aldaketak ez daude baimenduta.",
     "notFound": "Txapelketa ez da aurkitu edo ez da zehaztu.",
     "validated": "Txapelketa balioztatua",
     "validatedDetail": "Txapelketa balioztatu da eta orain abian dago.",
@@ -175,7 +164,6 @@
       "title": "Orokorra",
       "name": "Txapelketaren izena",
       "description": "Deskribapena",
-      "noDescription": "Deskribapenik ez",
       "saved": "Txapelketa eguneratua",
       "savedDetail": "Txapelketaren informazioa arrakastaz gorde da."
     },
@@ -229,12 +217,8 @@
     },
     "games": {
       "addGame": "Partida gehitu",
-      "generateAllGames": "Partida guztiak sortu",
-      "generateAllGamesAria": "Multzo honetako partida guztiak sortu",
-      "dialogAddGame": "Partida gehitu",
       "dialogEditGame": "Partida editatu",
       "noGames": "Ez dago partidarik multzo honetan",
-      "finalPhaseComingSoon": "Azken fasea laster",
       "team1": "1. taldea",
       "team2": "2. taldea",
       "score": "Puntuazioa",
@@ -250,18 +234,13 @@
       "editedDetail": "Partida arrakastaz eguneratu da.",
       "deleted": "Partida ezabatu da",
       "deletedDetail": "Partida arrakastaz ezabatu da.",
-      "viewByPool": "Serieka",
-      "viewByDate": "Dataren arabera",
       "noDate": "Datarik gabe",
       "serie": "Seriea",
       "poule": "Multzoa",
       "time": "Ordua",
-      "filterByTeam": "Taldea iragazi",
-      "filterByDate": "Data iragazi",
       "filterTeamShort": "Taldea",
       "filterDateShort": "Data",
       "noGamesForFilters": "Ez dago hautatutako iragazkiekin bat datorren partidarik.",
-      "dialogSelectPoule": "Seriea eta taldea aukeratu",
       "referees": "Arbitroak",
       "sameTeamError": "Bi taldeak ezin dira berdinak izan."
     },
@@ -296,7 +275,6 @@
       "deleted": "Erabiltzailea ezabatu da",
       "deletedDetail": "{{username}} erabiltzailea ondo ezabatu da.",
       "cannotDeleteSelf": "Ezin duzu zeure burua ezabatu",
-      "cannotDeleteSelfDetail": "Oraingo administratzaileak ezin du bere burua ezabatu.",
       "openAdminLink": "Admin orria ireki",
       "username": "Erabiltzaile izena",
       "email": "Emaila",
@@ -333,7 +311,6 @@
     "table": {
       "columns": {
         "name": "Izena",
-        "status": "Egoera",
         "actions": "Ekintzak",
         "serie": "Seriea",
         "poule": "Taldea"
@@ -367,12 +344,6 @@
     },
     "tournamentHeader": {
       "edit": "Txapelketa editatu",
-      "editAria": "Txapelketa hau editatu",
-      "hideDetails": "Xehetasunak izkutatu",
-      "showDetails": "Xehetasunak erakutsi",
-      "hideDetailsAria": "Txapelketaren xehetasunak izkutatu",
-      "showDetailsAria": "Txapelketaren xehetasunak erakutsi",
-      "creator": "Sortzailea",
       "noDescription": "Deskripziorik ez",
       "editSummary": "Txapelketa editatu",
       "editDetail": "Txapelketa editatzea laster eskuragarri izango da"
@@ -380,7 +351,6 @@
   },
   "datepicker": {
     "firstDayOfWeek": 1,
-    "dateFormat": "dd/mm/yy",
     "placeholder": "ee/hh/uuuu oo:mm"
   }
 }

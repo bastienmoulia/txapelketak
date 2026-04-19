@@ -54,10 +54,6 @@
         "description": "Código abierto, sin publicidad, sin limitaciones. ¡A jugar!"
       }
     },
-    "createSoonAvailable": {
-      "title": "Próximamente",
-      "detail": "La creación de torneos estará disponible muy pronto"
-    },
     "tournaments": {
       "title": "Torneos",
       "seeAll": "Ver todos los torneos"
@@ -101,8 +97,7 @@
         "title": "Torneo creado",
         "message": "Su torneo está a la espera de validación. La URL de administración mostrada abajo solo se muestra una vez: guárdela inmediatamente.",
         "downloadAdminLink": "Descargar enlace de administración",
-        "backHome": "Volver al inicio",
-        "openAdmin": "Abrir administración"
+        "backHome": "Volver al inicio"
       },
       "error": {
         "title": "No se pudo crear",
@@ -134,8 +129,7 @@
       "poules": "Grupos",
       "games": "Partidos",
       "playedGames": "Partidos jugados",
-      "totalScoredPoints": "Points",
-      "progress": "Progreso",
+      "totalScoredPoints": "Puntos",
       "overdueGames": "Partidos en curso",
       "upcomingGames": "Próximos partidos",
       "noUpcomingGames": "No hay partidos próximos",
@@ -150,15 +144,10 @@
     }
   },
   "admin": {
-    "title": "Acceso administración",
     "loading": "Verificando accesos...",
     "denied": "Acceso denegado: enlace inválido o expirado.",
     "backHome": "Volver al inicio",
-    "welcome": "Bienvenido {{ username }}",
     "tournament": "Torneo",
-    "email": "Email",
-    "role": "Rol",
-    "archived": "Este torneo está archivado. No se permiten modificaciones.",
     "notFound": "Torneo no encontrado o no especificado.",
     "validated": "Torneo validado",
     "validatedDetail": "El torneo ha sido validado y ahora está en curso.",
@@ -175,7 +164,6 @@
       "title": "General",
       "name": "Nombre del torneo",
       "description": "Descripción",
-      "noDescription": "Sin descripción",
       "saved": "Torneo actualizado",
       "savedDetail": "La información del torneo se ha guardado correctamente."
     },
@@ -229,12 +217,8 @@
     },
     "games": {
       "addGame": "Añadir un partido",
-      "generateAllGames": "Generar todos los partidos",
-      "generateAllGamesAria": "Generar todos los partidos de este grupo",
-      "dialogAddGame": "Añadir un partido",
       "dialogEditGame": "Editar partido",
       "noGames": "No hay partidos en este grupo",
-      "finalPhaseComingSoon": "Fase final próximamente",
       "team1": "Equipo 1",
       "team2": "Equipo 2",
       "score": "Puntuación",
@@ -250,18 +234,13 @@
       "editedDetail": "El partido ha sido actualizado con éxito.",
       "deleted": "Partido eliminado",
       "deletedDetail": "El partido ha sido eliminado con éxito.",
-      "viewByPool": "Por serie",
-      "viewByDate": "Por fecha",
       "noDate": "Sin fecha",
       "serie": "Serie",
       "poule": "Grupo",
       "time": "Hora",
-      "filterByTeam": "Filtrar por equipo",
-      "filterByDate": "Filtrar por fecha",
       "filterTeamShort": "Equipo",
       "filterDateShort": "Fecha",
       "noGamesForFilters": "Ningún partido coincide con los filtros seleccionados.",
-      "dialogSelectPoule": "Seleccionar la serie y el grupo",
       "referees": "Árbitros",
       "sameTeamError": "Los dos equipos no pueden ser iguales."
     },
@@ -296,7 +275,6 @@
       "deleted": "Usuario eliminado",
       "deletedDetail": "El usuario {{username}} se ha eliminado correctamente.",
       "cannotDeleteSelf": "No puedes eliminarte a ti mismo",
-      "cannotDeleteSelfDetail": "El administrador actual no puede eliminarse a sí mismo.",
       "openAdminLink": "Abrir la página de administración",
       "username": "Nombre de usuario",
       "email": "Email",
@@ -333,7 +311,6 @@
     "table": {
       "columns": {
         "name": "Nombre",
-        "status": "Estado",
         "actions": "Acciones",
         "serie": "Serie",
         "poule": "Grupo"
@@ -367,12 +344,6 @@
     },
     "tournamentHeader": {
       "edit": "Editar torneo",
-      "editAria": "Editar este torneo",
-      "hideDetails": "Ocultar detalles",
-      "showDetails": "Mostrar detalles",
-      "hideDetailsAria": "Ocultar detalles del torneo",
-      "showDetailsAria": "Mostrar detalles del torneo",
-      "creator": "Creador",
       "noDescription": "Sin descripción",
       "editSummary": "Edición del torneo",
       "editDetail": "La edición del torneo estará disponible pronto"
@@ -380,7 +351,6 @@
   },
   "datepicker": {
     "firstDayOfWeek": 0,
-    "dateFormat": "dd/mm/yy",
     "placeholder": "dd/mm/aaaa hh:mm"
   }
 }

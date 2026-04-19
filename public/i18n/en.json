@@ -54,10 +54,6 @@
         "description": "Open source code, no ads, no limitations. Play away."
       }
     },
-    "createSoonAvailable": {
-      "title": "Coming Soon",
-      "detail": "Tournament creation will be available very soon"
-    },
     "tournaments": {
       "title": "Tournaments",
       "seeAll": "See all tournaments"
@@ -101,8 +97,7 @@
         "title": "Tournament created",
         "message": "Your tournament is awaiting validation. The administration URL below is shown only once: save it immediately.",
         "downloadAdminLink": "Download administration link",
-        "backHome": "Back to home",
-        "openAdmin": "Open admin page"
+        "backHome": "Back to home"
       },
       "error": {
         "title": "Creation failed",
@@ -135,7 +130,6 @@
       "games": "Games",
       "playedGames": "Played games",
       "totalScoredPoints": "Points",
-      "progress": "Progress",
       "overdueGames": "Games in progress",
       "upcomingGames": "Upcoming games",
       "noUpcomingGames": "No upcoming games",
@@ -150,15 +144,10 @@
     }
   },
   "admin": {
-    "title": "Administration access",
     "loading": "Verifying access...",
     "denied": "Access denied: invalid or expired link.",
     "backHome": "Back to home",
-    "welcome": "Welcome {{ username }}",
     "tournament": "Tournament",
-    "email": "Email",
-    "role": "Role",
-    "archived": "This tournament is archived. Modifications are not allowed.",
     "notFound": "Tournament not found or not specified.",
     "validated": "Tournament validated",
     "validatedDetail": "The tournament has been validated and is now in progress.",
@@ -175,7 +164,6 @@
       "title": "General",
       "name": "Tournament name",
       "description": "Description",
-      "noDescription": "No description",
       "saved": "Tournament updated",
       "savedDetail": "Tournament information has been saved successfully."
     },
@@ -229,12 +217,8 @@
     },
     "games": {
       "addGame": "Add a game",
-      "generateAllGames": "Generate all games",
-      "generateAllGamesAria": "Generate all games for this group",
-      "dialogAddGame": "Add a game",
       "dialogEditGame": "Edit game",
       "noGames": "No games in this group",
-      "finalPhaseComingSoon": "Final phase coming soon",
       "team1": "Team 1",
       "team2": "Team 2",
       "score": "Score",
@@ -250,18 +234,13 @@
       "editedDetail": "The game has been successfully updated.",
       "deleted": "Game deleted",
       "deletedDetail": "The game has been successfully deleted.",
-      "viewByPool": "By series",
-      "viewByDate": "By date",
       "noDate": "No date",
       "serie": "Series",
       "poule": "Pool",
       "time": "Time",
-      "filterByTeam": "Filter by team",
-      "filterByDate": "Filter by date",
       "filterTeamShort": "Team",
       "filterDateShort": "Date",
       "noGamesForFilters": "No games match the selected filters.",
-      "dialogSelectPoule": "Select series and pool",
       "referees": "Referees",
       "sameTeamError": "Both teams cannot be the same."
     },
@@ -296,7 +275,6 @@
       "deleted": "User deleted",
       "deletedDetail": "User {{username}} was deleted successfully.",
       "cannotDeleteSelf": "Cannot delete yourself",
-      "cannotDeleteSelfDetail": "The current administrator cannot delete themselves.",
       "openAdminLink": "Open admin page",
       "username": "Username",
       "email": "Email",
@@ -333,7 +311,6 @@
     "table": {
       "columns": {
         "name": "Name",
-        "status": "Status",
         "actions": "Actions",
         "serie": "Series",
         "poule": "Pool"
@@ -367,12 +344,6 @@
     },
     "tournamentHeader": {
       "edit": "Edit tournament",
-      "editAria": "Edit this tournament",
-      "hideDetails": "Hide details",
-      "showDetails": "Show details",
-      "hideDetailsAria": "Hide tournament details",
-      "showDetailsAria": "Show tournament details",
-      "creator": "Creator",
       "noDescription": "No description",
       "editSummary": "Tournament edit",
       "editDetail": "Tournament editing will be available soon"
@@ -380,7 +351,6 @@
   },
   "datepicker": {
     "firstDayOfWeek": 0,
-    "dateFormat": "mm/dd/yy",
     "placeholder": "mm/dd/yyyy hh:mm"
   }
 }

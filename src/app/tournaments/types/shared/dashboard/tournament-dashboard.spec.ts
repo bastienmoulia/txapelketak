@@ -291,6 +291,40 @@ describe('TournamentDashboard', () => {
       expect(result[0].serieName).toBe('Serie A');
       expect(result[0].pouleName).toBe('Poule 1');
     });
+
+    it('should include referees when defined', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: futureDate1, referees: ['Alice', 'Bob'] }),
+            ],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.upcomingGames();
+      expect(result[0].referees).toEqual(['Alice', 'Bob']);
+    });
+
+    it('should return empty referees when game has no referees', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: futureDate1 })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.upcomingGames();
+      expect(result[0].referees).toEqual([]);
+    });
   });
 
   describe('recentGames', () => {
@@ -690,6 +724,40 @@ describe('TournamentDashboard', () => {
       const result = component.overdueGames();
       expect(result[0].serieName).toBe('Serie X');
       expect(result[0].pouleName).toBe('Poule 3');
+    });
+
+    it('should include referees when defined', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1, referees: ['Alice'] }),
+            ],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.overdueGames();
+      expect(result[0].referees).toEqual(['Alice']);
+    });
+
+    it('should return empty referees when game has no referees', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1 })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.overdueGames();
+      expect(result[0].referees).toEqual([]);
     });
 
     it('should aggregate overdue games across multiple series and poules', () => {

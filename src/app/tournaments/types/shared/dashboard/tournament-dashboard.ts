@@ -29,6 +29,7 @@ export interface UpcomingGame {
   date: Date;
   serieName: string;
   pouleName: string;
+  referees: string[];
 }
 
 export interface RecentGame {
@@ -157,6 +158,7 @@ export class TournamentDashboard {
               date: new Date(game.date),
               serieName: serie.name,
               pouleName: poule.name,
+              referees: game.referees ?? [],
             });
           }
         }
@@ -187,6 +189,7 @@ export class TournamentDashboard {
               date: new Date(game.date),
               serieName: serie.name,
               pouleName: poule.name,
+              referees: game.referees ?? [],
             });
           }
         }

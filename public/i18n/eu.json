@@ -305,6 +305,17 @@
       "importSuccessDetail": "Txapelketaren datuak ongi inportatu dira.",
       "importError": "Inportazio errorea",
       "importErrorDetail": "Errorea gertatu da inportazioan. Mesedez saiatu berriro."
+    },
+    "deleteTournament": {
+      "title": "Zona arriskutsua",
+      "description": "Txapelketaren ezabatzea itzuliezina da. Datu guztiak (taldeak, partidak, seriak) eta erabiltzaile guztiak betiko ezabatuko dira.",
+      "button": "Txapelketa ezabatu",
+      "dialogTitle": "Txapelketa ezabatu",
+      "dialogWarning": "Ekintza hau itzuliezina da. Txapelketa eta haren datu guztiak betiko ezabatuko dira.",
+      "dialogNameLabel": "Txapelketaren izena (baieztatze gisa)",
+      "dialogConfirm": "Behin betiko ezabatu",
+      "errorTitle": "Ezabatze errorea",
+      "errorDetail": "Errorea gertatu da ezabatzean. Mesedez saiatu berriro."
     }
   },
   "shared": {

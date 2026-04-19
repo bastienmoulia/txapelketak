@@ -305,6 +305,17 @@
       "importSuccessDetail": "Les données du tournoi ont été importées avec succès.",
       "importError": "Erreur d'import",
       "importErrorDetail": "Une erreur est survenue lors de l'import. Veuillez réessayer."
+    },
+    "deleteTournament": {
+      "title": "Zone dangereuse",
+      "description": "La suppression du tournoi est irréversible. Toutes les données (équipes, matchs, séries) ainsi que tous les utilisateurs seront définitivement supprimés.",
+      "button": "Supprimer le tournoi",
+      "dialogTitle": "Supprimer le tournoi",
+      "dialogWarning": "Cette action est irréversible. Le tournoi et toutes ses données seront définitivement supprimés.",
+      "dialogNameLabel": "Nom du tournoi (confirmation)",
+      "dialogConfirm": "Supprimer définitivement",
+      "errorTitle": "Erreur de suppression",
+      "errorDetail": "Une erreur est survenue lors de la suppression. Veuillez réessayer."
     }
   },
   "shared": {

@@ -8,6 +8,7 @@
     "serve:test": "ng serve -o --configuration test",
     "serve:prod": "ng serve -o --configuration production",
     "build": "ng build",
+    "build:test": "ng build --configuration test",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",

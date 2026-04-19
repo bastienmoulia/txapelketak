@@ -305,6 +305,17 @@
       "importSuccessDetail": "The tournament data was imported successfully.",
       "importError": "Import error",
       "importErrorDetail": "An error occurred during import. Please try again."
+    },
+    "deleteTournament": {
+      "title": "Danger zone",
+      "description": "Deleting the tournament is irreversible. All data (teams, games, series) and all users will be permanently deleted.",
+      "button": "Delete tournament",
+      "dialogTitle": "Delete tournament",
+      "dialogWarning": "This action is irreversible. The tournament and all its data will be permanently deleted.",
+      "dialogNameLabel": "Tournament name (confirmation)",
+      "dialogConfirm": "Delete permanently",
+      "errorTitle": "Deletion error",
+      "errorDetail": "An error occurred during deletion. Please try again."
     }
   },
   "shared": {

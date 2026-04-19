@@ -40,6 +40,7 @@ export interface RecentGame {
   date: Date | undefined;
   serieName: string;
   pouleName: string;
+  referees: string[];
 }
 
 @Component({
@@ -274,6 +275,7 @@ export class TournamentDashboard {
               date: game.date ? new Date(game.date) : undefined,
               serieName: serie.name,
               pouleName: poule.name,
+              referees: game.referees ?? [],
             });
           }
         }

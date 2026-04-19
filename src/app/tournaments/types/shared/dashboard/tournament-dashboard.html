@@ -318,6 +318,12 @@
                   }
                   {{ game.serieName }} – {{ game.pouleName }}
                 </div>
+                @if ((role() === 'admin' || role() === 'organizer') && game.referees.length > 0) {
+                  <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm" data-testid="dashboard-recent-game-referees">
+                    <i class="pi pi-user text-xs mr-1" aria-hidden="true"></i>
+                    <span>{{ game.referees.join(', ') }}</span>
+                  </div>
+                }
               </li>
             }
           </ul>

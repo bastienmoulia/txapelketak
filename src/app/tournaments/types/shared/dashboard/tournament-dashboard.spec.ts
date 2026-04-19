@@ -592,6 +592,55 @@ describe('TournamentDashboard', () => {
       const result = component.recentGames();
       expect(result.length).toBe(2);
     });
+
+    it('should include referees when defined', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({
+                refTeam1Id: 'a',
+                refTeam2Id: 'b',
+                date: pastDate1,
+                scoreTeam1: 2,
+                scoreTeam2: 1,
+                referees: ['Alice', 'Bob'],
+              }),
+            ],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.recentGames();
+      expect(result[0].referees).toEqual(['Alice', 'Bob']);
+    });
+
+    it('should return empty referees when game has no referees', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({
+                refTeam1Id: 'a',
+                refTeam2Id: 'b',
+                date: pastDate1,
+                scoreTeam1: 2,
+                scoreTeam2: 1,
+              }),
+            ],
+          },
+        ]),
+      ];
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+      const result = component.recentGames();
+      expect(result[0].referees).toEqual([]);
+    });
   });
 
   describe('overdueGames', () => {

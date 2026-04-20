@@ -6,10 +6,10 @@ declare const process: {
 
 const isCI = Boolean(process.env['CI']);
 const isGitHubActions = Boolean(process.env['GITHUB_ACTIONS']);
-const ciWorkers = Number(process.env['PLAYWRIGHT_CI_WORKERS'] ?? 2);
+const ciWorkers = Number(process.env['PLAYWRIGHT_CI_WORKERS'] ?? 4);
 const ciRetries = Number(process.env['PLAYWRIGHT_CI_RETRIES'] ?? 1);
 const reporter: ReporterDescription[] = isGitHubActions
-  ? [['github'], ['dot']]
+  ? [['github'], ['html'], ['dot']]
   : [['list'], ['html']];
 
 /**
@@ -34,7 +34,7 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter,
   /* Global timeout for each test */
-  timeout: 45000,
+  timeout: 30000,
   /* Increased assertion timeout to handle slow Firebase emulator and Angular operations on CI. */
   expect: {
     timeout: 10000,

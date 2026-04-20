@@ -139,7 +139,11 @@ test.describe.serial('Organizer – role-based access', () => {
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Équipes');
 
-    // Teams should be listed but without admin controls
+    // First verify that at least one team row is rendered, so we know the UI loaded
+    const teamsPanel = page.getByRole('tabpanel', { name: 'Équipes' });
+    await expect(teamsPanel.locator('.p-datatable-tbody tr').first()).toBeVisible();
+
+    // Teams are listed but admin action buttons must not be present for organizer
     await expect(page.getByTestId('edit-team-button').first()).not.toBeVisible();
     await expect(page.getByTestId('delete-team-button').first()).not.toBeVisible();
   });

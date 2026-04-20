@@ -5,6 +5,7 @@
         <p-floatlabel variant="on">
           <p-select
             inputId="team1"
+            name="team1"
             [options]="dialogTeams()"
             [(ngModel)]="selectedTeam1Ref"
             optionLabel="name"
@@ -20,6 +21,7 @@
         <p-floatlabel variant="on">
           <p-inputnumber
             inputId="score1"
+            name="score1"
             [(ngModel)]="scoreTeam1"
             [min]="0"
             [style]="{ width: '100%' }"
@@ -35,6 +37,7 @@
         <p-floatlabel variant="on">
           <p-select
             inputId="team2"
+            name="team2"
             [options]="dialogTeams()"
             [(ngModel)]="selectedTeam2Ref"
             optionLabel="name"
@@ -55,6 +58,7 @@
         <p-floatlabel variant="on">
           <p-inputnumber
             inputId="score2"
+            name="score2"
             [(ngModel)]="scoreTeam2"
             [min]="0"
             [style]="{ width: '100%' }"
@@ -69,6 +73,7 @@
       <p-floatlabel variant="on">
         <p-datepicker
           inputId="gameDate"
+          name="gameDate"
           [(ngModel)]="gameDateModel"
           pInputMask="99/99/9999 99:99"
           [dateFormat]="datePickerFormat()"
@@ -91,6 +96,7 @@
       <p-floatlabel variant="on">
         <p-autocomplete
           inputId="referees"
+          name="referees"
           [(ngModel)]="gameReferees"
           [multiple]="true"
           [typeahead]="false"

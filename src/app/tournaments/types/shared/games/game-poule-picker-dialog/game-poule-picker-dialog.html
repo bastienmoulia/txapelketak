@@ -3,6 +3,7 @@
     <p-floatlabel variant="on">
       <p-select
         inputId="newSerie"
+        name="newSerie"
         [options]="sortedSeries()"
         [(ngModel)]="selectedSerie"
         optionLabel="name"
@@ -15,6 +16,7 @@
     <p-floatlabel variant="on">
       <p-select
         inputId="newPoule"
+        name="newPoule"
         [options]="poulesForSelectedSerie()"
         [(ngModel)]="selectedPoule"
         optionLabel="name"

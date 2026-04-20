@@ -4,6 +4,7 @@
       <input
         pInputText
         id="username"
+        name="username"
         class="w-full"
         autocomplete="off"
         [ngModel]="username()"
@@ -16,6 +17,7 @@
       <input
         pInputText
         id="email"
+        name="email"
         type="email"
         class="w-full"
         autocomplete="off"
@@ -28,6 +30,7 @@
     <p-floatlabel variant="on">
       <p-select
         inputId="role"
+        name="role"
         [options]="roleOptions()"
         optionLabel="label"
         optionValue="value"

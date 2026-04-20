@@ -380,4 +380,39 @@ export class AdminPage {
       timeout: 30000,
     });
   }
+
+  // --- Tournament deletion ---
+
+  async deleteTournament(tournamentName: string): Promise<void> {
+    // Navigate to administration tab to access delete tournament button
+    await this.clickTab('Administration');
+
+    // Wait for the admin panel to be visible
+    const adminPanel = this.page.getByRole('tabpanel', { name: 'Administration' });
+    await adminPanel.waitFor({ state: 'visible' });
+
+    // Find and click the delete tournament button by its text
+    const deleteButton = adminPanel.locator('p-button').filter({ hasText: 'Supprimer le tournoi' });
+    await deleteButton.waitFor({ state: 'visible' });
+    await deleteButton.click();
+
+    // Fill confirmation dialog
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#confirmationName') });
+    await dialog.waitFor({ state: 'visible' });
+
+    // Type tournament name to confirm
+    const confirmationInput = dialog.locator('input#confirmationName');
+    await confirmationInput.fill(tournamentName);
+
+    // Click confirm button in the dialog
+    const confirmButton = dialog
+      .locator('p-button')
+      .filter({ hasText: 'Supprimer définitivement' });
+    await confirmButton.click();
+
+    // Wait for deletion to complete (page should navigate to home)
+    await this.page.waitForURL('/', { timeout: 15000 });
+  }
 }

@@ -17,7 +17,7 @@ import { TournamentNewPage } from './pages/tournament-new.page';
  */
 test.describe.serial('Admin – tournament lifecycle', () => {
   const timestamp = Date.now();
-  const tournamentName = `_Test Tournament ${timestamp}`;
+  const tournamentName = `Test Tournament ${timestamp}`;
   const teamAlpha = `Équipe Alpha ${timestamp}`;
   const teamBeta = `Équipe Beta ${timestamp}`;
   const teamBetaEdited = `Équipe B ${timestamp}`;
@@ -37,6 +37,26 @@ test.describe.serial('Admin – tournament lifecycle', () => {
 
   let adminUrl = '';
   let tournamentId = '';
+
+  test.afterAll(async ({ browser }) => {
+    // Clean up tournament after all tests complete
+    if (!adminUrl) {
+      return;
+    }
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const adminPage = new AdminPage(page);
+
+    try {
+      await adminPage.goto(adminUrl);
+      await adminPage.deleteTournament(tournamentName);
+    } catch (error) {
+      console.warn('Failed to delete tournament in afterAll:', error);
+    } finally {
+      await context.close();
+    }
+  });
 
   // --- Tournament creation ---
 

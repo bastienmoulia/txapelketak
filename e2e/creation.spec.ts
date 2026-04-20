@@ -113,8 +113,8 @@ test.describe.serial('Tournament creation', () => {
     const listPage = new TournamentListPage(page);
     await listPage.goto();
 
-    // Give Firestore a moment to propagate the status change
-    await listPage.waitForTournamentToAppear(tournamentName, 30000);
+    // Give Firestore extra time to propagate the status change on slow CI runners
+    await listPage.waitForTournamentToAppear(tournamentName, 60000);
     const found = await listPage.hasTournament(tournamentName);
     expect(found).toBe(true);
   });

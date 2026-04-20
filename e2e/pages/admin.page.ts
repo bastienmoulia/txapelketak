@@ -118,9 +118,9 @@ export class AdminPage {
     await row.getByTestId('delete-team-button').click();
     const dialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.getByTestId('delete-confirm-button') });
+      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
     await dialog.waitFor({ state: 'visible' });
-    await dialog.getByTestId('delete-confirm-button').click();
+    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
@@ -162,9 +162,9 @@ export class AdminPage {
     await seriePanel.getByTestId('delete-serie-button').click();
     const dialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.getByTestId('delete-confirm-button') });
+      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
     await dialog.waitFor({ state: 'visible' });
-    await dialog.getByTestId('delete-confirm-button').click();
+    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
@@ -214,9 +214,9 @@ export class AdminPage {
     await pouleCard.getByTestId('delete-poule-button').click();
     const dialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.getByTestId('delete-confirm-button') });
+      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
     await dialog.waitFor({ state: 'visible' });
-    await dialog.getByTestId('delete-confirm-button').click();
+    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
   }
 
@@ -406,10 +406,16 @@ export class AdminPage {
     await dialog.locator('button').filter({ hasText: 'Importer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
 
-    await this.page.locator('.p-toast-message').filter({ hasText: 'Import réussi' }).waitFor({
-      state: 'visible',
-      timeout: 30000,
-    });
+    // Use .first() to avoid strict mode violation: multiple success toasts may be present
+    // (e.g. "tournament validated" toast alongside the "Import réussi" toast).
+    await this.page
+      .locator('.p-toast-message')
+      .filter({ hasText: 'Import réussi' })
+      .first()
+      .waitFor({
+        state: 'visible',
+        timeout: 30000,
+      });
   }
 
   // --- Tournament deletion ---

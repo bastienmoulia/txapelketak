@@ -131,15 +131,15 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Équipes');
 
-    await adminPage.deleteTeam(teamBetaEdited);
-    await expect(adminPage.teamRow(teamBetaEdited)).not.toBeVisible();
+    await adminPage.deleteTeam(teamAlpha);
+    await expect(adminPage.teamRow(teamAlpha)).not.toBeVisible();
   });
 
   test('should reflect team count on the dashboard', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
 
-    // teamAlpha is the only remaining team
+    // One team should remain after deleting the other one
     await expect(adminPage.dashboardTeamsCount()).toHaveText('1');
   });
 

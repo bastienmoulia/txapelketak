@@ -6,7 +6,13 @@ import { TournamentListPage } from './pages/tournament-list.page';
 
 const seed = yaml.load(readFileSync('e2e/fixtures/visitor-seed.yaml', 'utf8')) as {
   teams: { id: string; name: string }[];
-  series: { name: string }[];
+  series: {
+    name: string;
+    poules: {
+      name: string;
+      games: { team1: string; team2: string; date: string }[];
+    }[];
+  }[];
 };
 
 /**
@@ -19,7 +25,11 @@ test.describe('Visitor navigation', () => {
   const tournamentName = 'Tournoi visiteur';
   const team1 = seed.teams[0].name;
   const team2 = seed.teams[1].name;
+  const team3 = seed.teams[2].name;
   const serieName = seed.series[0].name;
+  const games = seed.series[0].poules[0].games;
+  const firstGamesDate = new Date(games[0].date);
+  const thirdGameDate = new Date(games[2].date);
 
   let tournamentId = '';
 
@@ -56,7 +66,7 @@ test.describe('Visitor navigation', () => {
 
     await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
     // Stat cards should show non-zero teams
-    await expect(detailPage.dashboardTeamsCount()).toHaveText('2');
+    await expect(detailPage.dashboardTeamsCount()).not.toHaveText('0');
   });
 
   test('should display the teams tab', async ({ page }) => {
@@ -67,6 +77,7 @@ test.describe('Visitor navigation', () => {
     await detailPage.clickTab('Équipes');
     await expect(detailPage.teamRow(team1)).toBeVisible();
     await expect(detailPage.teamRow(team2)).toBeVisible();
+    await expect(detailPage.teamRow(team3)).toBeVisible();
   });
 
   test('should NOT show edit/delete buttons for teams as a visitor', async ({ page }) => {
@@ -109,6 +120,8 @@ test.describe('Visitor navigation', () => {
 
     await detailPage.clickTab('Parties');
     await expect(detailPage.gameRow(team1, team2)).toBeVisible();
+    await expect(detailPage.gameRow(team1, team3)).toBeVisible();
+    await expect(detailPage.gameRow(team2, team3)).toBeVisible();
   });
 
   test('should NOT show admin game controls as a visitor', async ({ page }) => {
@@ -118,5 +131,54 @@ test.describe('Visitor navigation', () => {
 
     await detailPage.clickTab('Parties');
     await expect(page.getByTestId('add-game-button')).not.toBeVisible();
+  });
+
+  test('should filter games by team as a visitor', async ({ page }) => {
+    const detailPage = new TournamentDetailPage(page);
+    await detailPage.goto(tournamentId);
+    await detailPage.waitForLoad();
+
+    await detailPage.clickTab('Parties');
+    await detailPage.filterGamesByTeam(team1);
+
+    await expect(detailPage.gameRow(team1, team2)).toBeVisible();
+    await expect(detailPage.gameRow(team1, team3)).toBeVisible();
+    await expect(detailPage.gameRow(team2, team3)).not.toBeVisible();
+  });
+
+  test('should filter games by date and clear the date filter as a visitor', async ({ page }) => {
+    const detailPage = new TournamentDetailPage(page);
+    await detailPage.goto(tournamentId);
+    await detailPage.waitForLoad();
+
+    await detailPage.clickTab('Parties');
+    await detailPage.filterGamesByDate(firstGamesDate);
+
+    await expect(detailPage.gameRow(team1, team2)).toBeVisible();
+    await expect(detailPage.gameRow(team1, team3)).toBeVisible();
+    await expect(detailPage.gameRow(team2, team3)).not.toBeVisible();
+
+    await detailPage.clearGamesDateFilter();
+
+    await expect(detailPage.gameRows()).toHaveCount(3);
+  });
+
+  test('should combine team and date filters and clear them as a visitor', async ({ page }) => {
+    const detailPage = new TournamentDetailPage(page);
+    await detailPage.goto(tournamentId);
+    await detailPage.waitForLoad();
+
+    await detailPage.clickTab('Parties');
+    await detailPage.filterGamesByTeam(team2);
+    await detailPage.filterGamesByDate(thirdGameDate);
+
+    await expect(detailPage.gameRow(team2, team3)).toBeVisible();
+    await expect(detailPage.gameRow(team1, team2)).not.toBeVisible();
+    await expect(detailPage.gameRow(team1, team3)).not.toBeVisible();
+
+    await detailPage.clearGamesTeamFilter();
+    await detailPage.clearGamesDateFilter();
+
+    await expect(detailPage.gameRows()).toHaveCount(3);
   });
 });

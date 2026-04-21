@@ -1,6 +1,6 @@
 <p-confirmdialog></p-confirmdialog>
 
-@if (sortedSeries().length > 0) {
+@if (hasPoules()) {
   <div class="flex flex-wrap items-center gap-2 mx-3 mb-3">
     <p-select
       class="w-[calc(50%-0.25rem)] sm:w-auto min-w-0 sm:min-w-40 flex-none"
@@ -20,7 +20,7 @@
     <p-datepicker
       class="w-[calc(50%-0.25rem)] sm:w-auto min-w-0 sm:min-w-36 flex-none"
       [ngModel]="selectedDateFilter()"
-      (onDateSelect)="onDateFilterChange($event)"
+      (ngModelChange)="onDateFilterChange($event)"
       [placeholder]="'admin.games.filterDateShort' | transloco"
       [showButtonBar]="true"
       [showClear]="true"
@@ -74,7 +74,7 @@
           <tr>
             <td
               [attr.colspan]="byDateColumnCount()"
-              class="block text-left font-bold py-2 px-3 first-letter:uppercase"
+              class="block justify-center! font-bold py-2 px-3 first-letter:uppercase"
               [class.text-yellow-500]="!game.dateKey"
             >
               @if (game.dateKey) {

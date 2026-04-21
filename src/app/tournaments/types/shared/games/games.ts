@@ -134,22 +134,6 @@ export class Games {
     return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
   });
 
-  sortedSeries = computed(() =>
-    [...this.series()]
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((serie) => ({
-        ...serie,
-        poules: [...serie.poules]
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((poule) => ({
-            ...poule,
-            games: [...(poule.games ?? [])]
-              .map((game) => this.toSortableGame(game))
-              .sort((a, b) => a.gameDateSortValue - b.gameDateSortValue),
-          })),
-      })),
-  );
-
   gamesByDate = computed((): GamesDateGroup[] => {
     const dateMap = new Map<string, GameByDate[]>();
 
@@ -188,6 +172,8 @@ export class Games {
     this.gamesByDate().flatMap((group) => group.games),
   );
 
+  hasPoules = computed(() => this.series().some((serie) => serie.poules.length > 0));
+
   sortedTeams = computed(() => [...this.teams()].sort((a, b) => a.name.localeCompare(b.name)));
 
   selectedTeam = computed(() => {
@@ -197,6 +183,12 @@ export class Games {
   });
 
   filteredFlatGamesByDate = computed((): GameByDate[] => {
+    console.log(
+      'filtering games with selectedTeamId=',
+      this.selectedTeamId(),
+      'and selectedDateFilter=',
+      this.selectedDateFilter(),
+    );
     const teamId = this.selectedTeamId();
     const selectedDate = this.selectedDateFilter();
     const games = this.flatGamesByDate();
@@ -226,6 +218,22 @@ export class Games {
   getTeamName(ref: DocumentReference): string {
     if (!ref) return '?';
     return this.teamNameMap().get(ref.id) ?? '?';
+  }
+
+  private getSortedSeriesForDialog() {
+    return [...this.series()]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((serie) => ({
+        ...serie,
+        poules: [...serie.poules]
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((poule) => ({
+            ...poule,
+            games: [...(poule.games ?? [])]
+              .map((game) => this.toSortableGame(game))
+              .sort((a, b) => a.gameDateSortValue - b.gameDateSortValue),
+          })),
+      }));
   }
 
   private getDateKey(date: Date | undefined | null): string {
@@ -266,20 +274,17 @@ export class Games {
     });
   }
 
-  onDateFilterChange(event: Event | Date | null | undefined): void {
-    let date: Date | null = null;
-    if (event instanceof Date) {
-      date = event;
-    }
-    this.selectedDateFilter.set(date);
+  onDateFilterChange(date: Date | null): void {
+    this.selectedDateFilter.set(date ?? null);
   }
 
   clearDateFilter(): void {
+    console.log('Clearing date filter');
     this.selectedDateFilter.set(null);
   }
 
   onOpenAddGame(): void {
-    const series = this.sortedSeries();
+    const series = this.getSortedSeriesForDialog();
     const dialogRef = this.dialogService.open(GamePoulePickerDialog, {
       header: this.translocoService.translate('admin.games.addGame'),
       modal: true,

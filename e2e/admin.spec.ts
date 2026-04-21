@@ -278,5 +278,4 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.deleteGame(gameDeleteSeedTeam1, gameDeleteSeedTeam2);
     await expect(adminPage.gameRow(gameDeleteSeedTeam1, gameDeleteSeedTeam2)).not.toBeVisible();
   });
-
 });

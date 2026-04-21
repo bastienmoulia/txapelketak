@@ -350,13 +350,17 @@ export class AdminPage {
     // Select requested serie when provided, otherwise pick the first available option.
     await dialog.locator('.p-select').first().click();
     const serieOption = options?.serieName
-      ? this.page.locator('.p-select-overlay .p-select-option').filter({ hasText: options.serieName })
+      ? this.page
+          .locator('.p-select-overlay .p-select-option')
+          .filter({ hasText: options.serieName })
       : this.page.locator('.p-select-overlay .p-select-option').first();
     await serieOption.click();
     // Select requested poule when provided, otherwise pick the first available option.
     await dialog.locator('.p-select').last().click();
     const pouleOption = options?.pouleName
-      ? this.page.locator('.p-select-overlay .p-select-option').filter({ hasText: options.pouleName })
+      ? this.page
+          .locator('.p-select-overlay .p-select-option')
+          .filter({ hasText: options.pouleName })
       : this.page.locator('.p-select-overlay .p-select-option').first();
     await pouleOption.click();
     await dialog.locator('button').filter({ hasText: 'Suivant' }).click();

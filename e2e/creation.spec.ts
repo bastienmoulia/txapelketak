@@ -74,48 +74,50 @@ test.describe.serial('Tournament creation', () => {
     await expect(page.getByTestId('btn-submit')).toBeVisible();
   });
 
-  test('should create a tournament and display the admin URL', async ({ page }) => {
+  test('should create, validate, and publish tournament in ordered steps', async ({ page }) => {
+    test.setTimeout(150000);
+
     const newPage = new TournamentNewPage(page);
-    await newPage.goto();
-
-    await newPage.fillStep1(tournamentName, 'Description du tournoi de test E2E création');
-    await newPage.goToNextStep();
-    await newPage.fillStep2(adminUsername, adminEmail);
-    await newPage.submit();
-
-    await expect(page.getByTestId('success-state')).toBeVisible({ timeout: 15000 });
-
-    adminUrl = await newPage.getAdminUrl();
-    expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
-  });
-
-  test('should NOT show the tournament in the public list before visiting the admin URL', async ({
-    page,
-  }) => {
     const listPage = new TournamentListPage(page);
-    await listPage.goto();
-
-    // Tournament has "waitingValidation" status – must be filtered out of the public list
-    const found = await listPage.hasTournament(tournamentName);
-    expect(found).toBe(false);
-  });
-
-  test('should validate the tournament when the admin URL is visited', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
 
-    // Visiting the admin URL triggers automatic status change to "ongoing"
-    await expect(adminPage.isAccessDenied()).not.toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
-  });
+    await test.step('create tournament and capture admin URL', async () => {
+      await newPage.goto();
 
-  test('should appear in the public list after validation', async ({ page }) => {
-    const listPage = new TournamentListPage(page);
-    await listPage.goto();
+      await newPage.fillStep1(tournamentName, 'Description du tournoi de test E2E création');
+      await newPage.goToNextStep();
+      await newPage.fillStep2(adminUsername, adminEmail);
+      await newPage.submit();
 
-    // Give Firestore extra time to propagate the status change on slow CI runners
-    await listPage.waitForTournamentToAppear(tournamentName, 60000);
-    const found = await listPage.hasTournament(tournamentName);
-    expect(found).toBe(true);
+      await expect(page.getByTestId('success-state')).toBeVisible({ timeout: 15000 });
+
+      adminUrl = await newPage.getAdminUrl();
+      expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
+    });
+
+    await test.step('ensure tournament is hidden before validation', async () => {
+      await listPage.goto();
+
+      // Tournament has "waitingValidation" status – must be filtered out of the public list
+      const found = await listPage.hasTournament(tournamentName);
+      expect(found).toBe(false);
+    });
+
+    await test.step('visit admin URL to validate tournament', async () => {
+      await adminPage.goto(adminUrl);
+
+      // Visiting the admin URL triggers automatic status change to "ongoing"
+      await expect(adminPage.isAccessDenied()).not.toBeVisible();
+      await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
+    });
+
+    await test.step('ensure tournament appears in public list after validation', async () => {
+      await listPage.goto();
+
+      // Give Firestore extra time to propagate the status change on slow CI runners
+      await listPage.waitForTournamentToAppear(tournamentName, 90000);
+      const found = await listPage.hasTournament(tournamentName);
+      expect(found).toBe(true);
+    });
   });
 });

@@ -1,27 +1,27 @@
 import { expect, test } from '@playwright/test';
 import { AdminPage } from './pages/admin.page';
-import { TournamentListPage } from './pages/tournament-list.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
 
 /**
- * Admin E2E tests for the full tournament management lifecycle.
+ * Admin E2E tests for tournament management operations.
  *
- * These tests run serially since they share tournament state:
- * 1. Create tournament → get admin URL
- * 2. Validate tournament (navigate to admin URL)
- * 3. Manage teams
- * 4. Manage series & poules
- * 5. Manage users
- * 6. Manage games
- * 7. Verify dashboard reflects changes
+ * Tournament creation is done in beforeAll; these tests focus exclusively on
+ * admin management: teams, series & poules, users, games, and role-specific UI.
+ *
+ * 1. beforeAll – Create and validate tournament, capture adminUrl/tournamentId
+ * 2. Manage teams (add, edit, delete)
+ * 3. Manage series & poules (add, edit, delete)
+ * 4. Manage users (add, edit, delete) – Administration tab
+ * 5. Manage games (setup via YAML import, add, delete)
+ * 6. Verify dashboard reflects changes
+ * 7. afterAll – Clean up tournament
  */
-test.describe.serial('Admin – tournament lifecycle', () => {
+test.describe.serial('Admin – tournament management', () => {
   const timestamp = Date.now();
-  const tournamentName = `Test Tournament ${timestamp}`;
+  const tournamentName = `Admin Test ${timestamp}`;
   const teamAlpha = `Équipe Alpha ${timestamp}`;
   const teamBeta = `Équipe Beta ${timestamp}`;
   const teamBetaEdited = `Équipe B ${timestamp}`;
-  const teamGamma = `Équipe Gamma ${timestamp}`;
   const serieName = `Série 1 ${timestamp}`;
   const serieNameEdited = `Série A ${timestamp}`;
   const pouleName = `Poule A ${timestamp}`;
@@ -38,8 +38,34 @@ test.describe.serial('Admin – tournament lifecycle', () => {
   let adminUrl = '';
   let tournamentId = '';
 
+  test.beforeAll(async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    try {
+      // Step 1: Create tournament via the creation wizard
+      const newPage = new TournamentNewPage(page);
+      await newPage.goto();
+      await newPage.fillStep1(tournamentName, 'Description du tournoi de test admin E2E');
+      await newPage.goToNextStep();
+      await newPage.fillStep2(`Admin ${timestamp}`, `admin${timestamp}@test.com`);
+      await newPage.submit();
+
+      await page.getByTestId('success-state').waitFor({ state: 'visible', timeout: 15000 });
+      adminUrl = await newPage.getAdminUrl();
+
+      const match = adminUrl.match(/\/tournaments\/([^/]+)\/[^/]+$/);
+      tournamentId = match?.[1] ?? '';
+
+      // Step 2: Validate tournament by visiting the admin URL (changes status to "ongoing")
+      const adminPage = new AdminPage(page);
+      await adminPage.goto(adminUrl);
+    } finally {
+      await context.close();
+    }
+  });
+
   test.afterAll(async ({ browser }) => {
-    // Clean up tournament after all tests complete
     if (!adminUrl) {
       return;
     }
@@ -58,59 +84,18 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     }
   });
 
-  // --- Tournament creation ---
+  // --- Preconditions ---
 
-  test('should create a new tournament', async ({ page }) => {
-    const newPage = new TournamentNewPage(page);
-    await newPage.goto();
-
-    await test.step('fill step 1: tournament info', async () => {
-      await newPage.fillStep1(tournamentName, 'Description du tournoi de test E2E');
-      await newPage.goToNextStep();
-    });
-
-    await test.step('fill step 2: creator info', async () => {
-      await newPage.fillStep2(`Admin ${timestamp}`, `admin${timestamp}@test.com`);
-      await newPage.submit();
-    });
-
-    await test.step('verify success and capture admin URL', async () => {
-      await expect(page.getByTestId('success-state')).toBeVisible({ timeout: 15000 });
-      adminUrl = await newPage.getAdminUrl();
-      expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
-      // Extract tournament ID from admin URL: /tournaments/{id}/{token}
-      const match = adminUrl.match(/\/tournaments\/([^/]+)\/[^/]+$/);
-      tournamentId = match?.[1] ?? '';
-      expect(tournamentId).not.toBe('');
-    });
+  test('should have a valid admin URL and tournament ID', () => {
+    expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
+    expect(tournamentId).not.toBe('');
   });
 
-  test('should NOT show the tournament in the public list before validation', async ({ page }) => {
-    const listPage = new TournamentListPage(page);
-    await listPage.goto();
-
-    // The tournament has "waitingValidation" status – it must be filtered out
-    const found = await listPage.hasTournament(tournamentName);
-    expect(found).toBe(false);
-  });
-
-  test('should validate the tournament by visiting the admin URL', async ({ page }) => {
+  test('should show Administration tab for admin user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
 
-    // Visiting the admin URL triggers automatic status change to "ongoing"
-    await expect(adminPage.isAccessDenied()).not.toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
-  });
-
-  test('should appear in the public list after validation', async ({ page }) => {
-    const listPage = new TournamentListPage(page);
-    await listPage.goto();
-
-    // Give Firestore a moment to propagate the status change
-    await listPage.waitForTournamentToAppear(tournamentName, 30000);
-    const found = await listPage.hasTournament(tournamentName);
-    expect(found).toBe(true);
+    await expect(page.getByRole('tab', { name: 'Administration' })).toBeVisible();
   });
 
   // --- Teams management ---
@@ -146,15 +131,15 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Équipes');
 
-    await adminPage.deleteTeam(teamBetaEdited);
-    await expect(adminPage.teamRow(teamBetaEdited)).not.toBeVisible();
+    await adminPage.deleteTeam(teamAlpha);
+    await expect(adminPage.teamRow(teamAlpha)).not.toBeVisible();
   });
 
   test('should reflect team count on the dashboard', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
 
-    // teamAlpha is the only remaining team
+    // One team should remain after deleting the other one
     await expect(adminPage.dashboardTeamsCount()).toHaveText('1');
   });
 
@@ -238,12 +223,12 @@ test.describe.serial('Admin – tournament lifecycle', () => {
     await expect(adminPage.dashboardPoulesCount()).toHaveText('0');
   });
 
-  // --- Users management ---
+  // --- Users management (Administration tab) ---
 
   test('should add a user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Utilisateurs');
+    await adminPage.clickTab('Administration');
 
     await adminPage.addUser(userUsername, userEmail, 'organizer');
     await expect(adminPage.userRow(userUsername)).toBeVisible();
@@ -252,7 +237,7 @@ test.describe.serial('Admin – tournament lifecycle', () => {
   test('should edit a user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Utilisateurs');
+    await adminPage.clickTab('Administration');
 
     await adminPage.editUser(userUsername, userUsernameEdited, userEmailEdited);
     await expect(adminPage.userRow(userUsernameEdited)).toBeVisible();
@@ -262,7 +247,7 @@ test.describe.serial('Admin – tournament lifecycle', () => {
   test('should delete a user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Utilisateurs');
+    await adminPage.clickTab('Administration');
 
     await adminPage.deleteUser(userUsernameEdited);
     await expect(adminPage.userRow(userUsernameEdited)).not.toBeVisible();

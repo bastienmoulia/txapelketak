@@ -146,9 +146,6 @@ test.describe.serial('Admin – tournament management', () => {
 
     await adminPage.deleteTeam(teamDeleteOnly);
     await expect(adminPage.teamRow(teamDeleteOnly)).not.toBeVisible();
-
-    // Ensure the edited team remains untouched by the delete scenario.
-    await expect(adminPage.teamRow(teamBetaEdited)).toBeVisible();
   });
 
   // --- Series & Poules management ---

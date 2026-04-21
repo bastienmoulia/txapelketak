@@ -163,17 +163,17 @@ describe('Games', () => {
 
     const dialogConfig = openSpy.mock.calls[0][1] as {
       data: {
-        series: Array<{
+        series: {
           name: string;
-          poules: Array<{
+          poules: {
             name: string;
-            games?: Array<{
+            games?: {
               team1Name: string;
               team2Name: string;
               gameDateSortValue: number;
-            }>;
-          }>;
-        }>;
+            }[];
+          }[];
+        }[];
       };
     };
     const sortedSeries = dialogConfig.data.series;

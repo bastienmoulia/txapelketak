@@ -335,7 +335,11 @@ export class AdminPage {
 
   // --- Games ---
 
-  async addGame(team1Name: string, team2Name: string): Promise<void> {
+  async addGame(
+    team1Name: string,
+    team2Name: string,
+    options?: { serieName?: string; pouleName?: string },
+  ): Promise<void> {
     await this.gamesPanel().getByTestId('add-game-button').click();
     // Step 1: pick serie + poule
     let dialog = this.page
@@ -343,12 +347,18 @@ export class AdminPage {
       .filter({ has: this.page.locator('.p-select') })
       .first();
     await dialog.waitFor({ state: 'visible' });
-    // Select the first available serie
+    // Select requested serie when provided, otherwise pick the first available option.
     await dialog.locator('.p-select').first().click();
-    await this.page.locator('.p-select-overlay .p-select-option').first().click();
-    // Select the first available poule
+    const serieOption = options?.serieName
+      ? this.page.locator('.p-select-overlay .p-select-option').filter({ hasText: options.serieName })
+      : this.page.locator('.p-select-overlay .p-select-option').first();
+    await serieOption.click();
+    // Select requested poule when provided, otherwise pick the first available option.
     await dialog.locator('.p-select').last().click();
-    await this.page.locator('.p-select-overlay .p-select-option').first().click();
+    const pouleOption = options?.pouleName
+      ? this.page.locator('.p-select-overlay .p-select-option').filter({ hasText: options.pouleName })
+      : this.page.locator('.p-select-overlay .p-select-option').first();
+    await pouleOption.click();
     await dialog.locator('button').filter({ hasText: 'Suivant' }).click();
     // Step 2: fill teams
     dialog = this.page

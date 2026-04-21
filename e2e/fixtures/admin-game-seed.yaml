@@ -8,6 +8,16 @@ teams:
     name: Admin Seed Team One
   - id: admin-seed-team-2
     name: Admin Seed Team Two
+  - id: admin-seed-team-delete
+    name: Admin Seed Team Delete
+  - id: admin-seed-game-add-team-1
+    name: Admin Seed Game Add Team One
+  - id: admin-seed-game-add-team-2
+    name: Admin Seed Game Add Team Two
+  - id: admin-seed-game-delete-team-1
+    name: Admin Seed Game Delete Team One
+  - id: admin-seed-game-delete-team-2
+    name: Admin Seed Game Delete Team Two
 series:
   - name: Admin Seed Serie
     poules:
@@ -16,3 +26,38 @@ series:
           - admin-seed-team-1
           - admin-seed-team-2
         games: []
+  - name: Admin Seed Poule Delete Serie
+    poules:
+      - name: Admin Seed Poule Delete A
+        teams:
+          - admin-seed-team-1
+          - admin-seed-team-2
+        games: []
+      - name: Admin Seed Poule Delete B
+        teams:
+          - admin-seed-team-1
+          - admin-seed-team-2
+        games: []
+  - name: Admin Seed Serie Delete
+    poules:
+      - name: Admin Seed Serie Delete Poule
+        teams:
+          - admin-seed-team-1
+          - admin-seed-team-2
+        games: []
+  - name: Admin Seed Game Add Serie
+    poules:
+      - name: Admin Seed Game Add Poule
+        teams:
+          - admin-seed-game-add-team-1
+          - admin-seed-game-add-team-2
+        games: []
+  - name: Admin Seed Game Delete Serie
+    poules:
+      - name: Admin Seed Game Delete Poule
+        teams:
+          - admin-seed-game-delete-team-1
+          - admin-seed-game-delete-team-2
+        games:
+          - team1: admin-seed-game-delete-team-1
+            team2: admin-seed-game-delete-team-2

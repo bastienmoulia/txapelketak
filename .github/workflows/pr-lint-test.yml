@@ -27,10 +27,8 @@ jobs:
       - name: Test
         run: npm run test -- --watch=false
       - name: E2E
-        continue-on-error: true
         run: npm run e2e
       - name: Upload E2E Report
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report

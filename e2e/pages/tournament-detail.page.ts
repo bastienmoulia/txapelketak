@@ -72,9 +72,18 @@ export class TournamentDetailPage {
 
   // --- Games tab ---
 
+  private gamesPanel(): Locator {
+    return this.page.getByRole('tabpanel', { name: 'Parties' });
+  }
+
+  gameRows(): Locator {
+    return this.gamesPanel()
+      .locator('.p-datatable-tbody tr')
+      .filter({ has: this.page.locator('td[data-label]') });
+  }
+
   gameRow(team1Name: string, team2Name: string): Locator {
-    return this.page
-      .getByRole('tabpanel', { name: 'Parties' })
+    return this.gamesPanel()
       .locator('.p-datatable-tbody tr')
       .filter({ hasText: team1Name })
       .filter({ hasText: team2Name });
@@ -82,5 +91,37 @@ export class TournamentDetailPage {
 
   async hasGame(team1Name: string, team2Name: string): Promise<boolean> {
     return (await this.gameRow(team1Name, team2Name).count()) > 0;
+  }
+
+  async filterGamesByTeam(teamName: string): Promise<void> {
+    await this.gamesPanel().getByTestId('team-filter-select').click();
+    await this.page
+      .locator('.p-select-overlay .p-select-option')
+      .filter({ hasText: teamName })
+      .first()
+      .click();
+  }
+
+  async clearGamesTeamFilter(): Promise<void> {
+    await this.gamesPanel()
+      .getByTestId('team-filter-select')
+      .locator('.p-select-clear-icon')
+      .click();
+  }
+
+  async filterGamesByDate(date: Date): Promise<void> {
+    await this.gamesPanel().getByTestId('date-filter-picker').locator('input').click();
+    await this.page
+      .locator('.p-datepicker-calendar td:not(.p-datepicker-other-month) .p-datepicker-day')
+      .filter({ hasText: String(date.getUTCDate()) })
+      .first()
+      .click();
+  }
+
+  async clearGamesDateFilter(): Promise<void> {
+    await this.gamesPanel()
+      .getByTestId('date-filter-picker')
+      .locator('.p-datepicker-clear-icon')
+      .click();
   }
 }

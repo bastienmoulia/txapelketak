@@ -8,6 +8,8 @@ teams:
     name: Visitor Team One
   - id: visitor-team-2
     name: Visitor Team Two
+  - id: visitor-team-3
+    name: Visitor Team Three
 series:
   - name: Visitor Serie
     poules:
@@ -15,7 +17,14 @@ series:
         teams:
           - visitor-team-1
           - visitor-team-2
+          - visitor-team-3
         games:
           - team1: visitor-team-1
             team2: visitor-team-2
-            date: '2026-05-19T15:30:00.000Z'
+            date: '2026-04-20T10:00:00.000Z'
+          - team1: visitor-team-1
+            team2: visitor-team-3
+            date: '2026-04-20T14:00:00.000Z'
+          - team1: visitor-team-2
+            team2: visitor-team-3
+            date: '2026-04-21T16:30:00.000Z'

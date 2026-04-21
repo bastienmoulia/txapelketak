@@ -96,10 +96,14 @@ describe('Games', () => {
     expect(component.getMissingGamesCount(poule)).toBe(0);
   });
 
-  it('should enrich games with sortable team names and keep default date ordering', () => {
+  it('should pass sorted and enriched series to the add-game dialog', () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
+    const dialogService = fixture.debugElement.injector.get(DialogService);
+    const openSpy = vi.spyOn(dialogService, 'open').mockReturnValue({
+      onClose: { subscribe: vi.fn() },
+    } as never);
 
     fixture.componentRef.setInput('teams', [
       { ref: team1Ref, name: 'Bravo' },
@@ -109,11 +113,11 @@ describe('Games', () => {
     fixture.componentRef.setInput('series', [
       {
         ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
+        name: 'Serie B',
         poules: [
           {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
+            ref: createDocumentReference('poule-2'),
+            name: 'Poule B',
             refTeams: [team1Ref, team2Ref, team3Ref],
             games: [
               {
@@ -132,11 +136,57 @@ describe('Games', () => {
           },
         ],
       },
+      {
+        ref: createDocumentReference('serie-2'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule C',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [],
+          },
+          {
+            ref: createDocumentReference('poule-3'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [],
+          },
+        ],
+      },
     ]);
     fixture.detectChanges();
 
-    const [firstGame, secondGame] = component.sortedSeries()[0].poules[0].games ?? [];
+    component.onOpenAddGame();
 
+    expect(openSpy).toHaveBeenCalledTimes(1);
+
+    const dialogConfig = openSpy.mock.calls[0][1] as {
+      data: {
+        series: {
+          name: string;
+          poules: {
+            name: string;
+            games?: {
+              team1Name: string;
+              team2Name: string;
+              gameDateSortValue: number;
+            }[];
+          }[];
+        }[];
+      };
+    };
+    const sortedSeries = dialogConfig.data.series;
+    const [firstGame, secondGame] = sortedSeries[1].poules[0].games ?? [];
+
+    expect(sortedSeries.map((serie: { name: string }) => serie.name)).toEqual([
+      'Serie A',
+      'Serie B',
+    ]);
+    expect(sortedSeries[0].poules.map((poule: { name: string }) => poule.name)).toEqual([
+      'Poule A',
+      'Poule C',
+    ]);
     expect(firstGame.team1Name).toBe('Alpha');
     expect(firstGame.team2Name).toBe('Charlie');
     expect(firstGame.gameDateSortValue).toBe(new Date('2026-03-22T10:00:00Z').getTime());
@@ -247,7 +297,7 @@ describe('Games', () => {
     expect(game.team2Name).toBe('Bravo');
   });
 
-  it('should keep same local day when applying date filter', () => {
+  it('should filter games by local calendar day (same local date, near midnight)', () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
@@ -287,11 +337,111 @@ describe('Games', () => {
     ]);
     fixture.detectChanges();
 
-    component.onDateFilterChange(new Date(2026, 2, 22, 12, 0));
+    component.onDateFilterChange(new Date(2026, 2, 22, 0, 45));
 
     const filtered = component.filteredFlatGamesByDate();
     expect(filtered.length).toBe(1);
     expect(filtered[0].ref.id).toBe('game-1');
+  });
+
+  it('should group and filter firestore UTC dates by local calendar day', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+      { ref: team3Ref, name: 'Charlie' },
+    ] satisfies Team[]);
+    fixture.componentRef.setInput('series', [
+      {
+        ref: createDocumentReference('serie-1'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [
+              {
+                ref: createDocumentReference('game-1'),
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                date: new Date('2026-04-21T00:30:00.000Z'),
+              },
+              {
+                ref: createDocumentReference('game-2'),
+                refTeam1: team2Ref,
+                refTeam2: team3Ref,
+                date: new Date('2026-04-22T00:15:00.000Z'),
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    fixture.detectChanges();
+
+    const groups = component.gamesByDate();
+    expect(groups.map((group) => group.dateKey)).toEqual(['2026-04-21', '2026-04-22']);
+
+    component.onDateFilterChange(new Date('2026-04-21T12:00:00.000Z'));
+
+    const filtered = component.filteredFlatGamesByDate();
+    expect(filtered.length).toBe(1);
+    expect(filtered[0].ref.id).toBe('game-1');
+  });
+
+  it('should filter by date when the datepicker provides a local-midnight Date (PrimeNG scenario)', () => {
+    // PrimeNG datepicker emits new Date(year, month, day) — local midnight.
+    // In Europe/Paris (UTC+2), selecting April 20 yields 2026-04-19T22:00:00.000Z.
+    // getDateKey must use local methods so the filter matches the correct local day.
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    fixture.componentRef.setInput('teams', [
+      { ref: team1Ref, name: 'Alpha' },
+      { ref: team2Ref, name: 'Bravo' },
+      { ref: team3Ref, name: 'Charlie' },
+    ] satisfies Team[]);
+    fixture.componentRef.setInput('series', [
+      {
+        ref: createDocumentReference('serie-1'),
+        name: 'Serie A',
+        poules: [
+          {
+            ref: createDocumentReference('poule-1'),
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref, team3Ref],
+            games: [
+              {
+                ref: createDocumentReference('game-april-20'),
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                date: new Date('2026-04-20T10:00:00.000Z'), // stored as UTC
+              },
+              {
+                ref: createDocumentReference('game-april-21'),
+                refTeam1: team2Ref,
+                refTeam2: team3Ref,
+                date: new Date('2026-04-21T16:30:00.000Z'), // stored as UTC
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    fixture.detectChanges();
+
+    // Simulate PrimeNG datepicker emitting local midnight for April 20
+    const datepickerDate = new Date(2026, 3, 20); // local midnight
+    component.onDateFilterChange(datepickerDate);
+
+    const filtered = component.filteredFlatGamesByDate();
+    expect(filtered.length).toBe(1);
+    expect(filtered[0].ref.id).toBe('game-april-20');
   });
 
   it('should display empty filtered message when active filters return no game', () => {

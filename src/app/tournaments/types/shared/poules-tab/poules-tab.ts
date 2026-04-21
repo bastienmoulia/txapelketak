@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
@@ -95,9 +95,9 @@ export class PoulesTab {
       })),
   );
 
-  defaultOpenSeriesIds = computed(() => {
-    const firstSerie = this.sortedSeries()[0];
-    return firstSerie && this.sortedSeries().length === 1 ? [firstSerie.ref.id] : [];
+  openSeriesIds = linkedSignal(() => {
+    const series = this.sortedSeries();
+    return series.length === 1 ? [series[0].ref.id] : [];
   });
 
   private computeStandings(poule: Poule): TeamStanding[] {

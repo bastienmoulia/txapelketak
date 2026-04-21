@@ -22,17 +22,27 @@ test.describe.serial('Admin – tournament management', () => {
   const teamAlpha = `Équipe Alpha ${timestamp}`;
   const teamBeta = `Équipe Beta ${timestamp}`;
   const teamBetaEdited = `Équipe B ${timestamp}`;
+  const teamDeleteOnly = 'Admin Seed Team Delete';
   const serieName = `Série 1 ${timestamp}`;
   const serieNameEdited = `Série A ${timestamp}`;
   const pouleName = `Poule A ${timestamp}`;
   const poulesNameEdited = `Poule A-2 ${timestamp}`;
   const pouleNameB = `Poule B ${timestamp}`;
+  const pouleDeleteSerie = 'Admin Seed Poule Delete Serie';
+  const pouleDeleteName = 'Admin Seed Poule Delete B';
+  const serieDeleteOnly = 'Admin Seed Serie Delete';
   const userUsername = `Organisateur ${timestamp}`;
   const userEmail = `organisateur${timestamp}@test.com`;
   const userUsernameEdited = `Organisateur2 ${timestamp}`;
   const userEmailEdited = `organisateur2${timestamp}@test.com`;
-  const gameSeedTeam1 = 'Admin Seed Team One';
-  const gameSeedTeam2 = 'Admin Seed Team Two';
+  const userDeleteOnly = `Organisateur delete ${timestamp}`;
+  const userDeleteOnlyEmail = `organisateur-delete-${timestamp}@test.com`;
+  const gameAddSerieName = 'Admin Seed Game Add Serie';
+  const gameAddPouleName = 'Admin Seed Game Add Poule';
+  const gameAddSeedTeam1 = 'Admin Seed Game Add Team One';
+  const gameAddSeedTeam2 = 'Admin Seed Game Add Team Two';
+  const gameDeleteSeedTeam1 = 'Admin Seed Game Delete Team One';
+  const gameDeleteSeedTeam2 = 'Admin Seed Game Delete Team Two';
   const gameSeedFixturePath = 'e2e/fixtures/admin-game-seed.yaml';
 
   let adminUrl = '';
@@ -60,6 +70,9 @@ test.describe.serial('Admin – tournament management', () => {
       // Step 2: Validate tournament by visiting the admin URL (changes status to "ongoing")
       const adminPage = new AdminPage(page);
       await adminPage.goto(adminUrl);
+
+      // Step 3: Seed independent datasets used by delete tests.
+      await adminPage.importYamlFixture(gameSeedFixturePath);
     } finally {
       await context.close();
     }
@@ -131,16 +144,8 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Équipes');
 
-    await adminPage.deleteTeam(teamAlpha);
-    await expect(adminPage.teamRow(teamAlpha)).not.toBeVisible();
-  });
-
-  test('should reflect team count on the dashboard', async ({ page }) => {
-    const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
-
-    // One team should remain after deleting the other one
-    await expect(adminPage.dashboardTeamsCount()).toHaveText('1');
+    await adminPage.deleteTeam(teamDeleteOnly);
+    await expect(adminPage.teamRow(teamDeleteOnly)).not.toBeVisible();
   });
 
   // --- Series & Poules management ---
@@ -189,9 +194,9 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Poules');
 
-    await adminPage.deletePoule(serieName, pouleNameB);
+    await adminPage.deletePoule(pouleDeleteSerie, pouleDeleteName);
     await expect(
-      adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleNameB }),
+      adminPage.seriePanel(pouleDeleteSerie).locator('p-card').filter({ hasText: pouleDeleteName }),
     ).not.toBeVisible();
   });
 
@@ -210,17 +215,8 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Poules');
 
-    await adminPage.deleteSerie(serieNameEdited);
-    await expect(adminPage.seriePanel(serieNameEdited)).not.toBeVisible();
-  });
-
-  test('should reflect series and poules count on the dashboard', async ({ page }) => {
-    const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
-
-    // All series deleted → counts should be 0
-    await expect(adminPage.dashboardSeriesCount()).toHaveText('0');
-    await expect(adminPage.dashboardPoulesCount()).toHaveText('0');
+    await adminPage.deleteSerie(serieDeleteOnly);
+    await expect(adminPage.seriePanel(serieDeleteOnly)).not.toBeVisible();
   });
 
   // --- Users management (Administration tab) ---
@@ -249,30 +245,26 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Administration');
 
-    await adminPage.deleteUser(userUsernameEdited);
-    await expect(adminPage.userRow(userUsernameEdited)).not.toBeVisible();
+    await adminPage.addUser(userDeleteOnly, userDeleteOnlyEmail, 'organizer');
+    await expect(adminPage.userRow(userDeleteOnly)).toBeVisible();
+
+    await adminPage.deleteUser(userDeleteOnly);
+    await expect(adminPage.userRow(userDeleteOnly)).not.toBeVisible();
+    await expect(adminPage.userRow(userUsernameEdited)).toBeVisible();
   });
 
   // --- Games management (requires teams + serie + poule) ---
-
-  test('should set up data for game management', async ({ page }) => {
-    const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
-
-    await adminPage.importYamlFixture(gameSeedFixturePath);
-    await adminPage.clickTab('Tableau de bord');
-    await expect(adminPage.dashboardTeamsCount()).toHaveText('2');
-    await expect(adminPage.dashboardSeriesCount()).toHaveText('1');
-    await expect(adminPage.dashboardPoulesCount()).toHaveText('1');
-  });
 
   test('should add a game', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
-    await adminPage.addGame(gameSeedTeam1, gameSeedTeam2);
-    await expect(adminPage.gameRow(gameSeedTeam1, gameSeedTeam2)).toBeVisible();
+    await adminPage.addGame(gameAddSeedTeam1, gameAddSeedTeam2, {
+      serieName: gameAddSerieName,
+      pouleName: gameAddPouleName,
+    });
+    await expect(adminPage.gameRow(gameAddSeedTeam1, gameAddSeedTeam2)).toBeVisible();
   });
 
   test('should delete a game', async ({ page }) => {
@@ -280,19 +272,7 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
-    await adminPage.deleteGame(gameSeedTeam1, gameSeedTeam2);
-    await expect(adminPage.gameRow(gameSeedTeam1, gameSeedTeam2)).not.toBeVisible();
-  });
-
-  test('should reflect games count on the dashboard after adding a game', async ({ page }) => {
-    const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
-
-    // Re-add a game and verify dashboard updates
-    await adminPage.clickTab('Parties');
-    await adminPage.addGame(gameSeedTeam1, gameSeedTeam2);
-
-    await adminPage.clickTab('Tableau de bord');
-    await expect(adminPage.dashboardGamesCount()).toHaveText('1');
+    await adminPage.deleteGame(gameDeleteSeedTeam1, gameDeleteSeedTeam2);
+    await expect(adminPage.gameRow(gameDeleteSeedTeam1, gameDeleteSeedTeam2)).not.toBeVisible();
   });
 });

@@ -33,7 +33,7 @@ export class TournamentListPage {
     await this.tournamentRow(name).first().locator('button').click();
   }
 
-  async waitForTournamentToAppear(name: string, timeout = 10000): Promise<void> {
-    await this.tournamentRow(name).first().waitFor({ timeout });
+  async waitForTournamentToAppear(name: string): Promise<void> {
+    await this.tournamentRow(name).first().waitFor();
   }
 }

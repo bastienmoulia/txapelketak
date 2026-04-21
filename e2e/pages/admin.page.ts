@@ -17,7 +17,6 @@ export class AdminPage {
     // once the user has been authenticated and the tournament data has been fetched.
     await this.page.getByRole('tab', { name: 'Tableau de bord' }).waitFor({
       state: 'visible',
-      timeout: 30000,
     });
   }
 

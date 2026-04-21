@@ -59,9 +59,8 @@ export class Admin {
   loading = computed(
     () => this.loadingUser() || (!!this.user() && this.tournamentDetailStore.loading()),
   );
-  accessDenied = signal(false);
+  accessDenied = signal(true);
   tournament = this.tournamentDetailStore.tournament;
-  private waitingValidationHandledForTournamentId = signal<string | null>(null);
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -69,27 +68,13 @@ export class Admin {
     });
 
     effect(() => {
-      const user = this.user();
-      const accessDenied = this.accessDenied();
-      if (!user || accessDenied) {
+      if (!this.tournament()) {
         return;
       }
 
-      const tournament = this.tournament();
-      if (!tournament) {
-        return;
+      if (this.tournament()!.status === 'waitingValidation') {
+        this.validateWaitingTournamentStatus(this.tournament()!.ref);
       }
-
-      if (tournament.status !== 'waitingValidation') {
-        return;
-      }
-
-      if (this.waitingValidationHandledForTournamentId() === tournament.ref.id) {
-        return;
-      }
-
-      this.waitingValidationHandledForTournamentId.set(tournament.ref.id);
-      void this.validateWaitingTournamentStatus(tournament.ref, tournament.ref.id);
     });
 
     void this.loadUser();
@@ -124,12 +109,8 @@ export class Admin {
     }
   }
 
-  private async validateWaitingTournamentStatus(
-    tournamentRef: DocumentReference,
-    tournamentId: string,
-  ): Promise<void> {
+  private async validateWaitingTournamentStatus(tournamentRef: DocumentReference): Promise<void> {
     try {
-      console.debug('Tournament is waiting validation, updating status to ongoing');
       await this.firebaseService.updateTournamentStatus(tournamentRef, 'ongoing');
       this.messageService.add({
         severity: 'success',
@@ -139,12 +120,6 @@ export class Admin {
       });
     } catch (error) {
       console.error('Failed to validate tournament status', error);
-      this.waitingValidationHandledForTournamentId.set(null);
-    }
-
-    // If another tournament becomes active, allow status handling for it.
-    if (this.tournamentId() !== tournamentId) {
-      this.waitingValidationHandledForTournamentId.set(null);
     }
   }
 }

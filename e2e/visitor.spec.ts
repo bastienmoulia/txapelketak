@@ -41,7 +41,7 @@ test.describe('Visitor navigation', () => {
 
     const listPage = new TournamentListPage(page);
     await listPage.goto();
-    await listPage.waitForTournamentToAppear(tournamentName, 10000);
+    await listPage.waitForTournamentToAppear(tournamentName);
 
     // Click the tournament row to navigate to it, then extract the ID from the URL
     await listPage.openTournament(tournamentName);
@@ -55,7 +55,7 @@ test.describe('Visitor navigation', () => {
   test('should show the tournament in the public list', async ({ page }) => {
     const listPage = new TournamentListPage(page);
     await listPage.goto();
-    await listPage.waitForTournamentToAppear(tournamentName, 10000);
+    await listPage.waitForTournamentToAppear(tournamentName);
     expect(await listPage.hasTournament(tournamentName)).toBe(true);
   });
 

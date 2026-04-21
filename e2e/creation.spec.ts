@@ -103,19 +103,32 @@ test.describe.serial('Tournament creation', () => {
       expect(found).toBe(false);
     });
 
+    await test.step('visit public tournament URL and verify validation warning', async () => {
+      // Extract tournament ID from admin URL (format: /tournaments/[id]/[token])
+      const match = adminUrl.match(/\/tournaments\/([^/]+)\//);
+      const tournamentId = match?.[1];
+      expect(tournamentId).toBeTruthy();
+
+      // Navigate to public tournament URL
+      await page.goto(`/tournaments/${tournamentId}`);
+
+      // Verify validation warning is displayed
+      await expect(page.getByTestId('validation-section')).toBeVisible();
+    });
+
     await test.step('visit admin URL to validate tournament', async () => {
       await adminPage.goto(adminUrl);
 
       // Visiting the admin URL triggers automatic status change to "ongoing"
+      // Wait for the success toast message (confirmation that validateWaitingTournamentStatus succeeded)
+      await expect(page.locator('.p-toast').first()).toContainText('Tournoi validé');
       await expect(adminPage.isAccessDenied()).not.toBeVisible();
-      await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
     });
 
     await test.step('ensure tournament appears in public list after validation', async () => {
       await listPage.goto();
 
-      // Give Firestore extra time to propagate the status change on slow CI runners
-      await listPage.waitForTournamentToAppear(tournamentName, 90000);
+      await listPage.waitForTournamentToAppear(tournamentName);
       const found = await listPage.hasTournament(tournamentName);
       expect(found).toBe(true);
     });

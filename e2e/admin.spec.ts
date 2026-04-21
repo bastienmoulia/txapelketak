@@ -133,13 +133,9 @@ test.describe.serial('Admin – tournament management', () => {
 
     await adminPage.deleteTeam(teamAlpha);
     await expect(adminPage.teamRow(teamAlpha)).not.toBeVisible();
-  });
-
-  test('should reflect team count on the dashboard', async ({ page }) => {
-    const adminPage = new AdminPage(page);
-    await adminPage.goto(adminUrl);
 
     // One team should remain after deleting the other one
+    await adminPage.clickTab('Tableau de bord');
     await expect(adminPage.dashboardTeamsCount()).toHaveText('1');
   });
 

@@ -224,7 +224,7 @@ export class Games {
   showScrollToTop = signal(false);
   showScrollToToday = computed(() => {
     const todayKey = this.getDateKey(new Date());
-    return this.gamesByDate().some((group) => group.dateKey === todayKey);
+    return this.filteredFlatGamesByDate().some((group) => group.dateKey === todayKey);
   });
 
   @HostListener('window:scroll')

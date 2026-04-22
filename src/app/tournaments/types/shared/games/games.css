@@ -37,6 +37,16 @@
     text-align: right;
   }
 
+  :host ::ng-deep .games-table tbody td[colspan] {
+    display: block;
+    width: auto;
+    text-align: center;
+  }
+
+  :host ::ng-deep .games-table tbody td[colspan]::before {
+    content: none;
+  }
+
   :host ::ng-deep .games-table tbody td::before {
     content: attr(data-label);
     color: var(--p-text-muted-color);

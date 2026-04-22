@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
@@ -94,6 +94,11 @@ export class PoulesTab {
           })),
       })),
   );
+
+  openSeriesIds = linkedSignal(() => {
+    const series = this.sortedSeries();
+    return series.length === 1 ? [series[0].ref.id] : [];
+  });
 
   private computeStandings(poule: Poule): TeamStanding[] {
     const teams = this.teams();
@@ -243,11 +248,13 @@ export class PoulesTab {
       width: 'min(30rem, 100%)',
       data: { isEditing: false, serieName: '', editingSerie: null },
     });
-    dialogRef?.onClose.subscribe((result: { name: string; ref?: DocumentReference } | undefined) => {
-      if (result) {
-        this.saveSerie.emit(result);
-      }
-    });
+    dialogRef?.onClose.subscribe(
+      (result: { name: string; ref?: DocumentReference } | undefined) => {
+        if (result) {
+          this.saveSerie.emit(result);
+        }
+      },
+    );
   }
 
   onEditSerie(serie: Serie): void {
@@ -258,17 +265,21 @@ export class PoulesTab {
       width: 'min(30rem, 100%)',
       data: { isEditing: true, serieName: serie.name, editingSerie: serie },
     });
-    dialogRef?.onClose.subscribe((result: { name: string; ref?: DocumentReference } | undefined) => {
-      if (result) {
-        this.saveSerie.emit(result);
-      }
-    });
+    dialogRef?.onClose.subscribe(
+      (result: { name: string; ref?: DocumentReference } | undefined) => {
+        if (result) {
+          this.saveSerie.emit(result);
+        }
+      },
+    );
   }
 
   onDeleteSerie(serie: Serie): void {
     this.confirmationService.confirm({
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
-      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: serie.name }),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', {
+        name: serie.name,
+      }),
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
@@ -289,7 +300,9 @@ export class PoulesTab {
       data: { isEditing: false, pouleName: '', editingPoule: null, serieRef },
     });
     dialogRef?.onClose.subscribe(
-      (result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined) => {
+      (
+        result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined,
+      ) => {
         if (result) {
           this.savePoule.emit(result);
         }
@@ -306,7 +319,9 @@ export class PoulesTab {
       data: { isEditing: true, pouleName: poule.name, editingPoule: poule, serieRef },
     });
     dialogRef?.onClose.subscribe(
-      (result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined) => {
+      (
+        result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined,
+      ) => {
         if (result) {
           this.savePoule.emit(result);
         }
@@ -317,7 +332,9 @@ export class PoulesTab {
   onDeletePoule(serieRef: DocumentReference, poule: Poule): void {
     this.confirmationService.confirm({
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
-      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: poule.name }),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', {
+        name: poule.name,
+      }),
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),

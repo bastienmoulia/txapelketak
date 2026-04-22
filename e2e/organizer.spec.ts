@@ -53,6 +53,8 @@ test.describe.serial('Organizer – role-based access', () => {
 
       // Step 3: Import fixture data (teams, series, poules, games)
       await adminPage.importYamlFixture(organizerFixturePath);
+      await adminPage.clickTab('Parties');
+      await expect(adminPage.gameRow(orgTeam1, orgTeam2)).toBeVisible();
 
       // Step 4: Add an organizer user and capture their admin URL from the toast
       await adminPage.clickTab('Administration');
@@ -61,6 +63,7 @@ test.describe.serial('Organizer – role-based access', () => {
         organizerEmail,
         'organizer',
       );
+      expect(organizerUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
     } finally {
       await context.close();
     }

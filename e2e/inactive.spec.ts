@@ -15,6 +15,11 @@ test.describe('Inactive tournament', () => {
     await detailPage.goto(inactiveTournamentId);
     await detailPage.waitForLoad();
 
+    await expect(
+      detailPage.isNotFound(),
+      `Expected persistent inactive tournament "${tournamentName}" (${inactiveTournamentId}) to exist`,
+    ).not.toBeVisible();
+
     await expect(page.getByRole('heading', { name: tournamentName })).toBeVisible();
     await expect(detailPage.isWaitingValidation()).toBeVisible();
     await expect(detailPage.isWaitingValidation()).toHaveText(waitingValidationMessage);

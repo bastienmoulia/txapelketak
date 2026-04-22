@@ -19,22 +19,28 @@ import { TournamentNewPage } from './pages/tournament-new.page';
 test.describe.serial('Admin – tournament management', () => {
   const timestamp = Date.now();
   const tournamentName = `Admin Test ${timestamp}`;
-  const teamAlpha = `Équipe Alpha ${timestamp}`;
-  const teamBeta = `Équipe Beta ${timestamp}`;
-  const teamBetaEdited = `Équipe B ${timestamp}`;
+  const teamAddAlpha = `Équipe Alpha ${timestamp}`;
+  const teamAddBeta = `Équipe Beta ${timestamp}`;
+  const teamEditSource = `Équipe Edit Source ${timestamp}`;
+  const teamEditTarget = `Équipe Edit Target ${timestamp}`;
   const teamDeleteOnly = 'Admin Seed Team Delete';
-  const serieName = `Série 1 ${timestamp}`;
-  const serieNameEdited = `Série A ${timestamp}`;
-  const pouleName = `Poule A ${timestamp}`;
-  const poulesNameEdited = `Poule A-2 ${timestamp}`;
-  const pouleNameB = `Poule B ${timestamp}`;
+  const serieAddName = `Série 1 ${timestamp}`;
+  const serieEditSource = `Série Edit Source ${timestamp}`;
+  const serieEditTarget = `Série Edit Target ${timestamp}`;
+  const pouleAddNameA = `Poule A ${timestamp}`;
+  const pouleAddNameB = `Poule B ${timestamp}`;
+  const pouleEditSource = `Poule Edit Source ${timestamp}`;
+  const pouleEditTarget = `Poule Edit Target ${timestamp}`;
+  const pouleEditSerie = `Série Poule Edit ${timestamp}`;
   const pouleDeleteSerie = 'Admin Seed Poule Delete Serie';
   const pouleDeleteName = 'Admin Seed Poule Delete B';
   const serieDeleteOnly = 'Admin Seed Serie Delete';
-  const userUsername = `Organisateur ${timestamp}`;
-  const userEmail = `organisateur${timestamp}@test.com`;
-  const userUsernameEdited = `Organisateur2 ${timestamp}`;
-  const userEmailEdited = `organisateur2${timestamp}@test.com`;
+  const userAddUsername = `Organisateur ${timestamp}`;
+  const userAddEmail = `organisateur${timestamp}@test.com`;
+  const userEditUsername = `Organisateur Edit ${timestamp}`;
+  const userEditEmail = `organisateur-edit-${timestamp}@test.com`;
+  const userEditTargetUsername = `Organisateur Edit 2 ${timestamp}`;
+  const userEditTargetEmail = `organisateur-edit2-${timestamp}@test.com`;
   const userDeleteOnly = `Organisateur delete ${timestamp}`;
   const userDeleteOnlyEmail = `organisateur-delete-${timestamp}@test.com`;
   const gameAddSerieName = 'Admin Seed Game Add Serie';
@@ -73,6 +79,15 @@ test.describe.serial('Admin – tournament management', () => {
 
       // Step 3: Seed independent datasets used by delete tests.
       await adminPage.importYamlFixture(gameSeedFixturePath);
+
+      // Validate seed data once so dependent tests fail fast with a clear root cause.
+      await adminPage.clickTab('Équipes');
+      await expect(adminPage.teamRow(teamDeleteOnly)).toBeVisible();
+      await adminPage.clickTab('Poules');
+      await expect(adminPage.seriePanel(pouleDeleteSerie)).toBeVisible();
+      await expect(adminPage.seriePanel(serieDeleteOnly)).toBeVisible();
+      await adminPage.clickTab('Parties');
+      await expect(adminPage.gameRow(gameDeleteSeedTeam1, gameDeleteSeedTeam2)).toBeVisible();
     } finally {
       await context.close();
     }
@@ -119,13 +134,13 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.clickTab('Équipes');
 
     await test.step('add first team', async () => {
-      await adminPage.addTeam(teamAlpha);
-      await expect(adminPage.teamRow(teamAlpha)).toBeVisible();
+      await adminPage.addTeam(teamAddAlpha);
+      await expect(adminPage.teamRow(teamAddAlpha)).toBeVisible();
     });
 
     await test.step('add second team', async () => {
-      await adminPage.addTeam(teamBeta);
-      await expect(adminPage.teamRow(teamBeta)).toBeVisible();
+      await adminPage.addTeam(teamAddBeta);
+      await expect(adminPage.teamRow(teamAddBeta)).toBeVisible();
     });
   });
 
@@ -134,9 +149,12 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Équipes');
 
-    await adminPage.editTeam(teamBeta, teamBetaEdited);
-    await expect(adminPage.teamRow(teamBetaEdited)).toBeVisible();
-    await expect(adminPage.teamRow(teamBeta)).not.toBeVisible();
+    await adminPage.addTeam(teamEditSource);
+    await expect(adminPage.teamRow(teamEditSource)).toBeVisible();
+
+    await adminPage.editTeam(teamEditSource, teamEditTarget);
+    await expect(adminPage.teamRow(teamEditTarget)).toBeVisible();
+    await expect(adminPage.teamRow(teamEditSource)).not.toBeVisible();
   });
 
   test('should delete a team', async ({ page }) => {
@@ -156,21 +174,23 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.clickTab('Poules');
 
     await test.step('add serie', async () => {
-      await adminPage.addSerie(serieName);
-      await expect(adminPage.seriePanel(serieName)).toBeVisible();
+      await adminPage.addSerie(serieAddName);
+      await expect(adminPage.seriePanel(serieAddName)).toBeVisible();
     });
 
     await test.step('add first poule', async () => {
-      await adminPage.addPoule(serieName, pouleName);
+      await adminPage.addPoule(serieAddName, pouleAddNameA);
+      await adminPage.ensureSerieExpanded(serieAddName);
       await expect(
-        adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleName }),
+        adminPage.seriePanel(serieAddName).locator('p-card').filter({ hasText: pouleAddNameA }),
       ).toBeVisible();
     });
 
     await test.step('add second poule', async () => {
-      await adminPage.addPoule(serieName, pouleNameB);
+      await adminPage.addPoule(serieAddName, pouleAddNameB);
+      await adminPage.ensureSerieExpanded(serieAddName);
       await expect(
-        adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleNameB }),
+        adminPage.seriePanel(serieAddName).locator('p-card').filter({ hasText: pouleAddNameB }),
       ).toBeVisible();
     });
   });
@@ -180,13 +200,21 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Poules');
 
-    await adminPage.editPoule(serieName, pouleName, poulesNameEdited);
+    await adminPage.addSerie(pouleEditSerie);
+    await adminPage.addPoule(pouleEditSerie, pouleEditSource);
+    await adminPage.ensureSerieExpanded(pouleEditSerie);
     await expect(
-      adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: poulesNameEdited }),
+      adminPage.seriePanel(pouleEditSerie).locator('p-card').filter({ hasText: pouleEditSource }),
+    ).toBeVisible();
+
+    await adminPage.editPoule(pouleEditSerie, pouleEditSource, pouleEditTarget);
+    await adminPage.ensureSerieExpanded(pouleEditSerie);
+    await expect(
+      adminPage.seriePanel(pouleEditSerie).locator('p-card').filter({ hasText: pouleEditTarget }),
     ).toBeVisible();
     await expect(
-      adminPage.seriePanel(serieName).locator('p-card').filter({ hasText: pouleName }),
-    ).not.toBeVisible();
+      adminPage.seriePanel(pouleEditSerie).locator('p-card').filter({ hasText: pouleEditSource }),
+    ).toHaveCount(0);
   });
 
   test('should delete a poule', async ({ page }) => {
@@ -194,10 +222,14 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Poules');
 
+    await adminPage.ensureSerieExpanded(pouleDeleteSerie);
+    await expect(
+      adminPage.seriePanel(pouleDeleteSerie).locator('p-card').filter({ hasText: pouleDeleteName }),
+    ).toBeVisible();
     await adminPage.deletePoule(pouleDeleteSerie, pouleDeleteName);
     await expect(
       adminPage.seriePanel(pouleDeleteSerie).locator('p-card').filter({ hasText: pouleDeleteName }),
-    ).not.toBeVisible();
+    ).toHaveCount(0);
   });
 
   test('should edit a serie', async ({ page }) => {
@@ -205,9 +237,12 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Poules');
 
-    await adminPage.editSerie(serieName, serieNameEdited);
-    await expect(adminPage.seriePanel(serieNameEdited)).toBeVisible();
-    await expect(adminPage.seriePanel(serieName)).not.toBeVisible();
+    await adminPage.addSerie(serieEditSource);
+    await expect(adminPage.seriePanel(serieEditSource)).toBeVisible();
+
+    await adminPage.editSerie(serieEditSource, serieEditTarget);
+    await expect(adminPage.seriePanel(serieEditTarget)).toBeVisible();
+    await expect(adminPage.seriePanel(serieEditSource)).not.toBeVisible();
   });
 
   test('should delete a serie', async ({ page }) => {
@@ -226,8 +261,8 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Administration');
 
-    await adminPage.addUser(userUsername, userEmail, 'organizer');
-    await expect(adminPage.userRow(userUsername)).toBeVisible();
+    await adminPage.addUser(userAddUsername, userAddEmail, 'organizer');
+    await expect(adminPage.userRow(userAddUsername)).toBeVisible();
   });
 
   test('should edit a user', async ({ page }) => {
@@ -235,9 +270,12 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Administration');
 
-    await adminPage.editUser(userUsername, userUsernameEdited, userEmailEdited);
-    await expect(adminPage.userRow(userUsernameEdited)).toBeVisible();
-    await expect(adminPage.userRow(userUsername)).not.toBeVisible();
+    await adminPage.addUser(userEditUsername, userEditEmail, 'organizer');
+    await expect(adminPage.userRow(userEditUsername)).toBeVisible();
+
+    await adminPage.editUser(userEditUsername, userEditTargetUsername, userEditTargetEmail);
+    await expect(adminPage.userRow(userEditTargetUsername)).toBeVisible();
+    await expect(adminPage.userRow(userEditUsername)).not.toBeVisible();
   });
 
   test('should delete a user', async ({ page }) => {
@@ -250,7 +288,7 @@ test.describe.serial('Admin – tournament management', () => {
 
     await adminPage.deleteUser(userDeleteOnly);
     await expect(adminPage.userRow(userDeleteOnly)).not.toBeVisible();
-    await expect(adminPage.userRow(userUsernameEdited)).toBeVisible();
+    await expect(adminPage.userRow(userEditTargetUsername)).toBeVisible();
   });
 
   // --- Games management (requires teams + serie + poule) ---
@@ -260,6 +298,7 @@ test.describe.serial('Admin – tournament management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
+    await expect(adminPage.gameRow(gameAddSeedTeam1, gameAddSeedTeam2)).not.toBeVisible();
     await adminPage.addGame(gameAddSeedTeam1, gameAddSeedTeam2, {
       serieName: gameAddSerieName,
       pouleName: gameAddPouleName,

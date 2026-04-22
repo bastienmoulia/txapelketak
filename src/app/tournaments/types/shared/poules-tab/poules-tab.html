@@ -13,7 +13,7 @@
   </div>
 }
 @if (sortedSeries().length > 0) {
-  <p-accordion [multiple]="true" class="mb-3">
+  <p-accordion [multiple]="true" [(value)]="openSeriesIds" class="mb-3">
     @for (serie of sortedSeries(); track serie.ref.id) {
       <p-accordion-panel [value]="serie.ref.id">
         <p-accordion-header>
@@ -213,4 +213,3 @@
     }
   </div>
 </ng-template>
-

@@ -48,6 +48,10 @@ test.describe('Visitor navigation', () => {
     await page.waitForURL(/\/tournaments\/[^/]+$/);
     const match = page.url().match(/\/tournaments\/([^/]+)$/);
     tournamentId = match?.[1] ?? '';
+    expect(
+      tournamentId,
+      `Expected persistent tournament "${tournamentName}" to exist and be reachable from the public list`,
+    ).not.toBe('');
 
     await context.close();
   });

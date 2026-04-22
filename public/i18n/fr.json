@@ -242,7 +242,9 @@
       "filterDateShort": "Date",
       "noGamesForFilters": "Aucune partie ne correspond aux filtres sélectionnés.",
       "referees": "Arbitres",
-      "sameTeamError": "Les deux équipes ne peuvent pas être identiques."
+      "sameTeamError": "Les deux équipes ne peuvent pas être identiques.",
+      "scrollToTopTooltip": "Aller en haut",
+      "scrollToTodayTooltip": "Aller à aujourd'hui"
     },
     "teams": {
       "empty": "Aucune équipe",

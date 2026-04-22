@@ -242,7 +242,9 @@
       "filterDateShort": "Fecha",
       "noGamesForFilters": "Ningún partido coincide con los filtros seleccionados.",
       "referees": "Árbitros",
-      "sameTeamError": "Los dos equipos no pueden ser iguales."
+      "sameTeamError": "Los dos equipos no pueden ser iguales.",
+      "scrollToTopTooltip": "Ir arriba",
+      "scrollToTodayTooltip": "Ir a hoy"
     },
     "teams": {
       "empty": "No hay equipos",

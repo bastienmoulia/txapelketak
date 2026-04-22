@@ -242,7 +242,9 @@
       "filterDateShort": "Date",
       "noGamesForFilters": "No games match the selected filters.",
       "referees": "Referees",
-      "sameTeamError": "Both teams cannot be the same."
+      "sameTeamError": "Both teams cannot be the same.",
+      "scrollToTopTooltip": "Scroll to top",
+      "scrollToTodayTooltip": "Go to today"
     },
     "teams": {
       "empty": "No teams",

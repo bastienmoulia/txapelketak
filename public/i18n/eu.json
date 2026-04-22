@@ -242,7 +242,9 @@
       "filterDateShort": "Data",
       "noGamesForFilters": "Ez dago hautatutako iragazkiekin bat datorren partidarik.",
       "referees": "Arbitroak",
-      "sameTeamError": "Bi taldeak ezin dira berdinak izan."
+      "sameTeamError": "Bi taldeak ezin dira berdinak izan.",
+      "scrollToTopTooltip": "Gora joan",
+      "scrollToTodayTooltip": "Gaurko egunera joan"
     },
     "teams": {
       "empty": "Ez dago talderik",

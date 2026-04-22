@@ -47,3 +47,14 @@
     text-transform: uppercase;
   }
 }
+
+.scroll-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+
+  ::ng-deep button {
+    backdrop-filter: blur(2px);
+  }
+}

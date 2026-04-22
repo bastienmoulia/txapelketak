@@ -71,7 +71,7 @@
         </ng-template>
 
         <ng-template #groupheader let-game>
-          <tr>
+          <tr [attr.id]="game.dateKey ? 'games-date-' + game.dateKey : null">
             <td
               [attr.colspan]="byDateColumnCount()"
               class="block justify-center! font-bold py-2 px-3 first-letter:uppercase"
@@ -217,4 +217,25 @@
   <p-message severity="warn" class="mt-4 mx-3">
     {{ 'admin.poules.noSeriesOrPoules' | transloco }}
   </p-message>
+}
+@if (showScrollToTop()) {
+  <p-button
+    icon="pi pi-arrow-up"
+    [pTooltip]="'admin.games.scrollToTopTooltip' | transloco"
+    class="scroll-btn"
+    [rounded]="true"
+    [text]="true"
+    [raised]="true"
+    (onClick)="scrollToTop()"
+  />
+} @else if (showScrollToToday()) {
+  <p-button
+    icon="pi pi-calendar-clock"
+    [pTooltip]="'admin.games.scrollToTodayTooltip' | transloco"
+    class="scroll-btn"
+    [rounded]="true"
+    [text]="true"
+    [raised]="true"
+    (onClick)="scrollToToday()"
+  />
 }

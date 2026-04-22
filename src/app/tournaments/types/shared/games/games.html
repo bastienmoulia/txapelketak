@@ -221,6 +221,7 @@
 @if (showScrollToTop()) {
   <p-button
     icon="pi pi-arrow-up"
+    [ariaLabel]="'admin.games.scrollToTopTooltip' | transloco"
     [pTooltip]="'admin.games.scrollToTopTooltip' | transloco"
     class="scroll-btn"
     [rounded]="true"
@@ -231,6 +232,7 @@
 } @else if (showScrollToToday()) {
   <p-button
     icon="pi pi-calendar-clock"
+    [ariaLabel]="'admin.games.scrollToTodayTooltip' | transloco"
     [pTooltip]="'admin.games.scrollToTodayTooltip' | transloco"
     class="scroll-btn"
     [rounded]="true"

@@ -486,6 +486,127 @@ describe('Games', () => {
     );
   });
 
+  describe('scroll button behavior', () => {
+    it('should set showScrollToTop to true when scrollY >= innerHeight', () => {
+      Object.defineProperty(window, 'scrollY', { value: 1000, configurable: true });
+      Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
+
+      component.onWindowScroll();
+
+      expect(component.showScrollToTop()).toBe(true);
+    });
+
+    it('should set showScrollToTop to false when scrollY < innerHeight', () => {
+      Object.defineProperty(window, 'scrollY', { value: 100, configurable: true });
+      Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
+
+      component.onWindowScroll();
+
+      expect(component.showScrollToTop()).toBe(false);
+    });
+
+    it('showScrollToToday should be true when filtered games include a game today', () => {
+      const team1Ref = createDocumentReference('team-1');
+      const team2Ref = createDocumentReference('team-2');
+      const today = new Date();
+
+      fixture.componentRef.setInput('teams', [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[]);
+      fixture.componentRef.setInput('series', [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-today'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: today,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      fixture.detectChanges();
+
+      expect(component.showScrollToToday()).toBe(true);
+    });
+
+    it('showScrollToToday should be false when filters exclude today\'s game', () => {
+      const team1Ref = createDocumentReference('team-1');
+      const team2Ref = createDocumentReference('team-2');
+      const today = new Date();
+
+      fixture.componentRef.setInput('teams', [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[]);
+      fixture.componentRef.setInput('series', [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-today'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: today,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      fixture.detectChanges();
+
+      // Apply a date filter that does not match today
+      component.onDateFilterChange(new Date(2020, 0, 1));
+      fixture.detectChanges();
+
+      expect(component.showScrollToToday()).toBe(false);
+    });
+
+    it('scrollToTop should call window.scrollTo with smooth behavior', () => {
+      const scrollSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+
+      component.scrollToTop();
+
+      expect(scrollSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+      scrollSpy.mockRestore();
+    });
+
+    it('scrollToToday should call scrollIntoView on today\'s DOM element', () => {
+      const mockScrollIntoView = vi.fn();
+      const mockElement = { scrollIntoView: mockScrollIntoView } as unknown as HTMLElement;
+      const getElementSpy = vi.spyOn(document, 'getElementById').mockReturnValue(mockElement);
+
+      component.scrollToToday();
+
+      expect(mockScrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+      getElementSpy.mockRestore();
+    });
+
+    it('scrollToToday should not throw when today\'s element is not in the DOM', () => {
+      const getElementSpy = vi.spyOn(document, 'getElementById').mockReturnValue(null);
+
+      expect(() => component.scrollToToday()).not.toThrow();
+      getElementSpy.mockRestore();
+    });
+  });
+
   it('should export GAMES_TEAM_FILTER_QUERY_PARAM constant', () => {
     expect(GAMES_TEAM_FILTER_QUERY_PARAM).toBe('teamId');
   });

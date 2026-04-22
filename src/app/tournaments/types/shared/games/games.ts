@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  HostListener,
   inject,
   input,
   output,
@@ -220,6 +221,17 @@ export class Games {
     return this.teamNameMap().get(ref.id) ?? '?';
   }
 
+  showScrollToTop = signal(false);
+  showScrollToToday = computed(() => {
+    const todayKey = this.getDateKey(new Date());
+    return this.filteredFlatGamesByDate().some((group) => group.dateKey === todayKey);
+  });
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.showScrollToTop.set(window.scrollY >= window.innerHeight);
+  }
+
   private getSortedSeriesForDialog() {
     return [...this.series()]
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -317,6 +329,26 @@ export class Games {
         gameRef: game.ref,
       });
     }
+  }
+
+  scrollToToday(): void {
+    const todayKey = this.getDateKey(new Date());
+    const todayRow = document.getElementById(`games-date-${todayKey}`);
+    if (!todayRow) {
+      return;
+    }
+
+    todayRow.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }
 
   private openFormDialog(data: {

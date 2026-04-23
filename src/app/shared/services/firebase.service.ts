@@ -18,7 +18,7 @@ import {
   addDoc,
   where,
 } from '@angular/fire/firestore';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
 import { Game } from '../../tournaments/types/poules/poules';
@@ -39,7 +39,7 @@ export class FirebaseService {
     console.debug('[Firestore] watchTournaments: starting listener on tournaments collection');
     if (!this.firestore) {
       console.debug('[Firestore] watchTournaments: firestore unavailable');
-      return of([]);
+      return throwError(() => new Error('Firestore unavailable'));
     }
 
     return collectionSnapshots(collection(this.firestore, 'tournaments')).pipe(

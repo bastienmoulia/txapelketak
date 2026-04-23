@@ -330,7 +330,8 @@
       },
       "open": "Ouvrir",
       "loading": "Chargement des tournois...",
-      "empty": "Aucun tournoi disponible"
+      "empty": "Aucun tournoi disponible",
+      "unavailable": "Les données ne sont pas disponibles pour le moment"
     },
     "actions": {
       "save": "Enregistrer",

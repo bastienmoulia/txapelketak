@@ -68,8 +68,10 @@ describe('TournamentsStore', () => {
     store.ensureLoaded();
 
     expect(firebaseService.watchTournaments).not.toHaveBeenCalled();
-    expect(store.loaded()).toBe(true);
+    expect(store.loaded()).toBe(false);
+    expect(store.firebaseUnavailable()).toBe(true);
     expect(store.loading()).toBe(false);
+    expect(store.error()).toBe('Firebase unavailable');
     expect(store.tournaments()).toEqual([]);
   });
 
@@ -105,6 +107,6 @@ describe('TournamentsStore', () => {
     store.ensureLoaded();
 
     expect(firebaseService.watchTournaments).toHaveBeenCalledTimes(2);
-    expect(store.loaded()).toBe(false);
+    expect(store.loaded()).toBe(true);
   });
 });

@@ -12,6 +12,8 @@
   <app-tournaments-table
     [tournaments]="tournaments()"
     [loading]="loading()"
+    [error]="error()"
+    [firebaseUnavailable]="firebaseUnavailable()"
     [getTournamentLink]="getTournamentLink"
   />
 </div>

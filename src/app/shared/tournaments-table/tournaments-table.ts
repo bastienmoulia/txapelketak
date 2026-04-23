@@ -15,6 +15,8 @@ import { Tournament } from '../../home/tournament.interface';
 export class TournamentsTable {
   tournaments = input.required<Tournament[]>();
   loading = input(false);
+  error = input<string | null>(null);
+  firebaseUnavailable = input(false);
   getTournamentLink = input.required<(tournament: Tournament) => string>();
 
   private showHidden = signal(

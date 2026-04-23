@@ -23,6 +23,8 @@
       <td colspan="2" class="text-center">
         @if (loading()) {
           <span>{{ 'shared.table.loading' | transloco }}</span>
+        } @else if (firebaseUnavailable() || error()) {
+          <span>{{ 'shared.table.unavailable' | transloco }}</span>
         } @else {
           <span>{{ 'shared.table.empty' | transloco }}</span>
         }

@@ -330,7 +330,8 @@
       },
       "open": "Open",
       "loading": "Loading tournaments...",
-      "empty": "No tournaments available"
+      "empty": "No tournaments available",
+      "unavailable": "Data is currently unavailable"
     },
     "actions": {
       "save": "Save",

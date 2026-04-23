@@ -330,7 +330,8 @@
       },
       "open": "Abrir",
       "loading": "Cargando torneos...",
-      "empty": "No hay torneos disponibles"
+      "empty": "No hay torneos disponibles",
+      "unavailable": "Los datos no están disponibles en este momento"
     },
     "actions": {
       "save": "Guardar",

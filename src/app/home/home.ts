@@ -25,6 +25,8 @@ export class Home {
   tournamentsStore = inject(TournamentsStore);
   tournaments = this.tournamentsStore.tournaments;
   loading = this.tournamentsStore.loading;
+  error = this.tournamentsStore.error;
+  firebaseUnavailable = this.tournamentsStore.firebaseUnavailable;
 
   recentTournaments = computed(() =>
     [...this.tournaments()]

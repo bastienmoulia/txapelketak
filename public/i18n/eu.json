@@ -330,7 +330,8 @@
       },
       "open": "Ireki",
       "loading": "Txapelketak kargatzen...",
-      "empty": "Ez dago txapelketarik"
+      "empty": "Ez dago txapelketarik",
+      "unavailable": "Datuak une honetan ez daude eskuragarri"
     },
     "actions": {
       "save": "Gorde",

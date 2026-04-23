@@ -18,6 +18,8 @@ export class TournamentList {
 
   tournaments = this.tournamentsStore.tournaments;
   loading = this.tournamentsStore.loading;
+  error = this.tournamentsStore.error;
+  firebaseUnavailable = this.tournamentsStore.firebaseUnavailable;
 
   constructor() {
     this.tournamentsStore.ensureLoaded();

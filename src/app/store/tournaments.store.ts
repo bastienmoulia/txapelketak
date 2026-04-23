@@ -8,6 +8,8 @@ interface TournamentsState {
   tournaments: Tournament[];
   loading: boolean;
   loaded: boolean;
+  firstSnapshotReceived: boolean;
+  firebaseUnavailable: boolean;
   error: string | null;
   listenerStartCount: number;
 }
@@ -16,6 +18,8 @@ const initialState: TournamentsState = {
   tournaments: [],
   loading: false,
   loaded: false,
+  firstSnapshotReceived: false,
+  firebaseUnavailable: false,
   error: null,
   listenerStartCount: 0,
 };
@@ -28,21 +32,23 @@ export const TournamentsStore = signalStore(
 
     return {
       ensureLoaded(): void {
-        if (store.loaded() || tournamentsSubscription) {
+        if (tournamentsSubscription) {
           return;
         }
 
         if (!firebaseService.isAvailable()) {
           patchState(store, {
             loading: false,
-            loaded: true,
+            loaded: false,
+            firstSnapshotReceived: false,
+            firebaseUnavailable: true,
             tournaments: [],
-            error: null,
+            error: 'Firebase unavailable',
           });
           return;
         }
 
-        patchState(store, { loading: true, error: null });
+        patchState(store, { loading: true, firebaseUnavailable: false, error: null });
 
         const listenerStartCount = store.listenerStartCount() + 1;
         patchState(store, { listenerStartCount });
@@ -56,6 +62,8 @@ export const TournamentsStore = signalStore(
               tournaments,
               loading: false,
               loaded: true,
+              firstSnapshotReceived: true,
+              firebaseUnavailable: false,
               error: null,
             });
           },
@@ -64,6 +72,8 @@ export const TournamentsStore = signalStore(
             patchState(store, {
               loading: false,
               loaded: false,
+              firstSnapshotReceived: true,
+              firebaseUnavailable: false,
               error: error instanceof Error ? error.message : 'Unable to load tournaments',
             });
           },
@@ -71,7 +81,6 @@ export const TournamentsStore = signalStore(
             tournamentsSubscription = null;
             patchState(store, {
               loading: false,
-              loaded: false,
             });
           },
         });

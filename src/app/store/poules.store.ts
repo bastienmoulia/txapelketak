@@ -3,12 +3,19 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Team } from '../tournaments/types/shared/teams/teams';
-import { Game, parseFirestoreDate, Poule, Serie } from '../tournaments/types/poules/poules.model';
+import {
+  Game,
+  parseFirestoreDate,
+  Poule,
+  Serie,
+  TimeSlot,
+} from '../tournaments/types/poules/poules.model';
 import { FirebaseService } from '../shared/services/firebase.service';
 
 interface PoulesStoreState {
   teams: Team[];
   series: Serie[];
+  timeSlots: TimeSlot[];
   loading: boolean;
   activeTournamentId: string | null;
   error: string | null;
@@ -17,6 +24,7 @@ interface PoulesStoreState {
 const initialState: PoulesStoreState = {
   teams: [],
   series: [],
+  timeSlots: [],
   loading: false,
   activeTournamentId: null,
   error: null,
@@ -28,6 +36,7 @@ export const PoulesStore = signalStore(
   withMethods((store, firebaseService = inject(FirebaseService)) => {
     let teamsSubscription: Subscription | null = null;
     let seriesSubscription: Subscription | null = null;
+    let timeSlotsSubscription: Subscription | null = null;
     const gameSubscriptionMap = new Map<string, Subscription>(); // key: poule ref ID
     const pouleSubscriptions: Subscription[] = [];
     let watchedTournamentId: string | null = null;
@@ -47,6 +56,8 @@ export const PoulesStore = signalStore(
       teamsSubscription = null;
       seriesSubscription?.unsubscribe();
       seriesSubscription = null;
+      timeSlotsSubscription?.unsubscribe();
+      timeSlotsSubscription = null;
       stopPouleWatchers();
       stopGameWatchers();
       watchedTournamentId = null;
@@ -266,6 +277,21 @@ export const PoulesStore = signalStore(
               seriesSubscription = null;
             },
           });
+
+        // Time slots watcher
+        timeSlotsSubscription = firebaseService.watchTimeSlots(tournamentRef).subscribe({
+          next: (timeSlots) => {
+            patchState(store, { timeSlots });
+          },
+          error: (err: unknown) => {
+            patchState(store, {
+              error: err instanceof Error ? err.message : 'Unable to watch timeSlots',
+            });
+          },
+          complete: () => {
+            timeSlotsSubscription = null;
+          },
+        });
       },
 
       stopWatching(): void {
@@ -273,6 +299,8 @@ export const PoulesStore = signalStore(
         teamsSubscription = null;
         seriesSubscription?.unsubscribe();
         seriesSubscription = null;
+        timeSlotsSubscription?.unsubscribe();
+        timeSlotsSubscription = null;
         stopPouleWatchers();
         stopGameWatchers();
         watchedTournamentId = null;

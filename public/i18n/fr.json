@@ -244,7 +244,9 @@
       "referees": "Arbitres",
       "sameTeamError": "Les deux équipes ne peuvent pas être identiques.",
       "scrollToTopTooltip": "Aller en haut",
-      "scrollToTodayTooltip": "Aller à aujourd'hui"
+      "scrollToTodayTooltip": "Aller à aujourd'hui",
+      "showOnlyFreeSlots": "Créneaux libres seulement",
+      "freeSlot": "Créneau libre"
     },
     "teams": {
       "empty": "Aucune équipe",
@@ -318,6 +320,17 @@
       "dialogConfirm": "Supprimer définitivement",
       "errorTitle": "Erreur de suppression",
       "errorDetail": "Une erreur est survenue lors de la suppression. Veuillez réessayer."
+    },
+    "timeSlots": {
+      "title": "Créneaux horaires",
+      "add": "Ajouter",
+      "datePlaceholder": "Date et heure",
+      "empty": "Aucun créneau horaire défini.",
+      "added": "Créneau ajouté",
+      "addedDetail": "Le créneau horaire a été ajouté avec succès.",
+      "deleted": "Créneau supprimé",
+      "deletedDetail": "Le créneau horaire a été supprimé avec succès.",
+      "deleteAria": "Supprimer ce créneau"
     }
   },
   "shared": {

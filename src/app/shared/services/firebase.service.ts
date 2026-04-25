@@ -21,7 +21,7 @@ import {
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
-import { Game } from '../../tournaments/types/poules/poules';
+import { Game, TimeSlot } from '../../tournaments/types/poules/poules';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 
 @Injectable({
@@ -511,6 +511,17 @@ export class FirebaseService {
     const series = await this.getCollectionFromDocumentRef(tournamentRef, 'series');
     await Promise.all(series.map((item) => this.deleteSerieFromTournament(item.ref)));
 
+    // Delete all time slots
+    const timeSlots = await this.getCollectionFromDocumentRef(tournamentRef, 'timeSlots');
+    await Promise.all(
+      timeSlots.map((item) =>
+        runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] deleteDoc: timeSlot (deleteTournament)`);
+          await deleteDoc(item.ref);
+        }),
+      ),
+    );
+
     // Delete the tournament document itself
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: tournament`);
@@ -543,6 +554,21 @@ export class FirebaseService {
     console.debug(`[Firestore] importTournamentData: deleting existing series`);
     const existingSeries = await this.getCollectionFromDocumentRef(tournamentRef, 'series');
     await Promise.all(existingSeries.map((item) => this.deleteSerieFromTournament(item.ref)));
+
+    // Delete existing time slots
+    console.debug(`[Firestore] importTournamentData: deleting existing timeSlots`);
+    const existingTimeSlots = await this.getCollectionFromDocumentRef(
+      tournamentRef,
+      'timeSlots',
+    );
+    await Promise.all(
+      existingTimeSlots.map((item) =>
+        runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] deleteDoc: timeSlot (batch import)`);
+          await deleteDoc(item.ref);
+        }),
+      ),
+    );
 
     // Create new teams and build id mapping (yaml id -> new DocumentReference)
     console.debug(`[Firestore] importTournamentData: creating new teams`);
@@ -602,5 +628,67 @@ export class FirebaseService {
         }
       }
     }
+
+    // Import time slots
+    if (Array.isArray(data.timeSlots) && data.timeSlots.length > 0) {
+      console.debug(`[Firestore] importTournamentData: creating timeSlots`);
+      await Promise.all(
+        data.timeSlots.map(async (isoDate) => {
+          const date = new Date(isoDate);
+          if (isNaN(date.getTime())) return;
+          const slotDocRef = doc(collection(tournamentRef, 'timeSlots'));
+          await runInInjectionContext(this.environmentInjector, async () => {
+            console.debug(`[Firestore] setDoc: timeSlot (batch import)`);
+            await setDoc(slotDocRef, { date });
+          });
+        }),
+      );
+    }
+  }
+
+  watchTimeSlots(tournamentRef: DocumentReference): Observable<TimeSlot[]> {
+    console.debug(`[Firestore] watchTimeSlots: ${tournamentRef.path}`);
+    if (!this.firestore) {
+      return of([]);
+    }
+    return collectionSnapshots(collection(tournamentRef, 'timeSlots')).pipe(
+      map((snapshots) =>
+        snapshots
+          .map((snap) => {
+            const data = snap.data() as { date?: unknown };
+            const date = this.parseFirestoreDate(data.date);
+            if (!date) return null;
+            return { ref: snap.ref, date } as TimeSlot;
+          })
+          .filter((ts): ts is TimeSlot => ts !== null)
+          .sort((a, b) => a.date.getTime() - b.date.getTime()),
+      ),
+    );
+  }
+
+  async addTimeSlot(tournamentRef: DocumentReference, date: Date): Promise<DocumentReference> {
+    console.debug(`[Firestore] addTimeSlot: ${date.toISOString()}`);
+    const slotDocRef = doc(collection(tournamentRef, 'timeSlots'));
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] setDoc: timeSlot`);
+      await setDoc(slotDocRef, { date });
+    });
+    return slotDocRef;
+  }
+
+  async deleteTimeSlot(timeSlotRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteTimeSlot`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] deleteDoc: timeSlot`);
+      await deleteDoc(timeSlotRef);
+    });
+  }
+
+  private parseFirestoreDate(value: unknown): Date | undefined {
+    if (!value) return undefined;
+    if (typeof (value as { toDate?: unknown }).toDate === 'function') {
+      return (value as { toDate: () => Date }).toDate();
+    }
+    return new Date(value as string);
   }
 }

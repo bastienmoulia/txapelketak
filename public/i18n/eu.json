@@ -244,7 +244,9 @@
       "referees": "Arbitroak",
       "sameTeamError": "Bi taldeak ezin dira berdinak izan.",
       "scrollToTopTooltip": "Gora joan",
-      "scrollToTodayTooltip": "Gaurko egunera joan"
+      "scrollToTodayTooltip": "Gaurko egunera joan",
+      "showOnlyFreeSlots": "Tarte libreak soilik",
+      "freeSlot": "Tarte librea"
     },
     "teams": {
       "empty": "Ez dago talderik",
@@ -318,6 +320,17 @@
       "dialogConfirm": "Behin betiko ezabatu",
       "errorTitle": "Ezabatze errorea",
       "errorDetail": "Errorea gertatu da ezabatzean. Mesedez saiatu berriro."
+    },
+    "timeSlots": {
+      "title": "Denbora-tarteak",
+      "add": "Gehitu",
+      "datePlaceholder": "Data eta ordua",
+      "empty": "Ez dago denbora-tarterik definituta.",
+      "added": "Tartea gehitu da",
+      "addedDetail": "Denbora-tartea arrakastaz gehitu da.",
+      "deleted": "Tartea ezabatu da",
+      "deletedDetail": "Denbora-tartea arrakastaz ezabatu da.",
+      "deleteAria": "Tarte hau ezabatu"
     }
   },
   "shared": {

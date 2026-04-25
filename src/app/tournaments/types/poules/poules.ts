@@ -20,7 +20,7 @@ import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './
 import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
 
-export type { PoulesData, Serie, Poule, Game } from './poules.model';
+export type { PoulesData, Serie, Poule, Game, TimeSlot } from './poules.model';
 export { parseFirestoreDate } from './poules.model';
 
 @Component({

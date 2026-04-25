@@ -9,7 +9,7 @@ import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
 import { Team } from '../../../../tournaments/types/shared/teams/teams';
-import { Game, Serie } from '../../../../tournaments/types/poules/poules';
+import { Game, Serie, TimeSlot } from '../../../../tournaments/types/poules/poules';
 
 export interface TournamentYamlTeam {
   id: string;
@@ -45,6 +45,7 @@ export interface TournamentYamlData {
   };
   teams: TournamentYamlTeam[];
   series: TournamentYamlSerie[];
+  timeSlots?: string[];
 }
 
 @Component({
@@ -64,6 +65,7 @@ export class AdminImportExport {
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
   series = input<Serie[]>([]);
+  timeSlots = input<TimeSlot[]>([]);
 
   importError = signal<string | null>(null);
   parsedImportData = signal<TournamentYamlData | null>(null);
@@ -171,6 +173,7 @@ export class AdminImportExport {
     const tournament = this.tournament();
     const teams = this.teams();
     const series = this.series();
+    const timeSlots = this.timeSlots();
 
     const yamlTeams: TournamentYamlTeam[] = teams.map((team) => ({
       id: team.ref.id,
@@ -198,7 +201,7 @@ export class AdminImportExport {
       })),
     }));
 
-    return {
+    const result: TournamentYamlData = {
       tournament: {
         name: tournament.name,
         description: tournament.description ?? '',
@@ -208,6 +211,14 @@ export class AdminImportExport {
       teams: yamlTeams,
       series: yamlSeries,
     };
+
+    if (timeSlots.length > 0) {
+      result.timeSlots = timeSlots
+        .map((ts) => ts.date.toISOString())
+        .sort();
+    }
+
+    return result;
   }
 
   private isValidYamlData(data: unknown): data is TournamentYamlData {

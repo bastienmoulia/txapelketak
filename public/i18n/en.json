@@ -244,7 +244,9 @@
       "referees": "Referees",
       "sameTeamError": "Both teams cannot be the same.",
       "scrollToTopTooltip": "Scroll to top",
-      "scrollToTodayTooltip": "Go to today"
+      "scrollToTodayTooltip": "Go to today",
+      "showOnlyFreeSlots": "Free slots only",
+      "freeSlot": "Free slot"
     },
     "teams": {
       "empty": "No teams",
@@ -318,6 +320,17 @@
       "dialogConfirm": "Delete permanently",
       "errorTitle": "Deletion error",
       "errorDetail": "An error occurred during deletion. Please try again."
+    },
+    "timeSlots": {
+      "title": "Time slots",
+      "add": "Add",
+      "datePlaceholder": "Date and time",
+      "empty": "No time slots defined.",
+      "added": "Slot added",
+      "addedDetail": "The time slot has been successfully added.",
+      "deleted": "Slot deleted",
+      "deletedDetail": "The time slot has been successfully deleted.",
+      "deleteAria": "Delete this slot"
     }
   },
   "shared": {

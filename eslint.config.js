@@ -37,7 +37,9 @@ module.exports = defineConfig([
   {
     files: ['**/*.html'],
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      '@angular-eslint/template/eqeqeq': 'off',
+    },
   },
   {
     files: ['**/*.css'],

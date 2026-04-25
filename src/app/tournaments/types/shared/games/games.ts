@@ -237,7 +237,7 @@ export class Games {
     const teamId = this.selectedTeamId();
     const selectedDate = this.selectedDateFilter();
 
-    let gameRows: GameByDate[] = this.flatGamesByDate().filter((game) => {
+    const gameRows: GameByDate[] = this.flatGamesByDate().filter((game) => {
       const matchesTeam = !teamId || game.refTeam1?.id === teamId || game.refTeam2?.id === teamId;
       const matchesDate = !selectedDate || game.dateKey === this.getDateKey(selectedDate);
       return matchesTeam && matchesDate;

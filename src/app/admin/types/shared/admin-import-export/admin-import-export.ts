@@ -4,7 +4,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DividerModule } from 'primeng/divider';
+import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
@@ -50,7 +52,15 @@ export interface TournamentYamlData {
 
 @Component({
   selector: 'app-admin-import-export',
-  imports: [ButtonModule, ConfirmDialogModule, DividerModule, MessageModule, TranslocoModule],
+  imports: [
+    ButtonModule,
+    ConfirmDialogModule,
+    DividerModule,
+    DialogModule,
+    MessageModule,
+    ProgressSpinnerModule,
+    TranslocoModule,
+  ],
   providers: [ConfirmationService],
   templateUrl: './admin-import-export.html',
   styleUrl: './admin-import-export.css',
@@ -69,8 +79,15 @@ export class AdminImportExport {
 
   importError = signal<string | null>(null);
   parsedImportData = signal<TournamentYamlData | null>(null);
+  isPreparingImport = signal(false);
   isImporting = signal(false);
-  pendingImportCounts = signal<{ teamsCount: number; seriesCount: number } | null>(null);
+  pendingImportCounts = signal<{
+    teamsCount: number;
+    seriesCount: number;
+    poulesCount: number;
+    gamesCount: number;
+    timeSlotsCount: number;
+  } | null>(null);
 
   onExport(): void {
     const data = this.buildExportData();
@@ -95,6 +112,7 @@ export class AdminImportExport {
       return;
     }
 
+    this.isPreparingImport.set(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
@@ -111,14 +129,35 @@ export class AdminImportExport {
       } catch {
         this.importError.set(this.translocoService.translate('admin.importExport.invalidFile'));
         this.parsedImportData.set(null);
+      } finally {
+        this.isPreparingImport.set(false);
       }
+    };
+    reader.onerror = () => {
+      this.importError.set(this.translocoService.translate('admin.importExport.invalidFile'));
+      this.parsedImportData.set(null);
+      this.isPreparingImport.set(false);
     };
     reader.readAsText(file);
     input.value = '';
   }
 
   private openImportConfirmDialog(data: TournamentYamlData): void {
-    this.pendingImportCounts.set({ teamsCount: data.teams.length, seriesCount: data.series.length });
+    // Calculate counts
+    const poulesCount = data.series.reduce((sum, serie) => sum + serie.poules.length, 0);
+    const gamesCount = data.series.reduce(
+      (sum, serie) => sum + serie.poules.reduce((pSum, poule) => pSum + poule.games.length, 0),
+      0,
+    );
+    const timeSlotsCount = data.timeSlots?.length ?? 0;
+
+    this.pendingImportCounts.set({
+      teamsCount: data.teams.length,
+      seriesCount: data.series.length,
+      poulesCount,
+      gamesCount,
+      timeSlotsCount,
+    });
     this.confirmationService.confirm({
       header: this.translocoService.translate('admin.importExport.importConfirmTitle'),
       message: this.translocoService.translate('admin.importExport.importConfirmMessage'),
@@ -144,13 +183,19 @@ export class AdminImportExport {
 
     this.isImporting.set(true);
     try {
+      console.debug('[AdminImportExport] Starting import:', {
+        teamsCount: data.teams.length,
+        seriesCount: data.series.length,
+      });
       await this.firebaseService.importTournamentData(this.tournament().ref, data);
+      console.debug('[AdminImportExport] Import completed successfully');
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.importExport.importSuccess'),
         detail: this.translocoService.translate('admin.importExport.importSuccessDetail'),
       });
-    } catch {
+    } catch (error) {
+      console.error('[AdminImportExport] Import error:', error);
       this.messageService.add({
         severity: 'error',
         summary: this.translocoService.translate('admin.importExport.importError'),
@@ -166,6 +211,7 @@ export class AdminImportExport {
   private cancelImport(): void {
     this.parsedImportData.set(null);
     this.importError.set(null);
+    this.isPreparingImport.set(false);
     this.pendingImportCounts.set(null);
   }
 
@@ -173,7 +219,7 @@ export class AdminImportExport {
     const tournament = this.tournament();
     const teams = this.teams();
     const series = this.series();
-    const timeSlots = this.timeSlots();
+    const timeSlotsArray = this.timeSlots();
 
     const yamlTeams: TournamentYamlTeam[] = teams.map((team) => ({
       id: team.ref.id,
@@ -212,8 +258,8 @@ export class AdminImportExport {
       series: yamlSeries,
     };
 
-    if (timeSlots.length > 0) {
-      result.timeSlots = timeSlots
+    if (timeSlotsArray.length > 0) {
+      result.timeSlots = timeSlotsArray
         .sort((a, b) => a.date.getTime() - b.date.getTime())
         .map((ts) => ts.date.toISOString());
     }

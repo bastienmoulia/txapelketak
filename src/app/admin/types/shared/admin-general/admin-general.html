@@ -7,8 +7,7 @@
       id="tournament-name"
       class="w-full"
       autocomplete="off"
-      [ngModel]="name()"
-      (ngModelChange)="name.set($event)"
+      [(ngModel)]="name"
       [disabled]="!isEditing()"
     />
     <label for="tournament-name">{{ 'admin.general.name' | transloco }}</label>
@@ -20,8 +19,7 @@
       id="tournament-description"
       class="w-full"
       rows="8"
-      [ngModel]="description()"
-      (ngModelChange)="description.set($event)"
+      [(ngModel)]="description"
       [disabled]="!isEditing()"
     ></textarea>
     <label for="tournament-description">{{ 'admin.general.description' | transloco }}</label>

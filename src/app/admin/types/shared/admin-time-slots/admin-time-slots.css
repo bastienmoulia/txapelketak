@@ -1,0 +1,24 @@
+.time-slots-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.time-slot-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 9999px;
+  padding: 0.15rem 0.4rem 0.15rem 0.6rem;
+  background: var(--p-content-background);
+}
+
+.time-slot-pill__date {
+  font-size: 0.875rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}

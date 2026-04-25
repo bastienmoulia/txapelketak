@@ -45,15 +45,25 @@ export class AdminGeneral {
       if (this.loadedTournamentId() === t.ref.id) {
         return;
       }
+      console.debug('[AdminGeneral] Initializing signals from tournament:', {
+        name: t.name,
+        id: t.ref.id,
+      });
       this.loadedTournamentId.set(t.ref.id);
       this.name.set(t.name);
       this.description.set(t.description ?? '');
+      this.isEditing.set(false);
     });
   }
 
   onEdit(): void {
-    this.name.set(this.tournament().name);
-    this.description.set(this.tournament().description ?? '');
+    const tournament = this.tournament();
+    console.debug('[AdminGeneral] onEdit:', {
+      name: tournament.name,
+      description: tournament.description,
+    });
+    this.name.set(tournament.name);
+    this.description.set(tournament.description ?? '');
     this.isEditing.set(true);
   }
 

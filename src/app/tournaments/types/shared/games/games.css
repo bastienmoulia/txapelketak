@@ -74,6 +74,7 @@
   z-index: 1000;
 
   ::ng-deep button {
+    /* eslint-disable-next-line css/use-baseline */
     backdrop-filter: blur(2px);
   }
 }

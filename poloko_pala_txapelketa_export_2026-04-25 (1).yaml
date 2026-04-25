@@ -1,0 +1,803 @@
+tournament:
+  name: Poloko pala txapelketa
+  description: >-
+    ### Organisé par poloki hiriondo ikastola & ASL Polo Beyris antolaturik.
+
+
+    Du lundi au vendredi à partir de 17h30, du 6 avril au 2 juillet, au Fronton
+    du quartier Polo Beyris !
+  type: poules
+  status: ongoing
+teams:
+  - id: 1Q0KRsnsX2JRGqZMLPPq
+    name: Lasarroques - HOUSSAYE
+  - id: 1TdEnCk4Mb1iHTW7wEhy
+    name: Iribarren - Artigue
+  - id: 1qSwZb4phS2KviBYSfDd
+    name: Iturrino - Etxeberri
+  - id: 1zRed4ZftF97EGsGMhSf
+    name: Tauzin - Itoiz
+  - id: 2VgWYyLEUA789l364fQ0
+    name: Poueyts - Poueyts
+  - id: 4ixmu2wD8Hi5bUPs4eo6
+    name: Contim - SCOTTO D'ANIELLO
+  - id: 5QfWW3PwrVLru8pQggL3
+    name: Errecart - Mendiboure
+  - id: 5TYcRvGqTB7aoi8PpvmO
+    name: Crusener Mattei - Zozaya
+  - id: 8AKF2Ve2n7cyrFLH2BIA
+    name: DUPOUY - Odriozola
+  - id: 98U0n5EDG4oyGxV0XUDJ
+    name: Makazaga - Almandoz
+  - id: DAtLNxYFlsHPMPAgymng
+    name: Itcia - Haira
+  - id: EIIEKbZElHrl8QcxSfBT
+    name: Luro - Libarle
+  - id: EoVBcQFhAovPIPbXnocu
+    name: Armendariz - Vivier Dechirure
+  - id: Fy8uNxrkQJP47a12XnMK
+    name: Hiriberry - Hiriberry
+  - id: IsrWwggJVBjUnB3osUyd
+    name: Lamaison - Duviau
+  - id: JAz40kBnr6Vxc3R0dXM8
+    name: Lataillade - Dutey
+  - id: JNDz12rGoPC2Qr520oom
+    name: BERNARD - HIRIGOYEN
+  - id: Ji5MqYNc4J6R04o6muFb
+    name: Edouard - Ojan
+  - id: K2j1dw7mHax8zOEhnYcO
+    name: De Brito - Gastesi
+  - id: KfYZwEny8mgXdwgIbnoO
+    name: Escande - Escande
+  - id: LuROdQFkqlAno98kiAoi
+    name: Lissalt - Cazauran (T)
+  - id: MnfQ8jgKTCGEI4pjHxzi
+    name: URTASUN AKERRETA - ETCHEGARAY
+  - id: N6jVvCoxj2qPE8unGdJq
+    name: Lamothe - Urkijo
+  - id: N8tL4eIVfpVfSd1ODfrW
+    name: DE BRITO - DE BRITO
+  - id: NJBrEv4i3NQZAN4DLebQ
+    name: Garat - Albor
+  - id: NVICMyjvNzuucppMZHll
+    name: Herve - Guiraude (T)
+  - id: OP9iv5UAVPkCEpylJDC5
+    name: Hontaas - Lartigue
+  - id: OnF7M20uif0wmpxF7We5
+    name: Etchemendy - Barrague
+  - id: RfD6OyS0i5rC3Tc6Zknd
+    name: souveste - hontas
+  - id: T31ydbqfQlnNYMJ1AeJG
+    name: HOLGADO - Holgado (T)
+  - id: U2kTinT2AV5sdkje76DS
+    name: Garric - Oyhagaray
+  - id: UcDQk7WZwpV4jnkO3YpF
+    name: Iribarren - Landart
+  - id: Xdg8xhbtTlEfvo4caC0D
+    name: Olive - Lavignasse
+  - id: XsNXgZcKXszUpGO3lUPj
+    name: DE BRITO - Mendiboure
+  - id: Yh7LbWRvYkr11Xfkg5mX
+    name: Greciet - Diger
+  - id: Z3fESni9b1mou5zT6DkK
+    name: Patissier - Albagnac
+  - id: ZfX9nna8CMX67Fu0Vu2b
+    name: Montazel - Toujas
+  - id: ZyamtEzoGaBmbhs5MHFa
+    name: Hayet - Arcuby
+  - id: a0AZaTxigD3pm2wWscpX
+    name: Laby - Sarraude
+  - id: aDFzsmvQlU3wiKd9ZOHf
+    name: Etcheverry - Rattinacannou
+  - id: c7ckGmbGCSbrQkxn2ZcA
+    name: Ladevese - Henry
+  - id: doeMvC5frt66FayDQKwp
+    name: Oyhagaray - Oyhagaray
+  - id: ePZglkWvCzdWKwGXIAA8
+    name: Hardoy - Arretche
+  - id: gqA7GdOsuKbeVD34SjKT
+    name: Zamponi - Aurkenerena
+  - id: i9bmFblGG0AKpeWJCkD5
+    name: Beheregaray - Saumoneau
+  - id: j6ziBlkR4UP8rH2oVgnj
+    name: Rouault - Mendibourre
+  - id: o4plmC06XFYm91jnpqXD
+    name: Godrie Williams - Godrie
+  - id: pOOMyJGObDocgqi7Ehor
+    name: Lottin - Behasteguy
+  - id: pkEJdEL05z4Z1zQVXviY
+    name: Lataillade - Cledon
+  - id: pq0KE0VdhfngWt13jBJC
+    name: Lopez - Cosqueric
+  - id: qCfl5tJ9onqywak0Kgci
+    name: Aguirrebarrena - Hiriart
+  - id: rXGLOzz8ldk0uqVCy8gl
+    name: Maubaret - Maujean
+  - id: rXmgKGvO8nDVfOxEMbA5
+    name: HOLGADO - Etcheberry
+  - id: saJtWvKNaYrHUML9UjSg
+    name: Hayet - Menetre
+  - id: tVlR2e9USq6XflChzXtM
+    name: Rathier - Lataste
+  - id: vDiHwZW3pf0jvlsseNlX
+    name: Legarto - Greciet
+  - id: vNJXlUUBPUP2YJtaXPgX
+    name: Albistur - Patxi
+  - id: w2GbbyMPWlcW6GMvEbth
+    name: Larrory - Lafitte
+  - id: wV9huwsck0oAH1BqtbIU
+    name: Arrossagaray - Arrossagaray
+  - id: wWcXRKrQUc4qEIW3ww31
+    name: Arcuby - Lorin de Reure
+  - id: wX4JkzF2Fc6huOnkl1bC
+    name: Nascimento - Arretche
+  - id: xAsxmgCCPP52imlKiIti
+    name: HIRIGOYEN - GUEZALA
+  - id: yUc5ZAULJxjNlRszDiKI
+    name: PINATEL - URTASUN
+  - id: ykCV7EoT95zp4Vty8ir2
+    name: Prebende - Arotcarena
+series:
+  - name: 1re Série
+    poules:
+      - name: A
+        teams:
+          - LuROdQFkqlAno98kiAoi
+          - ykCV7EoT95zp4Vty8ir2
+          - KfYZwEny8mgXdwgIbnoO
+          - 1qSwZb4phS2KviBYSfDd
+        games:
+          - team1: LuROdQFkqlAno98kiAoi
+            team2: ykCV7EoT95zp4Vty8ir2
+            date: '2026-05-07T15:30:00.000Z'
+          - team1: ykCV7EoT95zp4Vty8ir2
+            team2: 1qSwZb4phS2KviBYSfDd
+            date: '2026-04-30T15:30:00.000Z'
+          - team1: LuROdQFkqlAno98kiAoi
+            team2: 1qSwZb4phS2KviBYSfDd
+            date: '2026-05-19T15:30:00.000Z'
+          - team1: KfYZwEny8mgXdwgIbnoO
+            team2: ykCV7EoT95zp4Vty8ir2
+            score1: 15
+            score2: 30
+            date: '2026-04-06T16:30:00.000Z'
+            referees:
+              - Gillen
+              - Bixente
+          - team1: 1qSwZb4phS2KviBYSfDd
+            team2: KfYZwEny8mgXdwgIbnoO
+            date: '2026-05-11T17:30:00.000Z'
+          - team1: LuROdQFkqlAno98kiAoi
+            team2: KfYZwEny8mgXdwgIbnoO
+            date: '2026-05-26T17:30:00.000Z'
+            referees:
+              - Médéric
+      - name: C
+        teams:
+          - ePZglkWvCzdWKwGXIAA8
+          - T31ydbqfQlnNYMJ1AeJG
+          - 1zRed4ZftF97EGsGMhSf
+          - OP9iv5UAVPkCEpylJDC5
+        games:
+          - team1: ePZglkWvCzdWKwGXIAA8
+            team2: T31ydbqfQlnNYMJ1AeJG
+            score1: 19
+            score2: 30
+            date: '2026-04-14T16:30:00.000Z'
+            referees:
+              - Gillen
+              - Peio
+          - team1: ePZglkWvCzdWKwGXIAA8
+            team2: OP9iv5UAVPkCEpylJDC5
+          - team1: ePZglkWvCzdWKwGXIAA8
+            team2: 1zRed4ZftF97EGsGMhSf
+            date: '2026-05-12T17:30:00.000Z'
+          - team1: T31ydbqfQlnNYMJ1AeJG
+            team2: 1zRed4ZftF97EGsGMhSf
+            date: '2026-05-07T16:30:00.000Z'
+          - team1: 1zRed4ZftF97EGsGMhSf
+            team2: OP9iv5UAVPkCEpylJDC5
+            score1: 30
+            score2: 16
+            date: '2026-04-20T17:30:00.000Z'
+            referees:
+              - Alexandre
+              - Bixente
+          - team1: T31ydbqfQlnNYMJ1AeJG
+            team2: OP9iv5UAVPkCEpylJDC5
+            date: '2026-05-29T16:30:00.000Z'
+      - name: B
+        teams:
+          - NVICMyjvNzuucppMZHll
+          - vNJXlUUBPUP2YJtaXPgX
+          - Xdg8xhbtTlEfvo4caC0D
+          - 2VgWYyLEUA789l364fQ0
+          - Z3fESni9b1mou5zT6DkK
+        games:
+          - team1: Xdg8xhbtTlEfvo4caC0D
+            team2: 2VgWYyLEUA789l364fQ0
+            date: '2026-04-29T17:30:00.000Z'
+            referees:
+              - Michel
+          - team1: NVICMyjvNzuucppMZHll
+            team2: vNJXlUUBPUP2YJtaXPgX
+            date: '2026-05-29T15:30:00.000Z'
+          - team1: Xdg8xhbtTlEfvo4caC0D
+            team2: Z3fESni9b1mou5zT6DkK
+            date: '2026-05-05T17:30:00.000Z'
+          - team1: NVICMyjvNzuucppMZHll
+            team2: Z3fESni9b1mou5zT6DkK
+            date: '2026-05-15T16:30:00.000Z'
+          - team1: 2VgWYyLEUA789l364fQ0
+            team2: Z3fESni9b1mou5zT6DkK
+            date: '2026-05-08T16:30:00.000Z'
+          - team1: NVICMyjvNzuucppMZHll
+            team2: 2VgWYyLEUA789l364fQ0
+            date: '2026-05-05T15:30:00.000Z'
+          - team1: NVICMyjvNzuucppMZHll
+            team2: Xdg8xhbtTlEfvo4caC0D
+            date: '2026-05-21T17:30:00.000Z'
+          - team1: vNJXlUUBPUP2YJtaXPgX
+            team2: Xdg8xhbtTlEfvo4caC0D
+            date: '2026-05-14T16:30:00.000Z'
+          - team1: vNJXlUUBPUP2YJtaXPgX
+            team2: Z3fESni9b1mou5zT6DkK
+          - team1: vNJXlUUBPUP2YJtaXPgX
+            team2: 2VgWYyLEUA789l364fQ0
+            date: '2026-05-22T17:30:00.000Z'
+            referees:
+              - Médéric
+  - name: Mixte
+    poules:
+      - name: E
+        teams:
+          - rXmgKGvO8nDVfOxEMbA5
+          - rXGLOzz8ldk0uqVCy8gl
+          - 4ixmu2wD8Hi5bUPs4eo6
+          - pkEJdEL05z4Z1zQVXviY
+        games:
+          - team1: 4ixmu2wD8Hi5bUPs4eo6
+            team2: pkEJdEL05z4Z1zQVXviY
+            date: '2026-05-27T15:30:00.000Z'
+          - team1: rXGLOzz8ldk0uqVCy8gl
+            team2: 4ixmu2wD8Hi5bUPs4eo6
+            date: '2026-05-20T15:30:00.000Z'
+          - team1: rXmgKGvO8nDVfOxEMbA5
+            team2: 4ixmu2wD8Hi5bUPs4eo6
+            date: '2026-05-13T16:30:00.000Z'
+          - team1: rXmgKGvO8nDVfOxEMbA5
+            team2: pkEJdEL05z4Z1zQVXviY
+          - team1: rXmgKGvO8nDVfOxEMbA5
+            team2: rXGLOzz8ldk0uqVCy8gl
+            score1: 27
+            score2: 30
+            date: '2026-04-15T15:30:00.000Z'
+            referees:
+              - Peio
+          - team1: rXGLOzz8ldk0uqVCy8gl
+            team2: pkEJdEL05z4Z1zQVXviY
+            date: '2026-04-29T15:30:00.000Z'
+            referees:
+              - Médéric
+      - name: A
+        teams:
+          - wX4JkzF2Fc6huOnkl1bC
+          - N8tL4eIVfpVfSd1ODfrW
+          - OnF7M20uif0wmpxF7We5
+          - wV9huwsck0oAH1BqtbIU
+        games:
+          - team1: N8tL4eIVfpVfSd1ODfrW
+            team2: wV9huwsck0oAH1BqtbIU
+            score1: 30
+            score2: 12
+            date: '2026-04-13T15:30:00.000Z'
+            referees:
+              - Bixente
+          - team1: wX4JkzF2Fc6huOnkl1bC
+            team2: wV9huwsck0oAH1BqtbIU
+            score1: 30
+            score2: 10
+            date: '2026-04-10T17:30:00.000Z'
+            referees:
+              - Michel
+          - team1: N8tL4eIVfpVfSd1ODfrW
+            team2: OnF7M20uif0wmpxF7We5
+            score1: 30
+            score2: 23
+            date: '2026-04-06T15:30:00.000Z'
+            referees:
+              - Alexandre
+              - Bixente
+          - team1: OnF7M20uif0wmpxF7We5
+            team2: wV9huwsck0oAH1BqtbIU
+            date: '2026-05-08T17:30:00.000Z'
+          - team1: wX4JkzF2Fc6huOnkl1bC
+            team2: N8tL4eIVfpVfSd1ODfrW
+            date: '2026-05-26T16:30:00.000Z'
+          - team1: wX4JkzF2Fc6huOnkl1bC
+            team2: OnF7M20uif0wmpxF7We5
+      - name: D
+        teams:
+          - U2kTinT2AV5sdkje76DS
+          - 5TYcRvGqTB7aoi8PpvmO
+          - o4plmC06XFYm91jnpqXD
+          - RfD6OyS0i5rC3Tc6Zknd
+        games:
+          - team1: 5TYcRvGqTB7aoi8PpvmO
+            team2: RfD6OyS0i5rC3Tc6Zknd
+            score1: 15
+            score2: 30
+            date: '2026-04-17T15:30:00.000Z'
+            referees:
+              - Michel
+          - team1: o4plmC06XFYm91jnpqXD
+            team2: RfD6OyS0i5rC3Tc6Zknd
+            score1: 30
+            score2: 15
+            date: '2026-04-08T15:30:00.000Z'
+            referees:
+              - Gaylor
+              - Peio
+          - team1: U2kTinT2AV5sdkje76DS
+            team2: RfD6OyS0i5rC3Tc6Zknd
+            date: '2026-05-11T16:30:00.000Z'
+          - team1: 5TYcRvGqTB7aoi8PpvmO
+            team2: o4plmC06XFYm91jnpqXD
+            score1: 5
+            score2: 30
+            date: '2026-04-14T17:30:00.000Z'
+            referees:
+              - Gillen
+              - Peio
+          - team1: U2kTinT2AV5sdkje76DS
+            team2: o4plmC06XFYm91jnpqXD
+            date: '2026-05-28T16:30:00.000Z'
+          - team1: U2kTinT2AV5sdkje76DS
+            team2: 5TYcRvGqTB7aoi8PpvmO
+            date: '2026-05-15T17:30:00.000Z'
+      - name: B
+        teams:
+          - xAsxmgCCPP52imlKiIti
+          - IsrWwggJVBjUnB3osUyd
+          - UcDQk7WZwpV4jnkO3YpF
+          - MnfQ8jgKTCGEI4pjHxzi
+        games:
+          - team1: xAsxmgCCPP52imlKiIti
+            team2: MnfQ8jgKTCGEI4pjHxzi
+            date: '2026-05-25T16:30:00.000Z'
+          - team1: IsrWwggJVBjUnB3osUyd
+            team2: UcDQk7WZwpV4jnkO3YpF
+            date: '2026-05-18T15:30:00.000Z'
+          - team1: IsrWwggJVBjUnB3osUyd
+            team2: MnfQ8jgKTCGEI4pjHxzi
+            date: '2026-04-28T15:30:00.000Z'
+            referees:
+              - Peio
+              - Gillen
+          - team1: xAsxmgCCPP52imlKiIti
+            team2: IsrWwggJVBjUnB3osUyd
+            date: '2026-05-06T17:30:00.000Z'
+          - team1: xAsxmgCCPP52imlKiIti
+            team2: UcDQk7WZwpV4jnkO3YpF
+            score1: 23
+            score2: 30
+            date: '2026-04-22T16:30:00.000Z'
+            referees:
+              - Gillen
+          - team1: UcDQk7WZwpV4jnkO3YpF
+            team2: MnfQ8jgKTCGEI4pjHxzi
+            date: '2026-05-14T15:30:00.000Z'
+      - name: C
+        teams:
+          - tVlR2e9USq6XflChzXtM
+          - vDiHwZW3pf0jvlsseNlX
+          - 8AKF2Ve2n7cyrFLH2BIA
+          - w2GbbyMPWlcW6GMvEbth
+        games:
+          - team1: vDiHwZW3pf0jvlsseNlX
+            team2: w2GbbyMPWlcW6GMvEbth
+            date: '2026-04-24T16:30:00.000Z'
+            referees:
+              - Michel
+          - team1: 8AKF2Ve2n7cyrFLH2BIA
+            team2: w2GbbyMPWlcW6GMvEbth
+            date: '2026-05-20T17:30:00.000Z'
+          - team1: tVlR2e9USq6XflChzXtM
+            team2: 8AKF2Ve2n7cyrFLH2BIA
+            date: '2026-05-07T17:30:00.000Z'
+          - team1: vDiHwZW3pf0jvlsseNlX
+            team2: 8AKF2Ve2n7cyrFLH2BIA
+            date: '2026-05-29T17:30:00.000Z'
+          - team1: tVlR2e9USq6XflChzXtM
+            team2: w2GbbyMPWlcW6GMvEbth
+            date: '2026-05-27T17:30:00.000Z'
+          - team1: tVlR2e9USq6XflChzXtM
+            team2: vDiHwZW3pf0jvlsseNlX
+  - name: Féminines
+    poules:
+      - name: A
+        teams:
+          - a0AZaTxigD3pm2wWscpX
+          - EIIEKbZElHrl8QcxSfBT
+          - 98U0n5EDG4oyGxV0XUDJ
+          - yUc5ZAULJxjNlRszDiKI
+          - NJBrEv4i3NQZAN4DLebQ
+          - DAtLNxYFlsHPMPAgymng
+        games:
+          - team1: NJBrEv4i3NQZAN4DLebQ
+            team2: yUc5ZAULJxjNlRszDiKI
+            date: '2026-04-27T17:30:00.000Z'
+            referees:
+              - Peio
+          - team1: EIIEKbZElHrl8QcxSfBT
+            team2: DAtLNxYFlsHPMPAgymng
+            date: '2026-04-28T16:30:00.000Z'
+            referees:
+              - Peio
+          - team1: yUc5ZAULJxjNlRszDiKI
+            team2: DAtLNxYFlsHPMPAgymng
+            date: '2026-05-04T17:30:00.000Z'
+          - team1: NJBrEv4i3NQZAN4DLebQ
+            team2: a0AZaTxigD3pm2wWscpX
+          - team1: a0AZaTxigD3pm2wWscpX
+            team2: 98U0n5EDG4oyGxV0XUDJ
+            date: '2026-05-14T17:30:00.000Z'
+          - team1: a0AZaTxigD3pm2wWscpX
+            team2: EIIEKbZElHrl8QcxSfBT
+            date: '2026-05-20T16:30:00.000Z'
+          - team1: a0AZaTxigD3pm2wWscpX
+            team2: yUc5ZAULJxjNlRszDiKI
+            date: '2026-05-06T15:30:00.000Z'
+          - team1: NJBrEv4i3NQZAN4DLebQ
+            team2: DAtLNxYFlsHPMPAgymng
+          - team1: EIIEKbZElHrl8QcxSfBT
+            team2: NJBrEv4i3NQZAN4DLebQ
+          - team1: EIIEKbZElHrl8QcxSfBT
+            team2: yUc5ZAULJxjNlRszDiKI
+            date: '2026-04-30T17:30:00.000Z'
+          - team1: DAtLNxYFlsHPMPAgymng
+            team2: a0AZaTxigD3pm2wWscpX
+            date: '2026-05-06T16:30:00.000Z'
+          - team1: 98U0n5EDG4oyGxV0XUDJ
+            team2: NJBrEv4i3NQZAN4DLebQ
+            score1: 30
+            score2: 25
+            date: '2026-04-23T17:30:00.000Z'
+            referees:
+              - Peio
+          - team1: 98U0n5EDG4oyGxV0XUDJ
+            team2: yUc5ZAULJxjNlRszDiKI
+            date: '2026-05-21T16:30:00.000Z'
+          - team1: EIIEKbZElHrl8QcxSfBT
+            team2: 98U0n5EDG4oyGxV0XUDJ
+            score1: 30
+            score2: 19
+            date: '2026-04-16T17:30:00.000Z'
+            referees:
+              - Michel
+          - team1: 98U0n5EDG4oyGxV0XUDJ
+            team2: DAtLNxYFlsHPMPAgymng
+            score1: 30
+            score2: 20
+            date: '2026-04-21T17:30:00.000Z'
+            referees:
+              - Médéric
+              - Bixente
+  - name: 2me Série
+    poules:
+      - name: F
+        teams:
+          - N6jVvCoxj2qPE8unGdJq
+          - qCfl5tJ9onqywak0Kgci
+          - Fy8uNxrkQJP47a12XnMK
+          - 1TdEnCk4Mb1iHTW7wEhy
+          - wWcXRKrQUc4qEIW3ww31
+        games:
+          - team1: qCfl5tJ9onqywak0Kgci
+            team2: wWcXRKrQUc4qEIW3ww31
+            date: '2026-05-27T16:30:00.000Z'
+          - team1: N6jVvCoxj2qPE8unGdJq
+            team2: 1TdEnCk4Mb1iHTW7wEhy
+            score1: 16
+            score2: 30
+            date: '2026-04-23T16:30:00.000Z'
+            referees:
+              - Michel
+          - team1: Fy8uNxrkQJP47a12XnMK
+            team2: wWcXRKrQUc4qEIW3ww31
+            score1: 30
+            score2: 25
+            date: '2026-04-13T16:30:00.000Z'
+            referees:
+              - Gillen
+              - Alexandre
+          - team1: qCfl5tJ9onqywak0Kgci
+            team2: 1TdEnCk4Mb1iHTW7wEhy
+            score1: 30
+            score2: 24
+            date: '2026-04-21T16:30:00.000Z'
+            referees:
+              - Médéric
+              - Bixente
+          - team1: N6jVvCoxj2qPE8unGdJq
+            team2: Fy8uNxrkQJP47a12XnMK
+            date: '2026-05-19T17:30:00.000Z'
+            referees:
+              - Médéric
+          - team1: N6jVvCoxj2qPE8unGdJq
+            team2: qCfl5tJ9onqywak0Kgci
+            date: '2026-05-12T16:30:00.000Z'
+          - team1: N6jVvCoxj2qPE8unGdJq
+            team2: wWcXRKrQUc4qEIW3ww31
+            date: '2026-04-29T16:30:00.000Z'
+            referees:
+              - Médéric
+          - team1: 1TdEnCk4Mb1iHTW7wEhy
+            team2: Fy8uNxrkQJP47a12XnMK
+            score1: 29
+            score2: 30
+            date: '2026-04-09T17:30:00.000Z'
+            referees:
+              - Médéric
+          - team1: 1TdEnCk4Mb1iHTW7wEhy
+            team2: wWcXRKrQUc4qEIW3ww31
+            score1: 30
+            score2: 11
+            date: '2026-04-09T16:30:00.000Z'
+            referees:
+              - Médéric
+              - Bixente
+          - team1: Fy8uNxrkQJP47a12XnMK
+            team2: qCfl5tJ9onqywak0Kgci
+            date: '2026-05-28T17:30:00.000Z'
+      - name: D
+        teams:
+          - EoVBcQFhAovPIPbXnocu
+          - 5QfWW3PwrVLru8pQggL3
+          - XsNXgZcKXszUpGO3lUPj
+          - JAz40kBnr6Vxc3R0dXM8
+        games:
+          - team1: EoVBcQFhAovPIPbXnocu
+            team2: JAz40kBnr6Vxc3R0dXM8
+            date: '2026-05-26T15:30:00.000Z'
+          - team1: 5QfWW3PwrVLru8pQggL3
+            team2: JAz40kBnr6Vxc3R0dXM8
+            date: '2026-04-27T15:30:00.000Z'
+            referees:
+              - Gillen
+          - team1: EoVBcQFhAovPIPbXnocu
+            team2: 5QfWW3PwrVLru8pQggL3
+            score1: 6
+            score2: 30
+            date: '2026-04-07T15:30:00.000Z'
+            referees:
+              - Gillen
+              - Gaylor
+          - team1: EoVBcQFhAovPIPbXnocu
+            team2: XsNXgZcKXszUpGO3lUPj
+          - team1: XsNXgZcKXszUpGO3lUPj
+            team2: JAz40kBnr6Vxc3R0dXM8
+            score1: 30
+            score2: 18
+            date: '2026-04-07T17:30:00.000Z'
+            referees:
+              - Gaylor
+              - Bastien
+          - team1: 5QfWW3PwrVLru8pQggL3
+            team2: XsNXgZcKXszUpGO3lUPj
+            date: '2026-05-28T15:30:00.000Z'
+      - name: B
+        teams:
+          - j6ziBlkR4UP8rH2oVgnj
+          - gqA7GdOsuKbeVD34SjKT
+          - pOOMyJGObDocgqi7Ehor
+          - ZyamtEzoGaBmbhs5MHFa
+        games:
+          - team1: j6ziBlkR4UP8rH2oVgnj
+            team2: ZyamtEzoGaBmbhs5MHFa
+            score1: 30
+            score2: 3
+            date: '2026-04-20T15:30:00.000Z'
+          - team1: gqA7GdOsuKbeVD34SjKT
+            team2: ZyamtEzoGaBmbhs5MHFa
+            date: '2026-05-11T15:30:00.000Z'
+          - team1: pOOMyJGObDocgqi7Ehor
+            team2: ZyamtEzoGaBmbhs5MHFa
+            score1: 30
+            score2: 18
+            date: '2026-04-16T15:30:00.000Z'
+            referees:
+              - Médéric
+              - Bixente
+          - team1: gqA7GdOsuKbeVD34SjKT
+            team2: pOOMyJGObDocgqi7Ehor
+            date: '2026-04-24T17:30:00.000Z'
+          - team1: j6ziBlkR4UP8rH2oVgnj
+            team2: gqA7GdOsuKbeVD34SjKT
+            date: '2026-05-04T15:30:00.000Z'
+          - team1: j6ziBlkR4UP8rH2oVgnj
+            team2: pOOMyJGObDocgqi7Ehor
+            date: '2026-05-21T15:30:00.000Z'
+      - name: C
+        teams:
+          - c7ckGmbGCSbrQkxn2ZcA
+          - ZfX9nna8CMX67Fu0Vu2b
+          - doeMvC5frt66FayDQKwp
+          - K2j1dw7mHax8zOEhnYcO
+        games:
+          - team1: ZfX9nna8CMX67Fu0Vu2b
+            team2: doeMvC5frt66FayDQKwp
+            score1: 26
+            score2: 30
+            date: '2026-04-10T15:30:00.000Z'
+            referees:
+              - Bixente
+              - Gaylor
+          - team1: c7ckGmbGCSbrQkxn2ZcA
+            team2: ZfX9nna8CMX67Fu0Vu2b
+            date: '2026-05-04T16:30:00.000Z'
+          - team1: doeMvC5frt66FayDQKwp
+            team2: K2j1dw7mHax8zOEhnYcO
+            date: '2026-05-19T16:30:00.000Z'
+            referees:
+              - Médéric
+          - team1: c7ckGmbGCSbrQkxn2ZcA
+            team2: doeMvC5frt66FayDQKwp
+            date: '2026-05-01T17:30:00.000Z'
+          - team1: c7ckGmbGCSbrQkxn2ZcA
+            team2: K2j1dw7mHax8zOEhnYcO
+            date: '2026-05-25T17:30:00.000Z'
+          - team1: ZfX9nna8CMX67Fu0Vu2b
+            team2: K2j1dw7mHax8zOEhnYcO
+      - name: A
+        teams:
+          - 1Q0KRsnsX2JRGqZMLPPq
+          - pq0KE0VdhfngWt13jBJC
+          - JNDz12rGoPC2Qr520oom
+          - Yh7LbWRvYkr11Xfkg5mX
+        games:
+          - team1: 1Q0KRsnsX2JRGqZMLPPq
+            team2: Yh7LbWRvYkr11Xfkg5mX
+            date: '2026-04-30T16:30:00.000Z'
+          - team1: pq0KE0VdhfngWt13jBJC
+            team2: JNDz12rGoPC2Qr520oom
+            score1: 30
+            score2: 29
+            date: '2026-04-22T15:30:00.000Z'
+            referees:
+              - Gillen
+          - team1: 1Q0KRsnsX2JRGqZMLPPq
+            team2: pq0KE0VdhfngWt13jBJC
+            date: '2026-05-25T15:30:00.000Z'
+          - team1: JNDz12rGoPC2Qr520oom
+            team2: Yh7LbWRvYkr11Xfkg5mX
+            score1: 30
+            score2: 23
+            date: '2026-04-16T16:30:00.000Z'
+            referees:
+              - Médéric
+              - Bixente
+          - team1: pq0KE0VdhfngWt13jBJC
+            team2: Yh7LbWRvYkr11Xfkg5mX
+            date: '2026-05-13T17:30:00.000Z'
+          - team1: 1Q0KRsnsX2JRGqZMLPPq
+            team2: JNDz12rGoPC2Qr520oom
+            score1: 30
+            score2: 24
+            date: '2026-04-20T16:30:00.000Z'
+            referees:
+              - Alexandre
+              - Bixente
+      - name: E
+        teams:
+          - i9bmFblGG0AKpeWJCkD5
+          - Ji5MqYNc4J6R04o6muFb
+          - saJtWvKNaYrHUML9UjSg
+          - aDFzsmvQlU3wiKd9ZOHf
+        games:
+          - team1: Ji5MqYNc4J6R04o6muFb
+            team2: saJtWvKNaYrHUML9UjSg
+            date: '2026-05-01T16:30:00.000Z'
+          - team1: i9bmFblGG0AKpeWJCkD5
+            team2: saJtWvKNaYrHUML9UjSg
+            date: '2026-05-22T16:30:00.000Z'
+            referees:
+              - Médéric
+          - team1: saJtWvKNaYrHUML9UjSg
+            team2: aDFzsmvQlU3wiKd9ZOHf
+            score1: 30
+            score2: 26
+            date: '2026-04-17T16:30:00.000Z'
+            referees:
+              - Bixente
+          - team1: i9bmFblGG0AKpeWJCkD5
+            team2: Ji5MqYNc4J6R04o6muFb
+            score1: 30
+            score2: 13
+            date: '2026-04-19T16:00:00.804Z'
+            referees:
+              - Bixente/Gaylord
+          - team1: Ji5MqYNc4J6R04o6muFb
+            team2: aDFzsmvQlU3wiKd9ZOHf
+            date: '2026-04-26T16:30:00.000Z'
+          - team1: i9bmFblGG0AKpeWJCkD5
+            team2: aDFzsmvQlU3wiKd9ZOHf
+            date: '2026-05-18T17:30:00.000Z'
+timeSlots:
+  # Avril
+  - '2026-04-27T15:30:00.000Z'
+  - '2026-04-27T16:30:00.000Z'
+  - '2026-04-27T17:30:00.000Z'
+  - '2026-04-28T15:30:00.000Z'
+  - '2026-04-28T16:30:00.000Z'
+  - '2026-04-28T17:30:00.000Z'
+  - '2026-04-29T15:30:00.000Z'
+  - '2026-04-29T16:30:00.000Z'
+  - '2026-04-29T17:30:00.000Z'
+  - '2026-04-30T15:30:00.000Z'
+  - '2026-04-30T16:30:00.000Z'
+  - '2026-04-30T17:30:00.000Z'
+  # Mai
+  - '2026-05-01T15:30:00.000Z'
+  - '2026-05-01T16:30:00.000Z'
+  - '2026-05-01T17:30:00.000Z'
+  - '2026-05-04T15:30:00.000Z'
+  - '2026-05-04T16:30:00.000Z'
+  - '2026-05-04T17:30:00.000Z'
+  - '2026-05-05T15:30:00.000Z'
+  - '2026-05-05T16:30:00.000Z'
+  - '2026-05-05T17:30:00.000Z'
+  - '2026-05-06T15:30:00.000Z'
+  - '2026-05-06T16:30:00.000Z'
+  - '2026-05-06T17:30:00.000Z'
+  - '2026-05-07T15:30:00.000Z'
+  - '2026-05-07T16:30:00.000Z'
+  - '2026-05-07T17:30:00.000Z'
+  - '2026-05-08T15:30:00.000Z'
+  - '2026-05-08T16:30:00.000Z'
+  - '2026-05-08T17:30:00.000Z'
+  - '2026-05-11T15:30:00.000Z'
+  - '2026-05-11T16:30:00.000Z'
+  - '2026-05-11T17:30:00.000Z'
+  - '2026-05-12T15:30:00.000Z'
+  - '2026-05-12T16:30:00.000Z'
+  - '2026-05-12T17:30:00.000Z'
+  - '2026-05-13T15:30:00.000Z'
+  - '2026-05-13T16:30:00.000Z'
+  - '2026-05-13T17:30:00.000Z'
+  - '2026-05-14T15:30:00.000Z'
+  - '2026-05-14T16:30:00.000Z'
+  - '2026-05-14T17:30:00.000Z'
+  - '2026-05-15T15:30:00.000Z'
+  - '2026-05-15T16:30:00.000Z'
+  - '2026-05-15T17:30:00.000Z'
+  - '2026-05-18T15:30:00.000Z'
+  - '2026-05-18T16:30:00.000Z'
+  - '2026-05-18T17:30:00.000Z'
+  - '2026-05-19T15:30:00.000Z'
+  - '2026-05-19T16:30:00.000Z'
+  - '2026-05-19T17:30:00.000Z'
+  - '2026-05-20T15:30:00.000Z'
+  - '2026-05-20T16:30:00.000Z'
+  - '2026-05-20T17:30:00.000Z'
+  - '2026-05-21T15:30:00.000Z'
+  - '2026-05-21T16:30:00.000Z'
+  - '2026-05-21T17:30:00.000Z'
+  - '2026-05-22T15:30:00.000Z'
+  - '2026-05-22T16:30:00.000Z'
+  - '2026-05-22T17:30:00.000Z'
+  - '2026-05-25T15:30:00.000Z'
+  - '2026-05-25T16:30:00.000Z'
+  - '2026-05-25T17:30:00.000Z'
+  - '2026-05-26T15:30:00.000Z'
+  - '2026-05-26T16:30:00.000Z'
+  - '2026-05-26T17:30:00.000Z'
+  - '2026-05-27T15:30:00.000Z'
+  - '2026-05-27T16:30:00.000Z'
+  - '2026-05-27T17:30:00.000Z'
+  - '2026-05-28T15:30:00.000Z'
+  - '2026-05-28T16:30:00.000Z'
+  - '2026-05-28T17:30:00.000Z'
+  - '2026-05-29T15:30:00.000Z'
+  - '2026-05-29T16:30:00.000Z'
+  - '2026-05-29T17:30:00.000Z'

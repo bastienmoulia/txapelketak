@@ -210,13 +210,17 @@ export class Games {
    * A slot is considered "free" if no game has the exact same date (millisecond precision).
    */
   freeSlots = computed((): FreeSlotRow[] => {
+    const now = Date.now();
     const gameDates = new Set(
       this.flatGamesByDate()
         .filter((g) => g.date)
         .map((g) => g.date!.getTime()),
     );
     return this.timeSlots()
-      .filter((ts) => !gameDates.has(ts.date.getTime()))
+      .filter((ts) => {
+        const slotTime = ts.date.getTime();
+        return slotTime >= now && !gameDates.has(slotTime);
+      })
       .map(
         (ts, i): FreeSlotRow => ({
           type: 'free-slot',

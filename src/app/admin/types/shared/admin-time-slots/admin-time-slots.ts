@@ -1,17 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { TimeSlot } from '../../../../tournaments/types/poules/poules';
 import { Tournament } from '../../../../home/tournament.interface';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
@@ -28,6 +22,7 @@ export class AdminTimeSlots {
   private firebaseService = inject(FirebaseService);
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
+  private datepickerConfig = inject(DatepickerConfigService);
 
   tournament = input.required<Tournament>();
   timeSlots = input<TimeSlot[]>([]);
@@ -38,6 +33,9 @@ export class AdminTimeSlots {
   sortedTimeSlots = computed(() =>
     [...this.timeSlots()].sort((a, b) => a.date.getTime() - b.date.getTime()),
   );
+
+  firstDayOfWeek = this.datepickerConfig.firstDayOfWeek;
+  datePickerFormat = this.datepickerConfig.datePickerFormat;
 
   async onAddTimeSlot(): Promise<void> {
     const date = this.newSlotDate();

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -12,6 +11,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Select } from 'primeng/select';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DatepickerConfigService } from '../../../../../shared/services/datepicker-config.service';
 import { Team } from '../../teams/teams';
 import { Poule } from '../../../poules/poules';
 import { UserRole } from '../../../../../home/tournament.interface';
@@ -53,6 +53,7 @@ export class GameFormDialog {
   private readonly translocoService = inject(TranslocoService);
   private readonly config = inject(DynamicDialogConfig<GameFormDialogData>);
   private readonly dialogRef = inject(DynamicDialogRef);
+  private readonly datepickerConfig = inject(DatepickerConfigService);
 
   data = this.config.data ?? {
     teams: [],
@@ -61,23 +62,9 @@ export class GameFormDialog {
     currentPoule: null,
   };
 
-  activeLanguage = toSignal(this.translocoService.langChanges$, {
-    initialValue: this.translocoService.getActiveLang(),
-  });
-
-  firstDayOfWeek = computed(() => {
-    this.activeLanguage();
-    return Number(this.translocoService.translate('datepicker.firstDayOfWeek'));
-  });
-
-  datePlaceholder = computed(() => {
-    this.activeLanguage();
-    return this.translocoService.translate('datepicker.placeholder');
-  });
-
-  datePickerFormat = computed(() => {
-    return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
-  });
+  firstDayOfWeek = this.datepickerConfig.firstDayOfWeek;
+  datePlaceholder = this.datepickerConfig.datePlaceholder;
+  datePickerFormat = this.datepickerConfig.datePickerFormat;
 
   gameDateString = '';
 
@@ -177,7 +164,7 @@ export class GameFormDialog {
     let day: number;
     let month: number;
 
-    if (this.activeLanguage() === 'en') {
+    if (this.datepickerConfig.activeLanguage() === 'en') {
       month = parseInt(dateParts[0], 10) - 1;
       day = parseInt(dateParts[1], 10);
     } else {
@@ -210,7 +197,7 @@ export class GameFormDialog {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    if (this.activeLanguage() === 'en') {
+    if (this.datepickerConfig.activeLanguage() === 'en') {
       return `${month}/${day}/${year} ${hours}:${minutes}`;
     }
 

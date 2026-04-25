@@ -15,6 +15,7 @@ import { Message } from 'primeng/message';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { Button } from 'primeng/button';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
@@ -110,6 +111,7 @@ export class Games {
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly datepickerConfig = inject(DatepickerConfigService);
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
@@ -123,10 +125,6 @@ export class Games {
 
   showOnlyFreeSlots = signal(false);
 
-  activeLanguage = toSignal(this.translocoService.langChanges$, {
-    initialValue: this.translocoService.getActiveLang(),
-  });
-
   private teamIdFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
       map((params) => params.get(GAMES_TEAM_FILTER_QUERY_PARAM)),
@@ -137,19 +135,10 @@ export class Games {
   selectedTeamId = computed(() => this.teamIdFromUrl());
   selectedDateFilter = signal<Date | null>(null);
 
-  firstDayOfWeek = computed(() => {
-    this.activeLanguage(); // reactive dependency: re-evaluate on lang change
-    return Number(this.translocoService.translate('datepicker.firstDayOfWeek'));
-  });
-
-  datePlaceholder = computed(() => {
-    this.activeLanguage();
-    return this.translocoService.translate('datepicker.placeholder');
-  });
-
-  datePickerFormat = computed(() => {
-    return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
-  });
+  firstDayOfWeek = this.datepickerConfig.firstDayOfWeek;
+  datePlaceholder = this.datepickerConfig.datePlaceholder;
+  datePickerFormat = this.datepickerConfig.datePickerFormat;
+  activeLanguage = this.datepickerConfig.activeLanguage;
 
   gamesByDate = computed((): GamesDateGroup[] => {
     const dateMap = new Map<string, GameByDate[]>();
@@ -200,12 +189,6 @@ export class Games {
   });
 
   filteredFlatGamesByDate = computed((): GameByDate[] => {
-    console.log(
-      'filtering games with selectedTeamId=',
-      this.selectedTeamId(),
-      'and selectedDateFilter=',
-      this.selectedDateFilter(),
-    );
     const teamId = this.selectedTeamId();
     const selectedDate = this.selectedDateFilter();
     const games = this.flatGamesByDate();

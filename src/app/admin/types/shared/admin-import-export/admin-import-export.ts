@@ -214,8 +214,8 @@ export class AdminImportExport {
 
     if (timeSlots.length > 0) {
       result.timeSlots = timeSlots
-        .map((ts) => ts.date.toISOString())
-        .sort();
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .map((ts) => ts.date.toISOString());
     }
 
     return result;

@@ -1,0 +1,31 @@
+tournament:
+  name: Score Standings Seed
+  description: Seed data for score entry and standings E2E tests
+  type: poules
+  status: ongoing
+teams:
+  - id: score-team-alpha
+    name: Score Team Alpha
+  - id: score-team-beta
+    name: Score Team Beta
+  - id: score-team-gamma
+    name: Score Team Gamma
+series:
+  - name: Score Serie
+    poules:
+      - name: Score Poule
+        teams:
+          - score-team-alpha
+          - score-team-beta
+          - score-team-gamma
+        games:
+          - team1: score-team-alpha
+            team2: score-team-beta
+            score1: 21
+            score2: 15
+          - team1: score-team-alpha
+            team2: score-team-gamma
+            score1: 18
+            score2: 21
+          - team1: score-team-beta
+            team2: score-team-gamma

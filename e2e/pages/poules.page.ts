@@ -27,6 +27,7 @@ export class PoulesPage {
 
   async ensureSerieExpanded(serieName: string): Promise<void> {
     const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
+    await seriePanel.scrollIntoViewIfNeeded();
     const content = seriePanel.locator('p-accordion-content');
     const isVisible = await content.isVisible();
     if (!isVisible) {
@@ -105,6 +106,7 @@ export class PoulesPage {
     await this.ensureSerieExpanded(serieName);
     const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
+    await pouleCard.scrollIntoViewIfNeeded();
     await pouleCard.getByTestId('edit-poule-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -121,6 +123,7 @@ export class PoulesPage {
     await this.ensureSerieExpanded(serieName);
     const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
+    await pouleCard.scrollIntoViewIfNeeded();
     await pouleCard.getByTestId('delete-poule-button').click();
     const dialog = this.page
       .locator('.p-dialog')

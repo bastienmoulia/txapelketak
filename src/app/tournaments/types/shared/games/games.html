@@ -125,16 +125,8 @@
               <td [attr.data-label]="'admin.games.team1' | transloco">
                 <span
                   class="font-medium"
-                  [class.text-green-500]="
-                    game.scoreTeam1 != null &&
-                    game.scoreTeam2 != null &&
-                    game.scoreTeam1 > game.scoreTeam2
-                  "
-                  [class.text-red-500]="
-                    game.scoreTeam1 != null &&
-                    game.scoreTeam2 != null &&
-                    game.scoreTeam1 < game.scoreTeam2
-                  "
+                  [class.text-green-500]="game | call: isTeam1WinningGame"
+                  [class.text-red-500]="game | call: isTeam1LosingGame"
                   >{{ game.team1Name }}</span
                 >
               </td>
@@ -142,12 +134,8 @@
                 <span class="font-bold">
                   @if (game.scoreTeam1 || game.scoreTeam1 === 0) {
                     <span
-                      [class.text-green-500]="
-                        game.scoreTeam2 != null && game.scoreTeam1 > game.scoreTeam2
-                      "
-                      [class.text-red-500]="
-                        game.scoreTeam2 != null && game.scoreTeam1 < game.scoreTeam2
-                      "
+                      [class.text-green-500]="game | call: isTeam1WinningGame"
+                      [class.text-red-500]="game | call: isTeam1LosingGame"
                       >{{ game.scoreTeam1 }}</span
                     >
                   } @else {
@@ -156,12 +144,8 @@
                   <span aria-hidden="true">&ndash;</span>
                   @if (game.scoreTeam2 || game.scoreTeam2 === 0) {
                     <span
-                      [class.text-green-500]="
-                        game.scoreTeam1 != null && game.scoreTeam2 > game.scoreTeam1
-                      "
-                      [class.text-red-500]="
-                        game.scoreTeam1 != null && game.scoreTeam2 < game.scoreTeam1
-                      "
+                      [class.text-green-500]="game | call: isTeam2WinningGame"
+                      [class.text-red-500]="game | call: isTeam2LosingGame"
                       >{{ game.scoreTeam2 }}</span
                     >
                   } @else {
@@ -172,16 +156,8 @@
               <td [attr.data-label]="'admin.games.team2' | transloco">
                 <span
                   class="font-medium"
-                  [class.text-green-500]="
-                    game.scoreTeam1 != null &&
-                    game.scoreTeam2 != null &&
-                    game.scoreTeam2 > game.scoreTeam1
-                  "
-                  [class.text-red-500]="
-                    game.scoreTeam1 != null &&
-                    game.scoreTeam2 != null &&
-                    game.scoreTeam2 < game.scoreTeam1
-                  "
+                  [class.text-green-500]="game | call: isTeam2WinningGame"
+                  [class.text-red-500]="game | call: isTeam2LosingGame"
                   >{{ game.team2Name }}</span
                 >
               </td>

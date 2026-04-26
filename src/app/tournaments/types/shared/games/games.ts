@@ -31,6 +31,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { CallPipe } from 'ngxtension/call-apply';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -99,6 +100,7 @@ export type ScheduleRow = GameByDate | FreeSlotRow;
     FormsModule,
     ConfirmDialogModule,
     ToggleSwitchModule,
+    CallPipe,
   ],
   providers: [DialogService, ConfirmationService],
   templateUrl: './games.html',
@@ -139,6 +141,18 @@ export class Games {
   datePlaceholder = this.datepickerConfig.datePlaceholder;
   datePickerFormat = this.datepickerConfig.datePickerFormat;
   activeLanguage = this.datepickerConfig.activeLanguage;
+
+  readonly isTeam1WinningGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam1 > game.scoreTeam2;
+
+  readonly isTeam1LosingGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam1 < game.scoreTeam2;
+
+  readonly isTeam2WinningGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam2 > game.scoreTeam1;
+
+  readonly isTeam2LosingGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam2 < game.scoreTeam1;
 
   gamesByDate = computed((): GamesDateGroup[] => {
     const dateMap = new Map<string, GameByDate[]>();

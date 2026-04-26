@@ -42,7 +42,7 @@
           {{ 'tournaments.detail.loading' | transloco }}
         </div>
       } @else {
-        <app-games [series]="series()" [teams]="teams()" [tournament]="tournament()" />
+        <app-games [series]="series()" [teams]="teams()" [tournament]="tournament()" [timeSlots]="timeSlots()" />
       }
     </p-tabpanel>
   </p-tabpanels>

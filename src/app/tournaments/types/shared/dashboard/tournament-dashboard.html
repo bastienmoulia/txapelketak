@@ -198,6 +198,20 @@
                     }}</span>
                   }
                 </div>
+                <div class="flex justify-end">
+                  <p-button
+                    type="button"
+                    size="small"
+                    severity="secondary"
+                    [outlined]="true"
+                    icon="pi pi-pencil"
+                    [pTooltip]="'shared.actions.edit' | transloco"
+                    tooltipPosition="top"
+                    [ariaLabel]="'shared.actions.edit' | transloco"
+                    (onClick)="onEditOverdueGame(game)"
+                    data-testid="dashboard-overdue-game-edit-button"
+                  />
+                </div>
               }
             </li>
           }

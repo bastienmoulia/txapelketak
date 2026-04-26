@@ -171,32 +171,54 @@
               '_' +
               game.pouleName
           ) {
-            <li class="upcoming-game-item overdue-game-item" data-testid="dashboard-overdue-game">
-              <div class="upcoming-game-teams">
-                <span class="font-semibold">{{ game.team1Name }}</span>
-                <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
-                <span class="font-semibold">{{ game.team2Name }}</span>
-              </div>
-              <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
-                <i class="pi pi-clock text-xs mr-1"></i>
-                {{ game.date | date: 'short' : undefined : dateLocale() }}
-                <span class="mx-1">·</span>
-                {{ game.serieName }} – {{ game.pouleName }}
+            <li
+              class="upcoming-game-item overdue-game-item"
+              data-testid="dashboard-overdue-game"
+              [class.upcoming-game-teams-editable]="role() === 'admin' || role() === 'organizer'"
+            >
+              <div>
+                <div class="upcoming-game-teams">
+                  <span class="font-semibold">{{ game.team1Name }}</span>
+                  <span class="text-[var(--p-text-muted-color)] mx-1">vs</span>
+                  <span class="font-semibold">{{ game.team2Name }}</span>
+                </div>
+                <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
+                  <i class="pi pi-clock text-xs mr-1"></i>
+                  {{ game.date | date: 'short' : undefined : dateLocale() }}
+                  <span class="mx-1">·</span>
+                  {{ game.serieName }} – {{ game.pouleName }}
+                </div>
+                @if (role() === 'admin' || role() === 'organizer') {
+                  <div
+                    class="upcoming-game-meta text-sm"
+                    data-testid="dashboard-overdue-game-referees"
+                  >
+                    @if (game.referees.length > 0) {
+                      <i
+                        class="pi pi-user text-xs mr-1 text-[var(--p-text-muted-color)]"
+                        aria-hidden="true"
+                      ></i>
+                      <span class="text-[var(--p-text-muted-color)]">{{
+                        game.referees.join(', ')
+                      }}</span>
+                    }
+                  </div>
+                }
               </div>
               @if (role() === 'admin' || role() === 'organizer') {
-                <div
-                  class="upcoming-game-meta text-sm"
-                  data-testid="dashboard-overdue-game-referees"
-                >
-                  @if (game.referees.length > 0) {
-                    <i
-                      class="pi pi-user text-xs mr-1 text-[var(--p-text-muted-color)]"
-                      aria-hidden="true"
-                    ></i>
-                    <span class="text-[var(--p-text-muted-color)]">{{
-                      game.referees.join(', ')
-                    }}</span>
-                  }
+                <div class="flex justify-end">
+                  <p-button
+                    type="button"
+                    size="small"
+                    severity="secondary"
+                    [outlined]="true"
+                    icon="pi pi-pencil"
+                    [pTooltip]="'shared.actions.edit' | transloco"
+                    tooltipPosition="top"
+                    [ariaLabel]="'shared.actions.edit' | transloco"
+                    (onClick)="onEditOverdueGame(game)"
+                    data-testid="dashboard-overdue-game-edit-button"
+                  />
                 </div>
               }
             </li>

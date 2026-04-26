@@ -114,6 +114,12 @@
   padding-bottom: 0;
 }
 
+.upcoming-game-teams-editable {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .upcoming-game-teams {
   display: flex;
   align-items: center;

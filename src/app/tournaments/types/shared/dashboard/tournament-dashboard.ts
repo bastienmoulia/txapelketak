@@ -6,20 +6,26 @@ import {
   DestroyRef,
   inject,
   input,
+  output,
   signal,
   viewChild,
   ElementRef,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { Team } from '../teams/teams';
-import { Game, Serie } from '../../poules/poules';
+import { Game, Poule, Serie } from '../../poules/poules';
 import { MarkdownService } from '../../../../shared/services/markdown.service';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
+import { GameFormDialog } from '../games/game-form-dialog/game-form-dialog';
+import { SaveGameEvent } from '../games/games';
+import { DocumentReference } from '@angular/fire/firestore';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -31,6 +37,12 @@ export interface UpcomingGame {
   serieName: string;
   pouleName: string;
   referees: string[];
+  gameRef: DocumentReference;
+  pouleRef: DocumentReference;
+  refTeam1: DocumentReference;
+  refTeam2: DocumentReference;
+  scoreTeam1?: number | null;
+  scoreTeam2?: number | null;
 }
 
 export interface RecentGame {
@@ -46,7 +58,8 @@ export interface RecentGame {
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe, MessageModule],
+  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe, MessageModule, TooltipModule],
+  providers: [DialogService],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,12 +68,16 @@ export class TournamentDashboard {
   private markdownService = inject(MarkdownService);
   private datepickerConfig = inject(DatepickerConfigService);
   private destroyRef = inject(DestroyRef);
+  private dialogService = inject(DialogService);
+  private translocoService = inject(TranslocoService);
 
   tournament = input.required<Tournament>();
   teams = input<Team[]>([]);
   series = input<Serie[]>([]);
   loading = input(false);
   role = input<UserRole | ''>('');
+
+  saveGame = output<SaveGameEvent>();
 
   descriptionEl = viewChild<ElementRef<HTMLElement>>('descriptionEl');
 
@@ -163,6 +180,12 @@ export class TournamentDashboard {
               serieName: serie.name,
               pouleName: poule.name,
               referees: game.referees ?? [],
+              gameRef: game.ref,
+              pouleRef: poule.ref,
+              refTeam1: game.refTeam1,
+              refTeam2: game.refTeam2,
+              scoreTeam1: game.scoreTeam1 ?? null,
+              scoreTeam2: game.scoreTeam2 ?? null,
             });
           }
         }
@@ -194,6 +217,12 @@ export class TournamentDashboard {
               serieName: serie.name,
               pouleName: poule.name,
               referees: game.referees ?? [],
+              gameRef: game.ref,
+              pouleRef: poule.ref,
+              refTeam1: game.refTeam1,
+              refTeam2: game.refTeam2,
+              scoreTeam1: game.scoreTeam1 ?? null,
+              scoreTeam2: game.scoreTeam2 ?? null,
             });
           }
         }
@@ -303,6 +332,45 @@ export class TournamentDashboard {
 
   toggleDescription(): void {
     this.descriptionExpanded.update((v) => !v);
+  }
+
+  onEditOverdueGame(game: UpcomingGame): void {
+    const poule = this.findPouleByRef(game.pouleRef);
+    if (!poule) return;
+
+    const dialogRef = this.dialogService.open(GameFormDialog, {
+      header: this.translocoService.translate('admin.games.dialogEditGame'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: {
+        teams: this.teams(),
+        role: this.role(),
+        isEditing: true,
+        currentPoule: poule,
+        initialTeam1Ref: game.refTeam1,
+        initialTeam2Ref: game.refTeam2,
+        initialScoreTeam1: game.scoreTeam1,
+        initialScoreTeam2: game.scoreTeam2,
+        initialDate: game.date,
+        initialReferees: game.referees,
+        gameRef: game.gameRef,
+      },
+    });
+    dialogRef?.onClose.subscribe((result: SaveGameEvent | undefined) => {
+      if (result) {
+        this.saveGame.emit({ ...result, gameRef: game.gameRef });
+      }
+    });
+  }
+
+  private findPouleByRef(pouleRef: DocumentReference): Poule | undefined {
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        if (poule.ref?.id === pouleRef?.id) return poule;
+      }
+    }
+    return undefined;
   }
 
   private buildTeamNameMap(): Map<string, string> {

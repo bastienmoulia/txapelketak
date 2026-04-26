@@ -19,6 +19,7 @@ import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
 import { MarkdownService } from '../../../../shared/services/markdown.service';
+import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -52,6 +53,7 @@ export interface RecentGame {
 })
 export class TournamentDashboard {
   private markdownService = inject(MarkdownService);
+  private datepickerConfig = inject(DatepickerConfigService);
   private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
@@ -65,6 +67,7 @@ export class TournamentDashboard {
   descriptionExpanded = signal(false);
   descriptionOverflows = signal(false);
   readonly nowMs = signal(Date.now());
+  readonly dateLocale = this.datepickerConfig.activeLanguage;
 
   constructor() {
     const staleGamesTickInterval = setInterval(() => {

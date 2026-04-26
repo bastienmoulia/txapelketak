@@ -37,6 +37,7 @@ export class AdminTimeSlots {
   firstDayOfWeek = this.datepickerConfig.firstDayOfWeek;
   datePickerFormat = this.datepickerConfig.datePickerFormat;
   datePlaceholder = this.datepickerConfig.datePlaceholder;
+  dateLocale = this.datepickerConfig.activeLanguage;
 
   async onAddTimeSlot(): Promise<void> {
     const date = this.newSlotDate();

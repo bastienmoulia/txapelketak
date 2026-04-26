@@ -23,6 +23,16 @@ export class DatepickerConfigService {
   });
 
   datePickerFormat = computed(() => {
-    return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
+    const lang = this.activeLanguage();
+
+    switch (lang) {
+      case 'en':
+        return 'mm/dd/yy';
+      case 'fr':
+      case 'es':
+      case 'eu':
+      default:
+        return 'dd/mm/yy';
+    }
   });
 }

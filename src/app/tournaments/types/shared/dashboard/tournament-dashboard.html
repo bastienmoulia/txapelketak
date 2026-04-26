@@ -179,7 +179,7 @@
               </div>
               <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
                 <i class="pi pi-clock text-xs mr-1"></i>
-                {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                {{ game.date | date: 'short' : undefined : dateLocale() }}
                 <span class="mx-1">·</span>
                 {{ game.serieName }} – {{ game.pouleName }}
               </div>
@@ -237,7 +237,7 @@
                 </div>
                 <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
                   <i class="pi pi-clock text-xs mr-1"></i>
-                  {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                  {{ game.date | date: 'short' : undefined : dateLocale() }}
                   <span class="mx-1">·</span>
                   {{ game.serieName }} – {{ game.pouleName }}
                 </div>
@@ -334,7 +334,7 @@
                 <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
                   @if (game.date) {
                     <i class="pi pi-clock text-xs mr-1"></i>
-                    {{ game.date | date: 'dd/MM/yyyy HH:mm' }}
+                    {{ game.date | date: 'short' : undefined : dateLocale() }}
                     <span class="mx-1">·</span>
                   }
                   {{ game.serieName }} – {{ game.pouleName }}

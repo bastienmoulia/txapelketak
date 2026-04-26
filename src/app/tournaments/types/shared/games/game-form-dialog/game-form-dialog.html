@@ -84,10 +84,20 @@
           [showIcon]="true"
           [showOnFocus]="false"
           [showTime]="true"
+          [stepMinute]="5"
           appendTo="body"
+          (onShow)="onDatepickerShow()"
           (onComplete)="onDateMaskComplete()"
           (onClear)="clearGameDate()"
-        />
+        >
+          <ng-template #date let-date>
+            @if (date | call: hasFreeSlot) {
+              <span class="free-slot-date">{{ date.day }}</span>
+            } @else {
+              {{ date.day }}
+            }
+          </ng-template>
+        </p-datepicker>
         <label for="gameDate">{{ 'admin.games.date' | transloco }}</label>
       </p-floatlabel>
     </div>

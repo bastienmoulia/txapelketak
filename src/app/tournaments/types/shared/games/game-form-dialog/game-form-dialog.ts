@@ -16,6 +16,7 @@ import { Team } from '../../teams/teams';
 import { Poule } from '../../../poules/poules';
 import { UserRole } from '../../../../../home/tournament.interface';
 import type { SaveGameEvent } from '../games';
+import { CallPipe } from 'ngxtension/call-apply';
 
 interface GameFormDialogData {
   teams: Team[];
@@ -29,6 +30,7 @@ interface GameFormDialogData {
   initialDate?: Date | null;
   initialReferees?: string[] | null;
   gameRef?: DocumentReference | null;
+  freeSlotDateKeys?: Set<string>;
 }
 
 @Component({
@@ -44,6 +46,7 @@ interface GameFormDialogData {
     AutoCompleteModule,
     Button,
     Message,
+    CallPipe,
   ],
   templateUrl: './game-form-dialog.html',
   styleUrl: './game-form-dialog.css',
@@ -116,9 +119,20 @@ export class GameFormDialog {
     () => !this.selectedTeam1Ref() || !this.selectedTeam2Ref() || this.isSameTeam(),
   );
 
+  hasFreeSlot = createHasFreeSlot(this.data.freeSlotDateKeys);
+
   constructor() {
     if (this.data.initialDate) {
       this.gameDateString = this.formatDateForMask(this.data.initialDate);
+    }
+  }
+
+  onDatepickerShow(): void {
+    if (!this.gameDate()) {
+      const now = new Date();
+      this.roundMinutesUp(now);
+      this.gameDate.set(now);
+      this.gameDateString = this.formatDateForMask(now);
     }
   }
 
@@ -178,9 +192,18 @@ export class GameFormDialog {
     const date = new Date(year, month, day, hours, minutes);
 
     if (!isNaN(date.getTime())) {
+      this.roundMinutesUp(date);
       this.gameDate.set(date);
       this.gameDateString = this.formatDateForMask(date);
     }
+  }
+
+  private roundMinutesUp(date: Date): void {
+    const remainder = date.getMinutes() % 5;
+    if (remainder !== 0) {
+      date.setMinutes(date.getMinutes() + (5 - remainder));
+    }
+    date.setSeconds(0, 0);
   }
 
   clearGameDate(): void {
@@ -203,4 +226,14 @@ export class GameFormDialog {
 
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   }
+}
+
+function createHasFreeSlot(
+  keys?: Set<string>,
+): (date: { day: number; month: number; year: number }) => boolean {
+  return (date) => {
+    if (!keys || keys.size === 0) return false;
+    const key = `${date.year}-${String(date.month + 1).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+    return keys.has(key);
+  };
 }

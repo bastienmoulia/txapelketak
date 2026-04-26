@@ -39,9 +39,19 @@ export class AdminTimeSlots {
   datePlaceholder = this.datepickerConfig.datePlaceholder;
   dateLocale = this.datepickerConfig.activeLanguage;
 
+  onDatepickerShow(): void {
+    if (!this.newSlotDate()) {
+      const now = new Date();
+      this.roundMinutesUp(now);
+      this.newSlotDate.set(now);
+    }
+  }
+
   async onAddTimeSlot(): Promise<void> {
     const date = this.newSlotDate();
     if (!date) return;
+
+    this.roundMinutesUp(date);
 
     const ref = this.tournament().ref;
     if (!ref) return;
@@ -58,6 +68,14 @@ export class AdminTimeSlots {
     } finally {
       this.isSaving.set(false);
     }
+  }
+
+  private roundMinutesUp(date: Date): void {
+    const remainder = date.getMinutes() % 5;
+    if (remainder !== 0) {
+      date.setMinutes(date.getMinutes() + (5 - remainder));
+    }
+    date.setSeconds(0, 0);
   }
 
   async onDeleteTimeSlot(timeSlotRef: DocumentReference): Promise<void> {

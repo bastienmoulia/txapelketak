@@ -7,11 +7,13 @@
       [showIcon]="true"
       [showButtonBar]="true"
       [showSeconds]="false"
+      [stepMinute]="5"
       [dateFormat]="datePickerFormat()"
       [firstDayOfWeek]="firstDayOfWeek()"
       [placeholder]="datePlaceholder()"
       appendTo="body"
       [placeholder]="datePlaceholder()"
+      (onShow)="onDatepickerShow()"
       data-testid="time-slot-datepicker"
     />
     <p-button
@@ -32,7 +34,9 @@
     <ul class="time-slots-list" data-testid="time-slots-list">
       @for (slot of sortedTimeSlots(); track slot.ref.id) {
         <li class="time-slot-pill">
-          <span class="time-slot-pill__date">{{ slot.date | date: 'short' : undefined : dateLocale() }}</span>
+          <span class="time-slot-pill__date">{{
+            slot.date | date: 'short' : undefined : dateLocale()
+          }}</span>
           <p-button
             icon="pi pi-trash"
             [ariaLabel]="'admin.timeSlots.deleteAria' | transloco"

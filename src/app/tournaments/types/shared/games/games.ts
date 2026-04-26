@@ -219,6 +219,10 @@ export class Games {
 
   hasTimeSlots = computed(() => this.timeSlots().length > 0);
 
+  freeSlotDateKeys = computed((): Set<string> => {
+    return new Set(this.freeSlots().map((slot) => slot.dateKey));
+  });
+
   /**
    * Returns the sorted time slots that are NOT already covered by a scheduled game.
    * A slot is considered "free" if no game has the exact same date (millisecond precision).
@@ -470,6 +474,7 @@ export class Games {
       data: {
         teams: this.teams(),
         role: this.role(),
+        freeSlotDateKeys: this.freeSlotDateKeys(),
         ...data,
       },
     });

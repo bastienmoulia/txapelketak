@@ -27,10 +27,25 @@
       [showIcon]="true"
       [dateFormat]="datePickerFormat()"
       [firstDayOfWeek]="firstDayOfWeek()"
+      [placeholder]="datePlaceholder()"
       appendTo="body"
       (onClear)="clearDateFilter()"
       data-testid="date-filter-picker"
     />
+
+    @if (hasTimeSlots()) {
+      <div class="flex items-center gap-2 flex-none" data-testid="free-slots-toggle-wrapper">
+        <p-toggleswitch
+          [ngModel]="showOnlyFreeSlots()"
+          (ngModelChange)="onToggleFreeSlots($event)"
+          inputId="free-slots-toggle"
+          data-testid="free-slots-toggle"
+        />
+        <label for="free-slots-toggle" class="cursor-pointer text-sm">
+          {{ 'admin.games.showOnlyFreeSlots' | transloco }}
+        </label>
+      </div>
+    }
 
     @if (role() === 'admin') {
       <p-button
@@ -47,9 +62,9 @@
   </div>
 
   <div class="mx-3 mb-3">
-    @if (filteredFlatGamesByDate().length > 0 || !hasActiveFilters()) {
+    @if (scheduleRows().length > 0 || !hasActiveFilters()) {
       <p-table
-        [value]="filteredFlatGamesByDate()"
+        [value]="scheduleRows()"
         class="games-table"
         rowGroupMode="subheader"
         groupRowsBy="dateKey"
@@ -70,16 +85,16 @@
           </tr>
         </ng-template>
 
-        <ng-template #groupheader let-game>
-          <tr [attr.id]="game.dateKey ? 'games-date-' + game.dateKey : null">
+        <ng-template #groupheader let-row>
+          <tr [attr.id]="row.dateKey ? 'games-date-' + row.dateKey : null">
             <td
               [attr.colspan]="byDateColumnCount()"
               class="text-center font-bold py-2 px-3 first-letter:uppercase"
-              [class.text-yellow-500]="!game.dateKey"
+              [class.text-yellow-500]="!row.dateKey"
             >
-              @if (game.dateKey) {
-                {{ game.date | date: 'EEEE' : undefined : activeLanguage() }}
-                {{ game.date | date: 'longDate' : undefined : activeLanguage() }}
+              @if (row.dateKey) {
+                {{ row.date | date: 'EEEE' : undefined : activeLanguage() }}
+                {{ row.date | date: 'longDate' : undefined : activeLanguage() }}
               } @else {
                 <i class="pi pi-exclamation-triangle mr-1"></i
                 >{{ 'admin.games.noDate' | transloco }}
@@ -88,123 +103,112 @@
           </tr>
         </ng-template>
 
-        <ng-template #body let-game>
-          <tr>
-            <td [attr.data-label]="'admin.games.poule' | transloco">
-              <span class="text-color-secondary">{{
-                game.serieName ? game.serieName + ' - ' + game.pouleName : game.pouleName
-              }}</span>
-            </td>
-            <td [attr.data-label]="'admin.games.team1' | transloco">
-              <span
-                class="font-medium"
-                [class.text-green-500]="
-                  game.scoreTeam1 !== null &&
-                  game.scoreTeam2 !== null &&
-                  game.scoreTeam1 > game.scoreTeam2
-                "
-                [class.text-red-500]="
-                  game.scoreTeam1 !== null &&
-                  game.scoreTeam2 !== null &&
-                  game.scoreTeam1 < game.scoreTeam2
-                "
-                >{{ game.team1Name }}</span
-              >
-            </td>
-            <td [attr.data-label]="'admin.games.score' | transloco">
-              <span class="font-bold">
-                @if (game.scoreTeam1 || game.scoreTeam1 === 0) {
-                  <span
-                    [class.text-green-500]="
-                      game.scoreTeam2 !== null && game.scoreTeam1 > game.scoreTeam2
-                    "
-                    [class.text-red-500]="
-                      game.scoreTeam2 !== null && game.scoreTeam1 < game.scoreTeam2
-                    "
-                    >{{ game.scoreTeam1 }}</span
-                  >
-                } @else {
-                  -
-                }
-                <span aria-hidden="true">&ndash;</span>
-                @if (game.scoreTeam2 || game.scoreTeam2 === 0) {
-                  <span
-                    [class.text-green-500]="
-                      game.scoreTeam1 !== null && game.scoreTeam2 > game.scoreTeam1
-                    "
-                    [class.text-red-500]="
-                      game.scoreTeam1 !== null && game.scoreTeam2 < game.scoreTeam1
-                    "
-                    >{{ game.scoreTeam2 }}</span
-                  >
-                } @else {
-                  -
-                }
-              </span>
-            </td>
-            <td [attr.data-label]="'admin.games.team2' | transloco">
-              <span
-                class="font-medium"
-                [class.text-green-500]="
-                  game.scoreTeam1 !== null &&
-                  game.scoreTeam2 !== null &&
-                  game.scoreTeam2 > game.scoreTeam1
-                "
-                [class.text-red-500]="
-                  game.scoreTeam1 !== null &&
-                  game.scoreTeam2 !== null &&
-                  game.scoreTeam2 < game.scoreTeam1
-                "
-                >{{ game.team2Name }}</span
-              >
-            </td>
-            <td [attr.data-label]="'admin.games.time' | transloco">
-              @if (game.date) {
-                <span class="text-color-secondary">
-                  {{ game.date | date: 'shortTime' : undefined : activeLanguage() }}
+        <ng-template #body let-row>
+          @if (isFreeSlotRow(row)) {
+            <tr class="free-slot-row">
+              <td [attr.colspan]="byDateColumnCount()" class="py-1 px-3">
+                <span class="free-slot-label text-sm text-green-600 dark:text-green-400">
+                  <i class="pi pi-calendar-plus mr-1"></i>
+                  {{ 'admin.games.freeSlot' | transloco }}
+                  {{ asFreeSlotRow(row).date | date: 'shortTime' : undefined : activeLanguage() }}
                 </span>
-              } @else {
-                <span class="text-color-secondary">-</span>
-              }
-            </td>
-            <td [attr.data-label]="'admin.games.referees' | transloco">
-              @if (game.referees && game.referees.length > 0) {
-                <span class="text-color-secondary">{{ game.referees.join(', ') }}</span>
-              } @else {
-                <span class="text-color-secondary">-</span>
-              }
-            </td>
-            @if (role() === 'admin' || role() === 'organizer') {
-              <td [attr.data-label]="'shared.table.columns.actions' | transloco">
-                <div class="flex justify-end gap-1">
-                  <p-button
-                    icon="pi pi-pencil"
-                    [ariaLabel]="'admin.games.editAria' | transloco"
-                    [pTooltip]="'shared.actions.edit' | transloco"
-                    tooltipPosition="top"
-                    severity="secondary"
-                    size="small"
-                    [rounded]="true"
-                    [text]="true"
-                    (onClick)="onEditGameFromDate(game)"
-                  />
-                  @if (role() === 'admin') {
+              </td>
+            </tr>
+          } @else {
+            @let game = asGameRow(row);
+            <tr>
+              <td [attr.data-label]="'admin.games.poule' | transloco">
+                <span class="text-color-secondary">{{
+                  game.serieName ? game.serieName + ' - ' + game.pouleName : game.pouleName
+                }}</span>
+              </td>
+              <td [attr.data-label]="'admin.games.team1' | transloco">
+                <span
+                  class="font-medium"
+                  [class.text-green-500]="game | call: isTeam1WinningGame"
+                  [class.text-red-500]="game | call: isTeam1LosingGame"
+                  >{{ game.team1Name }}</span
+                >
+              </td>
+              <td [attr.data-label]="'admin.games.score' | transloco">
+                <span class="font-bold">
+                  @if (game.scoreTeam1 || game.scoreTeam1 === 0) {
+                    <span
+                      [class.text-green-500]="game | call: isTeam1WinningGame"
+                      [class.text-red-500]="game | call: isTeam1LosingGame"
+                      >{{ game.scoreTeam1 }}</span
+                    >
+                  } @else {
+                    -
+                  }
+                  <span aria-hidden="true">&ndash;</span>
+                  @if (game.scoreTeam2 || game.scoreTeam2 === 0) {
+                    <span
+                      [class.text-green-500]="game | call: isTeam2WinningGame"
+                      [class.text-red-500]="game | call: isTeam2LosingGame"
+                      >{{ game.scoreTeam2 }}</span
+                    >
+                  } @else {
+                    -
+                  }
+                </span>
+              </td>
+              <td [attr.data-label]="'admin.games.team2' | transloco">
+                <span
+                  class="font-medium"
+                  [class.text-green-500]="game | call: isTeam2WinningGame"
+                  [class.text-red-500]="game | call: isTeam2LosingGame"
+                  >{{ game.team2Name }}</span
+                >
+              </td>
+              <td [attr.data-label]="'admin.games.time' | transloco">
+                @if (game.date) {
+                  <span class="text-color-secondary">
+                    {{ game.date | date: 'shortTime' : undefined : activeLanguage() }}
+                  </span>
+                } @else {
+                  <span class="text-color-secondary">-</span>
+                }
+              </td>
+              <td [attr.data-label]="'admin.games.referees' | transloco">
+                @if (game.referees && game.referees.length > 0) {
+                  <span class="text-color-secondary">{{ game.referees.join(', ') }}</span>
+                } @else {
+                  <span class="text-color-secondary">-</span>
+                }
+              </td>
+              @if (role() === 'admin' || role() === 'organizer') {
+                <td [attr.data-label]="'shared.table.columns.actions' | transloco">
+                  <div class="flex justify-end gap-1">
                     <p-button
-                      icon="pi pi-trash"
-                      [ariaLabel]="'admin.games.deleteAria' | transloco"
-                      [pTooltip]="'shared.actions.delete' | transloco"
+                      icon="pi pi-pencil"
+                      [ariaLabel]="'admin.games.editAria' | transloco"
+                      [pTooltip]="'shared.actions.edit' | transloco"
                       tooltipPosition="top"
-                      severity="danger"
+                      severity="secondary"
                       size="small"
                       [rounded]="true"
                       [text]="true"
-                      (onClick)="onRequestDeleteGame(game.ref)"
+                      (onClick)="onEditGameFromDate(game)"
                     />
-                  }
-                </div>
-              </td>
-            }
-          </tr>
+                    @if (role() === 'admin') {
+                      <p-button
+                        icon="pi pi-trash"
+                        [ariaLabel]="'admin.games.deleteAria' | transloco"
+                        [pTooltip]="'shared.actions.delete' | transloco"
+                        tooltipPosition="top"
+                        severity="danger"
+                        size="small"
+                        [rounded]="true"
+                        [text]="true"
+                        (onClick)="onRequestDeleteGame(game.ref)"
+                      />
+                    }
+                  </div>
+                </td>
+              }
+            </tr>
+          }
         </ng-template>
       </p-table>
     } @else {

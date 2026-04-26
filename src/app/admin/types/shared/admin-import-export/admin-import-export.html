@@ -1,15 +1,50 @@
 <p-confirmdialog>
   <ng-template #message let-message>
-    <p>{{ message.message }}</p>
-    @let counts = pendingImportCounts();
-    @if (counts) {
-      <ul class="mt-3 list-disc pl-5 text-surface-600">
-        <li>{{ 'admin.importExport.teamsCount' | transloco: { count: counts.teamsCount } }}</li>
-        <li>{{ 'admin.importExport.seriesCount' | transloco: { count: counts.seriesCount } }}</li>
-      </ul>
-    }
+    <p>
+      {{ message.message }}
+      @let counts = pendingImportCounts();
+      @if (counts) {
+        <ul class="mt-3 list-disc pl-5 text-surface-500">
+          <li>{{ 'admin.importExport.teamsCount' | transloco: { count: counts.teamsCount } }}</li>
+          <li>{{ 'admin.importExport.seriesCount' | transloco: { count: counts.seriesCount } }}</li>
+          <li>{{ 'admin.importExport.poulesCount' | transloco: { count: counts.poulesCount } }}</li>
+          <li>{{ 'admin.importExport.gamesCount' | transloco: { count: counts.gamesCount } }}</li>
+          @if (counts.timeSlotsCount > 0) {
+            <li>
+              {{
+                'admin.importExport.timeSlotsCount' | transloco: { count: counts.timeSlotsCount }
+              }}
+            </li>
+          }
+        </ul>
+      }
+    </p>
   </ng-template>
 </p-confirmdialog>
+
+<p-dialog
+  [visible]="isPreparingImport() || isImporting()"
+  [modal]="true"
+  [closable]="false"
+  [dismissableMask]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closeOnEscape]="false"
+  [showHeader]="false"
+>
+  <div class="flex flex-col items-center gap-3 p-2 text-center">
+    <p-progress-spinner
+      strokeWidth="6"
+      [style]="{ width: '56px', height: '56px' }"
+      ariaLabel="Loading"
+    />
+    @if (isPreparingImport()) {
+      <p class="m-0 text-surface-500">{{ 'admin.importExport.preparingImport' | transloco }}</p>
+    } @else {
+      <p class="m-0 text-surface-500">{{ 'admin.importExport.importInProgress' | transloco }}</p>
+    }
+  </div>
+</p-dialog>
 
 <div class="flex flex-col gap-6 mx-3">
   <div class="flex flex-col gap-2">
@@ -43,6 +78,7 @@
         icon="pi pi-upload"
         severity="secondary"
         [label]="'admin.importExport.importButton' | transloco"
+        [disabled]="isPreparingImport() || isImporting()"
         (onClick)="fileInput.click()"
       />
     </div>
@@ -51,4 +87,3 @@
     }
   </div>
 </div>
-

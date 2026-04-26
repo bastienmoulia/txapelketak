@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import { PoulesStore } from './poules.store';
 import { FirebaseService } from '../shared/services/firebase.service';
 import { Team } from '../tournaments/types/shared/teams/teams';
+import { TimeSlot } from '../tournaments/types/poules/poules.model';
 
 function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
@@ -17,21 +18,25 @@ describe('PoulesStore', () => {
     isAvailable: ReturnType<typeof vi.fn>;
     watchCollectionFromDocumentRef: ReturnType<typeof vi.fn>;
     getCollectionFromDocumentRef: ReturnType<typeof vi.fn>;
+    watchTimeSlots: ReturnType<typeof vi.fn>;
   };
 
   let teams$: Subject<{ data: unknown; ref: DocumentReference }[]>;
   let series$: Subject<{ data: unknown; ref: DocumentReference }[]>;
+  let timeSlots$: Subject<TimeSlot[]>;
   let gameStreams: Map<string, Subject<{ data: unknown; ref: DocumentReference }[]>>;
 
   beforeEach(() => {
     teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
     series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    timeSlots$ = new Subject<TimeSlot[]>();
     gameStreams = new Map();
 
     firebaseService = {
       isAvailable: vi.fn().mockReturnValue(true),
       watchCollectionFromDocumentRef: vi.fn(),
       getCollectionFromDocumentRef: vi.fn().mockResolvedValue([]),
+      watchTimeSlots: vi.fn().mockReturnValue(timeSlots$.asObservable()),
     };
 
     firebaseService.watchCollectionFromDocumentRef.mockImplementation(
@@ -110,6 +115,7 @@ describe('PoulesStore', () => {
 
     teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
     series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    timeSlots$ = new Subject<TimeSlot[]>();
     firebaseService.watchCollectionFromDocumentRef.mockImplementation(
       (_docRef: DocumentReference, collectionName: string) => {
         if (collectionName === 'teams') {
@@ -121,6 +127,7 @@ describe('PoulesStore', () => {
         return new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable();
       },
     );
+    firebaseService.watchTimeSlots.mockReturnValue(timeSlots$.asObservable());
 
     store.startWatching(ref);
 
@@ -137,6 +144,7 @@ describe('PoulesStore', () => {
 
     teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
     series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
+    timeSlots$ = new Subject<TimeSlot[]>();
     firebaseService.watchCollectionFromDocumentRef.mockImplementation(
       (_docRef: DocumentReference, collectionName: string) => {
         if (collectionName === 'teams') {
@@ -148,6 +156,7 @@ describe('PoulesStore', () => {
         return new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable();
       },
     );
+    firebaseService.watchTimeSlots.mockReturnValue(timeSlots$.asObservable());
 
     store.startWatching(ref);
 

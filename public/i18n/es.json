@@ -244,7 +244,9 @@
       "referees": "Árbitros",
       "sameTeamError": "Los dos equipos no pueden ser iguales.",
       "scrollToTopTooltip": "Ir arriba",
-      "scrollToTodayTooltip": "Ir a hoy"
+      "scrollToTodayTooltip": "Ir a hoy",
+      "showOnlyFreeSlots": "Solo franjas libres",
+      "freeSlot": "Franja libre"
     },
     "teams": {
       "empty": "No hay equipos",
@@ -302,6 +304,11 @@
       "importConfirmMessage": "Esta acción reemplazará todos los datos existentes (equipos, series, grupos, partidos). Esta operación es irreversible.",
       "teamsCount": "{{ count }} equipo(s)",
       "seriesCount": "{{ count }} serie(s)",
+      "poulesCount": "{{ count }} grupo(s)",
+      "gamesCount": "{{ count }} partido(s)",
+      "timeSlotsCount": "{{ count }} franja(s) horaria(s)",
+      "preparingImport": "Preparando el archivo de importación...",
+      "importInProgress": "Importación en curso, por favor espera...",
       "importConfirm": "Importar",
       "importSuccess": "Importación exitosa",
       "importSuccessDetail": "Los datos del torneo se han importado correctamente.",
@@ -318,6 +325,17 @@
       "dialogConfirm": "Eliminar permanentemente",
       "errorTitle": "Error de eliminación",
       "errorDetail": "Se produjo un error durante la eliminación. Por favor, inténtalo de nuevo."
+    },
+    "timeSlots": {
+      "title": "Franjas horarias",
+      "add": "Añadir",
+      "datePlaceholder": "Fecha y hora",
+      "empty": "No hay franjas horarias definidas.",
+      "added": "Franja añadida",
+      "addedDetail": "La franja horaria se ha añadido con éxito.",
+      "deleted": "Franja eliminada",
+      "deletedDetail": "La franja horaria se ha eliminado con éxito.",
+      "deleteAria": "Eliminar esta franja"
     }
   },
   "shared": {

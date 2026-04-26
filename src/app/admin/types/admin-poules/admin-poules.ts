@@ -40,6 +40,7 @@ import { AdminUsers } from '../shared/admin-users/admin-users';
 import { AdminImportExport } from '../shared/admin-import-export/admin-import-export';
 import { AdminGeneral } from '../shared/admin-general/admin-general';
 import { AdminDeleteTournament } from '../shared/admin-delete-tournament/admin-delete-tournament';
+import { AdminTimeSlots } from '../shared/admin-time-slots/admin-time-slots';
 import { TournamentDashboard } from '../../../tournaments/types/shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
 
@@ -55,6 +56,7 @@ import { PoulesStore } from '../../../store/poules.store';
     AdminImportExport,
     AdminGeneral,
     AdminDeleteTournament,
+    AdminTimeSlots,
     TournamentDashboard,
   ],
   templateUrl: './admin-poules.html',
@@ -75,6 +77,7 @@ export class AdminPoules {
 
   teams = this.poulesStore.teams;
   series = this.poulesStore.series;
+  timeSlots = this.poulesStore.timeSlots;
   loading = this.poulesStore.loading;
 
   role = computed(() => this.currentUser()?.role ?? '');

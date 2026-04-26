@@ -9,12 +9,13 @@ import {
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Game, Poule, Serie } from '../../poules/poules';
+import { Game, Poule, Serie, TimeSlot } from '../../poules/poules';
 import { Team } from '../teams/teams';
 import { Message } from 'primeng/message';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { Button } from 'primeng/button';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
@@ -29,6 +30,8 @@ import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { CallPipe } from 'ngxtension/call-apply';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -72,6 +75,17 @@ export type GamesViewMode = 'by-date';
 
 export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
 
+/** A free time slot entry to be rendered inline in the games list */
+export interface FreeSlotRow {
+  type: 'free-slot';
+  date: Date;
+  dateKey: string;
+  slotIndex: number;
+}
+
+/** Unified row type used in the combined schedule */
+export type ScheduleRow = GameByDate | FreeSlotRow;
+
 @Component({
   selector: 'app-games',
   imports: [
@@ -85,6 +99,8 @@ export const GAMES_TEAM_FILTER_QUERY_PARAM = 'teamId';
     DatePicker,
     FormsModule,
     ConfirmDialogModule,
+    ToggleSwitchModule,
+    CallPipe,
   ],
   providers: [DialogService, ConfirmationService],
   templateUrl: './games.html',
@@ -97,19 +113,19 @@ export class Games {
   private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly datepickerConfig = inject(DatepickerConfigService);
 
   teams = input.required<Team[]>();
   series = input.required<Serie[]>();
   tournament = input.required<Tournament>();
   role = input<UserRole | ''>('');
+  timeSlots = input<TimeSlot[]>([]);
 
   saveGame = output<SaveGameEvent>();
   deleteGame = output<DeleteGameEvent>();
   generateAllGames = output<GenerateAllGamesEvent>();
 
-  activeLanguage = toSignal(this.translocoService.langChanges$, {
-    initialValue: this.translocoService.getActiveLang(),
-  });
+  showOnlyFreeSlots = signal(false);
 
   private teamIdFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -121,19 +137,22 @@ export class Games {
   selectedTeamId = computed(() => this.teamIdFromUrl());
   selectedDateFilter = signal<Date | null>(null);
 
-  firstDayOfWeek = computed(() => {
-    this.activeLanguage(); // reactive dependency: re-evaluate on lang change
-    return Number(this.translocoService.translate('datepicker.firstDayOfWeek'));
-  });
+  firstDayOfWeek = this.datepickerConfig.firstDayOfWeek;
+  datePlaceholder = this.datepickerConfig.datePlaceholder;
+  datePickerFormat = this.datepickerConfig.datePickerFormat;
+  activeLanguage = this.datepickerConfig.activeLanguage;
 
-  datePlaceholder = computed(() => {
-    this.activeLanguage();
-    return this.translocoService.translate('datepicker.placeholder');
-  });
+  readonly isTeam1WinningGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam1 > game.scoreTeam2;
 
-  datePickerFormat = computed(() => {
-    return this.activeLanguage() === 'en' ? 'mm/dd/yy' : 'dd/mm/yy';
-  });
+  readonly isTeam1LosingGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam1 < game.scoreTeam2;
+
+  readonly isTeam2WinningGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam2 > game.scoreTeam1;
+
+  readonly isTeam2LosingGame = (game: GameByDate): boolean =>
+    game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam2 < game.scoreTeam1;
 
   gamesByDate = computed((): GamesDateGroup[] => {
     const dateMap = new Map<string, GameByDate[]>();
@@ -184,12 +203,6 @@ export class Games {
   });
 
   filteredFlatGamesByDate = computed((): GameByDate[] => {
-    console.log(
-      'filtering games with selectedTeamId=',
-      this.selectedTeamId(),
-      'and selectedDateFilter=',
-      this.selectedDateFilter(),
-    );
     const teamId = this.selectedTeamId();
     const selectedDate = this.selectedDateFilter();
     const games = this.flatGamesByDate();
@@ -200,7 +213,76 @@ export class Games {
     });
   });
 
-  hasActiveFilters = computed(() => Boolean(this.selectedTeamId() || this.selectedDateFilter()));
+  hasActiveFilters = computed(
+    () => Boolean(this.selectedTeamId() || this.selectedDateFilter()) || this.showOnlyFreeSlots(),
+  );
+
+  hasTimeSlots = computed(() => this.timeSlots().length > 0);
+
+  /**
+   * Returns the sorted time slots that are NOT already covered by a scheduled game.
+   * A slot is considered "free" if no game has the exact same date (millisecond precision).
+   */
+  freeSlots = computed((): FreeSlotRow[] => {
+    const now = Date.now();
+    const gameDates = new Set(
+      this.flatGamesByDate()
+        .filter((g) => g.date)
+        .map((g) => g.date!.getTime()),
+    );
+    return this.timeSlots()
+      .filter((ts) => {
+        const slotTime = ts.date.getTime();
+        return slotTime >= now && !gameDates.has(slotTime);
+      })
+      .map(
+        (ts, i): FreeSlotRow => ({
+          type: 'free-slot',
+          date: ts.date,
+          dateKey: this.getDateKey(ts.date),
+          slotIndex: i,
+        }),
+      )
+      .sort((a, b) => a.date.getTime() - b.date.getTime());
+  });
+
+  /**
+   * Combined list of games + free slots for display.
+   * When showOnlyFreeSlots is true only free slot rows are returned (plus the date group headers).
+   */
+  scheduleRows = computed((): ScheduleRow[] => {
+    const showOnlyFree = this.showOnlyFreeSlots();
+    const teamId = this.selectedTeamId();
+    const selectedDate = this.selectedDateFilter();
+
+    const gameRows: GameByDate[] = this.flatGamesByDate().filter((game) => {
+      const matchesTeam = !teamId || game.refTeam1?.id === teamId || game.refTeam2?.id === teamId;
+      const matchesDate = !selectedDate || game.dateKey === this.getDateKey(selectedDate);
+      return matchesTeam && matchesDate;
+    });
+
+    const freeSlotRows: FreeSlotRow[] = this.freeSlots().filter((slot) => {
+      const matchesDate = !selectedDate || slot.dateKey === this.getDateKey(selectedDate);
+      return matchesDate;
+    });
+
+    if (showOnlyFree) {
+      return freeSlotRows;
+    }
+
+    // Merge and sort by date
+    const combined: ScheduleRow[] = [...gameRows, ...freeSlotRows];
+    combined.sort((a, b) => {
+      const dateA = 'type' in a ? a.date.getTime() : (a.date?.getTime() ?? 0);
+      const dateB = 'type' in b ? b.date.getTime() : (b.date?.getTime() ?? 0);
+      if (dateA !== dateB) return dateA - dateB;
+      // Games before free slots at same time
+      if ('type' in a && !('type' in b)) return 1;
+      if (!('type' in a) && 'type' in b) return -1;
+      return 0;
+    });
+    return combined;
+  });
 
   byDateColumnCount = computed(() => {
     const hasActions = this.role() === 'admin' || this.role() === 'organizer';
@@ -224,12 +306,24 @@ export class Games {
   showScrollToTop = signal(false);
   showScrollToToday = computed(() => {
     const todayKey = this.getDateKey(new Date());
-    return this.filteredFlatGamesByDate().some((group) => group.dateKey === todayKey);
+    return this.scheduleRows().some((row) => row.dateKey === todayKey);
   });
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
     this.showScrollToTop.set(window.scrollY >= window.innerHeight);
+  }
+
+  isFreeSlotRow(row: ScheduleRow): row is FreeSlotRow {
+    return 'type' in row && row.type === 'free-slot';
+  }
+
+  asGameRow(row: ScheduleRow): GameByDate {
+    return row as GameByDate;
+  }
+
+  asFreeSlotRow(row: ScheduleRow): FreeSlotRow {
+    return row as FreeSlotRow;
   }
 
   private getSortedSeriesForDialog() {
@@ -293,6 +387,10 @@ export class Games {
   clearDateFilter(): void {
     console.log('Clearing date filter');
     this.selectedDateFilter.set(null);
+  }
+
+  onToggleFreeSlots(value: boolean): void {
+    this.showOnlyFreeSlots.set(value);
   }
 
   onOpenAddGame(): void {

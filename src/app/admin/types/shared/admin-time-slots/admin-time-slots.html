@@ -1,0 +1,50 @@
+<div class="mx-3 flex flex-col gap-4">
+  <div class="flex flex-wrap gap-2 items-end">
+    <p-datepicker
+      [ngModel]="newSlotDate()"
+      (ngModelChange)="newSlotDate.set($event)"
+      [showTime]="true"
+      [showIcon]="true"
+      [showButtonBar]="true"
+      [showSeconds]="false"
+      [dateFormat]="datePickerFormat()"
+      [firstDayOfWeek]="firstDayOfWeek()"
+      [placeholder]="datePlaceholder()"
+      appendTo="body"
+      [placeholder]="datePlaceholder()"
+      data-testid="time-slot-datepicker"
+    />
+    <p-button
+      icon="pi pi-plus"
+      [label]="'admin.timeSlots.add' | transloco"
+      [disabled]="!newSlotDate()"
+      [loading]="isSaving()"
+      (onClick)="onAddTimeSlot()"
+      data-testid="add-time-slot-button"
+    />
+  </div>
+
+  @if (sortedTimeSlots().length === 0) {
+    <p class="text-[var(--p-text-muted-color)] text-sm">
+      {{ 'admin.timeSlots.empty' | transloco }}
+    </p>
+  } @else {
+    <ul class="time-slots-list" data-testid="time-slots-list">
+      @for (slot of sortedTimeSlots(); track slot.ref.id) {
+        <li class="time-slot-pill">
+          <span class="time-slot-pill__date">{{ slot.date | date: 'short' }}</span>
+          <p-button
+            icon="pi pi-trash"
+            [ariaLabel]="'admin.timeSlots.deleteAria' | transloco"
+            severity="danger"
+            size="small"
+            [rounded]="true"
+            [text]="true"
+            (onClick)="onDeleteTimeSlot(slot.ref)"
+            data-testid="delete-time-slot-button"
+          />
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -244,7 +244,9 @@
       "referees": "Referees",
       "sameTeamError": "Both teams cannot be the same.",
       "scrollToTopTooltip": "Scroll to top",
-      "scrollToTodayTooltip": "Go to today"
+      "scrollToTodayTooltip": "Go to today",
+      "showOnlyFreeSlots": "Free slots only",
+      "freeSlot": "Free slot"
     },
     "teams": {
       "empty": "No teams",
@@ -302,6 +304,11 @@
       "importConfirmMessage": "This action will replace all existing data (teams, series, groups, games). This operation is irreversible.",
       "teamsCount": "{{ count }} team(s)",
       "seriesCount": "{{ count }} series",
+      "poulesCount": "{{ count }} pool(s)",
+      "gamesCount": "{{ count }} game(s)",
+      "timeSlotsCount": "{{ count }} time slot(s)",
+      "preparingImport": "Preparing import file...",
+      "importInProgress": "Import in progress, please wait...",
       "importConfirm": "Import",
       "importSuccess": "Import successful",
       "importSuccessDetail": "The tournament data was imported successfully.",
@@ -318,6 +325,17 @@
       "dialogConfirm": "Delete permanently",
       "errorTitle": "Deletion error",
       "errorDetail": "An error occurred during deletion. Please try again."
+    },
+    "timeSlots": {
+      "title": "Time slots",
+      "add": "Add",
+      "datePlaceholder": "Date and time",
+      "empty": "No time slots defined.",
+      "added": "Slot added",
+      "addedDetail": "The time slot has been successfully added.",
+      "deleted": "Slot deleted",
+      "deletedDetail": "The time slot has been successfully deleted.",
+      "deleteAria": "Delete this slot"
     }
   },
   "shared": {

@@ -486,6 +486,183 @@ describe('Games', () => {
     );
   });
 
+  it('should detect only future free slots that are not already scheduled', () => {
+    const now = new Date(2026, 4, 1, 9, 0);
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(now.getTime());
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    try {
+      fixture.componentRef.setInput('teams', [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[]);
+      fixture.componentRef.setInput('series', [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date(2026, 4, 1, 10, 0),
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      fixture.componentRef.setInput('timeSlots', [
+        { ref: createDocumentReference('slot-past'), date: new Date(2026, 4, 1, 8, 0) },
+        { ref: createDocumentReference('slot-scheduled'), date: new Date(2026, 4, 1, 10, 0) },
+        { ref: createDocumentReference('slot-late'), date: new Date(2026, 4, 1, 12, 0) },
+        { ref: createDocumentReference('slot-early'), date: new Date(2026, 4, 1, 9, 30) },
+      ]);
+
+      const freeSlots = component.freeSlots();
+
+      expect(freeSlots.map((slot) => slot.date.getTime())).toEqual([
+        new Date(2026, 4, 1, 9, 30).getTime(),
+        new Date(2026, 4, 1, 12, 0).getTime(),
+      ]);
+      expect(freeSlots.every((slot) => slot.type === 'free-slot')).toBe(true);
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
+  it('should merge schedule rows and sort them chronologically', () => {
+    const now = new Date(2026, 4, 1, 8, 0);
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(now.getTime());
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    try {
+      fixture.componentRef.setInput('teams', [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[]);
+      fixture.componentRef.setInput('series', [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date(2026, 4, 1, 11, 0),
+                },
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date(2026, 4, 1, 13, 0),
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      fixture.componentRef.setInput('timeSlots', [
+        { ref: createDocumentReference('slot-noon'), date: new Date(2026, 4, 1, 12, 0) },
+        { ref: createDocumentReference('slot-morning'), date: new Date(2026, 4, 1, 10, 0) },
+        { ref: createDocumentReference('slot-scheduled'), date: new Date(2026, 4, 1, 13, 0) },
+      ]);
+
+      const rows = component.scheduleRows();
+
+      expect(
+        rows.map((row) =>
+          'type' in row
+            ? `free:${row.date.getTime()}`
+            : `game:${row.ref.id}:${row.date?.getTime() ?? 'no-date'}`,
+        ),
+      ).toEqual([
+        `free:${new Date(2026, 4, 1, 10, 0).getTime()}`,
+        `game:game-1:${new Date(2026, 4, 1, 11, 0).getTime()}`,
+        `free:${new Date(2026, 4, 1, 12, 0).getTime()}`,
+        `game:game-2:${new Date(2026, 4, 1, 13, 0).getTime()}`,
+      ]);
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
+  it('should show only free slot rows when the free-slots-only toggle is enabled', () => {
+    const now = new Date(2026, 4, 1, 8, 0);
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(now.getTime());
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+    const team3Ref = createDocumentReference('team-3');
+
+    try {
+      fixture.componentRef.setInput('teams', [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[]);
+      fixture.componentRef.setInput('series', [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date(2026, 4, 1, 10, 0),
+                },
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date(2026, 4, 2, 10, 0),
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      fixture.componentRef.setInput('timeSlots', [
+        { ref: createDocumentReference('slot-day-1'), date: new Date(2026, 4, 1, 12, 0) },
+        { ref: createDocumentReference('slot-day-2'), date: new Date(2026, 4, 2, 9, 0) },
+      ]);
+
+      component.onDateFilterChange(new Date(2026, 4, 1, 15, 0));
+      expect(component.scheduleRows().length).toBe(2);
+
+      component.onToggleFreeSlots(true);
+
+      const rows = component.scheduleRows();
+
+      expect(component.hasActiveFilters()).toBe(true);
+      expect(rows.length).toBe(1);
+      expect(rows.every((row) => 'type' in row && row.type === 'free-slot')).toBe(true);
+      expect(rows[0]!.date.getTime()).toBe(new Date(2026, 4, 1, 12, 0).getTime());
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
   describe('scroll button behavior', () => {
     it('should set showScrollToTop to true when scrollY >= innerHeight', () => {
       Object.defineProperty(window, 'scrollY', { value: 1000, configurable: true });

@@ -25,6 +25,11 @@
     overflow: hidden;
   }
 
+  :host ::ng-deep .games-table tbody tr.free-slot-row {
+    border-color: color-mix(in srgb, #22c55e 20%, transparent);
+    box-shadow: 0 8px 20px -16px color-mix(in srgb, #22c55e 40%, transparent);
+  }
+
   :host ::ng-deep .games-table tbody tr + tr {
     margin-top: 1em;
   }
@@ -58,6 +63,10 @@
   }
 }
 
+:host ::ng-deep .games-table tbody tr.free-slot-row td {
+  background-color: color-mix(in srgb, #22c55e 6%, transparent);
+}
+
 .scroll-btn {
   position: fixed;
   bottom: 1.5rem;
@@ -65,6 +74,7 @@
   z-index: 1000;
 
   ::ng-deep button {
+    /* eslint-disable-next-line css/use-baseline */
     backdrop-filter: blur(2px);
   }
 }

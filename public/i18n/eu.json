@@ -244,7 +244,9 @@
       "referees": "Arbitroak",
       "sameTeamError": "Bi taldeak ezin dira berdinak izan.",
       "scrollToTopTooltip": "Gora joan",
-      "scrollToTodayTooltip": "Gaurko egunera joan"
+      "scrollToTodayTooltip": "Gaurko egunera joan",
+      "showOnlyFreeSlots": "Tarte libreak soilik",
+      "freeSlot": "Tarte librea"
     },
     "teams": {
       "empty": "Ez dago talderik",
@@ -302,6 +304,11 @@
       "importConfirmMessage": "Ekintza honek dauden datu guztiak ordezkatuko ditu (taldeak, seriak, multzoak, partidak). Eragiketa hau itzuliezina da.",
       "teamsCount": "{{ count }} talde(ak)",
       "seriesCount": "{{ count }} serie(ak)",
+      "poulesCount": "{{ count }} poule(ak)",
+      "gamesCount": "{{ count }} partida(ak)",
+      "timeSlotsCount": "{{ count }} ordu-tartea(k)",
+      "preparingImport": "Inportazio fitxategia prestatzen...",
+      "importInProgress": "Inportazioa martxan da, itxaron mesedez...",
       "importConfirm": "Inportatu",
       "importSuccess": "Inportazioa arrakastatsua",
       "importSuccessDetail": "Txapelketaren datuak ongi inportatu dira.",
@@ -318,6 +325,17 @@
       "dialogConfirm": "Behin betiko ezabatu",
       "errorTitle": "Ezabatze errorea",
       "errorDetail": "Errorea gertatu da ezabatzean. Mesedez saiatu berriro."
+    },
+    "timeSlots": {
+      "title": "Denbora-tarteak",
+      "add": "Gehitu",
+      "datePlaceholder": "Data eta ordua",
+      "empty": "Ez dago denbora-tarterik definituta.",
+      "added": "Tartea gehitu da",
+      "addedDetail": "Denbora-tartea arrakastaz gehitu da.",
+      "deleted": "Tartea ezabatu da",
+      "deletedDetail": "Denbora-tartea arrakastaz ezabatu da.",
+      "deleteAria": "Tarte hau ezabatu"
     }
   },
   "shared": {

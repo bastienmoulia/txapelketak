@@ -246,7 +246,7 @@ export class AdminPage {
   // --- Users ---
 
   async addUser(username: string, email: string, role: 'admin' | 'organizer'): Promise<void> {
-    await this.usersPanel().locator('button').filter({ hasText: 'Ajouter' }).first().click();
+    await this.usersPanel().getByTestId('add-user-button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#username') });
@@ -268,7 +268,7 @@ export class AdminPage {
     email: string,
     role: 'admin' | 'organizer',
   ): Promise<string> {
-    await this.usersPanel().locator('button').filter({ hasText: 'Ajouter' }).first().click();
+    await this.usersPanel().getByTestId('add-user-button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#username') });

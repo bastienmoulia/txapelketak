@@ -54,6 +54,14 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
+  /* Start dev server automatically when not launched via ng e2e */
+  webServer: {
+    command: 'npm run serve:test -- --no-open',
+    url: 'http://localhost:4200',
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
+
   /* Configure projects for major browsers */
   projects: [
     {

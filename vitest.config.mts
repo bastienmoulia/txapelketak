@@ -58,6 +58,13 @@ export default defineConfig({
     setupFiles: ['src/test-setup.ts'],
     include: ['src/**/*.spec.ts'],
     reporters: ['default'],
+    coverage: {
+      provider: 'istanbul',
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      include: ['src/app/**/*.ts'],
+      exclude: ['src/**/*.spec.ts', 'src/test-setup.ts'],
+    },
   },
   define: {
     'import.meta.vitest': true,

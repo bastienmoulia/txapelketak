@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class PoulesPage {
   readonly page: Page;
@@ -29,11 +29,13 @@ export class PoulesPage {
     const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
     await seriePanel.scrollIntoViewIfNeeded();
     const content = seriePanel.locator('p-accordion-content');
-    const isVisible = await content.isVisible();
-    if (!isVisible) {
-      await seriePanel.locator('.p-accordionheader').click();
-      await content.waitFor({ state: 'visible' });
-    }
+    // Retry expansion to handle race with linkedSignal recomputing openSeriesIds
+    await expect(async () => {
+      if (!(await content.isVisible())) {
+        await seriePanel.locator('.p-accordionheader').click();
+      }
+      await expect(content).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 10000 });
   }
 
   // --- Standings ---
@@ -103,11 +105,16 @@ export class PoulesPage {
     currentPouleName: string,
     newPouleName: string,
   ): Promise<void> {
-    await this.ensureSerieExpanded(serieName);
     const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
-    await pouleCard.scrollIntoViewIfNeeded();
-    await pouleCard.getByTestId('edit-poule-button').click();
+    const editBtn = pouleCard.getByTestId('edit-poule-button');
+    // Ensure the accordion stays expanded and button is interactable
+    await expect(async () => {
+      await this.ensureSerieExpanded(serieName);
+      await pouleCard.scrollIntoViewIfNeeded();
+      await expect(editBtn).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 15000 });
+    await editBtn.click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#poule-name') });
@@ -120,11 +127,16 @@ export class PoulesPage {
   }
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
-    await this.ensureSerieExpanded(serieName);
     const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
-    await pouleCard.scrollIntoViewIfNeeded();
-    await pouleCard.getByTestId('delete-poule-button').click();
+    const deleteBtn = pouleCard.getByTestId('delete-poule-button');
+    // Ensure the accordion stays expanded and button is interactable
+    await expect(async () => {
+      await this.ensureSerieExpanded(serieName);
+      await pouleCard.scrollIntoViewIfNeeded();
+      await expect(deleteBtn).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 15000 });
+    await deleteBtn.click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });

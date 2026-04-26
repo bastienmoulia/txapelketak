@@ -168,8 +168,16 @@ test.describe.serial('Score entry, standings & export', () => {
 
   test('should verify poule standings reflect all scores', async ({ page }) => {
     const adminPage = new AdminPage(page);
+    const gamesPage = new GamesPage(page);
     const poulesPage = new PoulesPage(page);
     await adminPage.goto(adminUrl);
+
+    // Edit scores in the same page session to guarantee Firestore writes are committed
+    // before the Poules tab reads standings (avoids cross-page data sync issues on CI).
+    await adminPage.clickTab('Parties');
+    await gamesPage.editScores(teamBeta, teamGamma, 10, 25);
+    await gamesPage.editScores(teamAlpha, teamBeta, 12, 21);
+
     await adminPage.clickTab('Poules');
 
     await poulesPage.ensureSerieExpanded(serieName);

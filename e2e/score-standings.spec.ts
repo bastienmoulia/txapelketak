@@ -193,20 +193,32 @@ test.describe.serial('Score entry, standings & export', () => {
       // Row 0: Gamma (2 wins)
       const row0 = rows.nth(0);
       await expect(row0.locator('.standings-table__name')).toHaveText(teamGamma, { timeout: 2000 });
-      await expect(row0.locator('.standings-table__stat').nth(0)).toHaveText('2', { timeout: 2000 }); // played
-      await expect(row0.locator('.standings-table__stat').nth(1)).toHaveText('2', { timeout: 2000 }); // won
+      await expect(row0.locator('.standings-table__stat').nth(0)).toHaveText('2', {
+        timeout: 2000,
+      }); // played
+      await expect(row0.locator('.standings-table__stat').nth(1)).toHaveText('2', {
+        timeout: 2000,
+      }); // won
 
       // Row 1: Beta (1 win)
       const row1 = rows.nth(1);
       await expect(row1.locator('.standings-table__name')).toHaveText(teamBeta, { timeout: 2000 });
-      await expect(row1.locator('.standings-table__stat').nth(0)).toHaveText('2', { timeout: 2000 }); // played
-      await expect(row1.locator('.standings-table__stat').nth(1)).toHaveText('1', { timeout: 2000 }); // won
+      await expect(row1.locator('.standings-table__stat').nth(0)).toHaveText('2', {
+        timeout: 2000,
+      }); // played
+      await expect(row1.locator('.standings-table__stat').nth(1)).toHaveText('1', {
+        timeout: 2000,
+      }); // won
 
       // Row 2: Alpha (0 wins)
       const row2 = rows.nth(2);
       await expect(row2.locator('.standings-table__name')).toHaveText(teamAlpha, { timeout: 2000 });
-      await expect(row2.locator('.standings-table__stat').nth(0)).toHaveText('2', { timeout: 2000 }); // played
-      await expect(row2.locator('.standings-table__stat').nth(1)).toHaveText('0', { timeout: 2000 }); // won
+      await expect(row2.locator('.standings-table__stat').nth(0)).toHaveText('2', {
+        timeout: 2000,
+      }); // played
+      await expect(row2.locator('.standings-table__stat').nth(1)).toHaveText('0', {
+        timeout: 2000,
+      }); // won
     }).toPass({ timeout: 20000 });
   });
 

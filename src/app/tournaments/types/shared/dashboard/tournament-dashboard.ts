@@ -359,8 +359,7 @@ export class TournamentDashboard {
     });
     dialogRef?.onClose.subscribe((result: SaveGameEvent | undefined) => {
       if (result) {
-        result.gameRef = game.gameRef;
-        this.saveGame.emit(result);
+        this.saveGame.emit({ ...result, gameRef: game.gameRef });
       }
     });
   }

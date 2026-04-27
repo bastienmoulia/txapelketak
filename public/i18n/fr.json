@@ -362,7 +362,8 @@
         "semifinal": "Demi-finale",
         "quarterfinal": "Quart de finale",
         "roundOf16": "Huitième de finale",
-        "roundOf32": "Seizième de finale"
+        "roundOf32": "Seizième de finale",
+        "roundOf": "1/{{n}} de finale"
       }
     }
   },

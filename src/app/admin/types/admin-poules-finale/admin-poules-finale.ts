@@ -229,6 +229,7 @@ export class AdminPoulesFinale {
       quarterfinal: this.translocoService.translate('admin.finale.phase.quarterfinal'),
       roundOf16: this.translocoService.translate('admin.finale.phase.roundOf16'),
       roundOf32: this.translocoService.translate('admin.finale.phase.roundOf32'),
+      roundOf: (n) => this.translocoService.translate('admin.finale.phase.roundOf', { n }),
       winnerOf: (game) =>
         this.translocoService.translate('admin.finale.winnerOf', { game }),
       loserOf: (game) =>

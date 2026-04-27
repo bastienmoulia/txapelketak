@@ -16,6 +16,7 @@ export function getPhaseDefinitions(
     quarterfinal: string;
     roundOf16: string;
     roundOf32: string;
+    roundOf: (n: number) => string;
   },
 ): PhaseDefinition[] {
   const phases: PhaseDefinition[] = [];
@@ -32,7 +33,7 @@ export function getPhaseDefinitions(
   };
 
   while (size >= 2) {
-    const phaseName = phaseNameMap[size] ?? `1/${size / 2} de finale`;
+    const phaseName = phaseNameMap[size] ?? translations.roundOf(size);
     phases.push({
       phaseName,
       phaseOrder: order,
@@ -65,6 +66,7 @@ export function generateFinaleBracket(
     quarterfinal: string;
     roundOf16: string;
     roundOf32: string;
+    roundOf: (n: number) => string;
     winnerOf: (game: string) => string;
     loserOf: (game: string) => string;
   },

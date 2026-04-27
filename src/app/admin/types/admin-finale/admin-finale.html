@@ -3,7 +3,7 @@
     <p-tab value="dashboard">{{ 'tournaments.dashboard.tab' | transloco }}</p-tab>
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
-    <p-tab value="poules">{{ 'admin.tabs.finale' | transloco }}</p-tab>
+    <p-tab value="finale">{{ 'admin.tabs.finale' | transloco }}</p-tab>
     @if (role() === 'admin') {
       <p-tab value="administration">{{ 'admin.tabs.administration' | transloco }}</p-tab>
     }
@@ -36,7 +36,7 @@
         />
       }
     </p-tabpanel>
-    <p-tabpanel value="poules">
+    <p-tabpanel value="finale">
       @if (loading()) {
         <div class="py-8 text-center text-[var(--p-text-muted-color)]">
           <i class="pi pi-spinner pi-spin mr-2"></i>

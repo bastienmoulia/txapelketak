@@ -362,7 +362,8 @@
         "semifinal": "Erdi-finala",
         "quarterfinal": "Laurden-finala",
         "roundOf16": "Hamaseiren finala",
-        "roundOf32": "Hogeita hamabiren finala"
+        "roundOf32": "Hogeita hamabiren finala",
+        "roundOf": "{{n}}ren finala"
       }
     }
   },

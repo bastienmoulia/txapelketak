@@ -150,7 +150,7 @@ export class FinaleTab {
     });
   }
 
-  onEditFinaleGame(game: FinaleGame, _serie: Serie): void {
+  onEditFinaleGame(game: FinaleGame): void {
     const ref = this.dialogService.open(FinaleGameFormDialog, {
       header: this.translocoService.translate('finale.dialogEditGame'),
       data: {
@@ -167,7 +167,7 @@ export class FinaleTab {
       },
       width: '500px',
     });
-    ref.onClose.subscribe((result: SaveFinaleGameEvent | undefined) => {
+    ref?.onClose.subscribe((result: SaveFinaleGameEvent | undefined) => {
       if (result) {
         this.saveFinaleGame.emit(result);
       }

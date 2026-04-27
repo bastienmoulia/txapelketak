@@ -6,8 +6,8 @@
   </p-message>
 } @else {
   <p-accordion [multiple]="true" class="mb-3">
-    @for (serie of series(); track serie.ref?.id) {
-      <p-accordion-panel [value]="serie.ref?.id">
+    @for (serie of series(); track serie.ref.id) {
+      <p-accordion-panel [value]="serie.ref.id">
         <p-accordion-header>{{ serie.name }}</p-accordion-header>
         <p-accordion-content>
           @if (role() === 'admin') {
@@ -43,7 +43,7 @@
             </p-message>
           } @else {
             <div class="finale-bracket">
-              @for (bracketRound of (serie | apply: getBracketRounds); track bracketRound.round) {
+              @for (bracketRound of (getBracketRounds | apply: serie); track bracketRound.round) {
                 <div class="finale-round">
                   <h4 class="finale-round-title">{{ bracketRound.round | transloco }}</h4>
                   @for (game of bracketRound.games; track game.ref?.id) {
@@ -56,18 +56,18 @@
                             [text]="true"
                             size="small"
                             [ariaLabel]="'finale.editGameAria' | transloco"
-                            (onClick)="onEditFinaleGame(game, serie)"
+                            (onClick)="onEditFinaleGame(game)"
                           />
                         }
                       </div>
                       <div class="finale-match-team" [class.winner]="game.scoreTeam1 !== undefined && game.scoreTeam2 !== undefined && game.scoreTeam1 > game.scoreTeam2">
-                        <span class="finale-team-name">{{ game.refTeam1 | apply: getTeamName : game.team1Placeholder }}</span>
+                        <span class="finale-team-name">{{ getTeamName | apply: game.refTeam1 : game.team1Placeholder }}</span>
                         @if (game.scoreTeam1 !== undefined && game.scoreTeam1 !== null) {
                           <span class="finale-score">{{ game.scoreTeam1 }}</span>
                         }
                       </div>
                       <div class="finale-match-team" [class.winner]="game.scoreTeam1 !== undefined && game.scoreTeam2 !== undefined && game.scoreTeam2 > game.scoreTeam1">
-                        <span class="finale-team-name">{{ game.refTeam2 | apply: getTeamName : game.team2Placeholder }}</span>
+                        <span class="finale-team-name">{{ getTeamName | apply: game.refTeam2 : game.team2Placeholder }}</span>
                         @if (game.scoreTeam2 !== undefined && game.scoreTeam2 !== null) {
                           <span class="finale-score">{{ game.scoreTeam2 }}</span>
                         }

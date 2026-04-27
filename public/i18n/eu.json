@@ -158,7 +158,8 @@
       "games": "Partidak",
       "users": "Erabiltzaileak",
       "importExport": "Inportatu / Esportatu",
-      "administration": "Administrazioa"
+      "administration": "Administrazioa",
+      "finale": "Finala"
     },
     "general": {
       "title": "Orokorra",
@@ -384,5 +385,35 @@
   "datepicker": {
     "firstDayOfWeek": 1,
     "placeholder": "ee/hh/uuuu oo:mm"
+  },
+  "finale": {
+    "tab": "Finala",
+    "noSeries": "Ez dago serierik",
+    "finaleSize": "Finalaren tamaina",
+    "sizePlaceholder": "Aukeratu tamaina",
+    "sizeLabel": "Talde kopurua",
+    "setSize": "Tamaina ezarri",
+    "generate": "Partidak sortu",
+    "regenerate": "Partidak berriro sortu",
+    "regenerateConfirm": "Partidak berriro sortu nahi al dituzu? Dauden partidak ezabatuko dira.",
+    "deleteConfirm": "Ziur zaude finalen partida guztiak ezabatu nahi dituzula? Ekintza hau itzulezina da.",
+    "generated": "Partidak sortuta",
+    "generatedDetail": "{{count}} finalen partida sortu dira.",
+    "sizeUpdated": "Tamaina eguneratuta",
+    "sizeUpdatedDetail": "Finalaren tamaina eguneratu da.",
+    "gamesDeleted": "Partidak ezabatuta",
+    "gamesDeletedDetail": "Finalen partidak ezabatu dira.",
+    "gameEdited": "Partida aldatuta",
+    "gameEditedDetail": "Finalen partida aldatu da.",
+    "editGameAria": "Partida hau aldatu",
+    "matchLabel": "Partida",
+    "team1": "1. taldea",
+    "team2": "2. taldea",
+    "score1": "1. puntuazioa",
+    "score2": "2. puntuazioa",
+    "selectTeam": "Taldea hautatu",
+    "noTeam": "Definitu gabe",
+    "dialogEditGame": "Partida aldatu",
+    "noGames": "Ez da partidarik sortu. Tamaina konfiguratu eta partidak sortu."
   }
 }

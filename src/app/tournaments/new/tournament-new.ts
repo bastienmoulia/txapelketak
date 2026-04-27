@@ -48,11 +48,11 @@ export class TournamentNew {
   get typeOptions(): { label: string; value: TournamentType }[] {
     return [
       { label: this.translocoService.translate('tournaments.new.type.poules'), value: 'poules' },
-      /*{ label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
+      { label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
       {
         label: this.translocoService.translate('tournaments.new.type.poulesFinale'),
         value: 'poules_finale',
-      },*/
+      },
     ];
   }
 

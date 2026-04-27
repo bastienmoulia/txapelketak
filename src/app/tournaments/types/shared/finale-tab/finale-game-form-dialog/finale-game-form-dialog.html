@@ -1,0 +1,65 @@
+<div class="flex flex-col gap-4 pt-2">
+  <div class="flex gap-3 items-end">
+    <p-floatlabel class="flex-1">
+      <p-select
+        inputId="team1"
+        [options]="data.teams"
+        optionLabel="name"
+        optionValue="ref"
+        [ngModel]="refTeam1()"
+        (ngModelChange)="refTeam1.set($event)"
+        [showClear]="true"
+        [placeholder]="(data.team1Placeholder ? data.team1Placeholder : ('finale.noTeam' | transloco))"
+      />
+      <label for="team1">{{ 'finale.team1' | transloco }}</label>
+    </p-floatlabel>
+    <p-floatlabel class="w-28">
+      <p-inputnumber
+        inputId="score1"
+        [ngModel]="scoreTeam1()"
+        (ngModelChange)="scoreTeam1.set($event)"
+        [min]="0"
+        [showButtons]="false"
+      />
+      <label for="score1">{{ 'finale.score1' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="flex gap-3 items-end">
+    <p-floatlabel class="flex-1">
+      <p-select
+        inputId="team2"
+        [options]="data.teams"
+        optionLabel="name"
+        optionValue="ref"
+        [ngModel]="refTeam2()"
+        (ngModelChange)="refTeam2.set($event)"
+        [showClear]="true"
+        [placeholder]="(data.team2Placeholder ? data.team2Placeholder : ('finale.noTeam' | transloco))"
+      />
+      <label for="team2">{{ 'finale.team2' | transloco }}</label>
+    </p-floatlabel>
+    <p-floatlabel class="w-28">
+      <p-inputnumber
+        inputId="score2"
+        [ngModel]="scoreTeam2()"
+        (ngModelChange)="scoreTeam2.set($event)"
+        [min]="0"
+        [showButtons]="false"
+      />
+      <label for="score2">{{ 'finale.score2' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="flex justify-end gap-2 pt-2">
+    <p-button
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="onCancel()"
+    />
+    <p-button
+      [label]="'shared.actions.save' | transloco"
+      (onClick)="onSave()"
+    />
+  </div>
+</div>

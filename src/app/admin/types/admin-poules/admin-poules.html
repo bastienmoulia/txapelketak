@@ -3,7 +3,12 @@
     <p-tab value="dashboard">{{ 'tournaments.dashboard.tab' | transloco }}</p-tab>
     <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
     <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
-    <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
+    @if (showPoules()) {
+      <p-tab value="poules">{{ 'admin.tabs.poules' | transloco }}</p-tab>
+    }
+    @if (showFinale()) {
+      <p-tab value="finale">{{ 'admin.tabs.finale' | transloco }}</p-tab>
+    }
     @if (role() === 'admin') {
       <p-tab value="administration">{{ 'admin.tabs.administration' | transloco }}</p-tab>
     }
@@ -76,6 +81,19 @@
         />
       }
     </p-tabpanel>
+    @if (showFinale()) {
+      <p-tabpanel value="finale">
+        <app-finale-tab
+          [series]="series()"
+          [teams]="teams()"
+          [role]="role()"
+          (setFinaleSize)="onSetFinaleSize($event)"
+          (generateFinale)="onGenerateFinale($event)"
+          (deleteFinaleGames)="onDeleteFinaleGames($event)"
+          (saveFinaleGame)="onSaveFinaleGame($event)"
+        />
+      </p-tabpanel>
+    }
     @if (role() === 'admin') {
       <p-tabpanel value="administration">
         <div class="flex flex-col gap-8">

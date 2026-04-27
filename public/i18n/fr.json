@@ -158,7 +158,8 @@
       "games": "Parties",
       "users": "Utilisateurs",
       "importExport": "Import / Export",
-      "administration": "Administration"
+      "administration": "Administration",
+      "finale": "Phase finale"
     },
     "general": {
       "title": "Général",
@@ -384,5 +385,35 @@
   "datepicker": {
     "firstDayOfWeek": 1,
     "placeholder": "jj/mm/aaaa hh:mm"
+  },
+  "finale": {
+    "tab": "Phase finale",
+    "noSeries": "Aucune série disponible",
+    "finaleSize": "Taille de la phase finale",
+    "sizePlaceholder": "Choisir la taille",
+    "sizeLabel": "Nombre d'équipes",
+    "setSize": "Configurer la taille",
+    "generate": "Générer les matchs",
+    "regenerate": "Régénérer les matchs",
+    "regenerateConfirm": "Voulez-vous régénérer les matchs ? Les matchs existants seront supprimés.",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer tous les matchs de phase finale ? Cette action est irréversible.",
+    "generated": "Matchs générés",
+    "generatedDetail": "{{count}} matchs de phase finale ont été générés.",
+    "sizeUpdated": "Taille mise à jour",
+    "sizeUpdatedDetail": "La taille de la phase finale a été mise à jour.",
+    "gamesDeleted": "Matchs supprimés",
+    "gamesDeletedDetail": "Les matchs de phase finale ont été supprimés.",
+    "gameEdited": "Match modifié",
+    "gameEditedDetail": "Le match de phase finale a été modifié.",
+    "editGameAria": "Modifier ce match",
+    "matchLabel": "Match",
+    "team1": "Équipe 1",
+    "team2": "Équipe 2",
+    "score1": "Score 1",
+    "score2": "Score 2",
+    "selectTeam": "Sélectionner une équipe",
+    "noTeam": "Non définie",
+    "dialogEditGame": "Modifier le match",
+    "noGames": "Aucun match généré. Configurez la taille et générez les matchs."
   }
 }

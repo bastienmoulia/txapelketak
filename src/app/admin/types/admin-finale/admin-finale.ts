@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FinaleData } from '../../../tournaments/types/finale/finale';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-admin-finale',
@@ -8,6 +7,4 @@ import { FinaleData } from '../../../tournaments/types/finale/finale';
   styleUrl: './admin-finale.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminFinale {
-  tournamentData = input.required<FinaleData>();
-}
+export class AdminFinale {}

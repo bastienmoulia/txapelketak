@@ -158,7 +158,8 @@
       "games": "Partidos",
       "users": "Usuarios",
       "importExport": "Importar / Exportar",
-      "administration": "Administración"
+      "administration": "Administración",
+      "finale": "Fase final"
     },
     "general": {
       "title": "General",
@@ -384,5 +385,35 @@
   "datepicker": {
     "firstDayOfWeek": 0,
     "placeholder": "dd/mm/aaaa hh:mm"
+  },
+  "finale": {
+    "tab": "Fase final",
+    "noSeries": "No hay series disponibles",
+    "finaleSize": "Tamaño de la fase final",
+    "sizePlaceholder": "Elegir tamaño",
+    "sizeLabel": "Número de equipos",
+    "setSize": "Configurar tamaño",
+    "generate": "Generar partidas",
+    "regenerate": "Regenerar partidas",
+    "regenerateConfirm": "¿Quieres regenerar las partidas? Las partidas existentes serán eliminadas.",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar todas las partidas de la fase final? Esta acción es irreversible.",
+    "generated": "Partidas generadas",
+    "generatedDetail": "{{count}} partidas de la fase final han sido generadas.",
+    "sizeUpdated": "Tamaño actualizado",
+    "sizeUpdatedDetail": "El tamaño de la fase final ha sido actualizado.",
+    "gamesDeleted": "Partidas eliminadas",
+    "gamesDeletedDetail": "Las partidas de la fase final han sido eliminadas.",
+    "gameEdited": "Partida modificada",
+    "gameEditedDetail": "La partida de la fase final ha sido modificada.",
+    "editGameAria": "Editar esta partida",
+    "matchLabel": "Partida",
+    "team1": "Equipo 1",
+    "team2": "Equipo 2",
+    "score1": "Puntuación 1",
+    "score2": "Puntuación 2",
+    "selectTeam": "Seleccionar equipo",
+    "noTeam": "Sin definir",
+    "dialogEditGame": "Editar partida",
+    "noGames": "No se han generado partidas. Configure el tamaño y genere las partidas."
   }
 }

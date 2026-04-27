@@ -93,7 +93,21 @@ export class FinaleTab {
       const team = this.teams().find((t) => t.ref.id === ref.id);
       if (team) return team.name;
     }
-    return placeholder ?? this.translocoService.translate('finale.noTeam');
+    if (placeholder) {
+      // Structured placeholder: "finale.winnerOf:{roundKey}:{matchNumber}"
+      if (placeholder.startsWith('finale.winnerOf:')) {
+        const parts = placeholder.split(':');
+        const roundKey = parts[1];
+        const matchNum = parts[2];
+        const roundLabel = this.translocoService.translate(roundKey);
+        return this.translocoService.translate('finale.winnerOf', {
+          round: roundLabel,
+          match: matchNum,
+        });
+      }
+      return placeholder;
+    }
+    return this.translocoService.translate('finale.noTeam');
   };
 
   onSetFinaleSize(serie: Serie, size: number | null): void {
@@ -136,8 +150,7 @@ export class FinaleTab {
     });
   }
 
-  onEditFinaleGame(game: FinaleGame, serie: Serie): void {
-    void serie;
+  onEditFinaleGame(game: FinaleGame, _serie: Serie): void {
     const ref = this.dialogService.open(FinaleGameFormDialog, {
       header: this.translocoService.translate('finale.dialogEditGame'),
       data: {

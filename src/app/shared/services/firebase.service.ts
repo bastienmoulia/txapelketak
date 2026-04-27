@@ -700,14 +700,7 @@ export class FirebaseService {
   }
 
   private getRoundName(size: number): string {
-    const names: Record<number, string> = {
-      2: 'Finale',
-      4: 'Demi-finale',
-      8: 'Quart de finale',
-      16: 'Huitième de finale',
-      32: 'Seizième de finale',
-    };
-    return names[size] ?? `Tour de ${size}`;
+    return `finale.rounds.${size}`;
   }
 
   async generateFinaleGamesForSerie(
@@ -736,8 +729,8 @@ export class FirebaseService {
           matchNumber,
         };
         if (prevRoundName) {
-          gameData['team1Placeholder'] = `Gagnant ${prevRoundName} ${2 * matchNumber - 1}`;
-          gameData['team2Placeholder'] = `Gagnant ${prevRoundName} ${2 * matchNumber}`;
+          gameData['team1Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber - 1}`;
+          gameData['team2Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber}`;
         }
         const gameDocRef = doc(collection(serieRef, 'finaleGames'));
         await runInInjectionContext(this.environmentInjector, async () => {

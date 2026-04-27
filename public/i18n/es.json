@@ -414,6 +414,14 @@
     "selectTeam": "Seleccionar equipo",
     "noTeam": "Sin definir",
     "dialogEditGame": "Editar partida",
-    "noGames": "No se han generado partidas. Configure el tamaño y genere las partidas."
+    "noGames": "No se han generado partidas. Configure el tamaño y genere las partidas.",
+    "rounds": {
+      "2": "Final",
+      "4": "Semifinal",
+      "8": "Cuartos de final",
+      "16": "Octavos de final",
+      "32": "Dieciseisavos de final"
+    },
+    "winnerOf": "Ganador de {{round}} {{match}}"
   }
 }

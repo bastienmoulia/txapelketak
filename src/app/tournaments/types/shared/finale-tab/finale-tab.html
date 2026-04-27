@@ -45,7 +45,7 @@
             <div class="finale-bracket">
               @for (bracketRound of (serie | apply: getBracketRounds); track bracketRound.round) {
                 <div class="finale-round">
-                  <h4 class="finale-round-title">{{ bracketRound.round }}</h4>
+                  <h4 class="finale-round-title">{{ bracketRound.round | transloco }}</h4>
                   @for (game of bracketRound.games; track game.ref?.id) {
                     <div class="finale-match">
                       <div class="finale-match-header">

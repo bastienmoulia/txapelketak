@@ -414,6 +414,14 @@
     "selectTeam": "Select a team",
     "noTeam": "Not defined",
     "dialogEditGame": "Edit match",
-    "noGames": "No matches generated. Configure the size and generate matches."
+    "noGames": "No matches generated. Configure the size and generate matches.",
+    "rounds": {
+      "2": "Final",
+      "4": "Semi-final",
+      "8": "Quarter-final",
+      "16": "Round of 16",
+      "32": "Round of 32"
+    },
+    "winnerOf": "Winner of {{round}} {{match}}"
   }
 }

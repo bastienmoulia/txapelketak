@@ -414,6 +414,14 @@
     "selectTeam": "Taldea hautatu",
     "noTeam": "Definitu gabe",
     "dialogEditGame": "Partida aldatu",
-    "noGames": "Ez da partidarik sortu. Tamaina konfiguratu eta partidak sortu."
+    "noGames": "Ez da partidarik sortu. Tamaina konfiguratu eta partidak sortu.",
+    "rounds": {
+      "2": "Finala",
+      "4": "Erdi-finala",
+      "8": "Laurden-finala",
+      "16": "16ko txanda",
+      "32": "32ko txanda"
+    },
+    "winnerOf": "{{round}} {{match}} irabazlea"
   }
 }

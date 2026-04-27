@@ -31,8 +31,8 @@ describe('TournamentNew', () => {
     expect(component.steps.length).toBe(2);
   });
 
-  it('should have 1 tournament type options', () => {
-    expect(component.typeOptions.length).toBe(1);
+  it('should have 3 tournament type options', () => {
+    expect(component.typeOptions.length).toBe(3);
   });
 
   it('should mark step 1 as invalid when name is empty', () => {

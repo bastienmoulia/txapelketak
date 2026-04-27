@@ -154,6 +154,7 @@
     "unknownType": "Unknown tournament type",
     "tabs": {
       "poules": "Groups",
+      "finale": "Knockout stage",
       "teams": "Teams",
       "games": "Games",
       "users": "Users",
@@ -336,6 +337,33 @@
       "deleted": "Slot deleted",
       "deletedDetail": "The time slot has been successfully deleted.",
       "deleteAria": "Delete this slot"
+    },
+    "finale": {
+      "finaleSizeLabel": "Teams (1st round)",
+      "generate": "Generate bracket",
+      "regenerate": "Regenerate bracket",
+      "deleteBracket": "Delete bracket",
+      "bracketNotGenerated": "The bracket has not been generated yet. Choose the number of teams then click \"Generate bracket\".",
+      "noSeries": "No series available. Add a series to get started.",
+      "toDefine": "To be defined",
+      "unknownTeam": "Unknown team",
+      "winnerOf": "Winner of {{game}}",
+      "loserOf": "Loser of {{game}}",
+      "confirmRegenerateHeader": "Regenerate bracket",
+      "confirmRegenerateMessage": "The existing bracket will be deleted and replaced. This action is irreversible.",
+      "confirmDeleteMessage": "The knockout stage bracket will be deleted. This action is irreversible.",
+      "bracketGenerated": "Bracket generated",
+      "bracketGeneratedDetail": "{{count}} games have been created successfully.",
+      "bracketDeleted": "Bracket deleted",
+      "bracketDeletedDetail": "The knockout stage bracket has been deleted successfully.",
+      "phase": {
+        "final": "Final",
+        "thirdPlace": "Third place",
+        "semifinal": "Semifinal",
+        "quarterfinal": "Quarterfinal",
+        "roundOf16": "Round of 16",
+        "roundOf32": "Round of 32"
+      }
     }
   },
   "shared": {

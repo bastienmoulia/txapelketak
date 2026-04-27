@@ -15,6 +15,8 @@ export interface Serie {
   ref: DocumentReference;
   name: string;
   poules: Poule[];
+  finaleSize?: number;
+  finaleGames?: FinaleGame[];
 }
 
 export interface Poule {
@@ -32,6 +34,21 @@ export interface Game {
   scoreTeam2?: number;
   date?: Date;
   referees?: string[];
+}
+
+export interface FinaleGame {
+  ref: DocumentReference;
+  name: string;
+  phase: string;
+  phaseOrder: number;
+  matchNumber: number;
+  refTeam1?: DocumentReference | null;
+  refTeam2?: DocumentReference | null;
+  team1Label?: string;
+  team2Label?: string;
+  scoreTeam1?: number;
+  scoreTeam2?: number;
+  date?: Date;
 }
 
 export function parseFirestoreDate(value: unknown): Date | undefined {

@@ -154,6 +154,7 @@
     "unknownType": "Tipo de torneo desconocido",
     "tabs": {
       "poules": "Grupos",
+      "finale": "Fase eliminatoria",
       "teams": "Equipos",
       "games": "Partidos",
       "users": "Usuarios",
@@ -336,6 +337,33 @@
       "deleted": "Franja eliminada",
       "deletedDetail": "La franja horaria se ha eliminado con éxito.",
       "deleteAria": "Eliminar esta franja"
+    },
+    "finale": {
+      "finaleSizeLabel": "Equipos (1.ª ronda)",
+      "generate": "Generar cuadro",
+      "regenerate": "Regenerar cuadro",
+      "deleteBracket": "Eliminar cuadro",
+      "bracketNotGenerated": "El cuadro aún no ha sido generado. Elija el número de equipos y haga clic en \"Generar cuadro\".",
+      "noSeries": "No hay series disponibles. Añada una serie para empezar.",
+      "toDefine": "Por definir",
+      "unknownTeam": "Equipo desconocido",
+      "winnerOf": "Ganador de {{game}}",
+      "loserOf": "Perdedor de {{game}}",
+      "confirmRegenerateHeader": "Regenerar cuadro",
+      "confirmRegenerateMessage": "El cuadro existente será eliminado y reemplazado. Esta acción es irreversible.",
+      "confirmDeleteMessage": "El cuadro de la fase eliminatoria será eliminado. Esta acción es irreversible.",
+      "bracketGenerated": "Cuadro generado",
+      "bracketGeneratedDetail": "{{count}} partidos han sido creados con éxito.",
+      "bracketDeleted": "Cuadro eliminado",
+      "bracketDeletedDetail": "El cuadro de la fase eliminatoria ha sido eliminado con éxito.",
+      "phase": {
+        "final": "Final",
+        "thirdPlace": "Tercer puesto",
+        "semifinal": "Semifinal",
+        "quarterfinal": "Cuartos de final",
+        "roundOf16": "Octavos de final",
+        "roundOf32": "Dieciseisavos de final"
+      }
     }
   },
   "shared": {

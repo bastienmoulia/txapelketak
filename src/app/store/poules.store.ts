@@ -4,6 +4,7 @@ import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Team } from '../tournaments/types/shared/teams/teams';
 import {
+  FinaleGame,
   Game,
   parseFirestoreDate,
   Poule,
@@ -39,6 +40,7 @@ export const PoulesStore = signalStore(
     let timeSlotsSubscription: Subscription | null = null;
     const gameSubscriptionMap = new Map<string, Subscription>(); // key: poule ref ID
     const pouleSubscriptions: Subscription[] = [];
+    const finaleGameSubscriptionMap = new Map<string, Subscription>(); // key: serie ref ID
     let watchedTournamentId: string | null = null;
 
     function stopGameWatchers(): void {
@@ -51,6 +53,11 @@ export const PoulesStore = signalStore(
       pouleSubscriptions.length = 0;
     }
 
+    function stopFinaleGameWatchers(): void {
+      finaleGameSubscriptionMap.forEach((sub) => sub.unsubscribe());
+      finaleGameSubscriptionMap.clear();
+    }
+
     function resetWatchingState(): void {
       teamsSubscription?.unsubscribe();
       teamsSubscription = null;
@@ -60,6 +67,7 @@ export const PoulesStore = signalStore(
       timeSlotsSubscription = null;
       stopPouleWatchers();
       stopGameWatchers();
+      stopFinaleGameWatchers();
       watchedTournamentId = null;
     }
 
@@ -123,6 +131,48 @@ export const PoulesStore = signalStore(
         if (!oldIds.has(poule.ref.id)) {
           startGameWatcher(poule);
         }
+      }
+    }
+
+    function startFinaleGameWatcher(serie: Serie): void {
+      if (finaleGameSubscriptionMap.has(serie.ref.id)) {
+        return;
+      }
+      const sub = firebaseService
+        .watchCollectionFromDocumentRef(serie.ref, 'finaleGames')
+        .subscribe({
+          next: (items) => {
+            const finaleGames: FinaleGame[] = items.map((item) => {
+              const data = item.data as Partial<FinaleGame>;
+              return {
+                ...data,
+                ref: item.ref,
+                date: parseFirestoreDate(data.date),
+              } as FinaleGame;
+            });
+            patchState(store, {
+              series: store.series().map((s) =>
+                s.ref.id === serie.ref.id ? { ...s, finaleGames } : s,
+              ),
+              error: null,
+            });
+          },
+          error: (err: unknown) => {
+            patchState(store, {
+              error: err instanceof Error ? err.message : 'Unable to watch finaleGames',
+            });
+          },
+          complete: () => {
+            finaleGameSubscriptionMap.delete(serie.ref.id);
+          },
+        });
+      finaleGameSubscriptionMap.set(serie.ref.id, sub);
+    }
+
+    function watchFinaleGames(series: Serie[]): void {
+      stopFinaleGameWatchers();
+      for (const serie of series) {
+        startFinaleGameWatcher(serie);
       }
     }
 
@@ -246,6 +296,7 @@ export const PoulesStore = signalStore(
             switchMap(({ items }) => {
               stopGameWatchers();
               stopPouleWatchers();
+              stopFinaleGameWatchers();
               const series = items.map((item) => ({
                 ...(item.data as Partial<Serie>),
                 ref: item.ref,
@@ -265,6 +316,7 @@ export const PoulesStore = signalStore(
               patchState(store, { series, loading: false });
               watchGames(series);
               watchPoules(series);
+              watchFinaleGames(series);
             },
             error: (err: unknown) => {
               resetWatchingState();
@@ -303,6 +355,7 @@ export const PoulesStore = signalStore(
         timeSlotsSubscription = null;
         stopPouleWatchers();
         stopGameWatchers();
+        stopFinaleGameWatchers();
         watchedTournamentId = null;
         patchState(store, initialState);
       },

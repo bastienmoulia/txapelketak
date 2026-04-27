@@ -154,6 +154,7 @@
     "unknownType": "Type de tournoi inconnu",
     "tabs": {
       "poules": "Poules",
+      "finale": "Phase finale",
       "teams": "Équipes",
       "games": "Parties",
       "users": "Utilisateurs",
@@ -336,6 +337,33 @@
       "deleted": "Créneau supprimé",
       "deletedDetail": "Le créneau horaire a été supprimé avec succès.",
       "deleteAria": "Supprimer ce créneau"
+    },
+    "finale": {
+      "finaleSizeLabel": "Équipes (1er palier)",
+      "generate": "Générer le tableau",
+      "regenerate": "Régénérer le tableau",
+      "deleteBracket": "Supprimer le tableau",
+      "bracketNotGenerated": "Le tableau n'a pas encore été généré. Choisissez le nombre d'équipes puis cliquez sur \"Générer le tableau\".",
+      "noSeries": "Aucune série disponible. Ajoutez une série pour commencer.",
+      "toDefine": "À définir",
+      "unknownTeam": "Équipe inconnue",
+      "winnerOf": "Gagnant {{game}}",
+      "loserOf": "Perdant {{game}}",
+      "confirmRegenerateHeader": "Régénérer le tableau",
+      "confirmRegenerateMessage": "Le tableau existant sera supprimé et remplacé. Cette action est irréversible.",
+      "confirmDeleteMessage": "Le tableau de la phase finale sera supprimé. Cette action est irréversible.",
+      "bracketGenerated": "Tableau généré",
+      "bracketGeneratedDetail": "{{count}} parties ont été créées avec succès.",
+      "bracketDeleted": "Tableau supprimé",
+      "bracketDeletedDetail": "Le tableau de la phase finale a été supprimé avec succès.",
+      "phase": {
+        "final": "Finale",
+        "thirdPlace": "Troisième place",
+        "semifinal": "Demi-finale",
+        "quarterfinal": "Quart de finale",
+        "roundOf16": "Huitième de finale",
+        "roundOf32": "Seizième de finale"
+      }
     }
   },
   "shared": {

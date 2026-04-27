@@ -154,6 +154,7 @@
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
       "poules": "Multzoak",
+      "finale": "Kanporatzeen fasea",
       "teams": "Taldeak",
       "games": "Partidak",
       "users": "Erabiltzaileak",
@@ -336,6 +337,33 @@
       "deleted": "Tartea ezabatu da",
       "deletedDetail": "Denbora-tartea arrakastaz ezabatu da.",
       "deleteAria": "Tarte hau ezabatu"
+    },
+    "finale": {
+      "finaleSizeLabel": "Taldeak (1. maila)",
+      "generate": "Taula sortu",
+      "regenerate": "Taula berriro sortu",
+      "deleteBracket": "Taula ezabatu",
+      "bracketNotGenerated": "Taula oraindik ez da sortu. Aukeratu taldeen kopurua eta sakatu \"Taula sortu\".",
+      "noSeries": "Ez dago serierik. Gehitu serie bat hasteko.",
+      "toDefine": "Zehazteke",
+      "unknownTeam": "Talde ezezaguna",
+      "winnerOf": "{{game}}-ko irabazlea",
+      "loserOf": "{{game}}-ko galtzailea",
+      "confirmRegenerateHeader": "Taula berriro sortu",
+      "confirmRegenerateMessage": "Lehendik dagoen taula ezabatuko da eta ordezkoa sortuko da. Ekintza hau itzulezinak da.",
+      "confirmDeleteMessage": "Kanporatzeen faseko taula ezabatuko da. Ekintza hau itzulezinak da.",
+      "bracketGenerated": "Taula sortua",
+      "bracketGeneratedDetail": "{{count}} partida sortu dira arrakastaz.",
+      "bracketDeleted": "Taula ezabatua",
+      "bracketDeletedDetail": "Kanporatzeen faseko taula arrakastaz ezabatu da.",
+      "phase": {
+        "final": "Finala",
+        "thirdPlace": "Hirugarren postua",
+        "semifinal": "Erdi-finala",
+        "quarterfinal": "Laurden-finala",
+        "roundOf16": "Hamaseiren finala",
+        "roundOf32": "Hogeita hamabiren finala"
+      }
     }
   },
   "shared": {

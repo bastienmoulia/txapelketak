@@ -1,0 +1,190 @@
+@if (sortedSeries().length === 0) {
+  <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+    {{ 'admin.finale.noSeries' | transloco }}
+  </div>
+} @else {
+  <p-accordion [multiple]="true">
+    @for (serie of sortedSeries(); track serie.ref.id) {
+      <p-accordion-panel [value]="serie.ref.id">
+        <p-accordion-header>
+          <span class="font-semibold">{{ serie.name }}</span>
+        </p-accordion-header>
+        <p-accordion-content>
+          @if (role() === 'admin') {
+            <div class="flex flex-wrap items-center gap-3 mb-4 px-3">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-medium">
+                  {{ 'admin.finale.finaleSizeLabel' | transloco }}
+                </label>
+                <p-select
+                  [options]="finaleSizeOptions"
+                  [ngModel]="serie.finaleSize ?? 8"
+                  optionLabel="label"
+                  optionValue="value"
+                  (ngModelChange)="onFinaleSizeChange(serie, $event)"
+                  [style]="{ width: '6rem' }"
+                />
+              </div>
+              <p-button
+                [label]="
+                  (serie.finaleGames?.length ?? 0) > 0
+                    ? ('admin.finale.regenerate' | transloco)
+                    : ('admin.finale.generate' | transloco)
+                "
+                [icon]="(serie.finaleGames?.length ?? 0) > 0 ? 'pi pi-refresh' : 'pi pi-sitemap'"
+                [severity]="(serie.finaleGames?.length ?? 0) > 0 ? 'warn' : 'primary'"
+                size="small"
+                (click)="onGenerateBracket(serie)"
+                [disabled]="!(serie.finaleSize)"
+              />
+              @if ((serie.finaleGames?.length ?? 0) > 0) {
+                <p-button
+                  [label]="'admin.finale.deleteBracket' | transloco"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  [outlined]="true"
+                  (click)="onDeleteBracket(serie)"
+                />
+              }
+            </div>
+          }
+
+          @if ((serie.finaleGames?.length ?? 0) === 0) {
+            <div class="py-6 text-center text-[var(--p-text-muted-color)] px-3">
+              {{ 'admin.finale.bracketNotGenerated' | transloco }}
+            </div>
+          } @else {
+            <div class="flex flex-col gap-6 px-3">
+              @for (phaseGroup of getGamesByPhase | apply: serie; track phaseGroup.phase) {
+                <div>
+                  <h3
+                    class="text-base font-semibold mb-3 text-[var(--p-text-muted-color)] uppercase tracking-wide"
+                  >
+                    {{ phaseGroup.phase }}
+                  </h3>
+                  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    @for (game of phaseGroup.games; track game.ref.id) {
+                      <div
+                        class="border border-[var(--p-content-border-color)] rounded-lg overflow-hidden"
+                      >
+                        <div
+                          class="px-3 py-1 bg-[var(--p-content-hover-background)] text-xs font-medium text-[var(--p-text-muted-color)]"
+                        >
+                          {{ game.name }}
+                        </div>
+                        @if (editingGameId() === game.ref.id) {
+                          <div class="p-3 flex flex-col gap-2">
+                            @if (role() === 'admin') {
+                              <div class="flex flex-col gap-1">
+                                <label class="text-xs text-[var(--p-text-muted-color)]">
+                                  {{ 'admin.games.team1' | transloco }}
+                                </label>
+                                <p-select
+                                  [options]="getTeamOptions | apply: teams()"
+                                  [ngModel]="editTeam1Ref()"
+                                  (ngModelChange)="editTeam1Ref.set($event)"
+                                  optionLabel="label"
+                                  optionValue="value"
+                                  [placeholder]="'admin.finale.toDefine' | transloco"
+                                  [style]="{ width: '100%' }"
+                                />
+                              </div>
+                              <div class="flex flex-col gap-1">
+                                <label class="text-xs text-[var(--p-text-muted-color)]">
+                                  {{ 'admin.games.team2' | transloco }}
+                                </label>
+                                <p-select
+                                  [options]="getTeamOptions | apply: teams()"
+                                  [ngModel]="editTeam2Ref()"
+                                  (ngModelChange)="editTeam2Ref.set($event)"
+                                  optionLabel="label"
+                                  optionValue="value"
+                                  [placeholder]="'admin.finale.toDefine' | transloco"
+                                  [style]="{ width: '100%' }"
+                                />
+                              </div>
+                            }
+                            <div class="flex gap-2 items-center">
+                              <input
+                                type="number"
+                                class="w-16 border border-[var(--p-content-border-color)] rounded px-2 py-1 text-center bg-[var(--p-content-background)] text-[var(--p-content-color)]"
+                                [ngModel]="editScoreTeam1()"
+                                (ngModelChange)="editScoreTeam1.set($event)"
+                                min="0"
+                                [attr.aria-label]="'admin.games.score' | transloco"
+                              />
+                              <span class="font-bold">-</span>
+                              <input
+                                type="number"
+                                class="w-16 border border-[var(--p-content-border-color)] rounded px-2 py-1 text-center bg-[var(--p-content-background)] text-[var(--p-content-color)]"
+                                [ngModel]="editScoreTeam2()"
+                                (ngModelChange)="editScoreTeam2.set($event)"
+                                min="0"
+                                [attr.aria-label]="'admin.games.score' | transloco"
+                              />
+                            </div>
+                            <div class="flex gap-2 mt-1">
+                              <p-button
+                                [label]="'shared.actions.save' | transloco"
+                                size="small"
+                                (click)="onSaveGameScore(game)"
+                              />
+                              <p-button
+                                [label]="'shared.actions.cancel' | transloco"
+                                severity="secondary"
+                                size="small"
+                                (click)="onCancelEdit()"
+                              />
+                            </div>
+                          </div>
+                        } @else {
+                          <div class="p-3 flex flex-col gap-1">
+                            <div class="flex items-center justify-between">
+                              <span class="text-sm truncate flex-1">
+                                {{ getTeamDisplay | apply: game : 1 : teams() }}
+                              </span>
+                              @if (isGameFinished | apply: game) {
+                                <span class="ml-2 font-mono font-bold">{{
+                                  game.scoreTeam1
+                                }}</span>
+                              }
+                            </div>
+                            <div class="flex items-center justify-between">
+                              <span class="text-sm truncate flex-1">
+                                {{ getTeamDisplay | apply: game : 2 : teams() }}
+                              </span>
+                              @if (isGameFinished | apply: game) {
+                                <span class="ml-2 font-mono font-bold">{{
+                                  game.scoreTeam2
+                                }}</span>
+                              }
+                            </div>
+                            @if (role() === 'admin' || role() === 'organizer') {
+                              <div class="flex justify-end mt-1">
+                                <p-button
+                                  icon="pi pi-pencil"
+                                  severity="secondary"
+                                  size="small"
+                                  [rounded]="true"
+                                  [text]="true"
+                                  (click)="onEditGame(game)"
+                                  [attr.aria-label]="'admin.games.editAria' | transloco"
+                                />
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </p-accordion-content>
+      </p-accordion-panel>
+    }
+  </p-accordion>
+}
+<p-confirmDialog />

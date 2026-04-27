@@ -3,10 +3,10 @@
     <app-admin-poules [tournament]="tournament()" [currentUser]="currentUser()" />
   }
   @case ('finale') {
-    <app-admin-finale [tournamentData]="finaleData()" />
+    <app-admin-finale [tournament]="tournament()" [currentUser]="currentUser()" />
   }
   @case ('poules_finale') {
-    <app-admin-poules-finale [tournamentData]="poulesFinaleData()" />
+    <app-admin-poules-finale [tournament]="tournament()" [currentUser]="currentUser()" />
   }
   @default {
     <p>{{ 'admin.unknownType' | transloco }} : {{ tournament().type }}</p>

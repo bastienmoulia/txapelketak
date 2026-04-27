@@ -21,7 +21,7 @@ import {
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
-import { Game, TimeSlot } from '../../tournaments/types/poules/poules';
+import { FinaleGame, Game, TimeSlot } from '../../tournaments/types/poules/poules';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 
 @Injectable({
@@ -375,6 +375,7 @@ export class FirebaseService {
         await deleteDoc(pouleDoc.ref);
       });
     }
+    await this.deleteFinaleGamesFromSerie(serieRef);
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: serie`);
       await deleteDoc(serieRef);
@@ -482,6 +483,75 @@ export class FirebaseService {
     console.debug(`[Firestore] deleteGameFromPoule: deleting game`);
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: game`);
+      await deleteDoc(gameRef);
+    });
+  }
+
+  async updateSerieFinaleSize(serieRef: DocumentReference, finaleSize: number): Promise<void> {
+    console.debug(`[Firestore] updateSerieFinaleSize: ${finaleSize}`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: serie finaleSize`);
+      await updateDoc(serieRef, { finaleSize });
+    });
+  }
+
+  async generateFinaleGamesForSerie(
+    serieRef: DocumentReference,
+    games: Omit<FinaleGame, 'ref'>[],
+  ): Promise<void> {
+    console.debug(`[Firestore] generateFinaleGamesForSerie: creating ${games.length} games`);
+    await this.deleteFinaleGamesFromSerie(serieRef);
+    for (const game of games) {
+      const gameDocRef = doc(collection(serieRef, 'finaleGames'));
+      const data: Record<string, unknown> = {
+        name: game.name,
+        phase: game.phase,
+        phaseOrder: game.phaseOrder,
+        matchNumber: game.matchNumber,
+      };
+      if (game.team1Label) data['team1Label'] = game.team1Label;
+      if (game.team2Label) data['team2Label'] = game.team2Label;
+      await runInInjectionContext(this.environmentInjector, async () => {
+        console.debug(`[Firestore] setDoc: finaleGame`);
+        await setDoc(gameDocRef, data);
+      });
+    }
+  }
+
+  async updateFinaleGame(
+    gameRef: DocumentReference,
+    gameData: Partial<Omit<FinaleGame, 'ref'>>,
+  ): Promise<void> {
+    console.debug(`[Firestore] updateFinaleGame: updating finale game`);
+    const data: Record<string, unknown> = {};
+    if (gameData.refTeam1 !== undefined) data['refTeam1'] = gameData.refTeam1;
+    if (gameData.refTeam2 !== undefined) data['refTeam2'] = gameData.refTeam2;
+    if (gameData.team1Label !== undefined) data['team1Label'] = gameData.team1Label ?? null;
+    if (gameData.team2Label !== undefined) data['team2Label'] = gameData.team2Label ?? null;
+    data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
+    data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
+    data['date'] = gameData.date ?? null;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: finaleGame`);
+      await updateDoc(gameRef, data);
+    });
+  }
+
+  async deleteFinaleGamesFromSerie(serieRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteFinaleGamesFromSerie: deleting all finale games from serie`);
+    const gameDocs = await this.getCollectionFromDocumentRef(serieRef, 'finaleGames');
+    for (const gameDoc of gameDocs) {
+      await runInInjectionContext(this.environmentInjector, async () => {
+        console.debug(`[Firestore] deleteDoc: finaleGame`);
+        await deleteDoc(gameDoc.ref);
+      });
+    }
+  }
+
+  async deleteFinaleGameFromSerie(gameRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteFinaleGameFromSerie: deleting finale game`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] deleteDoc: finaleGame`);
       await deleteDoc(gameRef);
     });
   }

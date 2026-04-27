@@ -1,1 +1,54 @@
-<p>finale works!</p>
+<p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
+  <p-tablist>
+    <p-tab value="dashboard">{{ 'tournaments.dashboard.tab' | transloco }}</p-tab>
+    <p-tab value="games">{{ 'admin.tabs.games' | transloco }}</p-tab>
+    <p-tab value="teams">{{ 'admin.tabs.teams' | transloco }}</p-tab>
+    <p-tab value="poules">{{ 'admin.tabs.finale' | transloco }}</p-tab>
+  </p-tablist>
+
+  <p-tabpanels class="px-0!">
+    <p-tabpanel value="dashboard">
+      <app-tournament-dashboard
+        [tournament]="tournament()"
+        [teams]="teams()"
+        [series]="series()"
+        [loading]="loading()"
+      />
+    </p-tabpanel>
+    <p-tabpanel value="teams">
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-teams [teams]="teams()" />
+      }
+    </p-tabpanel>
+    <p-tabpanel value="poules">
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-finale-tab [series]="series()" [teams]="teams()" />
+      }
+    </p-tabpanel>
+    <p-tabpanel value="games">
+      @if (loading()) {
+        <div class="py-8 text-center text-[var(--p-text-muted-color)]">
+          <i class="pi pi-spinner pi-spin mr-2"></i>
+          {{ 'tournaments.detail.loading' | transloco }}
+        </div>
+      } @else {
+        <app-games
+          [series]="series()"
+          [teams]="teams()"
+          [tournament]="tournament()"
+          [timeSlots]="timeSlots()"
+        />
+      }
+    </p-tabpanel>
+  </p-tabpanels>
+</p-tabs>

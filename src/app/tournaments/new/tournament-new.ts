@@ -38,23 +38,17 @@ export class TournamentNew {
 
   currentStep = signal(0);
 
-  get steps() {
+  private activeLang = toSignal(this.translocoService.langChanges$, {
+    initialValue: this.translocoService.getActiveLang(),
+  });
+
+  steps = computed(() => {
+    this.activeLang();
     return [
       { label: this.translocoService.translate('tournaments.new.steps.info') },
       { label: this.translocoService.translate('tournaments.new.steps.creator') },
     ];
-  }
-
-  get typeOptions(): { label: string; value: TournamentType }[] {
-    return [
-      { label: this.translocoService.translate('tournaments.new.type.poules'), value: 'poules' },
-      { label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
-      {
-        label: this.translocoService.translate('tournaments.new.type.poulesFinale'),
-        value: 'poules_finale',
-      },
-    ];
-  }
+  });
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -69,6 +63,24 @@ export class TournamentNew {
 
   private formValue = toSignal(this.form.valueChanges.pipe(startWith(this.form.getRawValue())), {
     initialValue: this.form.getRawValue(),
+  });
+
+  typeOptions = computed<{ label: string; value: TournamentType }[]>(() => {
+    this.activeLang();
+    const name = this.formValue()?.name ?? '';
+    const options: { label: string; value: TournamentType }[] = [
+      { label: this.translocoService.translate('tournaments.new.type.poules'), value: 'poules' },
+    ];
+    if (name.startsWith('_')) {
+      options.push(
+        { label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
+        {
+          label: this.translocoService.translate('tournaments.new.type.poulesFinale'),
+          value: 'poules_finale',
+        },
+      );
+    }
+    return options;
   });
 
   isStep1Valid = computed(() => {
@@ -87,7 +99,7 @@ export class TournamentNew {
       this.form.get('name')?.markAsTouched();
       return;
     }
-    if (step < this.steps.length - 1) {
+    if (step < this.steps().length - 1) {
       this.currentStep.update((s) => s + 1);
     }
   }

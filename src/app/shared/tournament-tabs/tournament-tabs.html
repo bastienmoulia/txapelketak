@@ -1,0 +1,9 @@
+<p-tabs [value]="activeTab()" (valueChange)="onTabChange($event)">
+  <p-tablist>
+    @for (tab of tabs(); track tab.route) {
+      <p-tab [value]="tab.route" class="flex items-center !gap-2 text-inherit">
+        <span>{{ tab.label | transloco }}</span>
+      </p-tab>
+    }
+  </p-tablist>
+</p-tabs>

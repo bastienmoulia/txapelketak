@@ -6,10 +6,11 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
-import { Types } from '../types/types';
 import { injectParams } from 'ngxtension/inject-params';
 import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
 import { TournamentDetailStore } from '../../store/tournament-detail.store';
+import { Poules } from '../types/poules/poules';
+import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -20,9 +21,10 @@ import { TournamentDetailStore } from '../../store/tournament-detail.store';
     CardModule,
     MessageModule,
     TagModule,
-    Types,
     TranslocoModule,
     TournamentHeader,
+    TournamentTabs,
+    Poules,
   ],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',

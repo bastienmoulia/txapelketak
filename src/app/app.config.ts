@@ -7,6 +7,7 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
@@ -57,6 +58,7 @@ export const appConfig: ApplicationConfig = {
         messagingSenderId: '210687482712',
       }),
     ),
+    provideAnalytics(() => getAnalytics()),
     provideFirestore(() => {
       const firestore = getFirestore(getApp(), environment.firestoreDatabase);
 

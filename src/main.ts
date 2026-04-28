@@ -29,5 +29,5 @@ async function cleanupLegacyServiceWorkers(): Promise<void> {
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));
 
 void cleanupLegacyServiceWorkers().catch((error) =>
-  console.warn('Service worker cleanup failed', error)
+  console.warn('Service worker cleanup failed', error),
 );

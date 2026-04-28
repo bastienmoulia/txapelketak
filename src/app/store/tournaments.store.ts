@@ -56,7 +56,9 @@ export const TournamentsStore = signalStore(
           `[Store] TournamentsStore.ensureLoaded: watchTournaments listener started (count=${listenerStartCount})`,
         );
 
-        tournamentsSubscription = firebaseService.watchTournaments().subscribe({
+        const showHidden =
+          typeof localStorage !== 'undefined' && localStorage.getItem('showHidden') === 'true';
+        tournamentsSubscription = firebaseService.watchTournaments(showHidden).subscribe({
           next: (tournaments) => {
             patchState(store, {
               tournaments,

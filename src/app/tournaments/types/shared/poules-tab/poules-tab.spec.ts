@@ -210,6 +210,51 @@ describe('PoulesTab', () => {
     });
   });
 
+  describe('empty poule display', () => {
+    const serieRef = createRef('serie1');
+    const pouleRef = createRef('poule1');
+
+    function buildEmptySeries(): Serie[] {
+      return [
+        {
+          ref: serieRef,
+          name: 'Serie 1',
+          poules: [
+            {
+              ref: pouleRef,
+              name: 'Poule Vide',
+              refTeams: [],
+              games: [],
+            },
+          ],
+        },
+      ];
+    }
+
+    it('should not show coverage message for empty poule', async () => {
+      fixture.componentRef.setInput('teams', []);
+      fixture.componentRef.setInput('series', buildEmptySeries());
+      fixture.componentRef.setInput('role', 'admin');
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const successMsg = fixture.nativeElement.querySelector('[data-testid="poule-games-coverage-success"]');
+      const errorMsg = fixture.nativeElement.querySelector('[data-testid="poule-games-coverage-error"]');
+      expect(successMsg).toBeNull();
+      expect(errorMsg).toBeNull();
+    });
+
+    it('should not show standings table for empty poule', async () => {
+      fixture.componentRef.setInput('teams', []);
+      fixture.componentRef.setInput('series', buildEmptySeries());
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const table = fixture.nativeElement.querySelector('.standings-table');
+      expect(table).toBeNull();
+    });
+  });
+
   describe('game coverage helpers', () => {
     const teamARef = createRef('teamA');
     const teamBRef = createRef('teamB');

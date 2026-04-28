@@ -6,7 +6,7 @@
       {{ 'tournaments.new.title' | transloco }}
     </h1>
 
-    <p-steps [model]="steps" [activeIndex]="currentStep()" [readonly]="true" class="block mb-8" />
+    <p-steps [model]="steps()" [activeIndex]="currentStep()" [readonly]="true" class="block mb-8" />
 
     @if (!submitted()) {
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
@@ -61,7 +61,7 @@
               <p-selectbutton
                 id="type"
                 formControlName="type"
-                [options]="typeOptions"
+                [options]="typeOptions()"
                 optionLabel="label"
                 optionValue="value"
                 data-testid="field-type"
@@ -154,7 +154,7 @@
             }
           </div>
           <div class="flex gap-2">
-            @if (currentStep() < steps.length - 1) {
+            @if (currentStep() < steps().length - 1) {
               <p-button
                 type="button"
                 [label]="'tournaments.new.nav.next' | transloco"

@@ -158,7 +158,8 @@
       "games": "Games",
       "users": "Users",
       "importExport": "Import / Export",
-      "administration": "Administration"
+      "administration": "Administration",
+      "finale": "Playoff bracket"
     },
     "general": {
       "title": "General",
@@ -384,5 +385,43 @@
   "datepicker": {
     "firstDayOfWeek": 0,
     "placeholder": "mm/dd/yyyy hh:mm"
+  },
+  "finale": {
+    "tab": "Playoff bracket",
+    "noSeries": "No series available",
+    "finaleSize": "Playoff size",
+    "sizePlaceholder": "Choose size",
+    "sizeLabel": "Number of teams",
+    "setSize": "Set size",
+    "generate": "Generate matches",
+    "regenerate": "Regenerate matches",
+    "regenerateConfirm": "Do you want to regenerate matches? Existing matches will be deleted.",
+    "deleteConfirm": "Are you sure you want to delete all playoff matches? This action is irreversible.",
+    "generated": "Matches generated",
+    "generatedDetail": "{{count}} playoff matches have been generated.",
+    "sizeUpdated": "Size updated",
+    "sizeUpdatedDetail": "The playoff size has been updated.",
+    "gamesDeleted": "Matches deleted",
+    "gamesDeletedDetail": "The playoff matches have been deleted.",
+    "gameEdited": "Match updated",
+    "gameEditedDetail": "The playoff match has been updated.",
+    "editGameAria": "Edit this match",
+    "matchLabel": "Match",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "score1": "Score 1",
+    "score2": "Score 2",
+    "selectTeam": "Select a team",
+    "noTeam": "Not defined",
+    "dialogEditGame": "Edit match",
+    "noGames": "No matches generated. Configure the size and generate matches.",
+    "rounds": {
+      "2": "Final",
+      "4": "Semi-final",
+      "8": "Quarter-final",
+      "16": "Round of 16",
+      "32": "Round of 32"
+    },
+    "winnerOf": "Winner of {{round}} {{match}}"
   }
 }

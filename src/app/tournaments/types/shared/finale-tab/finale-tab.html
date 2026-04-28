@@ -1,0 +1,85 @@
+<p-confirmdialog></p-confirmdialog>
+
+@if (series().length === 0) {
+  <p-message severity="warn" class="mt-4 mx-3">
+    {{ 'finale.noSeries' | transloco }}
+  </p-message>
+} @else {
+  <p-accordion [multiple]="true" class="mb-3">
+    @for (serie of series(); track serie.ref.id) {
+      <p-accordion-panel [value]="serie.ref.id">
+        <p-accordion-header>{{ serie.name }}</p-accordion-header>
+        <p-accordion-content>
+          @if (role() === 'admin') {
+            <div class="flex flex-wrap gap-3 mb-4 px-2 items-center">
+              <p-select
+                [options]="sizeOptions"
+                optionLabel="label"
+                optionValue="value"
+                [ngModel]="serie.finaleSize ?? null"
+                (ngModelChange)="onSetFinaleSize(serie, $event)"
+                [placeholder]="'finale.sizePlaceholder' | transloco"
+              />
+              <p-button
+                [label]="((serie.finaleGames && serie.finaleGames.length > 0) ? 'finale.regenerate' : 'finale.generate') | transloco"
+                icon="pi pi-bolt"
+                [disabled]="!serie.finaleSize"
+                (onClick)="onGenerateFinale(serie)"
+              />
+              @if (serie.finaleGames && serie.finaleGames.length > 0) {
+                <p-button
+                  [label]="'shared.actions.delete' | transloco"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  (onClick)="onDeleteFinaleGames(serie)"
+                />
+              }
+            </div>
+          }
+
+          @if (!serie.finaleGames || serie.finaleGames.length === 0) {
+            <p-message severity="info" class="mx-2">
+              {{ 'finale.noGames' | transloco }}
+            </p-message>
+          } @else {
+            <div class="finale-bracket">
+              @for (bracketRound of (getBracketRounds | apply: serie); track bracketRound.round) {
+                <div class="finale-round">
+                  <h4 class="finale-round-title">{{ bracketRound.round | transloco }}</h4>
+                  @for (game of bracketRound.games; track game.ref?.id) {
+                    <div class="finale-match">
+                      <div class="finale-match-header">
+                        <span class="text-xs">{{ 'finale.matchLabel' | transloco }} {{ game.matchNumber }}</span>
+                        @if (role() === 'admin' || role() === 'organizer') {
+                          <p-button
+                            icon="pi pi-pencil"
+                            [text]="true"
+                            size="small"
+                            [ariaLabel]="'finale.editGameAria' | transloco"
+                            (onClick)="onEditFinaleGame(game)"
+                          />
+                        }
+                      </div>
+                      <div class="finale-match-team" [class.winner]="game.scoreTeam1 !== undefined && game.scoreTeam2 !== undefined && game.scoreTeam1 > game.scoreTeam2">
+                        <span class="finale-team-name">{{ getTeamName | apply: game.refTeam1 : game.team1Placeholder }}</span>
+                        @if (game.scoreTeam1 !== undefined && game.scoreTeam1 !== null) {
+                          <span class="finale-score">{{ game.scoreTeam1 }}</span>
+                        }
+                      </div>
+                      <div class="finale-match-team" [class.winner]="game.scoreTeam1 !== undefined && game.scoreTeam2 !== undefined && game.scoreTeam2 > game.scoreTeam1">
+                        <span class="finale-team-name">{{ getTeamName | apply: game.refTeam2 : game.team2Placeholder }}</span>
+                        @if (game.scoreTeam2 !== undefined && game.scoreTeam2 !== null) {
+                          <span class="finale-score">{{ game.scoreTeam2 }}</span>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </p-accordion-content>
+      </p-accordion-panel>
+    }
+  </p-accordion>
+}

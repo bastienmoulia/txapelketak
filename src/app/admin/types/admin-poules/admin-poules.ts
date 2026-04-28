@@ -43,6 +43,13 @@ import { AdminDeleteTournament } from '../shared/admin-delete-tournament/admin-d
 import { AdminTimeSlots } from '../shared/admin-time-slots/admin-time-slots';
 import { TournamentDashboard } from '../../../tournaments/types/shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
+import {
+  FinaleTab,
+  SaveFinaleGameEvent,
+  SetFinaleSizeEvent,
+  GenerateFinaleEvent,
+  DeleteFinaleGamesEvent,
+} from '../../../tournaments/types/shared/finale-tab/finale-tab';
 
 @Component({
   selector: 'app-admin-poules',
@@ -58,6 +65,7 @@ import { PoulesStore } from '../../../store/poules.store';
     AdminDeleteTournament,
     AdminTimeSlots,
     TournamentDashboard,
+    FinaleTab,
   ],
   templateUrl: './admin-poules.html',
   styleUrl: './admin-poules.css',
@@ -81,6 +89,9 @@ export class AdminPoules {
   loading = this.poulesStore.loading;
 
   role = computed(() => this.currentUser()?.role ?? '');
+
+  showPoules = computed(() => ['poules', 'poules_finale'].includes(this.tournament().type));
+  showFinale = computed(() => ['finale', 'poules_finale'].includes(this.tournament().type));
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -301,8 +312,7 @@ export class AdminPoules {
     });
   }
 
-  async onSaveTeam(team: Team): Promise<void> {
-    const ref = this.tournament().ref;
+  async onSaveTeam(team: Team): Promise<void> {    const ref = this.tournament().ref;
     if (!ref) {
       if (team.ref) {
         this.poulesStore.patchTeams(
@@ -384,6 +394,52 @@ export class AdminPoules {
       severity: 'success',
       summary: this.translocoService.translate('admin.teams.deleted'),
       detail: this.translocoService.translate('admin.teams.deletedDetail'),
+    });
+  }
+
+  async onSetFinaleSize(event: SetFinaleSizeEvent): Promise<void> {
+    await this.firebaseService.setSerieFinaleSize(event.serieRef, event.size);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('finale.sizeUpdated'),
+      detail: this.translocoService.translate('finale.sizeUpdatedDetail'),
+    });
+  }
+
+  async onGenerateFinale(event: GenerateFinaleEvent): Promise<void> {
+    await this.firebaseService.generateFinaleGamesForSerie(
+      event.serieRef,
+      event.serieName,
+      event.finaleSize,
+    );
+    const count = event.finaleSize - 1;
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('finale.generated'),
+      detail: this.translocoService.translate('finale.generatedDetail', { count }),
+    });
+  }
+
+  async onDeleteFinaleGames(event: DeleteFinaleGamesEvent): Promise<void> {
+    await this.firebaseService.deleteFinaleGamesForSerie(event.serieRef);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('finale.gamesDeleted'),
+      detail: this.translocoService.translate('finale.gamesDeletedDetail'),
+    });
+  }
+
+  async onSaveFinaleGame(event: SaveFinaleGameEvent): Promise<void> {
+    await this.firebaseService.updateFinaleGame(event.gameRef, {
+      refTeam1: event.refTeam1,
+      refTeam2: event.refTeam2,
+      scoreTeam1: event.scoreTeam1 ?? undefined,
+      scoreTeam2: event.scoreTeam2 ?? undefined,
+    });
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('finale.gameEdited'),
+      detail: this.translocoService.translate('finale.gameEditedDetail'),
     });
   }
 }

@@ -21,7 +21,7 @@ import {
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
-import { Game, TimeSlot } from '../../tournaments/types/poules/poules';
+import { Game, TimeSlot, FinaleGame } from '../../tournaments/types/poules/poules';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 
 @Injectable({
@@ -690,5 +690,96 @@ export class FirebaseService {
       return (value as { toDate: () => Date }).toDate();
     }
     return new Date(value as string);
+  }
+
+  async setSerieFinaleSize(serieRef: DocumentReference, size: number): Promise<void> {
+    console.debug(`[Firestore] setSerieFinaleSize: size=${size}`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      await updateDoc(serieRef, { finaleSize: size });
+    });
+  }
+
+  private getRoundName(size: number): string {
+    return `finale.rounds.${size}`;
+  }
+
+  async generateFinaleGamesForSerie(
+    serieRef: DocumentReference,
+    serieName: string,
+    finaleSize: number,
+  ): Promise<void> {
+    console.debug(`[Firestore] generateFinaleGamesForSerie: finaleSize=${finaleSize}`);
+    await this.deleteFinaleGamesForSerie(serieRef);
+
+    const allRoundNames: { name: string; size: number }[] = [];
+    let currentSize = finaleSize;
+    while (currentSize >= 2) {
+      allRoundNames.push({ name: this.getRoundName(currentSize), size: currentSize });
+      currentSize = Math.floor(currentSize / 2);
+    }
+
+    let prevRoundName: string | null = null;
+    for (const { name: roundName, size: roundSize } of allRoundNames) {
+      const matchCount = roundSize / 2;
+      for (let matchNumber = 1; matchNumber <= matchCount; matchNumber++) {
+        const gameData: Record<string, unknown> = {
+          name: `${serieName} - ${roundName} ${matchNumber}`,
+          round: roundName,
+          roundOrder: roundSize,
+          matchNumber,
+        };
+        if (prevRoundName) {
+          gameData['team1Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber - 1}`;
+          gameData['team2Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber}`;
+        }
+        const gameDocRef = doc(collection(serieRef, 'finaleGames'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] setDoc: finaleGame`);
+          await setDoc(gameDocRef, gameData);
+        });
+      }
+      prevRoundName = roundName;
+    }
+  }
+
+  async deleteFinaleGamesForSerie(serieRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteFinaleGamesForSerie`);
+    const gameDocs = await this.getCollectionFromDocumentRef(serieRef, 'finaleGames');
+    for (const gameDoc of gameDocs) {
+      await runInInjectionContext(this.environmentInjector, async () => {
+        console.debug(`[Firestore] deleteDoc: finaleGame`);
+        await deleteDoc(gameDoc.ref);
+      });
+    }
+  }
+
+  watchFinaleGamesForSerie(
+    serieRef: DocumentReference,
+  ): Observable<{ data: unknown; ref: DocumentReference }[]> {
+    return this.watchCollectionFromDocumentRef(serieRef, 'finaleGames');
+  }
+
+  async updateFinaleGame(
+    gameRef: DocumentReference,
+    data: Partial<Omit<FinaleGame, 'ref'>>,
+  ): Promise<void> {
+    console.debug(`[Firestore] updateFinaleGame`);
+    const updateData: Record<string, unknown> = {};
+    if (data.refTeam1 !== undefined) updateData['refTeam1'] = data.refTeam1;
+    if (data.refTeam2 !== undefined) updateData['refTeam2'] = data.refTeam2;
+    if ('scoreTeam1' in data) updateData['scoreTeam1'] = data.scoreTeam1 ?? null;
+    if ('scoreTeam2' in data) updateData['scoreTeam2'] = data.scoreTeam2 ?? null;
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: finaleGame`);
+      await updateDoc(gameRef, updateData);
+    });
+  }
+
+  async deleteFinaleGame(gameRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteFinaleGame`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] deleteDoc: finaleGame`);
+      await deleteDoc(gameRef);
+    });
   }
 }

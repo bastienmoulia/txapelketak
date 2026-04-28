@@ -1,0 +1,74 @@
+.finale-bracket {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 1rem 0.5rem;
+}
+
+.finale-round {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 200px;
+}
+
+.finale-round-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--p-text-muted-color);
+  white-space: nowrap;
+}
+
+.finale-match {
+  border: 1px solid var(--p-content-border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--p-content-background);
+}
+
+.finale-match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: var(--p-surface-100);
+  border-bottom: 1px solid var(--p-content-border-color);
+  font-size: 0.75rem;
+  color: var(--p-text-muted-color);
+}
+
+.finale-match-team {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+}
+
+.finale-match-team:last-child {
+  border-bottom: none;
+}
+
+.finale-match-team.winner {
+  font-weight: 700;
+  background: var(--p-primary-50);
+}
+
+.finale-team-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--p-text-color);
+}
+
+.finale-score {
+  font-weight: 700;
+  min-width: 1.5rem;
+  text-align: right;
+  margin-left: 0.5rem;
+}

@@ -8,7 +8,7 @@ export class TeamsPage {
   }
 
   private panel(): Locator {
-    return this.page.getByRole('tabpanel', { name: 'Équipes' });
+    return this.page.locator('p-tabpanel[value="teams"]');
   }
 
   teamRow(name: string): Locator {

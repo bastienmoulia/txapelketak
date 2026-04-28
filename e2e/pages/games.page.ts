@@ -8,7 +8,7 @@ export class GamesPage {
   }
 
   private panel(): Locator {
-    return this.page.getByRole('tabpanel', { name: 'Parties' });
+    return this.page.locator('p-tabpanel[value="games"]');
   }
 
   // --- Read ---

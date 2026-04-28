@@ -79,7 +79,7 @@ test.describe.serial('Organizer – restrictions', () => {
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Équipes');
 
-    const teamsPanel = page.getByRole('tabpanel', { name: 'Équipes' });
+    const teamsPanel = page.locator('p-tabpanel[value="teams"]');
     await expect(teamsPanel.locator('.p-datatable-tbody tr').first()).toBeVisible();
 
     await expect(page.getByTestId('edit-team-button').first()).not.toBeVisible();

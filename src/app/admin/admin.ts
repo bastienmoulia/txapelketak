@@ -20,10 +20,11 @@ import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { AdminTypes } from './types/admin-types';
 import { TournamentHeader } from '../shared/tournament-header/tournament-header';
 import { FirebaseService } from '../shared/services/firebase.service';
 import { TournamentDetailStore } from '../store/tournament-detail.store';
+import { TournamentTabs } from '../shared/tournament-tabs/tournament-tabs';
+import { AdminPoules } from './types/admin-poules/admin-poules';
 
 @Component({
   selector: 'app-admin',
@@ -34,9 +35,10 @@ import { TournamentDetailStore } from '../store/tournament-detail.store';
     ProgressSpinnerModule,
     TagModule,
     ToastModule,
-    AdminTypes,
+    AdminPoules,
     TranslocoModule,
     TournamentHeader,
+    TournamentTabs,
   ],
   providers: [MessageService],
   templateUrl: './admin.html',

@@ -24,7 +24,8 @@
   </div>
 } @else if (tournament() && user()) {
   <app-tournament-header [tournament]="tournament()!" [role]="user()!.role" />
-  <app-admin-types [tournament]="tournament()!" [currentUser]="user()!" />
+  <app-tournament-tabs [tournament]="tournament()!" [role]="user()!.role" />
+  <app-admin-poules [tournament]="tournament()!" [currentUser]="user()!" />
 } @else {
   <p-message severity="warn" icon="pi pi-exclamation-triangle">
     {{ 'admin.notFound' | transloco }}

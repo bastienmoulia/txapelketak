@@ -8,7 +8,7 @@ export class PoulesPage {
   }
 
   private panel(): Locator {
-    return this.page.getByRole('tabpanel', { name: 'Poules' });
+    return this.page.locator('p-tabpanel[value="poules"]');
   }
 
   // --- Read ---

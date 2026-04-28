@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TabsModule } from 'primeng/tabs';
 import { map } from 'rxjs';
 import { Teams } from '../shared/teams/teams';
@@ -19,13 +19,14 @@ import { Games } from '../shared/games/games';
 import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './poules.route';
 import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
+import { FinaleTab } from '../shared/finale-tab/finale-tab';
 
 export type { PoulesData, Serie, Poule, Game, TimeSlot, FinaleGame } from './poules.model';
 export { parseFirestoreDate } from './poules.model';
 
 @Component({
   selector: 'app-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, TournamentDashboard],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, TournamentDashboard, FinaleTab],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,7 +34,6 @@ export { parseFirestoreDate } from './poules.model';
 export class Poules {
   private poulesStore = inject(PoulesStore);
   private activatedRoute = inject(ActivatedRoute);
-  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
@@ -41,6 +41,9 @@ export class Poules {
   series = this.poulesStore.series;
   timeSlots = this.poulesStore.timeSlots;
   loading = this.poulesStore.loading;
+
+  showPoules = computed(() => ['poules', 'poules_finale'].includes(this.tournament().type));
+  showFinale = computed(() => ['finale', 'poules_finale'].includes(this.tournament().type));
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -73,23 +76,6 @@ export class Poules {
 
     effect(() => {
       this.poulesStore.startWatching(this.tournament().ref);
-    });
-  }
-
-  onTabChange(nextTab: string | number | undefined): void {
-    if (typeof nextTab !== 'string') {
-      return;
-    }
-
-    const routeTab = getPoulesRouteTab(nextTab);
-    if (routeTab === this.activeTab()) {
-      return;
-    }
-
-    void this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: { [POULES_TAB_QUERY_PARAM]: routeTab },
-      queryParamsHandling: 'merge',
     });
   }
 }

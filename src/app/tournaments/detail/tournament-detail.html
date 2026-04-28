@@ -25,7 +25,7 @@
   </div>
 } @else if (tournament(); as t) {
   <app-tournament-header [tournament]="t" />
-  <div class="flex flex-col gap-8">
+  <div class="flex flex-col">
     <!-- Waiting validation message -->
     @if (t.status === 'waitingValidation') {
       <div class="flex flex-col gap-4" data-testid="validation-section">
@@ -39,7 +39,8 @@
         </p-message>
       </div>
     } @else {
-      <app-types [tournament]="t" />
+      <app-tournament-tabs [tournament]="t" />
+      <app-poules [tournament]="t" />
     }
   </div>
 }

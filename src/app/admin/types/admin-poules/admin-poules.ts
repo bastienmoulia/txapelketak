@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
 import { map } from 'rxjs';
@@ -76,7 +76,6 @@ export class AdminPoules {
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
   private activatedRoute = inject(ActivatedRoute);
-  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private poulesStore = inject(PoulesStore);
 
@@ -124,23 +123,6 @@ export class AdminPoules {
 
     effect(() => {
       this.poulesStore.startWatching(this.tournament().ref);
-    });
-  }
-
-  onTabChange(nextTab: string | number | undefined): void {
-    if (typeof nextTab !== 'string') {
-      return;
-    }
-
-    const routeTab = getPoulesRouteTab(nextTab);
-    if (routeTab === this.activeTab()) {
-      return;
-    }
-
-    void this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: { [POULES_TAB_QUERY_PARAM]: routeTab },
-      queryParamsHandling: 'merge',
     });
   }
 
@@ -312,7 +294,8 @@ export class AdminPoules {
     });
   }
 
-  async onSaveTeam(team: Team): Promise<void> {    const ref = this.tournament().ref;
+  async onSaveTeam(team: Team): Promise<void> {
+    const ref = this.tournament().ref;
     if (!ref) {
       if (team.ref) {
         this.poulesStore.patchTeams(

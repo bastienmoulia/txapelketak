@@ -11,7 +11,7 @@ export class AdminPage extends TournamentBasePage {
   }
 
   private adminPanel(): Locator {
-    return this.page.getByRole('tabpanel', { name: 'Administration' });
+    return this.page.locator('p-tabpanel[value="administration"]');
   }
 
   // --- Users ---

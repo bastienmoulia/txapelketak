@@ -123,92 +123,96 @@
             />
           </div>
 
-          @if (hasCompleteRoundRobin | apply: poule) {
-            <p-message severity="success" class="mb-2" data-testid="poule-games-coverage-success">
-              {{
-                'admin.poules.gamesCoverageComplete'
-                  | transloco
-                    : {
-                        covered: (getCoveredGamesCount | apply: poule),
-                        expected: (getExpectedGamesCount | apply: poule),
-                      }
-              }}
-            </p-message>
-          } @else {
-            <p-message
-              severity="error"
-              class="mb-2"
-              [pTooltip]="getMissingGamesTooltip | apply: poule"
-              data-testid="poule-games-coverage-error"
-            >
-              {{
-                'admin.poules.gamesCoverageIncomplete'
-                  | transloco
-                    : {
-                        covered: (getCoveredGamesCount | apply: poule),
-                        expected: (getExpectedGamesCount | apply: poule),
-                      }
-              }}
-            </p-message>
+          @if ((getExpectedGamesCount | apply: poule) > 0) {
+            @if (hasCompleteRoundRobin | apply: poule) {
+              <p-message severity="success" class="mb-2" data-testid="poule-games-coverage-success">
+                {{
+                  'admin.poules.gamesCoverageComplete'
+                    | transloco
+                      : {
+                          covered: (getCoveredGamesCount | apply: poule),
+                          expected: (getExpectedGamesCount | apply: poule),
+                        }
+                }}
+              </p-message>
+            } @else {
+              <p-message
+                severity="error"
+                class="mb-2"
+                [pTooltip]="getMissingGamesTooltip | apply: poule"
+                data-testid="poule-games-coverage-error"
+              >
+                {{
+                  'admin.poules.gamesCoverageIncomplete'
+                    | transloco
+                      : {
+                          covered: (getCoveredGamesCount | apply: poule),
+                          expected: (getExpectedGamesCount | apply: poule),
+                        }
+                }}
+              </p-message>
+            }
           }
         }
-        <table class="w-full standings-table">
-          <thead>
-            <tr>
-              <th class="standings-table__name">{{ 'shared.table.columns.name' | transloco }}</th>
-              <th
-                class="standings-table__stat"
-                [pTooltip]="'admin.poules.standings.played' | transloco"
-                tooltipPosition="top"
-              >
-                {{ 'admin.poules.standings.playedShort' | transloco }}
-              </th>
-              <th
-                class="standings-table__stat"
-                [pTooltip]="'admin.poules.standings.won' | transloco"
-                tooltipPosition="top"
-              >
-                {{ 'admin.poules.standings.wonShort' | transloco }}
-              </th>
-              @if (role() === 'admin') {
-                <th class="standings-table__stat">
-                  {{ 'admin.poules.standings.pointsInLosses' | transloco }}
-                </th>
-                <th class="standings-table__stat">
-                  {{ 'admin.poules.standings.pointsConceded' | transloco }}
-                </th>
-                <th class="standings-table__actions"></th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (standing of poule.standings; track standing.ref.id) {
+        @if (poule.standings.length > 0) {
+          <table class="w-full standings-table">
+            <thead>
               <tr>
-                <td class="standings-table__name">{{ standing.name }}</td>
-                <td class="standings-table__stat">{{ standing.played }}</td>
-                <td class="standings-table__stat">{{ standing.won }}</td>
+                <th class="standings-table__name">{{ 'shared.table.columns.name' | transloco }}</th>
+                <th
+                  class="standings-table__stat"
+                  [pTooltip]="'admin.poules.standings.played' | transloco"
+                  tooltipPosition="top"
+                >
+                  {{ 'admin.poules.standings.playedShort' | transloco }}
+                </th>
+                <th
+                  class="standings-table__stat"
+                  [pTooltip]="'admin.poules.standings.won' | transloco"
+                  tooltipPosition="top"
+                >
+                  {{ 'admin.poules.standings.wonShort' | transloco }}
+                </th>
                 @if (role() === 'admin') {
-                  <td class="standings-table__stat">{{ standing.pointsInLosses }}</td>
-                  <td class="standings-table__stat">{{ standing.pointsConceded }}</td>
-                  <td class="standings-table__actions">
-                    <p-button
-                      type="button"
-                      size="small"
-                      severity="danger"
-                      [outlined]="true"
-                      icon="pi pi-times"
-                      [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
-                      [pTooltip]="'admin.poules.removeTeamAria' | transloco"
-                      tooltipPosition="top"
-                      (onClick)="onRemoveTeamFromPoule(poule, standing.ref)"
-                      data-testid="remove-team-from-poule-button"
-                    />
-                  </td>
+                  <th class="standings-table__stat">
+                    {{ 'admin.poules.standings.pointsInLosses' | transloco }}
+                  </th>
+                  <th class="standings-table__stat">
+                    {{ 'admin.poules.standings.pointsConceded' | transloco }}
+                  </th>
+                  <th class="standings-table__actions"></th>
                 }
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (standing of poule.standings; track standing.ref.id) {
+                <tr>
+                  <td class="standings-table__name">{{ standing.name }}</td>
+                  <td class="standings-table__stat">{{ standing.played }}</td>
+                  <td class="standings-table__stat">{{ standing.won }}</td>
+                  @if (role() === 'admin') {
+                    <td class="standings-table__stat">{{ standing.pointsInLosses }}</td>
+                    <td class="standings-table__stat">{{ standing.pointsConceded }}</td>
+                    <td class="standings-table__actions">
+                      <p-button
+                        type="button"
+                        size="small"
+                        severity="danger"
+                        [outlined]="true"
+                        icon="pi pi-times"
+                        [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
+                        [pTooltip]="'admin.poules.removeTeamAria' | transloco"
+                        tooltipPosition="top"
+                        (onClick)="onRemoveTeamFromPoule(poule, standing.ref)"
+                        data-testid="remove-team-from-poule-button"
+                      />
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
       </p-card>
     }
   </div>

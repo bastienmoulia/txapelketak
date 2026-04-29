@@ -1,6 +1,5 @@
 import { computed } from '@angular/core';
-import { signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { patchState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { User, UserRole } from '../home/tournament.interface';
 
 interface AuthState {

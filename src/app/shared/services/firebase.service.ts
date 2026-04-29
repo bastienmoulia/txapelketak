@@ -1,6 +1,5 @@
 import { EnvironmentInjector, inject, Injectable, runInInjectionContext } from '@angular/core';
 import {
-  and,
   arrayRemove,
   arrayUnion,
   collection,
@@ -13,7 +12,6 @@ import {
   getDoc,
   getDocs,
   limit,
-  or,
   query,
   setDoc,
   updateDoc,
@@ -45,20 +43,13 @@ export class FirebaseService {
     }
 
     const tournamentsRef = collection(this.firestore, 'tournaments');
-    const statusFilter = where('status', '!=', 'waitingValidation');
-    // Filter out names starting with '_': Firestore range queries use ASCII ordering.
-    // '_' is ASCII 95 and '`' (backtick) is ASCII 96, so names in [_, `) start with '_'.
-    // Using OR (name < '_') OR (name >= '`') excludes all names starting with '_'.
-    const q = showHidden
-      ? query(tournamentsRef, statusFilter)
-      : query(
-          tournamentsRef,
-          and(statusFilter, or(where('name', '<', '_'), where('name', '>=', '`'))),
-        );
+    const q = query(tournamentsRef, where('status', '!=', 'waitingValidation'));
 
     return collectionSnapshots(q).pipe(
       map((snapshots) =>
-        snapshots.map((snap) => ({ ref: snap.ref, ...snap.data() }) as Tournament),
+        snapshots
+          .map((snap) => ({ ref: snap.ref, ...snap.data() }) as Tournament)
+          .filter((tournament) => showHidden || !tournament.name.startsWith('_')),
       ),
     );
   }

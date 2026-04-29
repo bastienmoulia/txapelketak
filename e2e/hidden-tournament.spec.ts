@@ -10,8 +10,8 @@ import { TournamentNewPage } from './pages/tournament-new.page';
  * in the public tournament list unless the visitor opts in by setting
  * `localStorage.showHidden = 'true'`.
  *
- * Filtering is performed at the Firestore query level (not client-side), so this
- * test also validates that the Firebase query correctly excludes hidden tournaments.
+ * The `status != waitingValidation` filter runs at the Firestore query level; the
+ * `_`-prefix name filter is applied client-side in the service observable.
  */
 test.describe.serial('Hidden tournament (underscore prefix)', () => {
   const timestamp = Date.now();

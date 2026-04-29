@@ -72,8 +72,10 @@ test.describe.serial('Hidden tournament (underscore prefix)', () => {
 
     const listPage = new TournamentListPage(page);
 
-    await page.evaluate(() => localStorage.setItem('showHidden', 'true'));
+    // Navigate first to have a valid origin, then set localStorage and reload
     await listPage.goto();
+    await page.evaluate(() => localStorage.setItem('showHidden', 'true'));
+    await page.reload();
     await listPage.waitForTournamentToAppear(tournamentName);
     expect(await listPage.hasTournament(tournamentName)).toBe(true);
   });

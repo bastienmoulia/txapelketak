@@ -40,7 +40,7 @@ describe('TournamentsTable', () => {
     expect(compiled.textContent).toContain('Aucun tournoi disponible');
   });
 
-  it('should hide waitingValidation tournaments', async () => {
+  it('should display all provided tournaments regardless of status', async () => {
     fixture.componentRef.setInput('tournaments', [
       {
         ref: createRef('1'),
@@ -75,9 +75,9 @@ describe('TournamentsTable', () => {
     ) as HTMLButtonElement[];
     const content = (fixture.nativeElement as HTMLElement).textContent ?? '';
 
-    expect(buttons.length).toBe(2);
+    expect(buttons.length).toBe(3);
     expect(content).toContain('T1');
-    expect(content).not.toContain('T2');
+    expect(content).toContain('T2');
     expect(content).toContain('T3');
   });
 

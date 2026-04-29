@@ -35,16 +35,21 @@ export class FirebaseService {
     return !!this.firestore;
   }
 
-  watchTournaments(): Observable<Tournament[]> {
+  watchTournaments(showHidden = false): Observable<Tournament[]> {
     console.debug('[Firestore] watchTournaments: starting listener on tournaments collection');
     if (!this.firestore) {
       console.debug('[Firestore] watchTournaments: firestore unavailable');
       return throwError(() => new Error('Firestore unavailable'));
     }
 
-    return collectionSnapshots(collection(this.firestore, 'tournaments')).pipe(
+    const tournamentsRef = collection(this.firestore, 'tournaments');
+    const q = query(tournamentsRef, where('status', '!=', 'waitingValidation'));
+
+    return collectionSnapshots(q).pipe(
       map((snapshots) =>
-        snapshots.map((snap) => ({ ref: snap.ref, ...snap.data() }) as Tournament),
+        snapshots
+          .map((snap) => ({ ref: snap.ref, ...snap.data() }) as Tournament)
+          .filter((tournament) => showHidden || !tournament.name.startsWith('_')),
       ),
     );
   }

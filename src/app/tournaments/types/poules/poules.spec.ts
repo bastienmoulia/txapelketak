@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
 import { provideRouter } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
+import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 
 import { Poules } from './poules';
 
@@ -12,7 +14,7 @@ describe('Poules', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Poules],
-      providers: [provideRouter([]), ...provideTranslocoTesting()],
+      providers: [provideRouter([]), MessageService, TournamentActionsService, ...provideTranslocoTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Poules);

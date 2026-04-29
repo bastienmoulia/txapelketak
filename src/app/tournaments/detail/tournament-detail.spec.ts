@@ -2,13 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { DocumentReference } from '@angular/fire/firestore';
 import { of } from 'rxjs';
+import { patchState } from '@ngrx/signals';
 
 import { TournamentDetail } from './tournament-detail';
 import { provideTranslocoTesting } from '../../testing/transloco-testing.providers';
+import { TournamentDetailStore } from '../../store/tournament-detail.store';
+import { TournamentActionsService } from '../../shared/services/tournament-actions.service';
 
 describe('TournamentDetail', () => {
   let component: TournamentDetail;
   let fixture: ComponentFixture<TournamentDetail>;
+  let store: InstanceType<typeof TournamentDetailStore>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -28,11 +32,13 @@ describe('TournamentDetail', () => {
           },
         },
         ...provideTranslocoTesting(),
+        { provide: TournamentActionsService, useValue: {} },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TournamentDetail);
     component = fixture.componentInstance;
+    store = TestBed.inject(TournamentDetailStore);
     await fixture.whenStable();
   });
 
@@ -49,15 +55,17 @@ describe('TournamentDetail', () => {
   });
 
   it('should render tournament name in header', () => {
-    component.loading.set(false);
-    component.notFound.set(false);
-    component.tournament.set({
-      ref: { id: '123' } as DocumentReference,
-      name: 'Tournoi test',
-      description: 'Description',
-      type: 'poules',
-      status: 'ongoing',
-      createdAt: new Date().toISOString(),
+    patchState(store, {
+      loading: false,
+      notFound: false,
+      tournament: {
+        ref: { id: '123' } as DocumentReference,
+        name: 'Tournoi test',
+        description: 'Description',
+        type: 'poules',
+        status: 'ongoing',
+        createdAt: new Date().toISOString(),
+      },
     });
 
     fixture.detectChanges();
@@ -67,15 +75,17 @@ describe('TournamentDetail', () => {
   });
 
   it('should show waiting validation message and hide types', () => {
-    component.loading.set(false);
-    component.notFound.set(false);
-    component.tournament.set({
-      ref: { id: '123' } as DocumentReference,
-      name: 'Tournoi test',
-      description: 'Description',
-      type: 'poules',
-      status: 'waitingValidation',
-      createdAt: new Date().toISOString(),
+    patchState(store, {
+      loading: false,
+      notFound: false,
+      tournament: {
+        ref: { id: '123' } as DocumentReference,
+        name: 'Tournoi test',
+        description: 'Description',
+        type: 'poules',
+        status: 'waitingValidation',
+        createdAt: new Date().toISOString(),
+      },
     });
 
     fixture.detectChanges();

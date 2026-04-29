@@ -11,7 +11,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Serie, FinaleGame } from '../../poules/poules';
-import { Team } from '../teams/teams';
 import {
   FinaleGameFormDialog,
   SaveFinaleGameEvent,

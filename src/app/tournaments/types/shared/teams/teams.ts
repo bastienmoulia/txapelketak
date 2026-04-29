@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService } from 'primeng/api';
@@ -6,11 +6,13 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { DialogService } from 'primeng/dynamicdialog';
-import { UserRole } from '../../../../home/tournament.interface';
 import { RouterLink } from '@angular/router';
 import { TeamFormDialog } from './team-form-dialog/team-form-dialog';
 import { TeamBulkDialog } from './team-bulk-dialog/team-bulk-dialog';
 import { DocumentReference } from '@angular/fire/firestore';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 export interface Team {
   ref: DocumentReference;
@@ -38,13 +40,12 @@ export class Teams {
   private readonly dialogService = inject(DialogService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly translocoService = inject(TranslocoService);
+  private readonly poulesStore = inject(PoulesStore);
+  private readonly authStore = inject(AuthStore);
+  private readonly tournamentActions = inject(TournamentActionsService);
 
-  teams = input.required<Team[]>();
-  role = input<UserRole | ''>('');
-
-  saveTeam = output<Team>();
-  saveTeams = output<Team[]>();
-  deleteTeam = output<Team>();
+  teams = this.poulesStore.teamsWithContext;
+  role = this.authStore.role;
 
   onAddTeam(): void {
     const dialogRef = this.dialogService.open(TeamFormDialog, {
@@ -56,7 +57,7 @@ export class Teams {
     });
     dialogRef?.onClose.subscribe((result: Team | undefined) => {
       if (result) {
-        this.saveTeam.emit(result);
+        void this.tournamentActions.saveTeam(result);
       }
     });
   }
@@ -71,7 +72,7 @@ export class Teams {
     });
     dialogRef?.onClose.subscribe((result: Team[] | undefined) => {
       if (result) {
-        this.saveTeams.emit(result);
+        void this.tournamentActions.saveTeams(result);
       }
     });
   }
@@ -86,7 +87,7 @@ export class Teams {
     });
     dialogRef?.onClose.subscribe((result: Team | undefined) => {
       if (result) {
-        this.saveTeam.emit(result);
+        void this.tournamentActions.saveTeam(result);
       }
     });
   }
@@ -101,7 +102,7 @@ export class Teams {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.deleteTeam.emit(team);
+        void this.tournamentActions.deleteTeam(team);
       },
     });
   }

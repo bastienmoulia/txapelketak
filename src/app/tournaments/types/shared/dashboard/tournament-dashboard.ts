@@ -5,8 +5,6 @@ import {
   computed,
   DestroyRef,
   inject,
-  input,
-  output,
   signal,
   viewChild,
   ElementRef,
@@ -18,14 +16,16 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Tournament, UserRole } from '../../../../home/tournament.interface';
-import { Team } from '../teams/teams';
-import { Game, Poule, Serie } from '../../poules/poules';
+import { Game, Poule } from '../../poules/poules';
 import { MarkdownService } from '../../../../shared/services/markdown.service';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { GameFormDialog } from '../games/game-form-dialog/game-form-dialog';
 import { SaveGameEvent } from '../games/games';
 import { DocumentReference } from '@angular/fire/firestore';
+import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -70,14 +70,16 @@ export class TournamentDashboard {
   private destroyRef = inject(DestroyRef);
   private dialogService = inject(DialogService);
   private translocoService = inject(TranslocoService);
+  private tournamentDetailStore = inject(TournamentDetailStore);
+  private poulesStore = inject(PoulesStore);
+  private authStore = inject(AuthStore);
+  private tournamentActions = inject(TournamentActionsService);
 
-  tournament = input.required<Tournament>();
-  teams = input<Team[]>([]);
-  series = input<Serie[]>([]);
-  loading = input(false);
-  role = input<UserRole | ''>('');
-
-  saveGame = output<SaveGameEvent>();
+  tournament = this.tournamentDetailStore.tournament;
+  teams = this.poulesStore.teams;
+  series = this.poulesStore.series;
+  loading = this.poulesStore.loading;
+  role = this.authStore.role;
 
   descriptionEl = viewChild<ElementRef<HTMLElement>>('descriptionEl');
 
@@ -324,7 +326,7 @@ export class TournamentDashboard {
       .slice(0, MAX_RECENT_GAMES);
   });
 
-  description = computed(() => this.tournament().description ?? '');
+  description = computed(() => this.tournament()?.description ?? '');
 
   hasDescription = computed(() => this.description().trim().length > 0);
 
@@ -359,7 +361,7 @@ export class TournamentDashboard {
     });
     dialogRef?.onClose.subscribe((result: SaveGameEvent | undefined) => {
       if (result) {
-        this.saveGame.emit({ ...result, gameRef: game.gameRef });
+        void this.tournamentActions.saveGame({ ...result, gameRef: game.gameRef });
       }
     });
   }

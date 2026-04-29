@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 
 import { AdminPoules } from './admin-poules';
 import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
+import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 
 describe('AdminPoules', () => {
   let component: AdminPoules;
@@ -13,7 +14,12 @@ describe('AdminPoules', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminPoules],
-      providers: [provideRouter([]), MessageService, ...provideTranslocoTesting()],
+      providers: [
+        provideRouter([]),
+        MessageService,
+        TournamentActionsService,
+        ...provideTranslocoTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminPoules);

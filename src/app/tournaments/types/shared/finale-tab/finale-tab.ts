@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AccordionModule } from 'primeng/accordion';
 import { Button } from 'primeng/button';
@@ -11,12 +11,13 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Serie, FinaleGame } from '../../poules/poules';
-import { Team } from '../teams/teams';
-import { UserRole } from '../../../../home/tournament.interface';
 import {
   FinaleGameFormDialog,
   SaveFinaleGameEvent,
 } from './finale-game-form-dialog/finale-game-form-dialog';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 export type { SaveFinaleGameEvent };
 
@@ -62,15 +63,13 @@ export class FinaleTab {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private confirmationService = inject(ConfirmationService);
+  private poulesStore = inject(PoulesStore);
+  private authStore = inject(AuthStore);
+  private tournamentActions = inject(TournamentActionsService);
 
-  series = input.required<Serie[]>();
-  teams = input.required<Team[]>();
-  role = input<UserRole | ''>('');
-
-  setFinaleSize = output<SetFinaleSizeEvent>();
-  generateFinale = output<GenerateFinaleEvent>();
-  deleteFinaleGames = output<DeleteFinaleGamesEvent>();
-  saveFinaleGame = output<SaveFinaleGameEvent>();
+  series = this.poulesStore.series;
+  teams = this.poulesStore.teams;
+  role = this.authStore.role;
 
   sizeOptions = [2, 4, 8, 16, 32].map((v) => ({ label: String(v), value: v }));
 
@@ -112,7 +111,7 @@ export class FinaleTab {
 
   onSetFinaleSize(serie: Serie, size: number | null): void {
     if (size == null) return;
-    this.setFinaleSize.emit({ serieRef: serie.ref, size });
+    void this.tournamentActions.setFinaleSize({ serieRef: serie.ref, size });
   }
 
   onGenerateFinale(serie: Serie): void {
@@ -123,7 +122,7 @@ export class FinaleTab {
         header: this.translocoService.translate('shared.confirm.deleteHeader'),
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.generateFinale.emit({
+          void this.tournamentActions.generateFinale({
             serieRef: serie.ref,
             serieName: serie.name,
             finaleSize: serie.finaleSize!,
@@ -131,7 +130,7 @@ export class FinaleTab {
         },
       });
     } else {
-      this.generateFinale.emit({
+      void this.tournamentActions.generateFinale({
         serieRef: serie.ref,
         serieName: serie.name,
         finaleSize: serie.finaleSize,
@@ -145,7 +144,7 @@ export class FinaleTab {
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteFinaleGames.emit({ serieRef: serie.ref });
+        void this.tournamentActions.deleteFinaleGames({ serieRef: serie.ref });
       },
     });
   }
@@ -169,7 +168,7 @@ export class FinaleTab {
     });
     ref?.onClose.subscribe((result: SaveFinaleGameEvent | undefined) => {
       if (result) {
-        this.saveFinaleGame.emit(result);
+        void this.tournamentActions.saveFinaleGame(result);
       }
     });
   }

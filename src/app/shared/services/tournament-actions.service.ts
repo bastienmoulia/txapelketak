@@ -72,9 +72,8 @@ export class TournamentActionsService {
           detail: this.translocoService.translate('admin.teams.editedDetail'),
         });
       } else {
-        this.poulesStore.patchTeams([...this.poulesStore.teams(), { ...team, ref: null! }]);
         this.messageService.add({
-          severity: 'success',
+          severity: 'error',
           summary: this.translocoService.translate('admin.teams.added'),
           detail: this.translocoService.translate('admin.teams.addedDetail'),
         });

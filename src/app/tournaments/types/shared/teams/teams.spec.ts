@@ -3,36 +3,52 @@ import { provideTranslocoTesting } from '../../../../testing/transloco-testing.p
 import { provideRouter } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
+import { patchState } from '@ngrx/signals';
 import { vi } from 'vitest';
 
 import { Teams } from './teams';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 describe('Teams', () => {
   let component: Teams;
   let fixture: ComponentFixture<Teams>;
   let mockDialogService: { open: ReturnType<typeof vi.fn> };
   let mockOnClose: { subscribe: ReturnType<typeof vi.fn> };
+  let mockTournamentActions: {
+    saveTeam: ReturnType<typeof vi.fn>;
+    saveTeams: ReturnType<typeof vi.fn>;
+    deleteTeam: ReturnType<typeof vi.fn>;
+  };
+  let poulesStore: InstanceType<typeof PoulesStore>;
+  let authStore: InstanceType<typeof AuthStore>;
 
   beforeEach(async () => {
     mockOnClose = { subscribe: vi.fn() };
     mockDialogService = { open: vi.fn().mockReturnValue({ onClose: mockOnClose }) };
+    mockTournamentActions = { saveTeam: vi.fn(), saveTeams: vi.fn(), deleteTeam: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [Teams],
-      providers: [...provideTranslocoTesting(), provideRouter([]), ConfirmationService],
+      providers: [
+        ...provideTranslocoTesting(),
+        provideRouter([]),
+        ConfirmationService,
+        { provide: TournamentActionsService, useValue: mockTournamentActions },
+      ],
     })
       .overrideComponent(Teams, {
         set: {
-          providers: [
-            { provide: DialogService, useValue: mockDialogService },
-            ConfirmationService,
-          ],
+          providers: [{ provide: DialogService, useValue: mockDialogService }, ConfirmationService],
         },
       })
       .compileComponents();
 
+    poulesStore = TestBed.inject(PoulesStore);
+    authStore = TestBed.inject(AuthStore);
+
     fixture = TestBed.createComponent(Teams);
-    fixture.componentRef.setInput('teams', []);
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();
@@ -43,7 +59,7 @@ describe('Teams', () => {
   });
 
   it('should have sortable column headers for Nom, Série and Poule', async () => {
-    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Team A' }]);
+    patchState(poulesStore, { teams: [{ ref: { id: '1' } as never, name: 'Team A' }] });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -55,9 +71,23 @@ describe('Teams', () => {
   });
 
   it('should display serieName and pouleName for teams with context', async () => {
-    fixture.componentRef.setInput('teams', [
-      { ref: { id: '1' } as never, name: 'Team A', serieName: 'Série 1', pouleName: 'Poule A' },
-    ]);
+    patchState(poulesStore, {
+      teams: [{ ref: { id: '1' } as never, name: 'Team A' }],
+      series: [
+        {
+          ref: { id: 's1' } as never,
+          name: 'Série 1',
+          poules: [
+            {
+              ref: { id: 'p1' } as never,
+              name: 'Poule A',
+              refTeams: [{ id: '1' } as never],
+              games: [],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -70,7 +100,7 @@ describe('Teams', () => {
   });
 
   it('should not render admin actions without admin role', async () => {
-    fixture.componentRef.setInput('teams', [{ ref: { id: '1' } as never, name: 'Team A' }]);
+    patchState(poulesStore, { teams: [{ ref: { id: '1' } as never, name: 'Team A' }] });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -83,11 +113,13 @@ describe('Teams', () => {
   });
 
   it('should render admin actions with admin role', async () => {
-    fixture.componentRef.setInput('role', 'admin');
-    fixture.componentRef.setInput('teams', [
-      { ref: { id: '1' } as never, name: 'Équipe A' },
-      { ref: { id: '2' } as never, name: 'Équipe B' },
-    ]);
+    authStore.setUser({ role: 'admin' } as never);
+    patchState(poulesStore, {
+      teams: [
+        { ref: { id: '1' } as never, name: 'Équipe A' },
+        { ref: { id: '2' } as never, name: 'Équipe B' },
+      ],
+    });
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -131,10 +163,7 @@ describe('Teams', () => {
     expect(mockDialogService.open).toHaveBeenCalled();
   });
 
-  it('should emit saveTeams when bulk dialog closes with a result', () => {
-    const emitted: { ref: unknown; name: string }[][] = [];
-    component.saveTeams.subscribe((teams) => emitted.push(teams));
-
+  it('should call tournamentActions.saveTeams when bulk dialog closes with a result', () => {
     let closeCallback: ((result: unknown) => void) | undefined;
     mockOnClose.subscribe.mockImplementation((cb: (result: unknown) => void) => {
       closeCallback = cb;
@@ -148,13 +177,10 @@ describe('Teams', () => {
     component.onAddTeams();
     closeCallback?.(teams);
 
-    expect(emitted.length).toBe(1);
-    expect(emitted[0]).toEqual(teams);
+    expect(mockTournamentActions.saveTeams).toHaveBeenCalledWith(teams);
   });
-  it('should emit saveTeam when dialog closes with a result', () => {
-    const emitted: { ref: unknown; name: string }[] = [];
-    component.saveTeam.subscribe((team) => emitted.push(team));
 
+  it('should call tournamentActions.saveTeam when dialog closes with a result', () => {
     let closeCallback: ((result: unknown) => void) | undefined;
     mockOnClose.subscribe.mockImplementation((cb: (result: unknown) => void) => {
       closeCallback = cb;
@@ -163,14 +189,13 @@ describe('Teams', () => {
     component.onAddTeam();
     closeCallback?.({ ref: { id: '1' } as never, name: 'New Team' });
 
-    expect(emitted.length).toBe(1);
-    expect(emitted[0].name).toBe('New Team');
+    expect(mockTournamentActions.saveTeam).toHaveBeenCalledWith({
+      ref: { id: '1' } as never,
+      name: 'New Team',
+    });
   });
 
-  it('should not emit saveTeam when dialog closes without a result (cancelled)', () => {
-    const emitted: unknown[] = [];
-    component.saveTeam.subscribe((team) => emitted.push(team));
-
+  it('should not call tournamentActions.saveTeam when dialog closes without a result (cancelled)', () => {
     let closeCallback: ((result: unknown) => void) | undefined;
     mockOnClose.subscribe.mockImplementation((cb: (result: unknown) => void) => {
       closeCallback = cb;
@@ -179,33 +204,24 @@ describe('Teams', () => {
     component.onAddTeam();
     closeCallback?.(undefined);
 
-    expect(emitted.length).toBe(0);
+    expect(mockTournamentActions.saveTeam).not.toHaveBeenCalled();
   });
 
-  it('should emit deleteTeam when confirmation is accepted', () => {
-    const emitted: { ref: unknown; name: string }[] = [];
-    component.deleteTeam.subscribe((team) => emitted.push(team));
-
+  it('should call tournamentActions.deleteTeam when confirmation is accepted', () => {
     // Spy on the component-level ConfirmationService instance
     const confirmService = fixture.debugElement.injector.get(ConfirmationService);
-    vi.spyOn(confirmService, 'confirm').mockImplementation(
-      (config: { accept?: () => void }) => {
-        config.accept?.();
-      },
-    );
+    vi.spyOn(confirmService, 'confirm').mockImplementation((config: { accept?: () => void }) => {
+      config.accept?.();
+    });
 
     const team = { ref: { id: '1' } as never, name: 'Équipe A' };
     component.onDeleteTeam(team);
 
     expect(confirmService.confirm).toHaveBeenCalled();
-    expect(emitted.length).toBe(1);
-    expect(emitted[0]).toEqual(team);
+    expect(mockTournamentActions.deleteTeam).toHaveBeenCalledWith(team);
   });
 
-  it('should not emit deleteTeam when confirmation is rejected', () => {
-    const emitted: unknown[] = [];
-    component.deleteTeam.subscribe((team) => emitted.push(team));
-
+  it('should not call tournamentActions.deleteTeam when confirmation is rejected', () => {
     const confirmService = fixture.debugElement.injector.get(ConfirmationService);
     vi.spyOn(confirmService, 'confirm').mockImplementation(() => {
       // reject = do nothing (accept is never called)
@@ -214,6 +230,6 @@ describe('Teams', () => {
     const team = { ref: { id: '1' } as never, name: 'Équipe A' };
     component.onDeleteTeam(team);
 
-    expect(emitted.length).toBe(0);
+    expect(mockTournamentActions.deleteTeam).not.toHaveBeenCalled();
   });
 });

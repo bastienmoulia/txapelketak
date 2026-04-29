@@ -7,28 +7,48 @@ import { Games, GAMES_TEAM_FILTER_QUERY_PARAM } from './games';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 import { provideRouter, Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
+import { patchState } from '@ngrx/signals';
+import { vi } from 'vitest';
+import { PoulesStore } from '../../../../store/poules.store';
+import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 describe('Games', () => {
   let component: Games;
   let fixture: ComponentFixture<Games>;
+  let poulesStore: InstanceType<typeof PoulesStore>;
+  let mockTournamentActions: Record<string, ReturnType<typeof vi.fn>>;
 
   beforeEach(async () => {
+    mockTournamentActions = {
+      saveGame: vi.fn(),
+      deleteGame: vi.fn(),
+      generateAllGames: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [Games],
-      providers: [...provideTranslocoTesting(), provideRouter([]), DialogService],
+      providers: [
+        ...provideTranslocoTesting(),
+        provideRouter([]),
+        { provide: TournamentActionsService, useValue: mockTournamentActions },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Games);
-    fixture.componentRef.setInput('teams', []);
-    fixture.componentRef.setInput('series', []);
-    fixture.componentRef.setInput('tournament', {
-      ref: createDocumentReference('tournament-1'),
-      name: 'Test Tournament',
-      description: '',
-      type: 'poules',
-      status: 'ongoing',
-      createdAt: '2026-01-01',
+    poulesStore = TestBed.inject(PoulesStore);
+    const tournamentDetailStore = TestBed.inject(TournamentDetailStore);
+    patchState(tournamentDetailStore, {
+      tournament: {
+        ref: createDocumentReference('tournament-1'),
+        name: 'Test Tournament',
+        description: '',
+        type: 'poules',
+        status: 'ongoing',
+        createdAt: '2026-01-01',
+      } as any,
     });
+
+    fixture = TestBed.createComponent(Games);
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();
@@ -57,7 +77,7 @@ describe('Games', () => {
       ],
     } as Poule;
 
-    const emitSpy = vi.spyOn(component.generateAllGames, 'emit');
+    const emitSpy = mockTournamentActions['generateAllGames'];
 
     component.onGenerateAllGames(poule);
 
@@ -88,7 +108,7 @@ describe('Games', () => {
       ],
     } as Poule;
 
-    const emitSpy = vi.spyOn(component.generateAllGames, 'emit');
+    const emitSpy = mockTournamentActions['generateAllGames'];
 
     component.onGenerateAllGames(poule);
 
@@ -105,56 +125,60 @@ describe('Games', () => {
       onClose: { subscribe: vi.fn() },
     } as never);
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Bravo' },
-      { ref: team2Ref, name: 'Alpha' },
-      { ref: team3Ref, name: 'Charlie' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie B',
-        poules: [
-          {
-            ref: createDocumentReference('poule-2'),
-            name: 'Poule B',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-2'),
-                refTeam1: team3Ref,
-                refTeam2: team1Ref,
-                date: new Date('2026-03-23T10:00:00Z'),
-              },
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team2Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-03-22T10:00:00Z'),
-              },
-            ],
-          },
-        ],
-      },
-      {
-        ref: createDocumentReference('serie-2'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule C',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [],
-          },
-          {
-            ref: createDocumentReference('poule-3'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Bravo' },
+        { ref: team2Ref, name: 'Alpha' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie B',
+          poules: [
+            {
+              ref: createDocumentReference('poule-2'),
+              name: 'Poule B',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team3Ref,
+                  refTeam2: team1Ref,
+                  date: new Date('2026-03-23T10:00:00Z'),
+                },
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-03-22T10:00:00Z'),
+                },
+              ],
+            },
+          ],
+        },
+        {
+          ref: createDocumentReference('serie-2'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule C',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [],
+            },
+            {
+              ref: createDocumentReference('poule-3'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     component.onOpenAddGame();
@@ -199,49 +223,53 @@ describe('Games', () => {
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-      { ref: team3Ref, name: 'Charlie' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: new Date('2026-03-22T10:00:00Z'),
-              },
-              {
-                ref: createDocumentReference('game-2'),
-                refTeam1: team2Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-03-22T14:00:00Z'),
-              },
-              {
-                ref: createDocumentReference('game-3'),
-                refTeam1: team1Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-03-23T10:00:00Z'),
-              },
-              {
-                ref: createDocumentReference('game-4'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date('2026-03-22T10:00:00Z'),
+                },
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-03-22T14:00:00Z'),
+                },
+                {
+                  ref: createDocumentReference('game-3'),
+                  refTeam1: team1Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-03-23T10:00:00Z'),
+                },
+                {
+                  ref: createDocumentReference('game-4'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     const groups = component.gamesByDate();
@@ -261,31 +289,35 @@ describe('Games', () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: new Date('2026-03-22T10:00:00Z'),
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date('2026-03-22T10:00:00Z'),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     const groups = component.gamesByDate();
@@ -303,38 +335,42 @@ describe('Games', () => {
     const team3Ref = createDocumentReference('team-3');
     const localGameDate = new Date(2026, 2, 22, 0, 30);
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-      { ref: team3Ref, name: 'Charlie' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: localGameDate,
-              },
-              {
-                ref: createDocumentReference('game-2'),
-                refTeam1: team2Ref,
-                refTeam2: team3Ref,
-                date: new Date(2026, 2, 23, 10, 0),
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: localGameDate,
+                },
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date(2026, 2, 23, 10, 0),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     component.onDateFilterChange(new Date(2026, 2, 22, 0, 45));
@@ -349,38 +385,42 @@ describe('Games', () => {
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-      { ref: team3Ref, name: 'Charlie' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: new Date('2026-04-21T00:30:00.000Z'),
-              },
-              {
-                ref: createDocumentReference('game-2'),
-                refTeam1: team2Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-04-22T00:15:00.000Z'),
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date('2026-04-21T00:30:00.000Z'),
+                },
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-04-22T00:15:00.000Z'),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     const groups = component.gamesByDate();
@@ -401,38 +441,42 @@ describe('Games', () => {
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-      { ref: team3Ref, name: 'Charlie' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-april-20'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: new Date('2026-04-20T10:00:00.000Z'), // stored as UTC
-              },
-              {
-                ref: createDocumentReference('game-april-21'),
-                refTeam1: team2Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-04-21T16:30:00.000Z'), // stored as UTC
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-april-20'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date('2026-04-20T10:00:00.000Z'), // stored as UTC
+                },
+                {
+                  ref: createDocumentReference('game-april-21'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-04-21T16:30:00.000Z'), // stored as UTC
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     // Simulate PrimeNG datepicker emitting local midnight for April 20
@@ -448,31 +492,35 @@ describe('Games', () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: new Date(2026, 2, 22, 10, 0),
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date(2026, 2, 22, 10, 0),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     component.onDateFilterChange(new Date(2026, 2, 23, 10, 0));
@@ -493,37 +541,43 @@ describe('Games', () => {
     const team2Ref = createDocumentReference('team-2');
 
     try {
-      fixture.componentRef.setInput('teams', [
-        { ref: team1Ref, name: 'Alpha' },
-        { ref: team2Ref, name: 'Bravo' },
-      ] satisfies Team[]);
-      fixture.componentRef.setInput('series', [
-        {
-          ref: createDocumentReference('serie-1'),
-          name: 'Serie A',
-          poules: [
-            {
-              ref: createDocumentReference('poule-1'),
-              name: 'Poule A',
-              refTeams: [team1Ref, team2Ref],
-              games: [
-                {
-                  ref: createDocumentReference('game-1'),
-                  refTeam1: team1Ref,
-                  refTeam2: team2Ref,
-                  date: new Date(2026, 4, 1, 10, 0),
-                },
-              ],
-            },
-          ],
-        },
-      ]);
-      fixture.componentRef.setInput('timeSlots', [
-        { ref: createDocumentReference('slot-past'), date: new Date(2026, 4, 1, 8, 0) },
-        { ref: createDocumentReference('slot-scheduled'), date: new Date(2026, 4, 1, 10, 0) },
-        { ref: createDocumentReference('slot-late'), date: new Date(2026, 4, 1, 12, 0) },
-        { ref: createDocumentReference('slot-early'), date: new Date(2026, 4, 1, 9, 30) },
-      ]);
+      patchState(poulesStore, {
+        teams: [
+          { ref: team1Ref, name: 'Alpha' },
+          { ref: team2Ref, name: 'Bravo' },
+        ] satisfies Team[],
+      });
+      patchState(poulesStore, {
+        series: [
+          {
+            ref: createDocumentReference('serie-1'),
+            name: 'Serie A',
+            poules: [
+              {
+                ref: createDocumentReference('poule-1'),
+                name: 'Poule A',
+                refTeams: [team1Ref, team2Ref],
+                games: [
+                  {
+                    ref: createDocumentReference('game-1'),
+                    refTeam1: team1Ref,
+                    refTeam2: team2Ref,
+                    date: new Date(2026, 4, 1, 10, 0),
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      patchState(poulesStore, {
+        timeSlots: [
+          { ref: createDocumentReference('slot-past'), date: new Date(2026, 4, 1, 8, 0) },
+          { ref: createDocumentReference('slot-scheduled'), date: new Date(2026, 4, 1, 10, 0) },
+          { ref: createDocumentReference('slot-late'), date: new Date(2026, 4, 1, 12, 0) },
+          { ref: createDocumentReference('slot-early'), date: new Date(2026, 4, 1, 9, 30) },
+        ],
+      });
 
       const freeSlots = component.freeSlots();
 
@@ -545,43 +599,49 @@ describe('Games', () => {
     const team3Ref = createDocumentReference('team-3');
 
     try {
-      fixture.componentRef.setInput('teams', [
-        { ref: team1Ref, name: 'Alpha' },
-        { ref: team2Ref, name: 'Bravo' },
-        { ref: team3Ref, name: 'Charlie' },
-      ] satisfies Team[]);
-      fixture.componentRef.setInput('series', [
-        {
-          ref: createDocumentReference('serie-1'),
-          name: 'Serie A',
-          poules: [
-            {
-              ref: createDocumentReference('poule-1'),
-              name: 'Poule A',
-              refTeams: [team1Ref, team2Ref, team3Ref],
-              games: [
-                {
-                  ref: createDocumentReference('game-1'),
-                  refTeam1: team1Ref,
-                  refTeam2: team2Ref,
-                  date: new Date(2026, 4, 1, 11, 0),
-                },
-                {
-                  ref: createDocumentReference('game-2'),
-                  refTeam1: team2Ref,
-                  refTeam2: team3Ref,
-                  date: new Date(2026, 4, 1, 13, 0),
-                },
-              ],
-            },
-          ],
-        },
-      ]);
-      fixture.componentRef.setInput('timeSlots', [
-        { ref: createDocumentReference('slot-noon'), date: new Date(2026, 4, 1, 12, 0) },
-        { ref: createDocumentReference('slot-morning'), date: new Date(2026, 4, 1, 10, 0) },
-        { ref: createDocumentReference('slot-scheduled'), date: new Date(2026, 4, 1, 13, 0) },
-      ]);
+      patchState(poulesStore, {
+        teams: [
+          { ref: team1Ref, name: 'Alpha' },
+          { ref: team2Ref, name: 'Bravo' },
+          { ref: team3Ref, name: 'Charlie' },
+        ] satisfies Team[],
+      });
+      patchState(poulesStore, {
+        series: [
+          {
+            ref: createDocumentReference('serie-1'),
+            name: 'Serie A',
+            poules: [
+              {
+                ref: createDocumentReference('poule-1'),
+                name: 'Poule A',
+                refTeams: [team1Ref, team2Ref, team3Ref],
+                games: [
+                  {
+                    ref: createDocumentReference('game-1'),
+                    refTeam1: team1Ref,
+                    refTeam2: team2Ref,
+                    date: new Date(2026, 4, 1, 11, 0),
+                  },
+                  {
+                    ref: createDocumentReference('game-2'),
+                    refTeam1: team2Ref,
+                    refTeam2: team3Ref,
+                    date: new Date(2026, 4, 1, 13, 0),
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      patchState(poulesStore, {
+        timeSlots: [
+          { ref: createDocumentReference('slot-noon'), date: new Date(2026, 4, 1, 12, 0) },
+          { ref: createDocumentReference('slot-morning'), date: new Date(2026, 4, 1, 10, 0) },
+          { ref: createDocumentReference('slot-scheduled'), date: new Date(2026, 4, 1, 13, 0) },
+        ],
+      });
 
       const rows = component.scheduleRows();
 
@@ -610,42 +670,48 @@ describe('Games', () => {
     const team3Ref = createDocumentReference('team-3');
 
     try {
-      fixture.componentRef.setInput('teams', [
-        { ref: team1Ref, name: 'Alpha' },
-        { ref: team2Ref, name: 'Bravo' },
-        { ref: team3Ref, name: 'Charlie' },
-      ] satisfies Team[]);
-      fixture.componentRef.setInput('series', [
-        {
-          ref: createDocumentReference('serie-1'),
-          name: 'Serie A',
-          poules: [
-            {
-              ref: createDocumentReference('poule-1'),
-              name: 'Poule A',
-              refTeams: [team1Ref, team2Ref, team3Ref],
-              games: [
-                {
-                  ref: createDocumentReference('game-1'),
-                  refTeam1: team1Ref,
-                  refTeam2: team2Ref,
-                  date: new Date(2026, 4, 1, 10, 0),
-                },
-                {
-                  ref: createDocumentReference('game-2'),
-                  refTeam1: team2Ref,
-                  refTeam2: team3Ref,
-                  date: new Date(2026, 4, 2, 10, 0),
-                },
-              ],
-            },
-          ],
-        },
-      ]);
-      fixture.componentRef.setInput('timeSlots', [
-        { ref: createDocumentReference('slot-day-1'), date: new Date(2026, 4, 1, 12, 0) },
-        { ref: createDocumentReference('slot-day-2'), date: new Date(2026, 4, 2, 9, 0) },
-      ]);
+      patchState(poulesStore, {
+        teams: [
+          { ref: team1Ref, name: 'Alpha' },
+          { ref: team2Ref, name: 'Bravo' },
+          { ref: team3Ref, name: 'Charlie' },
+        ] satisfies Team[],
+      });
+      patchState(poulesStore, {
+        series: [
+          {
+            ref: createDocumentReference('serie-1'),
+            name: 'Serie A',
+            poules: [
+              {
+                ref: createDocumentReference('poule-1'),
+                name: 'Poule A',
+                refTeams: [team1Ref, team2Ref, team3Ref],
+                games: [
+                  {
+                    ref: createDocumentReference('game-1'),
+                    refTeam1: team1Ref,
+                    refTeam2: team2Ref,
+                    date: new Date(2026, 4, 1, 10, 0),
+                  },
+                  {
+                    ref: createDocumentReference('game-2'),
+                    refTeam1: team2Ref,
+                    refTeam2: team3Ref,
+                    date: new Date(2026, 4, 2, 10, 0),
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      patchState(poulesStore, {
+        timeSlots: [
+          { ref: createDocumentReference('slot-day-1'), date: new Date(2026, 4, 1, 12, 0) },
+          { ref: createDocumentReference('slot-day-2'), date: new Date(2026, 4, 2, 9, 0) },
+        ],
+      });
 
       component.onDateFilterChange(new Date(2026, 4, 1, 15, 0));
       expect(component.scheduleRows().length).toBe(2);
@@ -687,66 +753,74 @@ describe('Games', () => {
       const team2Ref = createDocumentReference('team-2');
       const today = new Date();
 
-      fixture.componentRef.setInput('teams', [
-        { ref: team1Ref, name: 'Alpha' },
-        { ref: team2Ref, name: 'Bravo' },
-      ] satisfies Team[]);
-      fixture.componentRef.setInput('series', [
-        {
-          ref: createDocumentReference('serie-1'),
-          name: 'Serie A',
-          poules: [
-            {
-              ref: createDocumentReference('poule-1'),
-              name: 'Poule A',
-              refTeams: [team1Ref, team2Ref],
-              games: [
-                {
-                  ref: createDocumentReference('game-today'),
-                  refTeam1: team1Ref,
-                  refTeam2: team2Ref,
-                  date: today,
-                },
-              ],
-            },
-          ],
-        },
-      ]);
+      patchState(poulesStore, {
+        teams: [
+          { ref: team1Ref, name: 'Alpha' },
+          { ref: team2Ref, name: 'Bravo' },
+        ] satisfies Team[],
+      });
+      patchState(poulesStore, {
+        series: [
+          {
+            ref: createDocumentReference('serie-1'),
+            name: 'Serie A',
+            poules: [
+              {
+                ref: createDocumentReference('poule-1'),
+                name: 'Poule A',
+                refTeams: [team1Ref, team2Ref],
+                games: [
+                  {
+                    ref: createDocumentReference('game-today'),
+                    refTeam1: team1Ref,
+                    refTeam2: team2Ref,
+                    date: today,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
       fixture.detectChanges();
 
       expect(component.showScrollToToday()).toBe(true);
     });
 
-    it('showScrollToToday should be false when filters exclude today\'s game', () => {
+    it("showScrollToToday should be false when filters exclude today's game", () => {
       const team1Ref = createDocumentReference('team-1');
       const team2Ref = createDocumentReference('team-2');
       const today = new Date();
 
-      fixture.componentRef.setInput('teams', [
-        { ref: team1Ref, name: 'Alpha' },
-        { ref: team2Ref, name: 'Bravo' },
-      ] satisfies Team[]);
-      fixture.componentRef.setInput('series', [
-        {
-          ref: createDocumentReference('serie-1'),
-          name: 'Serie A',
-          poules: [
-            {
-              ref: createDocumentReference('poule-1'),
-              name: 'Poule A',
-              refTeams: [team1Ref, team2Ref],
-              games: [
-                {
-                  ref: createDocumentReference('game-today'),
-                  refTeam1: team1Ref,
-                  refTeam2: team2Ref,
-                  date: today,
-                },
-              ],
-            },
-          ],
-        },
-      ]);
+      patchState(poulesStore, {
+        teams: [
+          { ref: team1Ref, name: 'Alpha' },
+          { ref: team2Ref, name: 'Bravo' },
+        ] satisfies Team[],
+      });
+      patchState(poulesStore, {
+        series: [
+          {
+            ref: createDocumentReference('serie-1'),
+            name: 'Serie A',
+            poules: [
+              {
+                ref: createDocumentReference('poule-1'),
+                name: 'Poule A',
+                refTeams: [team1Ref, team2Ref],
+                games: [
+                  {
+                    ref: createDocumentReference('game-today'),
+                    refTeam1: team1Ref,
+                    refTeam2: team2Ref,
+                    date: today,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
       fixture.detectChanges();
 
       // Apply a date filter that does not match today
@@ -765,7 +839,7 @@ describe('Games', () => {
       scrollSpy.mockRestore();
     });
 
-    it('scrollToToday should call scrollIntoView on today\'s DOM element', () => {
+    it("scrollToToday should call scrollIntoView on today's DOM element", () => {
       const mockScrollIntoView = vi.fn();
       const mockElement = { scrollIntoView: mockScrollIntoView } as unknown as HTMLElement;
       const getElementSpy = vi.spyOn(document, 'getElementById').mockReturnValue(mockElement);
@@ -776,7 +850,7 @@ describe('Games', () => {
       getElementSpy.mockRestore();
     });
 
-    it('scrollToToday should not throw when today\'s element is not in the DOM', () => {
+    it("scrollToToday should not throw when today's element is not in the DOM", () => {
       const getElementSpy = vi.spyOn(document, 'getElementById').mockReturnValue(null);
 
       expect(() => component.scrollToToday()).not.toThrow();
@@ -797,44 +871,48 @@ describe('Games', () => {
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-      { ref: team3Ref, name: 'Charlie' },
-    ] satisfies Team[]);
-    fixture.componentRef.setInput('series', [
-      {
-        ref: createDocumentReference('serie-1'),
-        name: 'Serie A',
-        poules: [
-          {
-            ref: createDocumentReference('poule-1'),
-            name: 'Poule A',
-            refTeams: [team1Ref, team2Ref, team3Ref],
-            games: [
-              {
-                ref: createDocumentReference('game-1'),
-                refTeam1: team1Ref,
-                refTeam2: team2Ref,
-                date: new Date('2026-03-22T10:00:00Z'),
-              },
-              {
-                ref: createDocumentReference('game-2'),
-                refTeam1: team2Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-03-22T14:00:00Z'),
-              },
-              {
-                ref: createDocumentReference('game-3'),
-                refTeam1: team1Ref,
-                refTeam2: team3Ref,
-                date: new Date('2026-03-23T10:00:00Z'),
-              },
-            ],
-          },
-        ],
-      },
-    ]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+        { ref: team3Ref, name: 'Charlie' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref, team3Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  date: new Date('2026-03-22T10:00:00Z'),
+                },
+                {
+                  ref: createDocumentReference('game-2'),
+                  refTeam1: team2Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-03-22T14:00:00Z'),
+                },
+                {
+                  ref: createDocumentReference('game-3'),
+                  refTeam1: team1Ref,
+                  refTeam2: team3Ref,
+                  date: new Date('2026-03-23T10:00:00Z'),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     fixture.detectChanges();
 
     // No filter: all 3 games shown
@@ -864,11 +942,13 @@ describe('Games', () => {
     const team2Ref = createDocumentReference('team-2');
     const team3Ref = createDocumentReference('team-3');
 
-    fixture.componentRef.setInput('teams', [
-      { ref: team3Ref, name: 'Charlie' },
-      { ref: team1Ref, name: 'Alpha' },
-      { ref: team2Ref, name: 'Bravo' },
-    ] satisfies Team[]);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team3Ref, name: 'Charlie' },
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+    });
     fixture.detectChanges();
 
     const sorted = component.sortedTeams();

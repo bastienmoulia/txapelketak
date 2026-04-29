@@ -1,5 +1,5 @@
-import { inject } from '@angular/core';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { computed, inject } from '@angular/core';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Team } from '../tournaments/types/shared/teams/teams';
@@ -34,6 +34,24 @@ const initialState: PoulesStoreState = {
 export const PoulesStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withComputed((store) => ({
+    teamsWithContext: computed(() => {
+      const teams = store.teams();
+      const series = store.series();
+      const contextMap = new Map<string, { serieName: string; pouleName: string }>();
+      for (const serie of series) {
+        for (const poule of serie.poules ?? []) {
+          for (const ref of poule.refTeams ?? []) {
+            contextMap.set(ref.id, { serieName: serie.name, pouleName: poule.name });
+          }
+        }
+      }
+      return teams.map((team) => {
+        const context = team.ref?.id ? contextMap.get(team.ref.id) : undefined;
+        return context ? { ...team, ...context } : team;
+      });
+    }),
+  })),
   withMethods((store, firebaseService = inject(FirebaseService)) => {
     let teamsSubscription: Subscription | null = null;
     let seriesSubscription: Subscription | null = null;
@@ -120,9 +138,9 @@ export const PoulesStore = signalStore(
             } as FinaleGame;
           });
           patchState(store, {
-            series: store.series().map((s) =>
-              s.ref.id === serie.ref.id ? { ...s, finaleGames } : s,
-            ),
+            series: store
+              .series()
+              .map((s) => (s.ref.id === serie.ref.id ? { ...s, finaleGames } : s)),
           });
         },
         error: (err: unknown) => {

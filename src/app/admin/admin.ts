@@ -23,8 +23,10 @@ import { ToastModule } from 'primeng/toast';
 import { TournamentHeader } from '../shared/tournament-header/tournament-header';
 import { FirebaseService } from '../shared/services/firebase.service';
 import { TournamentDetailStore } from '../store/tournament-detail.store';
+import { AuthStore } from '../store/auth.store';
 import { TournamentTabs } from '../shared/tournament-tabs/tournament-tabs';
 import { AdminPoules } from './types/admin-poules/admin-poules';
+import { TournamentActionsService } from '../shared/services/tournament-actions.service';
 
 @Component({
   selector: 'app-admin',
@@ -40,7 +42,7 @@ import { AdminPoules } from './types/admin-poules/admin-poules';
     TournamentHeader,
     TournamentTabs,
   ],
-  providers: [MessageService],
+  providers: [MessageService, TournamentActionsService],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +53,7 @@ export class Admin {
   private translocoService = inject(TranslocoService);
   private destroyRef = inject(DestroyRef);
   private tournamentDetailStore = inject(TournamentDetailStore);
+  private authStore = inject(AuthStore);
 
   tournamentId = injectParams('tournamentId');
   token = injectParams('token');
@@ -67,6 +70,7 @@ export class Admin {
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.tournamentDetailStore.stopWatching();
+      this.authStore.clear();
     });
 
     effect(() => {
@@ -101,6 +105,7 @@ export class Admin {
       }
 
       this.user.set(user);
+      this.authStore.setUser(user);
       this.accessDenied.set(false);
       this.tournamentDetailStore.startWatching(tournamentId);
       this.loadingUser.set(false);

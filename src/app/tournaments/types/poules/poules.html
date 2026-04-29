@@ -1,12 +1,7 @@
 <p-tabs [value]="activeTab()">
   <p-tabpanels class="px-0!">
     <p-tabpanel value="dashboard">
-      <app-tournament-dashboard
-        [tournament]="tournament()"
-        [teams]="teams()"
-        [series]="series()"
-        [loading]="loading()"
-      />
+      <app-tournament-dashboard />
     </p-tabpanel>
     <p-tabpanel value="teams">
       @if (loading()) {
@@ -15,7 +10,7 @@
           {{ 'tournaments.detail.loading' | transloco }}
         </div>
       } @else {
-        <app-teams [teams]="teamsWithContext()" />
+        <app-teams />
       }
     </p-tabpanel>
     <p-tabpanel value="poules">
@@ -25,7 +20,7 @@
           {{ 'tournaments.detail.loading' | transloco }}
         </div>
       } @else {
-        <app-poules-tab [series]="series()" [teams]="teams()" />
+        <app-poules-tab />
       }
     </p-tabpanel>
     <p-tabpanel value="games">
@@ -35,12 +30,7 @@
           {{ 'tournaments.detail.loading' | transloco }}
         </div>
       } @else {
-        <app-games
-          [series]="series()"
-          [teams]="teams()"
-          [tournament]="tournament()"
-          [timeSlots]="timeSlots()"
-        />
+        <app-games />
       }
     </p-tabpanel>
     @if (showFinale()) {
@@ -51,7 +41,7 @@
             {{ 'tournaments.detail.loading' | transloco }}
           </div>
         } @else {
-          <app-finale-tab [series]="series()" [teams]="teams()" />
+          <app-finale-tab />
         }
       </p-tabpanel>
     }

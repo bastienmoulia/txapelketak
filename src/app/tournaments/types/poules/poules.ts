@@ -37,9 +37,6 @@ export class Poules {
   private destroyRef = inject(DestroyRef);
 
   tournament = input.required<Tournament>();
-  teams = this.poulesStore.teams;
-  series = this.poulesStore.series;
-  timeSlots = this.poulesStore.timeSlots;
   loading = this.poulesStore.loading;
 
   showPoules = computed(() => ['poules', 'poules_finale'].includes(this.tournament().type));
@@ -53,23 +50,6 @@ export class Poules {
   );
 
   activeTab = computed(() => this.tabFromUrl());
-
-  teamsWithContext = computed(() => {
-    const teams = this.teams();
-    const series = this.series();
-    const contextMap = new Map<string, { serieName: string; pouleName: string }>();
-    for (const serie of series) {
-      for (const poule of serie.poules ?? []) {
-        for (const ref of poule.refTeams ?? []) {
-          contextMap.set(ref.id, { serieName: serie.name, pouleName: poule.name });
-        }
-      }
-    }
-    return teams.map((team) => {
-      const context = team.ref?.id ? contextMap.get(team.ref.id) : undefined;
-      return context ? { ...team, ...context } : team;
-    });
-  });
 
   constructor() {
     this.destroyRef.onDestroy(() => this.poulesStore.stopWatching());

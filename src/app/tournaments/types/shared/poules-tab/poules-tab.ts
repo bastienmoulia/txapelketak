@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal, output } from '@angular/core';
+import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { Team } from '../teams/teams';
@@ -12,11 +12,13 @@ import { Message } from 'primeng/message';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { UserRole } from '../../../../home/tournament.interface';
 import { TooltipModule } from 'primeng/tooltip';
 import { SerieFormDialog } from './serie-form-dialog/serie-form-dialog';
 import { PouleFormDialog } from './poule-form-dialog/poule-form-dialog';
 import { TeamPouleDialog } from './team-poule-dialog/team-poule-dialog';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 export interface SaveSerieEvent {
   name: string;
@@ -69,17 +71,13 @@ export class PoulesTab {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private confirmationService = inject(ConfirmationService);
+  private poulesStore = inject(PoulesStore);
+  private authStore = inject(AuthStore);
+  private tournamentActions = inject(TournamentActionsService);
 
-  teams = input.required<Team[]>();
-  series = input.required<Serie[]>();
-  role = input<UserRole | ''>('');
-
-  saveSerie = output<SaveSerieEvent>();
-  deleteSerie = output<Serie>();
-  savePoule = output<SavePouleEvent>();
-  deletePoule = output<DeletePouleEvent>();
-  addTeamToPoule = output<TeamInPouleEvent>();
-  removeTeamFromPoule = output<TeamInPouleEvent>();
+  teams = this.poulesStore.teams;
+  series = this.poulesStore.series;
+  role = this.authStore.role;
 
   sortedSeries = computed(() =>
     [...this.series()]
@@ -251,7 +249,7 @@ export class PoulesTab {
     dialogRef?.onClose.subscribe(
       (result: { name: string; ref?: DocumentReference } | undefined) => {
         if (result) {
-          this.saveSerie.emit(result);
+          void this.tournamentActions.saveSerie(result);
         }
       },
     );
@@ -268,7 +266,7 @@ export class PoulesTab {
     dialogRef?.onClose.subscribe(
       (result: { name: string; ref?: DocumentReference } | undefined) => {
         if (result) {
-          this.saveSerie.emit(result);
+          void this.tournamentActions.saveSerie(result);
         }
       },
     );
@@ -286,7 +284,7 @@ export class PoulesTab {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.deleteSerie.emit(serie);
+        void this.tournamentActions.deleteSerie(serie);
       },
     });
   }
@@ -304,7 +302,7 @@ export class PoulesTab {
         result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined,
       ) => {
         if (result) {
-          this.savePoule.emit(result);
+          void this.tournamentActions.savePoule(result);
         }
       },
     );
@@ -323,7 +321,7 @@ export class PoulesTab {
         result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined,
       ) => {
         if (result) {
-          this.savePoule.emit(result);
+          void this.tournamentActions.savePoule(result);
         }
       },
     );
@@ -341,7 +339,7 @@ export class PoulesTab {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.deletePoule.emit({ serieRef, poule });
+        void this.tournamentActions.deletePoule({ serieRef, poule });
       },
     });
   }
@@ -357,7 +355,7 @@ export class PoulesTab {
     dialogRef?.onClose.subscribe((result: DocumentReference[] | undefined) => {
       if (result && result.length > 0) {
         for (const teamRef of result) {
-          this.addTeamToPoule.emit({ poule, teamRef });
+          void this.tournamentActions.addTeamToPoule({ poule, teamRef });
         }
       }
     });
@@ -374,7 +372,7 @@ export class PoulesTab {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.removeTeamFromPoule.emit({ poule, teamRef });
+        void this.tournamentActions.removeTeamFromPoule({ poule, teamRef });
       },
     });
   }

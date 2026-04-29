@@ -4,8 +4,6 @@ import {
   computed,
   HostListener,
   inject,
-  input,
-  output,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -19,7 +17,6 @@ import { DatepickerConfigService } from '../../../../shared/services/datepicker-
 import { Button } from 'primeng/button';
 import { DocumentReference } from '@angular/fire/firestore';
 import { TableModule } from 'primeng/table';
-import { Tournament, UserRole } from '../../../../home/tournament.interface';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -32,6 +29,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { CallPipe } from 'ngxtension/call-apply';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 export interface SaveGameEvent {
   pouleRef: DocumentReference;
@@ -114,16 +115,16 @@ export class Games {
   private readonly dialogService = inject(DialogService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly datepickerConfig = inject(DatepickerConfigService);
+  private readonly poulesStore = inject(PoulesStore);
+  private readonly authStore = inject(AuthStore);
+  private readonly tournamentDetailStore = inject(TournamentDetailStore);
+  private readonly tournamentActions = inject(TournamentActionsService);
 
-  teams = input.required<Team[]>();
-  series = input.required<Serie[]>();
-  tournament = input.required<Tournament>();
-  role = input<UserRole | ''>('');
-  timeSlots = input<TimeSlot[]>([]);
-
-  saveGame = output<SaveGameEvent>();
-  deleteGame = output<DeleteGameEvent>();
-  generateAllGames = output<GenerateAllGamesEvent>();
+  teams = this.poulesStore.teams;
+  series = this.poulesStore.series;
+  tournament = this.tournamentDetailStore.tournament;
+  role = this.authStore.role;
+  timeSlots = this.poulesStore.timeSlots;
 
   showOnlyFreeSlots = signal(false);
 
@@ -483,7 +484,7 @@ export class Games {
         if (data.isEditing && data.gameRef) {
           result.gameRef = data.gameRef;
         }
-        this.saveGame.emit(result);
+        void this.tournamentActions.saveGame(result);
       }
     });
   }
@@ -498,7 +499,7 @@ export class Games {
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
-        this.deleteGame.emit({ gameRef });
+        void this.tournamentActions.deleteGame({ gameRef });
       },
     });
   }
@@ -513,7 +514,7 @@ export class Games {
       return;
     }
 
-    this.generateAllGames.emit({ games });
+    void this.tournamentActions.generateAllGames({ games });
   }
 
   private buildGeneratedGames(poule: Poule): SaveGameEvent[] {

@@ -1,10 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
+import { patchState } from '@ngrx/signals';
 import { TournamentDashboard } from './tournament-dashboard';
 import { Tournament, TournamentStatus, UserRole } from '../../../../home/tournament.interface';
 import { Team } from '../teams/teams';
 import { Game, Serie } from '../../poules/poules';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
+import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
 
 function makeRef(id: string): DocumentReference {
   return { id } as DocumentReference;
@@ -43,12 +48,22 @@ function makeSerie(name: string, poules: Serie['poules']): Serie {
 describe('TournamentDashboard', () => {
   let fixture: ComponentFixture<TournamentDashboard>;
   let component: TournamentDashboard;
+  let tournamentDetailStore: InstanceType<typeof TournamentDetailStore>;
+  let poulesStore: InstanceType<typeof PoulesStore>;
+  let authStore: InstanceType<typeof AuthStore>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TournamentDashboard],
-      providers: [...provideTranslocoTesting()],
+      providers: [
+        ...provideTranslocoTesting(),
+        { provide: TournamentActionsService, useValue: { saveGame: vi.fn() } },
+      ],
     }).compileComponents();
+
+    tournamentDetailStore = TestBed.inject(TournamentDetailStore);
+    poulesStore = TestBed.inject(PoulesStore);
+    authStore = TestBed.inject(AuthStore);
 
     fixture = TestBed.createComponent(TournamentDashboard);
     component = fixture.componentInstance;
@@ -60,10 +75,11 @@ describe('TournamentDashboard', () => {
     series?: Serie[];
     role?: UserRole | '';
   }): void {
-    fixture.componentRef.setInput('tournament', inputs.tournament ?? makeTournament());
-    if (inputs.teams) fixture.componentRef.setInput('teams', inputs.teams);
-    if (inputs.series) fixture.componentRef.setInput('series', inputs.series);
-    if (inputs.role !== undefined) fixture.componentRef.setInput('role', inputs.role);
+    patchState(tournamentDetailStore, { tournament: inputs.tournament ?? makeTournament() });
+    if (inputs.teams) patchState(poulesStore, { teams: inputs.teams });
+    if (inputs.series) patchState(poulesStore, { series: inputs.series });
+    if (inputs.role !== undefined)
+      authStore.setUser(inputs.role ? ({ role: inputs.role } as any) : null);
     fixture.detectChanges();
   }
 
@@ -300,7 +316,12 @@ describe('TournamentDashboard', () => {
             name: 'P1',
             refTeams: [],
             games: [
-              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: futureDate1, referees: ['Alice', 'Bob'] }),
+              makeGame({
+                refTeam1Id: 'a',
+                refTeam2Id: 'b',
+                date: futureDate1,
+                referees: ['Alice', 'Bob'],
+              }),
             ],
           },
         ]),

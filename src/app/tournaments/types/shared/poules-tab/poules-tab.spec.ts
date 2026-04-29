@@ -1,10 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 import { DocumentReference } from '@angular/fire/firestore';
+import { patchState } from '@ngrx/signals';
+import { vi } from 'vitest';
 
 import { PoulesTab } from './poules-tab';
 import { Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
+import { PoulesStore } from '../../../../store/poules.store';
+import { AuthStore } from '../../../../store/auth.store';
+import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
+import { ConfirmationService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 
 function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
@@ -13,16 +20,36 @@ function createRef(id: string): DocumentReference {
 describe('PoulesTab', () => {
   let component: PoulesTab;
   let fixture: ComponentFixture<PoulesTab>;
+  let poulesStore: InstanceType<typeof PoulesStore>;
+  let mockTournamentActions: Record<string, ReturnType<typeof vi.fn>>;
 
   beforeEach(async () => {
+    mockTournamentActions = {
+      saveSerie: vi.fn(),
+      deleteSerie: vi.fn(),
+      savePoule: vi.fn(),
+      deletePoule: vi.fn(),
+      addTeamToPoule: vi.fn(),
+      removeTeamFromPoule: vi.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [PoulesTab],
-      providers: [...provideTranslocoTesting()],
-    }).compileComponents();
+      providers: [
+        ...provideTranslocoTesting(),
+        { provide: TournamentActionsService, useValue: mockTournamentActions },
+      ],
+    })
+      .overrideComponent(PoulesTab, {
+        set: {
+          providers: [{ provide: DialogService, useValue: { open: vi.fn() } }, ConfirmationService],
+        },
+      })
+      .compileComponents();
+
+    poulesStore = TestBed.inject(PoulesStore);
 
     fixture = TestBed.createComponent(PoulesTab);
-    fixture.componentRef.setInput('teams', []);
-    fixture.componentRef.setInput('series', []);
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();
@@ -79,8 +106,8 @@ describe('PoulesTab', () => {
           scoreTeam2: 4,
         },
       ]);
-      fixture.componentRef.setInput('teams', teams);
-      fixture.componentRef.setInput('series', series);
+      patchState(poulesStore, { teams: teams });
+      patchState(poulesStore, { series: series });
       fixture.detectChanges();
 
       const poule = component.sortedSeries()[0].poules[0];
@@ -103,8 +130,8 @@ describe('PoulesTab', () => {
           scoreTeam2: 8,
         },
       ]);
-      fixture.componentRef.setInput('teams', teams);
-      fixture.componentRef.setInput('series', series);
+      patchState(poulesStore, { teams: teams });
+      patchState(poulesStore, { series: series });
       fixture.detectChanges();
 
       const poule = component.sortedSeries()[0].poules[0];
@@ -124,8 +151,8 @@ describe('PoulesTab', () => {
           scoreTeam2: 8,
         },
       ]);
-      fixture.componentRef.setInput('teams', teams);
-      fixture.componentRef.setInput('series', series);
+      patchState(poulesStore, { teams: teams });
+      patchState(poulesStore, { series: series });
       fixture.detectChanges();
 
       const poule = component.sortedSeries()[0].poules[0];
@@ -143,8 +170,8 @@ describe('PoulesTab', () => {
           refTeam2: teamBRef,
         },
       ]);
-      fixture.componentRef.setInput('teams', teams);
-      fixture.componentRef.setInput('series', series);
+      patchState(poulesStore, { teams: teams });
+      patchState(poulesStore, { series: series });
       fixture.detectChanges();
 
       const poule = component.sortedSeries()[0].poules[0];
@@ -175,8 +202,8 @@ describe('PoulesTab', () => {
           scoreTeam2: 3,
         },
       ]);
-      fixture.componentRef.setInput('teams', teams);
-      fixture.componentRef.setInput('series', series);
+      patchState(poulesStore, { teams: teams });
+      patchState(poulesStore, { series: series });
       fixture.detectChanges();
 
       const standings = component.sortedSeries()[0].poules[0].standings;
@@ -197,8 +224,8 @@ describe('PoulesTab', () => {
           scoreTeam2: 0,
         },
       ]);
-      fixture.componentRef.setInput('teams', teams);
-      fixture.componentRef.setInput('series', series);
+      patchState(poulesStore, { teams: teams });
+      patchState(poulesStore, { series: series });
       fixture.detectChanges();
 
       const standings = component.sortedSeries()[0].poules[0].standings;
@@ -232,21 +259,25 @@ describe('PoulesTab', () => {
     }
 
     it('should not show coverage message for empty poule', async () => {
-      fixture.componentRef.setInput('teams', []);
-      fixture.componentRef.setInput('series', buildEmptySeries());
-      fixture.componentRef.setInput('role', 'admin');
+      patchState(poulesStore, { teams: [] });
+      patchState(poulesStore, { series: buildEmptySeries() });
+      patchState(TestBed.inject(AuthStore), { currentUser: { role: 'admin' } as any });
       fixture.detectChanges();
       await fixture.whenStable();
 
-      const successMsg = fixture.nativeElement.querySelector('[data-testid="poule-games-coverage-success"]');
-      const errorMsg = fixture.nativeElement.querySelector('[data-testid="poule-games-coverage-error"]');
+      const successMsg = fixture.nativeElement.querySelector(
+        '[data-testid="poule-games-coverage-success"]',
+      );
+      const errorMsg = fixture.nativeElement.querySelector(
+        '[data-testid="poule-games-coverage-error"]',
+      );
       expect(successMsg).toBeNull();
       expect(errorMsg).toBeNull();
     });
 
     it('should not show standings table for empty poule', async () => {
-      fixture.componentRef.setInput('teams', []);
-      fixture.componentRef.setInput('series', buildEmptySeries());
+      patchState(poulesStore, { teams: [] });
+      patchState(poulesStore, { series: buildEmptySeries() });
       fixture.detectChanges();
       await fixture.whenStable();
 
@@ -318,11 +349,13 @@ describe('PoulesTab', () => {
     });
 
     it('should provide tooltip with missing matchups list', () => {
-      fixture.componentRef.setInput('teams', [
-        { ref: teamARef, name: 'Team A' },
-        { ref: teamBRef, name: 'Team B' },
-        { ref: teamCRef, name: 'Team C' },
-      ]);
+      patchState(poulesStore, {
+        teams: [
+          { ref: teamARef, name: 'Team A' },
+          { ref: teamBRef, name: 'Team B' },
+          { ref: teamCRef, name: 'Team C' },
+        ],
+      });
       fixture.detectChanges();
 
       const poule = {

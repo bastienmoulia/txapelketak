@@ -14,7 +14,12 @@ describe('Poules', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Poules],
-      providers: [provideRouter([]), MessageService, TournamentActionsService, ...provideTranslocoTesting()],
+      providers: [
+        provideRouter([]),
+        MessageService,
+        TournamentActionsService,
+        ...provideTranslocoTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Poules);

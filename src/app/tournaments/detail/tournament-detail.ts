@@ -7,8 +7,10 @@ import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 import { injectParams } from 'ngxtension/inject-params';
+import { MessageService } from 'primeng/api';
 import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
 import { TournamentDetailStore } from '../../store/tournament-detail.store';
+import { TournamentActionsService } from '../../shared/services/tournament-actions.service';
 import { Poules } from '../types/poules/poules';
 import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
 
@@ -26,6 +28,7 @@ import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
     TournamentTabs,
     Poules,
   ],
+  providers: [MessageService, TournamentActionsService],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

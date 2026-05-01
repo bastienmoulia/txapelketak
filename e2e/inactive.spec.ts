@@ -4,7 +4,9 @@ import { TournamentBasePage } from './pages/tournament-base.page';
 test.describe('Inactive tournament', () => {
   // Persistent tournament kept in waitingValidation status for E2E tests.
   // Not visible in the public list, so we use its known ID directly.
-  const inactiveTournamentId = 'nmjKZxepAKXwaIMYhuHg';
+
+  // TODO: create the tournament dynamically in a beforeAll and delete it in afterAll, instead of relying on a hardcoded ID. This would make the test more robust and self-contained, but requires implementing tournament deletion in the admin page first.
+  const inactiveTournamentId = '1ie21rZp2ZcerXLupHVs';
   const tournamentName = 'Tournoi inactif';
   const waitingValidationMessage =
     "L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre patience.";

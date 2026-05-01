@@ -1,5 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -10,8 +17,8 @@ import { injectParams } from 'ngxtension/inject-params';
 import { MessageService } from 'primeng/api';
 import { TournamentHeader } from '../../shared/tournament-header/tournament-header';
 import { TournamentDetailStore } from '../../store/tournament-detail.store';
+import { PoulesStore } from '../../store/poules.store';
 import { TournamentActionsService } from '../../shared/services/tournament-actions.service';
-import { Poules } from '../types/poules/poules';
 import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
 
 @Component({
@@ -26,7 +33,7 @@ import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
     TranslocoModule,
     TournamentHeader,
     TournamentTabs,
-    Poules,
+    RouterOutlet,
   ],
   providers: [MessageService, TournamentActionsService],
   templateUrl: './tournament-detail.html',
@@ -35,6 +42,7 @@ import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
 })
 export class TournamentDetail {
   private tournamentDetailStore = inject(TournamentDetailStore);
+  private poulesStore = inject(PoulesStore);
   private destroyRef = inject(DestroyRef);
 
   tournamentId = injectParams('tournamentId');
@@ -52,16 +60,31 @@ export class TournamentDetail {
   managerAddSuccess = signal(false);
 
   constructor() {
-    const tournamentId = this.tournamentId();
+    effect(() => {
+      const tournamentId = this.tournamentId();
 
-    if (!tournamentId) {
-      return;
-    }
+      if (!tournamentId) {
+        this.tournamentDetailStore.stopWatching();
+        return;
+      }
 
-    this.tournamentDetailStore.startWatching(tournamentId);
+      this.tournamentDetailStore.startWatching(tournamentId);
+    });
+
+    effect(() => {
+      const tournament = this.tournament();
+
+      if (!tournament) {
+        this.poulesStore.stopWatching();
+        return;
+      }
+
+      this.poulesStore.startWatching(tournament.ref);
+    });
 
     this.destroyRef.onDestroy(() => {
       this.tournamentDetailStore.stopWatching();
+      this.poulesStore.stopWatching();
     });
   }
 }

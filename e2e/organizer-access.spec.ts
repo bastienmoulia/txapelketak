@@ -34,7 +34,7 @@ test.describe.serial('Organizer – access & tab visibility', () => {
       await adminPage.goto(adminUrl);
       await adminPage.importYamlFixture(organizerFixturePath);
 
-      await adminPage.clickTab('Administration');
+      await adminPage.clickTab('Paramètres');
       organizerUrl = await adminPage.addUserAndGetAdminUrl(
         organizerUsername,
         organizerEmail,
@@ -61,7 +61,7 @@ test.describe.serial('Organizer – access & tab visibility', () => {
   });
 
   test('should have captured a valid organizer URL', () => {
-    expect(organizerUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
+    expect(organizerUrl).toMatch(/\/tournaments\/[^/]+\/[^/?#]+\/?(?:[?#].*)?$/);
     expect(organizerUrl).not.toBe(adminUrl);
   });
 
@@ -85,10 +85,10 @@ test.describe.serial('Organizer – access & tab visibility', () => {
     await expect(page.getByRole('tab', { name: 'Poules' })).toBeVisible();
   });
 
-  test('should NOT show the Administration tab to the organizer', async ({ page }) => {
+  test('should NOT show the Paramètres tab to the organizer', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(organizerUrl);
 
-    await expect(page.getByRole('tab', { name: 'Administration' })).not.toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Paramètres' })).not.toBeVisible();
   });
 });

@@ -39,8 +39,8 @@ test.describe('Visitor – display & teams', () => {
     await listPage.waitForTournamentToAppear(tournamentName);
 
     await listPage.openTournament(tournamentName);
-    await page.waitForURL(/\/tournaments\/[^/]+$/);
-    const match = page.url().match(/\/tournaments\/([^/]+)$/);
+    await page.waitForURL(/\/tournaments\/[^/]+\/[^/?#]+\/?(?:[?#].*)?$/);
+    const match = page.url().match(/\/tournaments\/([^/]+)\/[^/?#]+\/?(?:[?#].*)?$/);
     tournamentId = match?.[1] ?? '';
     expect(
       tournamentId,

@@ -376,11 +376,11 @@ export class FirebaseService {
     console.debug(`[Firestore] deleteSerieFromTournament: deleting serie and nested poules`);
     const pouleDocs = await this.getCollectionFromDocumentRef(serieRef, 'poules');
     for (const pouleDoc of pouleDocs) {
-      await runInInjectionContext(this.environmentInjector, async () => {
-        console.debug(`[Firestore] deleteDoc: poule`);
-        await deleteDoc(pouleDoc.ref);
-      });
+      await this.deletePouleFromSerie(pouleDoc.ref);
     }
+
+    await this.deleteFinaleGamesForSerie(serieRef);
+
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: serie`);
       await deleteDoc(serieRef);

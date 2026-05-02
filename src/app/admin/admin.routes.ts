@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from '../shared/guards/admin.guard';
 
 export const tournamentAdminRoutes: Routes = [
   {
@@ -37,6 +38,7 @@ export const tournamentAdminRoutes: Routes = [
       },
       {
         path: 'settings',
+        canActivate: [adminGuard],
         loadComponent: () => import('./types/shared/settings/settings').then((m) => m.Settings),
       },
     ],

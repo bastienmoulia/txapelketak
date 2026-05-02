@@ -6,7 +6,7 @@ test.describe('Inactive tournament', () => {
   // Not visible in the public list, so we use its known ID directly.
 
   // TODO: create the tournament dynamically in a beforeAll and delete it in afterAll, instead of relying on a hardcoded ID. This would make the test more robust and self-contained, but requires implementing tournament deletion in the admin page first.
-  const inactiveTournamentId = '1ie21rZp2ZcerXLupHVs';
+  const inactiveTournamentId = 'O8API0S4ePpTTITpRwhF';
   const tournamentName = 'Tournoi inactif';
   const waitingValidationMessage =
     "L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre patience.";

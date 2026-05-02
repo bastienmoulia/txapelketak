@@ -4,7 +4,7 @@ export const POULES_ROUTE_TABS = [
   'poules',
   'games',
   'finale',
-  'administration',
+  'settings',
 ] as const;
 export type PoulesRouteTab = (typeof POULES_ROUTE_TABS)[number];
 

@@ -11,21 +11,6 @@ export class GamesPage {
     await this.page.getByRole('tab', { name: 'Parties' }).click();
   }
 
-  private async openDateFilterPicker(): Promise<Locator> {
-    const input = this.page.getByTestId('date-filter-picker').locator('input');
-    await input.click();
-
-    const picker = this.page.locator('.p-datepicker').last();
-    await picker.waitFor({ state: 'visible' });
-    return picker;
-  }
-
-  private getMonthOffset(from: Date, to: Date): number {
-    return (
-      (to.getUTCFullYear() - from.getUTCFullYear()) * 12 + (to.getUTCMonth() - from.getUTCMonth())
-    );
-  }
-
   // --- Read ---
 
   gameRow(team1Name: string, team2Name: string): Locator {

@@ -16,7 +16,7 @@ import { Teams } from '../shared/teams/teams';
 import { Tournament } from '../../../home/tournament.interface';
 import { PoulesTab } from '../shared/poules-tab/poules-tab';
 import { Games } from '../shared/games/games';
-import { getPoulesRouteTab, POULES_ROUTE_TABS, POULES_TAB_QUERY_PARAM } from './poules.route';
+import { getPoulesRouteTab, POULES_ROUTE_TABS } from './poules.route';
 import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
 import { FinaleTab } from '../shared/finale-tab/finale-tab';
@@ -44,7 +44,7 @@ export class Poules {
 
   private tabFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
-      map((queryParams) => getPoulesRouteTab(queryParams.get(POULES_TAB_QUERY_PARAM))),
+      map((queryParams) => getPoulesRouteTab(queryParams.get('tab'))),
     ),
     { initialValue: POULES_ROUTE_TABS[0] },
   );

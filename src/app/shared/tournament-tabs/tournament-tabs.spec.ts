@@ -72,25 +72,25 @@ describe('TournamentTabs', () => {
       expect(routes).toContain('finale');
     });
 
-    it('should not include administration tab when role is empty', () => {
+    it('should not include settings tab when role is empty', () => {
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).not.toContain('administration');
+      expect(routes).not.toContain('settings');
     });
 
-    it('should not include administration tab for organizer role', () => {
+    it('should not include settings tab for organizer role', () => {
       fixture.componentRef.setInput('role', 'organizer');
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).not.toContain('administration');
+      expect(routes).not.toContain('settings');
     });
 
-    it('should include administration tab for admin role', () => {
+    it('should include settings tab for admin role', () => {
       fixture.componentRef.setInput('role', 'admin');
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).toContain('administration');
+      expect(routes).toContain('settings');
     });
   });
 });

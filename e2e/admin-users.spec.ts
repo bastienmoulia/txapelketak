@@ -3,7 +3,7 @@ import { AdminPage } from './pages/admin.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
 
 /**
- * Admin E2E tests for user management (Administration tab).
+ * Admin E2E tests for user management (Paramètres tab).
  */
 test.describe.serial('Admin – users management', () => {
   const timestamp = Date.now();
@@ -59,7 +59,7 @@ test.describe.serial('Admin – users management', () => {
   test('should add a user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Administration');
+    await adminPage.clickTab('Paramètres');
 
     await adminPage.addUser(userAddUsername, userAddEmail, 'organizer');
     await expect(adminPage.userRow(userAddUsername)).toBeVisible();
@@ -68,7 +68,7 @@ test.describe.serial('Admin – users management', () => {
   test('should edit a user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Administration');
+    await adminPage.clickTab('Paramètres');
 
     await adminPage.addUser(userEditUsername, userEditEmail, 'organizer');
     await expect(adminPage.userRow(userEditUsername)).toBeVisible();
@@ -81,7 +81,7 @@ test.describe.serial('Admin – users management', () => {
   test('should delete a user', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Administration');
+    await adminPage.clickTab('Paramètres');
 
     await adminPage.addUser(userDeleteOnly, userDeleteOnlyEmail, 'organizer');
     await expect(adminPage.userRow(userDeleteOnly)).toBeVisible();

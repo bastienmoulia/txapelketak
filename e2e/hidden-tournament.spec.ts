@@ -52,7 +52,7 @@ test.describe.serial('Hidden tournament (underscore prefix)', () => {
 
       await expect(page.getByTestId('success-state')).toBeVisible({ timeout: 15000 });
       adminUrl = await newPage.getAdminUrl();
-      expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
+      expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/?#]+\/?(?:[?#].*)?$/);
     });
 
     await test.step('validate tournament to set status to ongoing', async () => {

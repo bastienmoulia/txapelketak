@@ -92,7 +92,7 @@ test.describe.serial('Tournament creation', () => {
       await expect(page.getByTestId('success-state')).toBeVisible({ timeout: 15000 });
 
       adminUrl = await newPage.getAdminUrl();
-      expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/]+$/);
+      expect(adminUrl).toMatch(/\/tournaments\/[^/]+\/[^/?#]+\/?(?:[?#].*)?$/);
     });
 
     await test.step('ensure tournament is hidden before validation', async () => {

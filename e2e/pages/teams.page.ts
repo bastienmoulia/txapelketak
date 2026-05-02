@@ -7,22 +7,24 @@ export class TeamsPage {
     this.page = page;
   }
 
-  private panel(): Locator {
-    return this.page.locator('p-tabpanel[value="teams"]');
+  private async ensureTeamsTab(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Équipes' }).click();
   }
 
   teamRow(name: string): Locator {
-    return this.panel().locator('.p-datatable-tbody tr').filter({ hasText: name });
+    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
   }
 
   async hasTeam(name: string): Promise<boolean> {
+    await this.ensureTeamsTab();
     return (await this.teamRow(name).count()) > 0;
   }
 
   // --- Admin actions ---
 
   async addTeam(name: string): Promise<void> {
-    await this.panel().getByTestId('add-team-button').click();
+    await this.ensureTeamsTab();
+    await this.page.getByTestId('add-team-button').click();
     const dialog = this.page.locator('.p-dialog').filter({ has: this.page.locator('input#name') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('input#name').fill(name);
@@ -31,7 +33,8 @@ export class TeamsPage {
   }
 
   async editTeam(currentName: string, newName: string): Promise<void> {
-    const row = this.panel().locator('.p-datatable-tbody tr').filter({ hasText: currentName });
+    await this.ensureTeamsTab();
+    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: currentName });
     const editButton = row.getByRole('button', { name: 'Modifier cette équipe' });
     await editButton.click();
     const dialog = this.page
@@ -63,7 +66,8 @@ export class TeamsPage {
   }
 
   async deleteTeam(name: string): Promise<void> {
-    const row = this.panel().locator('.p-datatable-tbody tr').filter({ hasText: name });
+    await this.ensureTeamsTab();
+    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
     await row.getByTestId('delete-team-button').click();
     const dialog = this.page
       .locator('.p-dialog')

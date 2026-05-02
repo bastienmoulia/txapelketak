@@ -111,7 +111,7 @@ export class FirebaseService {
       return null;
     }
 
-    console.debug(`[Firestore] getTournamentById: tournament found`);
+    console.debug(`[Firestore] getTournamentById: tournament found`, snapshot.data());
     return { ref: snapshot.ref, ...snapshot.data() } as Tournament;
   }
 
@@ -134,7 +134,7 @@ export class FirebaseService {
       return null;
     }
 
-    console.debug(`[Firestore] getTournamentByIdWithRef: tournament found`);
+    console.debug(`[Firestore] getTournamentByIdWithRef: tournament found`, snapshot.data());
     const tournament = { ref: snapshot.ref, ...snapshot.data() } as Tournament;
     return {
       tournament,
@@ -153,6 +153,7 @@ export class FirebaseService {
     });
 
     if (!tournamentSnapshot.exists()) {
+      console.debug(`[Firestore] getTournamentWithCollectionyId: tournament not found`);
       return null;
     }
 
@@ -375,11 +376,11 @@ export class FirebaseService {
     console.debug(`[Firestore] deleteSerieFromTournament: deleting serie and nested poules`);
     const pouleDocs = await this.getCollectionFromDocumentRef(serieRef, 'poules');
     for (const pouleDoc of pouleDocs) {
-      await runInInjectionContext(this.environmentInjector, async () => {
-        console.debug(`[Firestore] deleteDoc: poule`);
-        await deleteDoc(pouleDoc.ref);
-      });
+      await this.deletePouleFromSerie(pouleDoc.ref);
     }
+
+    await this.deleteFinaleGamesForSerie(serieRef);
+
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: serie`);
       await deleteDoc(serieRef);
@@ -562,10 +563,7 @@ export class FirebaseService {
 
     // Delete existing time slots
     console.debug(`[Firestore] importTournamentData: deleting existing timeSlots`);
-    const existingTimeSlots = await this.getCollectionFromDocumentRef(
-      tournamentRef,
-      'timeSlots',
-    );
+    const existingTimeSlots = await this.getCollectionFromDocumentRef(tournamentRef, 'timeSlots');
     await Promise.all(
       existingTimeSlots.map((item) =>
         runInInjectionContext(this.environmentInjector, async () => {

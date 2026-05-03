@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
+import { MessageModule } from 'primeng/message';
 import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
@@ -13,6 +14,7 @@ import { AdminDeleteTournament } from '../admin-delete-tournament/admin-delete-t
   selector: 'app-settings',
   imports: [
     TranslocoModule,
+    MessageModule,
     AdminGeneral,
     AdminTimeSlots,
     AdminUsers,
@@ -28,6 +30,7 @@ export class Settings {
   private authStore = inject(AuthStore);
   private poulesStore = inject(PoulesStore);
 
+  role = this.authStore.role;
   tournament = this.tournamentDetailStore.tournament;
   currentUser = this.authStore.currentUser;
   teams = this.poulesStore.teams;

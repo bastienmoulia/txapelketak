@@ -8,13 +8,19 @@ export const adminGuard: CanActivateFn = () => {
   const authStore = inject(AuthStore);
   const router = inject(Router);
 
+  console.log('AdminGuard: Checking access...');
+
   if (authStore.initialized()) {
+    console.log('AdminGuard: Auth state initialized. User role:', authStore.role());
     return authStore.role() === 'admin' || router.parseUrl('/');
   }
 
   return toObservable(authStore.initialized).pipe(
     filter((initialized) => initialized),
     first(),
-    map(() => authStore.role() === 'admin' || router.parseUrl('/')),
+    map(() => {
+      console.log('AdminGuard: Auth state initialized 2. User role:', authStore.role());
+      return authStore.role() === 'admin' || router.parseUrl('/');
+    }),
   );
 };

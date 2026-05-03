@@ -70,7 +70,7 @@
               icon="pi pi-list"
               [label]="'shared.actions.viewGames' | transloco"
               [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
-              [routerLink]="['games']"
+              [routerLink]="['..', 'games']"
               [queryParams]="{ teamId: team.ref.id }"
               queryParamsHandling="merge"
               data-testid="view-team-games-button"

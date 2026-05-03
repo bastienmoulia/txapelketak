@@ -8,7 +8,10 @@ export class GamesPage {
   }
 
   private async ensureGamesTab(): Promise<void> {
-    await this.page.getByRole('tab', { name: 'Parties' }).click();
+    const tab = this.page.getByRole('tab', { name: 'Parties' });
+    if ((await tab.getAttribute('aria-selected')) !== 'true') {
+      await tab.click();
+    }
   }
 
   // --- Read ---

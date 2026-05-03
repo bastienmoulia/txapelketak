@@ -49,7 +49,7 @@ export class AppTitleStrategy extends TitleStrategy {
       return;
     }
 
-    this.titleService.setTitle(`${pageTitle} | ${applicationTitle}`);
+    this.titleService.setTitle(`${pageTitle} · ${applicationTitle}`);
   }
 
   private hasLoadedActiveLang(): boolean {

@@ -1,20 +1,20 @@
 import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { CanActivateFn, Router } from '@angular/router';
+import { filter, first, map } from 'rxjs';
 import { AuthStore } from '../../store/auth.store';
 
-/**
- * Route guard that allows only admin users to access a route.
- * Used to protect admin-only features that should not be accessible
- * through direct URL navigation, even if the route is exposed.
- */
 export const adminGuard: CanActivateFn = () => {
   const authStore = inject(AuthStore);
   const router = inject(Router);
 
-  if (authStore.role() === 'admin') {
-    return true;
+  if (authStore.initialized()) {
+    return authStore.role() === 'admin' || router.parseUrl('/');
   }
 
-  // Redirect non-admin users to the parent tournament detail page
-  return router.parseUrl('/');
+  return toObservable(authStore.initialized).pipe(
+    filter((initialized) => initialized),
+    first(),
+    map(() => authStore.role() === 'admin' || router.parseUrl('/')),
+  );
 };

@@ -4,10 +4,12 @@ import { User, UserRole } from '../home/tournament.interface';
 
 interface AuthState {
   currentUser: User | null;
+  initialized: boolean;
 }
 
 const initialState: AuthState = {
   currentUser: null,
+  initialized: false,
 };
 
 export const AuthStore = signalStore(
@@ -18,10 +20,10 @@ export const AuthStore = signalStore(
   })),
   withMethods((store) => ({
     setUser(user: User | null): void {
-      patchState(store, { currentUser: user });
+      patchState(store, { currentUser: user, initialized: true });
     },
     clear(): void {
-      patchState(store, { currentUser: null });
+      patchState(store, { currentUser: null, initialized: true });
     },
   })),
 );

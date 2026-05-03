@@ -21,10 +21,10 @@ series:
         games:
           - team1: visitor-team-1
             team2: visitor-team-2
-            date: '2026-04-20T10:00:00.000Z'
+            date: '2026-05-20T10:00:00.000Z'
           - team1: visitor-team-1
             team2: visitor-team-3
-            date: '2026-04-20T14:00:00.000Z'
+            date: '2026-05-20T14:00:00.000Z'
           - team1: visitor-team-2
             team2: visitor-team-3
-            date: '2026-04-21T16:30:00.000Z'
+            date: '2026-05-21T16:30:00.000Z'

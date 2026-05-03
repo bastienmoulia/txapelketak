@@ -49,13 +49,15 @@ export const routes: Routes = [
       {
         path: ':tournamentId',
         title: tournamentDetailTitleResolver,
-        loadComponent: () =>
-          import('./tournaments/detail/tournament-detail').then((m) => m.TournamentDetail),
+        loadChildren: () =>
+          import('./tournaments/detail/tournament-detail.routes').then(
+            (m) => m.tournamentDetailRoutes,
+          ),
       },
       {
         path: ':tournamentId/:token',
         title: tournamentAdminTitleResolver,
-        loadComponent: () => import('./admin/admin').then((m) => m.Admin),
+        loadChildren: () => import('./admin/admin.routes').then((m) => m.tournamentAdminRoutes),
       },
     ],
   },

@@ -31,6 +31,7 @@
   [resizable]="false"
   [closeOnEscape]="false"
   [showHeader]="false"
+  data-testid="import-yaml-loading-dialog"
 >
   <div class="flex flex-col items-center gap-3 p-2 text-center">
     <p-progress-spinner
@@ -71,6 +72,7 @@
         type="file"
         accept=".yaml,.yml"
         class="hidden"
+        data-testid="import-yaml-input"
         (change)="onImportFileChange($event)"
       />
       <p-button

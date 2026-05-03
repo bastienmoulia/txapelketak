@@ -7,26 +7,30 @@ export class GamesPage {
     this.page = page;
   }
 
-  private panel(): Locator {
-    return this.page.locator('p-tabpanel[value="games"]');
+  private async ensureGamesTab(): Promise<void> {
+    const tab = this.page.getByRole('tab', { name: 'Parties' });
+    if ((await tab.getAttribute('aria-selected')) !== 'true') {
+      await tab.click();
+    }
   }
 
   // --- Read ---
 
   gameRow(team1Name: string, team2Name: string): Locator {
-    return this.panel()
+    return this.page
       .locator('.p-datatable-tbody tr')
       .filter({ hasText: team1Name })
       .filter({ hasText: team2Name });
   }
 
   gameRows(): Locator {
-    return this.panel()
+    return this.page
       .locator('.p-datatable-tbody tr')
       .filter({ has: this.page.locator('td[data-label]') });
   }
 
   async hasGame(team1Name: string, team2Name: string): Promise<boolean> {
+    await this.ensureGamesTab();
     return (await this.gameRow(team1Name, team2Name).count()) > 0;
   }
 
@@ -39,7 +43,8 @@ export class GamesPage {
   // --- Filters ---
 
   async filterByTeam(teamName: string): Promise<void> {
-    await this.panel().getByTestId('team-filter-select').click();
+    await this.ensureGamesTab();
+    await this.page.getByTestId('team-filter-select').click();
     await this.page
       .locator('.p-select-overlay .p-select-option')
       .filter({ hasText: teamName })
@@ -48,11 +53,13 @@ export class GamesPage {
   }
 
   async clearTeamFilter(): Promise<void> {
-    await this.panel().getByTestId('team-filter-select').locator('.p-select-clear-icon').click();
+    await this.ensureGamesTab();
+    await this.page.getByTestId('team-filter-select').locator('.p-select-clear-icon').click();
   }
 
   async filterByDate(date: Date): Promise<void> {
-    await this.panel().getByTestId('date-filter-picker').locator('input').click();
+    await this.ensureGamesTab();
+    await this.page.getByTestId('date-filter-picker').locator('input').click();
     await this.page
       .locator('.p-datepicker-calendar td:not(.p-datepicker-other-month) .p-datepicker-day')
       .filter({ hasText: String(date.getUTCDate()) })
@@ -61,10 +68,8 @@ export class GamesPage {
   }
 
   async clearDateFilter(): Promise<void> {
-    await this.panel()
-      .getByTestId('date-filter-picker')
-      .locator('.p-datepicker-clear-icon')
-      .click();
+    await this.ensureGamesTab();
+    await this.page.getByTestId('date-filter-picker').locator('.p-datepicker-clear-icon').click();
   }
 
   // --- Admin actions ---
@@ -74,7 +79,8 @@ export class GamesPage {
     team2Name: string,
     options?: { serieName?: string; pouleName?: string },
   ): Promise<void> {
-    await this.panel().getByTestId('add-game-button').click();
+    await this.ensureGamesTab();
+    await this.page.getByTestId('add-game-button').click();
     // Step 1: pick serie + poule
     let dialog = this.page
       .locator('.p-dialog')

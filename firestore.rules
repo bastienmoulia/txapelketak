@@ -57,6 +57,16 @@ service cloud.firestore {
               || request.resource.data.date is string;
           }
         }
+
+        match /finaleGames/{gameId} {
+          allow get, list: if true;
+          allow create, update, delete: if request.resource.data.name is string;
+        }
+      }
+
+      match /timeSlots/{timeSlotId} {
+        allow get, list: if true;
+        allow create, update, delete: if request.resource.data.name is string;
       }
     }
 

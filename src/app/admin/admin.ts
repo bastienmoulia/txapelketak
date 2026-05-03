@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { User } from '../home/tournament.interface';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { injectParams } from 'ngxtension/inject-params';
 import { TranslocoService } from '@jsverse/transloco';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -24,8 +24,8 @@ import { TournamentHeader } from '../shared/tournament-header/tournament-header'
 import { FirebaseService } from '../shared/services/firebase.service';
 import { TournamentDetailStore } from '../store/tournament-detail.store';
 import { AuthStore } from '../store/auth.store';
+import { PoulesStore } from '../store/poules.store';
 import { TournamentTabs } from '../shared/tournament-tabs/tournament-tabs';
-import { AdminPoules } from './types/admin-poules/admin-poules';
 import { TournamentActionsService } from '../shared/services/tournament-actions.service';
 
 @Component({
@@ -37,10 +37,10 @@ import { TournamentActionsService } from '../shared/services/tournament-actions.
     ProgressSpinnerModule,
     TagModule,
     ToastModule,
-    AdminPoules,
     TranslocoModule,
     TournamentHeader,
     TournamentTabs,
+    RouterOutlet,
   ],
   providers: [MessageService, TournamentActionsService],
   templateUrl: './admin.html',
@@ -54,6 +54,7 @@ export class Admin {
   private destroyRef = inject(DestroyRef);
   private tournamentDetailStore = inject(TournamentDetailStore);
   private authStore = inject(AuthStore);
+  private poulesStore = inject(PoulesStore);
 
   tournamentId = injectParams('tournamentId');
   token = injectParams('token');
@@ -70,7 +71,19 @@ export class Admin {
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.tournamentDetailStore.stopWatching();
+      this.poulesStore.stopWatching();
       this.authStore.clear();
+    });
+
+    effect(() => {
+      const tournament = this.tournament();
+
+      if (!tournament) {
+        this.poulesStore.stopWatching();
+        return;
+      }
+
+      this.poulesStore.startWatching(tournament.ref);
     });
 
     effect(() => {
@@ -83,14 +96,20 @@ export class Admin {
       }
     });
 
-    void this.loadUser();
+    effect(() => {
+      void this.loadUser(this.tournamentId(), this.token());
+    });
   }
 
-  private async loadUser(): Promise<void> {
-    const tournamentId = this.tournamentId();
-    const token = this.token();
-
+  private async loadUser(
+    tournamentId: string | null | undefined,
+    token: string | null | undefined,
+  ): Promise<void> {
     if (!this.firebaseService.isAvailable() || !tournamentId || !token) {
+      this.user.set(null);
+      this.authStore.clear();
+      this.tournamentDetailStore.stopWatching();
+      this.poulesStore.stopWatching();
       this.accessDenied.set(true);
       this.loadingUser.set(false);
       return;
@@ -99,6 +118,10 @@ export class Admin {
     try {
       const user = await this.firebaseService.getUserByTournamentAndToken(tournamentId, token);
       if (!user) {
+        this.user.set(null);
+        this.authStore.clear();
+        this.tournamentDetailStore.stopWatching();
+        this.poulesStore.stopWatching();
         this.accessDenied.set(true);
         this.loadingUser.set(false);
         return;
@@ -111,6 +134,10 @@ export class Admin {
       this.loadingUser.set(false);
     } catch (error) {
       console.error('Failed to load admin user', error);
+      this.user.set(null);
+      this.authStore.clear();
+      this.tournamentDetailStore.stopWatching();
+      this.poulesStore.stopWatching();
       this.accessDenied.set(true);
       this.loadingUser.set(false);
     }

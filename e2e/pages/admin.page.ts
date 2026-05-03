@@ -10,14 +10,11 @@ export class AdminPage extends TournamentBasePage {
     await this.gotoAdmin(adminUrl);
   }
 
-  private adminPanel(): Locator {
-    return this.page.locator('p-tabpanel[value="administration"]');
-  }
-
   // --- Users ---
 
   async addUser(username: string, email: string, role: 'admin' | 'organizer'): Promise<void> {
-    await this.adminPanel().getByTestId('add-user-button').click();
+    await this.clickTab('Paramètres');
+    await this.page.getByTestId('add-user-button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#username') });
@@ -38,7 +35,8 @@ export class AdminPage extends TournamentBasePage {
     email: string,
     role: 'admin' | 'organizer',
   ): Promise<string> {
-    await this.adminPanel().getByTestId('add-user-button').click();
+    await this.clickTab('Paramètres');
+    await this.page.getByTestId('add-user-button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#username') });
@@ -60,9 +58,8 @@ export class AdminPage extends TournamentBasePage {
   }
 
   async editUser(currentUsername: string, newUsername: string, newEmail: string): Promise<void> {
-    const row = this.adminPanel()
-      .locator('.p-datatable-tbody tr')
-      .filter({ hasText: currentUsername });
+    await this.clickTab('Paramètres');
+    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: currentUsername });
     await row.locator('button').filter({ hasText: 'Modifier' }).click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -79,7 +76,8 @@ export class AdminPage extends TournamentBasePage {
   }
 
   async deleteUser(username: string): Promise<void> {
-    const row = this.adminPanel().locator('.p-datatable-tbody tr').filter({ hasText: username });
+    await this.clickTab('Paramètres');
+    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: username });
     await row.locator('button').filter({ hasText: 'Supprimer' }).click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -90,7 +88,7 @@ export class AdminPage extends TournamentBasePage {
   }
 
   userRow(username: string): Locator {
-    return this.adminPanel().locator('.p-datatable-tbody tr').filter({ hasText: username });
+    return this.page.locator('.p-datatable-tbody tr').filter({ hasText: username });
   }
 
   private async selectRole(dialog: Locator, role: 'admin' | 'organizer'): Promise<void> {
@@ -105,16 +103,22 @@ export class AdminPage extends TournamentBasePage {
   // --- Import / Export ---
 
   async importYamlFixture(filePath: string): Promise<void> {
-    await this.clickTab('Administration');
-    const fileInput = this.page.locator('input[type="file"][accept=".yaml,.yml"]');
+    await this.clickTab('Paramètres');
+    const fileInput = this.page.getByTestId('import-yaml-input');
     await fileInput.setInputFiles(filePath);
 
-    const dialog = this.page
-      .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Importer' }) });
-    await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('button').filter({ hasText: 'Importer' }).last().click();
-    await dialog.waitFor({ state: 'hidden' });
+    const loadingDialog = this.page.getByTestId('import-yaml-loading-dialog');
+    try {
+      await loadingDialog.waitFor({ state: 'visible', timeout: 2000 });
+    } catch {
+      // The parsing step can complete before the loading overlay becomes observable.
+    }
+    await loadingDialog.waitFor({ state: 'hidden', timeout: 15000 });
+
+    const confirmDialog = this.page.locator('.p-confirmdialog');
+    await confirmDialog.waitFor({ state: 'visible', timeout: 10000 });
+    await confirmDialog.getByRole('button', { name: 'Importer' }).click();
+    await confirmDialog.waitFor({ state: 'hidden', timeout: 15000 });
 
     // Use .first() to avoid strict mode violation: multiple success toasts may be present
     // (e.g. "tournament validated" toast alongside the "Import réussi" toast).
@@ -129,12 +133,9 @@ export class AdminPage extends TournamentBasePage {
   }
 
   async exportYaml(): Promise<string> {
-    await this.clickTab('Administration');
-    const panel = this.adminPanel();
-    await panel.waitFor({ state: 'visible' });
-
+    await this.clickTab('Paramètres');
     const downloadPromise = this.page.waitForEvent('download');
-    await panel.locator('p-button').filter({ hasText: 'Télécharger' }).click();
+    await this.page.locator('p-button').filter({ hasText: 'Télécharger' }).click();
     const download = await downloadPromise;
 
     const stream = await download.createReadStream();
@@ -148,12 +149,9 @@ export class AdminPage extends TournamentBasePage {
   // --- Tournament deletion ---
 
   async deleteTournament(tournamentName: string): Promise<void> {
-    await this.clickTab('Administration');
+    await this.clickTab('Paramètres');
 
-    const panel = this.adminPanel();
-    await panel.waitFor({ state: 'visible' });
-
-    const deleteButton = panel.locator('p-button').filter({ hasText: 'Supprimer le tournoi' });
+    const deleteButton = this.page.locator('p-button').filter({ hasText: 'Supprimer le tournoi' });
     await deleteButton.waitFor({ state: 'visible' });
     await deleteButton.click();
 

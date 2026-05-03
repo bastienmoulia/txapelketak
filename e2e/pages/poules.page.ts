@@ -7,14 +7,14 @@ export class PoulesPage {
     this.page = page;
   }
 
-  private panel(): Locator {
-    return this.page.locator('p-tabpanel[value="poules"]');
+  private async ensurePoulesTab(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Poules' }).click();
   }
 
   // --- Read ---
 
   seriePanel(name: string): Locator {
-    return this.panel().locator('p-accordion-panel').filter({ hasText: name });
+    return this.page.locator('p-accordion-panel').filter({ hasText: name });
   }
 
   poulesContainer(): Locator {
@@ -22,11 +22,12 @@ export class PoulesPage {
   }
 
   warningMessage(): Locator {
-    return this.panel().locator('p-message').filter({ hasText: 'série' });
+    return this.page.locator('p-message').filter({ hasText: 'série' });
   }
 
   async ensureSerieExpanded(serieName: string): Promise<void> {
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
+    await this.ensurePoulesTab();
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     await seriePanel.scrollIntoViewIfNeeded();
     const content = seriePanel.locator('p-accordion-content');
     // Retry expansion to handle race with linkedSignal recomputing openSeriesIds
@@ -41,7 +42,7 @@ export class PoulesPage {
   // --- Standings ---
 
   standingsTable(serieName: string, pouleName: string): Locator {
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     return seriePanel.locator('p-card').filter({ hasText: pouleName }).locator('.standings-table');
   }
 
@@ -52,7 +53,8 @@ export class PoulesPage {
   // --- Admin actions ---
 
   async addSerie(name: string): Promise<void> {
-    await this.panel().getByTestId('add-serie-button').click();
+    await this.ensurePoulesTab();
+    await this.page.getByTestId('add-serie-button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#serie-name') });
@@ -63,7 +65,8 @@ export class PoulesPage {
   }
 
   async editSerie(currentName: string, newName: string): Promise<void> {
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: currentName });
+    await this.ensurePoulesTab();
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: currentName });
     await seriePanel.getByTestId('edit-serie-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -77,7 +80,8 @@ export class PoulesPage {
   }
 
   async deleteSerie(name: string): Promise<void> {
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: name });
+    await this.ensurePoulesTab();
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: name });
     await seriePanel.getByTestId('delete-serie-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -89,7 +93,7 @@ export class PoulesPage {
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     await seriePanel.getByTestId('add-poule-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -105,7 +109,7 @@ export class PoulesPage {
     currentPouleName: string,
     newPouleName: string,
   ): Promise<void> {
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
     const editBtn = pouleCard.getByTestId('edit-poule-button');
     // Ensure the accordion stays expanded and button is interactable
@@ -127,7 +131,7 @@ export class PoulesPage {
   }
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
-    const seriePanel = this.panel().locator('p-accordion-panel').filter({ hasText: serieName });
+    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
     const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
     const deleteBtn = pouleCard.getByTestId('delete-poule-button');
     // Ensure the accordion stays expanded and button is interactable

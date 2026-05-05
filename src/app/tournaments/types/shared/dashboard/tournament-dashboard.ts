@@ -316,27 +316,14 @@ export class TournamentDashboard {
   });
 
   simultaneousGamesTooltip = computed(() => {
-    const countByTime = this.simultaneousGamesByMinute();
-
-    for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
-          if (!game.date) continue;
-          const key = String(Math.floor(new Date(game.date).getTime() / (60 * 1000)));
-          countByTime.set(key, (countByTime.get(key) ?? 0) + 1);
-        }
-      }
-    }
-
     const locale = this.dateLocale();
     const dates: string[] = [];
-    for (const [key, count] of countByTime.entries()) {
+    for (const [minuteKey, count] of this.simultaneousGamesByMinute().entries()) {
       if (count > 1) {
-        const timestamp = parseInt(key) * 60 * 1000;
+        const timestamp = minuteKey * 60 * 1000;
         dates.push(formatDate(new Date(timestamp), 'short', locale));
       }
     }
-
     return dates.join('<br>');
   });
 

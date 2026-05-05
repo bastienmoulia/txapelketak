@@ -263,6 +263,7 @@
       "dialogAddBulk": "Add multiple teams",
       "bulkLabel": "Team names",
       "bulkPlaceholder": "One team per line",
+      "filter": "Filter...",
       "editAria": "Edit this team",
       "deleteAria": "Delete this team",
       "viewGamesAria": "View this team's games",

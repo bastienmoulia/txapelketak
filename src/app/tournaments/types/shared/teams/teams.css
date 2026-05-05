@@ -1,0 +1,53 @@
+@media (max-width: 768px) {
+  :host ::ng-deep .teams-table,
+  :host ::ng-deep .teams-table .p-datatable-wrapper {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  :host ::ng-deep .teams-table thead {
+    display: none;
+  }
+
+  :host ::ng-deep .teams-table tbody,
+  :host ::ng-deep .teams-table tbody tr,
+  :host ::ng-deep .teams-table tbody td {
+    display: block;
+    width: 100%;
+  }
+
+  :host ::ng-deep .teams-table tbody tr {
+    border: 1px solid color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+    border-radius: 1rem;
+    background: var(--p-content-background);
+    box-shadow: 0 12px 30px -24px color-mix(in srgb, var(--p-primary-color) 55%, transparent);
+    overflow: hidden;
+  }
+
+  :host ::ng-deep .teams-table tbody tr + tr {
+    margin-top: 1em;
+  }
+
+  :host ::ng-deep .teams-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    text-align: right;
+  }
+
+  :host ::ng-deep .teams-table tbody td::before {
+    content: attr(data-label);
+    color: var(--p-text-muted-color);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  :host ::ng-deep .teams-table tbody td:last-child::before {
+    content: none;
+  }
+}

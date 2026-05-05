@@ -9,7 +9,7 @@ import {
   viewChild,
   ElementRef,
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
@@ -309,6 +309,31 @@ export class TournamentDashboard {
       if (numGames > 1) count++;
     }
     return count;
+  });
+
+  simultaneousGamesTooltip = computed(() => {
+    const countByTime = new Map<string, number>();
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (!game.date) continue;
+          const key = String(Math.floor(new Date(game.date).getTime() / (60 * 1000)));
+          countByTime.set(key, (countByTime.get(key) ?? 0) + 1);
+        }
+      }
+    }
+
+    const locale = this.dateLocale();
+    const dates: string[] = [];
+    for (const [key, count] of countByTime.entries()) {
+      if (count > 1) {
+        const timestamp = parseInt(key) * 60 * 1000;
+        dates.push(formatDate(new Date(timestamp), 'short', locale));
+      }
+    }
+
+    return dates.join('<br>');
   });
 
   showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');

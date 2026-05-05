@@ -9,6 +9,7 @@
         type="text"
         (input)="dt.filterGlobal($any($event.target).value, 'contains')"
         [placeholder]="'admin.teams.filter' | transloco"
+        [attr.aria-label]="'admin.teams.filter' | transloco"
         data-testid="teams-search-input"
       />
     </p-iconfield>

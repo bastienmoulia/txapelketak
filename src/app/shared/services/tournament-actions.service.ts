@@ -90,7 +90,7 @@ export class TournamentActionsService {
         detail: this.translocoService.translate('admin.teams.editedDetail'),
       });
     } else {
-      await this.firebaseService.addTeamToTournament(ref, team.name);
+      await this.firebaseService.addTeamToTournament(ref, team.name, team.comment);
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.teams.added'),

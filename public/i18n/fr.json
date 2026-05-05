@@ -272,7 +272,10 @@
       "edited": "Équipe modifiée",
       "editedDetail": "L'équipe a été modifiée avec succès.",
       "deleted": "Équipe supprimée",
-      "deletedDetail": "L'équipe a été supprimée avec succès."
+      "deletedDetail": "L'équipe a été supprimée avec succès.",
+      "comment": "Commentaire",
+      "commentAria": "Voir le commentaire de cette équipe",
+      "commentTooltip": "Commentaire"
     },
     "users": {
       "add": "Ajouter un utilisateur",

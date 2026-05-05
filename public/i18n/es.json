@@ -272,7 +272,10 @@
       "edited": "Equipo actualizado",
       "editedDetail": "El equipo ha sido actualizado con éxito.",
       "deleted": "Equipo eliminado",
-      "deletedDetail": "El equipo ha sido eliminado con éxito."
+      "deletedDetail": "El equipo ha sido eliminado con éxito.",
+      "comment": "Comentario",
+      "commentAria": "Ver el comentario de este equipo",
+      "commentTooltip": "Comentario"
     },
     "users": {
       "add": "Añadir usuario",

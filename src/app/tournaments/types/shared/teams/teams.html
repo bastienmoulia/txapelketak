@@ -73,6 +73,18 @@
         <td [attr.data-label]="'shared.table.columns.actions' | transloco">
           <!-- Boutons avec label : grand écran -->
           <div class="hidden sm:flex justify-end gap-2">
+            @if ((role() === 'admin' || role() === 'organizer') && team.comment) {
+              <p-button
+                type="button"
+                size="small"
+                severity="info"
+                icon="pi pi-question-circle"
+                [label]="'admin.teams.commentTooltip' | transloco"
+                [ariaLabel]="'admin.teams.commentAria' | transloco"
+                (onClick)="onShowComment($event, team.comment)"
+                data-testid="team-comment-button"
+              />
+            }
             <p-button
               type="button"
               size="small"
@@ -113,6 +125,20 @@
           </div>
           <!-- Boutons icône + tooltip : petit écran -->
           <div class="flex sm:hidden justify-end gap-1">
+            @if ((role() === 'admin' || role() === 'organizer') && team.comment) {
+              <p-button
+                type="button"
+                size="small"
+                severity="info"
+                [rounded]="true"
+                [text]="true"
+                icon="pi pi-question-circle"
+                [ariaLabel]="'admin.teams.commentAria' | transloco"
+                [pTooltip]="'admin.teams.commentTooltip' | transloco"
+                tooltipPosition="top"
+                (onClick)="onShowComment($event, team.comment)"
+              />
+            }
             <p-button
               type="button"
               size="small"
@@ -190,3 +216,13 @@
     {{ 'admin.teams.empty' | transloco }}
   </p-message>
 }
+
+<p-popover #commentPopover>
+  <p
+    class="m-0 max-w-64 whitespace-pre-wrap"
+    role="status"
+    [attr.aria-label]="'admin.teams.commentAria' | transloco"
+  >
+    {{ currentCommentText() }}
+  </p>
+</p-popover>

@@ -272,7 +272,10 @@
       "edited": "Taldea eguneratu da",
       "editedDetail": "Taldea arrakastaz eguneratu da.",
       "deleted": "Taldea ezabatu da",
-      "deletedDetail": "Taldea arrakastaz ezabatu da."
+      "deletedDetail": "Taldea arrakastaz ezabatu da.",
+      "comment": "Iruzkina",
+      "commentAria": "Talde honen iruzkina ikusi",
+      "commentTooltip": "Iruzkina"
     },
     "users": {
       "add": "Erabiltzaile bat gehitu",

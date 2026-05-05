@@ -263,6 +263,7 @@
       "dialogAddBulk": "Añadir varios equipos",
       "bulkLabel": "Nombres de equipos",
       "bulkPlaceholder": "Un equipo por línea",
+      "filter": "Filtrar...",
       "editAria": "Editar este equipo",
       "deleteAria": "Eliminar este equipo",
       "viewGamesAria": "Ver los partidos de este equipo",

@@ -1,29 +1,52 @@
 <p-confirmdialog></p-confirmdialog>
 
-@if (role() === 'admin') {
-  <div class="mb-3 flex flex-wrap gap-2 mx-3">
-    <p-button
-      type="button"
-      icon="pi pi-plus"
-      [label]="'admin.teams.add' | transloco"
-      [ariaLabel]="'admin.teams.add' | transloco"
-      (onClick)="onAddTeam()"
-      data-testid="add-team-button"
-    />
-    <p-button
-      type="button"
-      icon="pi pi-plus-circle"
-      [label]="'admin.teams.addBulk' | transloco"
-      severity="secondary"
-      [ariaLabel]="'admin.teams.addBulkAria' | transloco"
-      (onClick)="onAddTeams()"
-      data-testid="add-teams-bulk-button"
-    />
-  </div>
-}
-
 @if (teams().length > 0) {
-  <p-table [value]="teams()" class="p-datatable-striped">
+  <div class="flex flex-wrap items-center gap-2 mx-3 mb-3">
+    <p-iconfield>
+      <p-inputicon class="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+        [placeholder]="'admin.teams.filter' | transloco"
+        data-testid="teams-search-input"
+      />
+    </p-iconfield>
+    @if (role() === 'admin') {
+      <div class="ml-auto flex gap-2">
+        <p-button
+          type="button"
+          icon="pi pi-plus"
+          [ariaLabel]="'admin.teams.add' | transloco"
+          [pTooltip]="'admin.teams.add' | transloco"
+          tooltipPosition="left"
+          [rounded]="true"
+          size="small"
+          (onClick)="onAddTeam()"
+          data-testid="add-team-button"
+        />
+        <p-button
+          type="button"
+          icon="pi pi-plus-circle"
+          severity="secondary"
+          [ariaLabel]="'admin.teams.addBulkAria' | transloco"
+          [pTooltip]="'admin.teams.addBulk' | transloco"
+          tooltipPosition="left"
+          [rounded]="true"
+          size="small"
+          (onClick)="onAddTeams()"
+          data-testid="add-teams-bulk-button"
+        />
+      </div>
+    }
+  </div>
+
+  <p-table
+    #dt
+    [value]="teams()"
+    class="p-datatable-striped teams-table"
+    [globalFilterFields]="['name', 'serieName', 'pouleName']"
+  >
     <ng-template #header>
       <tr>
         <th pSortableColumn="name">
@@ -39,29 +62,16 @@
           {{ 'shared.table.columns.actions' | transloco }}
         </th>
       </tr>
-      <tr>
-        <th>
-          <p-columnFilter
-            field="name"
-            type="text"
-            matchMode="contains"
-            filterOn="input"
-            [showMenu]="false"
-          />
-        </th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
     </ng-template>
 
     <ng-template #body let-team>
       <tr>
-        <td>{{ team.name }}</td>
-        <td>{{ team.serieName }}</td>
-        <td>{{ team.pouleName }}</td>
-        <td>
-          <div class="flex justify-end gap-2">
+        <td [attr.data-label]="'shared.table.columns.name' | transloco">{{ team.name }}</td>
+        <td [attr.data-label]="'shared.table.columns.serie' | transloco">{{ team.serieName }}</td>
+        <td [attr.data-label]="'shared.table.columns.poule' | transloco">{{ team.pouleName }}</td>
+        <td [attr.data-label]="'shared.table.columns.actions' | transloco">
+          <!-- Boutons avec label : grand écran -->
+          <div class="hidden sm:flex justify-end gap-2">
             <p-button
               type="button"
               size="small"
@@ -100,11 +110,81 @@
               />
             }
           </div>
+          <!-- Boutons icône + tooltip : petit écran -->
+          <div class="flex sm:hidden justify-end gap-1">
+            <p-button
+              type="button"
+              size="small"
+              severity="secondary"
+              [rounded]="true"
+              [text]="true"
+              icon="pi pi-list"
+              [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
+              [pTooltip]="'shared.actions.viewGames' | transloco"
+              tooltipPosition="top"
+              [routerLink]="['..', 'games']"
+              [queryParams]="{ teamId: team.ref.id }"
+              queryParamsHandling="merge"
+            />
+            @if (role() === 'admin') {
+              <p-button
+                type="button"
+                size="small"
+                severity="secondary"
+                [rounded]="true"
+                [text]="true"
+                icon="pi pi-pencil"
+                [ariaLabel]="'admin.teams.editAria' | transloco"
+                [pTooltip]="'shared.actions.edit' | transloco"
+                tooltipPosition="top"
+                (onClick)="onEditTeam(team)"
+              />
+              <p-button
+                type="button"
+                size="small"
+                severity="danger"
+                [rounded]="true"
+                [text]="true"
+                icon="pi pi-trash"
+                [ariaLabel]="'admin.teams.deleteAria' | transloco"
+                [pTooltip]="'shared.actions.delete' | transloco"
+                tooltipPosition="top"
+                (onClick)="onDeleteTeam(team)"
+              />
+            }
+          </div>
         </td>
       </tr>
     </ng-template>
   </p-table>
 } @else {
+  @if (role() === 'admin') {
+    <div class="flex justify-end gap-1 mx-3 mb-3">
+      <p-button
+        type="button"
+        icon="pi pi-plus"
+        [ariaLabel]="'admin.teams.add' | transloco"
+        [pTooltip]="'admin.teams.add' | transloco"
+        tooltipPosition="top"
+        [rounded]="true"
+        size="small"
+        (onClick)="onAddTeam()"
+        data-testid="add-team-button"
+      />
+      <p-button
+        type="button"
+        icon="pi pi-plus-circle"
+        severity="secondary"
+        [ariaLabel]="'admin.teams.addBulkAria' | transloco"
+        [pTooltip]="'admin.teams.addBulk' | transloco"
+        tooltipPosition="top"
+        [rounded]="true"
+        size="small"
+        (onClick)="onAddTeams()"
+        data-testid="add-teams-bulk-button"
+      />
+    </div>
+  }
   <p-message severity="warn" class="mt-4 mx-3">
     {{ 'admin.teams.empty' | transloco }}
   </p-message>

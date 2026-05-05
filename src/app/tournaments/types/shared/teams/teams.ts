@@ -5,6 +5,10 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 import { DialogService } from 'primeng/dynamicdialog';
 import { RouterLink } from '@angular/router';
 import { TeamFormDialog } from './team-form-dialog/team-form-dialog';
@@ -30,6 +34,10 @@ export interface Team {
     ButtonModule,
     ConfirmDialogModule,
     RouterLink,
+    TooltipModule,
+    IconField,
+    InputIcon,
+    InputTextModule,
   ],
   providers: [DialogService, ConfirmationService],
   templateUrl: './teams.html',

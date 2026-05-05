@@ -291,28 +291,32 @@ export class TournamentDashboard {
     return count;
   });
 
-  simultaneousGamesCount = computed(() => {
-    const gamesByTime = new Map<string, number>();
+  simultaneousGamesByMinute = computed(() => {
+    const gamesByMinute = new Map<number, number>();
 
     for (const serie of this.series()) {
       for (const poule of serie.poules ?? []) {
         for (const game of poule.games ?? []) {
           if (!game.date) continue;
-          const key = String(Math.floor(new Date(game.date).getTime() / (60 * 1000)));
-          gamesByTime.set(key, (gamesByTime.get(key) ?? 0) + 1);
+          const minuteKey = Math.floor(new Date(game.date).getTime() / (60 * 1000));
+          gamesByMinute.set(minuteKey, (gamesByMinute.get(minuteKey) ?? 0) + 1);
         }
       }
     }
 
+    return gamesByMinute;
+  });
+
+  simultaneousGamesCount = computed(() => {
     let count = 0;
-    for (const numGames of gamesByTime.values()) {
+    for (const numGames of this.simultaneousGamesByMinute().values()) {
       if (numGames > 1) count++;
     }
     return count;
   });
 
   simultaneousGamesTooltip = computed(() => {
-    const countByTime = new Map<string, number>();
+    const countByTime = this.simultaneousGamesByMinute();
 
     for (const serie of this.series()) {
       for (const poule of serie.poules ?? []) {

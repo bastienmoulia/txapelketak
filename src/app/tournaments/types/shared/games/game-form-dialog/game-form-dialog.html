@@ -116,6 +116,21 @@
         <label for="referees">{{ 'admin.games.referees' | transloco }}</label>
       </p-floatlabel>
     </div>
+
+    <div>
+      <p-floatlabel variant="on">
+        <textarea
+          pTextarea
+          id="gameComment"
+          name="gameComment"
+          [(ngModel)]="gameComment"
+          rows="3"
+          class="w-full"
+          [attr.aria-label]="'admin.games.comment' | transloco"
+        ></textarea>
+        <label for="gameComment">{{ 'admin.games.comment' | transloco }}</label>
+      </p-floatlabel>
+    </div>
   </div>
 
   <div class="p-dialog-footer px-0! mt-5">

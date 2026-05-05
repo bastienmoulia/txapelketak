@@ -15,6 +15,8 @@ import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { PopoverModule } from 'primeng/popover';
+import type { Popover } from 'primeng/popover';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Game, Poule } from '../../poules/poules';
 import { MarkdownService } from '../../../../shared/services/markdown.service';
@@ -37,6 +39,7 @@ export interface UpcomingGame {
   serieName: string;
   pouleName: string;
   referees: string[];
+  comment?: string;
   gameRef: DocumentReference;
   pouleRef: DocumentReference;
   refTeam1: DocumentReference;
@@ -54,11 +57,12 @@ export interface RecentGame {
   serieName: string;
   pouleName: string;
   referees: string[];
+  comment?: string;
 }
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe, MessageModule, TooltipModule],
+  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe, MessageModule, TooltipModule, PopoverModule],
   providers: [DialogService],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',
@@ -87,6 +91,9 @@ export class TournamentDashboard {
   descriptionOverflows = signal(false);
   readonly nowMs = signal(Date.now());
   readonly dateLocale = this.datepickerConfig.activeLanguage;
+
+  commentPopover = viewChild<Popover>('commentPopover');
+  currentCommentText = signal<string>('');
 
   constructor() {
     const staleGamesTickInterval = setInterval(() => {
@@ -182,6 +189,7 @@ export class TournamentDashboard {
               serieName: serie.name,
               pouleName: poule.name,
               referees: game.referees ?? [],
+              comment: game.comment,
               gameRef: game.ref,
               pouleRef: poule.ref,
               refTeam1: game.refTeam1,
@@ -219,6 +227,7 @@ export class TournamentDashboard {
               serieName: serie.name,
               pouleName: poule.name,
               referees: game.referees ?? [],
+              comment: game.comment,
               gameRef: game.ref,
               pouleRef: poule.ref,
               refTeam1: game.refTeam1,
@@ -346,6 +355,7 @@ export class TournamentDashboard {
               serieName: serie.name,
               pouleName: poule.name,
               referees: game.referees ?? [],
+              comment: game.comment,
             });
           }
         }
@@ -372,6 +382,11 @@ export class TournamentDashboard {
     this.descriptionExpanded.update((v) => !v);
   }
 
+  onShowComment(event: MouseEvent, comment: string): void {
+    this.currentCommentText.set(comment);
+    this.commentPopover()?.toggle(event);
+  }
+
   onEditOverdueGame(game: UpcomingGame): void {
     const poule = this.findPouleByRef(game.pouleRef);
     if (!poule) return;
@@ -392,6 +407,7 @@ export class TournamentDashboard {
         initialScoreTeam2: game.scoreTeam2,
         initialDate: game.date,
         initialReferees: game.referees,
+        initialComment: game.comment,
         gameRef: game.gameRef,
       },
     });

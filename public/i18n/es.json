@@ -248,7 +248,10 @@
       "scrollToTopTooltip": "Ir arriba",
       "scrollToTodayTooltip": "Ir a hoy",
       "showOnlyFreeSlots": "Solo franjas libres",
-      "freeSlot": "Franja libre"
+      "freeSlot": "Franja libre",
+      "comment": "Comentario",
+      "commentAria": "Ver el comentario de este partido",
+      "commentTooltip": "Comentario"
     },
     "teams": {
       "empty": "No hay equipos",

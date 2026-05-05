@@ -180,6 +180,18 @@
               @if (role() === 'admin' || role() === 'organizer') {
                 <td [attr.data-label]="'shared.table.columns.actions' | transloco">
                   <div class="flex justify-end gap-1">
+                    @if (game.comment) {
+                      <p-button
+                        icon="pi pi-question-circle"
+                        [ariaLabel]="'admin.games.commentAria' | transloco"
+                        [pTooltip]="'admin.games.commentTooltip' | transloco"
+                        tooltipPosition="top"
+                        severity="info"
+                        size="small"
+                        [rounded]="true"
+                        (onClick)="onShowComment($event, game.comment)"
+                      />
+                    }
                     <p-button
                       icon="pi pi-pencil"
                       [ariaLabel]="'admin.games.editAria' | transloco"
@@ -245,3 +257,13 @@
     (onClick)="scrollToToday()"
   />
 }
+
+<p-popover #commentPopover>
+  <p
+    class="m-0 max-w-64 whitespace-pre-wrap"
+    role="status"
+    [attr.aria-label]="'admin.games.commentAria' | transloco"
+  >
+    {{ currentCommentText() }}
+  </p>
+</p-popover>

@@ -248,7 +248,10 @@
       "scrollToTopTooltip": "Scroll to top",
       "scrollToTodayTooltip": "Go to today",
       "showOnlyFreeSlots": "Free slots only",
-      "freeSlot": "Free slot"
+      "freeSlot": "Free slot",
+      "comment": "Comment",
+      "commentAria": "View comment for this game",
+      "commentTooltip": "Comment"
     },
     "teams": {
       "empty": "No teams",

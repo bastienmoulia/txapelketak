@@ -41,6 +41,7 @@ export class TournamentActionsService {
       scoreTeam2: event.scoreTeam2 ?? undefined,
       date: event.date ?? undefined,
       referees: event.referees ?? undefined,
+      comment: event.comment ?? undefined,
     };
     if (event.gameRef) {
       await this.firebaseService.updateGame(event.gameRef, gameData);

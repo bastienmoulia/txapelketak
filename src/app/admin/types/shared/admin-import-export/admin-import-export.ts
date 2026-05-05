@@ -25,6 +25,7 @@ export interface TournamentYamlGame {
   score2?: number;
   date?: string;
   referees?: string[];
+  comment?: string;
 }
 
 export interface TournamentYamlPoule {
@@ -241,6 +242,9 @@ export class AdminImportExport {
           if (game.date != null) yamlGame.date = game.date.toISOString();
           if (game.referees && game.referees.length > 0) {
             yamlGame.referees = game.referees;
+          }
+          if (game.comment) {
+            yamlGame.comment = game.comment;
           }
           return yamlGame;
         }),

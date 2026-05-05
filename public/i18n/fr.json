@@ -140,6 +140,7 @@
       "warningUndatedGames": "{{count}} partie(s) sans date",
       "warningStaleUnscoredGames": "{{count}} partie(s) commencée(s) depuis plus d'une heure sans score",
       "warningGamesWithoutReferees": "{{count}} partie(s) de la semaine à venir sans arbitres",
+      "warningSimultaneousGames": "{{count}} créneau(x) avec plusieurs parties à la même heure",
       "noReferees": "Aucun arbitre"
     }
   },

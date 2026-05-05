@@ -9,7 +9,7 @@ import {
   viewChild,
   ElementRef,
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
@@ -289,6 +289,42 @@ export class TournamentDashboard {
     }
 
     return count;
+  });
+
+  simultaneousGamesByMinute = computed(() => {
+    const gamesByMinute = new Map<number, number>();
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (!game.date) continue;
+          const minuteKey = Math.floor(new Date(game.date).getTime() / (60 * 1000));
+          gamesByMinute.set(minuteKey, (gamesByMinute.get(minuteKey) ?? 0) + 1);
+        }
+      }
+    }
+
+    return gamesByMinute;
+  });
+
+  simultaneousGamesCount = computed(() => {
+    let count = 0;
+    for (const numGames of this.simultaneousGamesByMinute().values()) {
+      if (numGames > 1) count++;
+    }
+    return count;
+  });
+
+  simultaneousGamesTooltip = computed(() => {
+    const locale = this.dateLocale();
+    const dates: string[] = [];
+    for (const [minuteKey, count] of this.simultaneousGamesByMinute().entries()) {
+      if (count > 1) {
+        const timestamp = minuteKey * 60 * 1000;
+        dates.push(formatDate(new Date(timestamp), 'short', locale));
+      }
+    }
+    return dates.join('<br>');
   });
 
   showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');

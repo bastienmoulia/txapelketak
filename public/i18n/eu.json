@@ -140,6 +140,7 @@
       "warningUndatedGames": "{{count}} partida datarik gabe",
       "warningStaleUnscoredGames": "{{count}} partida duela ordubete baino gehiago hasita eta puntuaziorik gabe",
       "warningGamesWithoutReferees": "{{count}} datorren asteko partida arbitrorik gabe",
+      "warningSimultaneousGames": "{{count}} denbora-tarte(an) aldi berean hainbat partida",
       "noReferees": "Arbitrorik ez"
     }
   },

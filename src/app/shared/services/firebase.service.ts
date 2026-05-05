@@ -627,7 +627,10 @@ export class FirebaseService {
               .filter((referee) => referee.length > 0);
           }
           if (yamlGame.comment) {
-            gameData['comment'] = yamlGame.comment.trim();
+            const trimmedComment = yamlGame.comment.trim();
+            if (trimmedComment.length > 0) {
+              gameData['comment'] = trimmedComment;
+            }
           }
           await runInInjectionContext(this.environmentInjector, async () => {
             console.debug(`[Firestore] setDoc: game (batch import)`);

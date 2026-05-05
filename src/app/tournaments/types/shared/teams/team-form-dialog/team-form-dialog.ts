@@ -23,7 +23,7 @@ export class TeamFormDialog {
   private readonly config = inject(DynamicDialogConfig<TeamFormDialogData>);
   private readonly dialogRef = inject(DynamicDialogRef);
 
-  data = this.config.data ?? { isEditing: false, team: { ref: null!, name: '', comment: '' } };
+  data = this.config.data ?? { isEditing: false, team: { ref: null!, name: '', comment: undefined } };
 
   teamName = signal(this.data.team.name);
   teamComment = signal(this.data.team.comment ?? '');

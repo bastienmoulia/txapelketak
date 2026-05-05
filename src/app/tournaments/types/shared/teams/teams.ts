@@ -68,7 +68,7 @@ export class Teams {
       modal: true,
       closable: true,
       width: 'min(30rem, 100%)',
-      data: { isEditing: false, team: { ref: null!, name: '', comment: '' } },
+      data: { isEditing: false, team: { ref: null!, name: '', comment: undefined } },
     });
     dialogRef?.onClose.subscribe((result: Team | undefined) => {
       if (result) {

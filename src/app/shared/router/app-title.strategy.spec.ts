@@ -37,7 +37,7 @@ describe('AppTitleStrategy', () => {
 
     await router.navigateByUrl('/');
 
-    expect(title.getTitle()).toBe('Accueil | Txapelketak');
+    expect(title.getTitle()).toBe('Accueil · Txapelketak');
   });
 
   it('uses plain route titles without trying to translate them', async () => {
@@ -65,6 +65,6 @@ describe('AppTitleStrategy', () => {
 
     await router.navigateByUrl('/');
 
-    expect(title.getTitle()).toBe('Open de Bayonne | Txapelketak');
+    expect(title.getTitle()).toBe('Open de Bayonne · Txapelketak');
   });
 });

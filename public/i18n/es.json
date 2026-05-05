@@ -140,6 +140,7 @@
       "warningUndatedGames": "{{count}} partido(s) sin fecha",
       "warningStaleUnscoredGames": "{{count}} partido(s) iniciado(s) hace más de una hora sin marcador",
       "warningGamesWithoutReferees": "{{count}} partido(s) de la próxima semana sin árbitros",
+      "warningSimultaneousGames": "{{count}} franja(s) horaria(s) con varios partidos a la misma hora",
       "noReferees": "Sin árbitros"
     }
   },

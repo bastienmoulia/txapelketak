@@ -982,6 +982,98 @@ describe('TournamentDashboard', () => {
       setInputs({ role: '' });
       expect(component.showWarnings()).toBe(false);
     });
+
+    it('should count time slots with simultaneous games', () => {
+      const sameTime = new Date('2026-01-01T10:00:00');
+      const otherTime = new Date('2026-01-01T12:00:00');
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: sameTime }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: sameTime }),
+              makeGame({ refTeam1Id: 'e', refTeam2Id: 'f', date: otherTime }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.simultaneousGamesCount()).toBe(1);
+    });
+
+    it('should return 0 when no simultaneous games', () => {
+      const time1 = new Date('2026-01-01T10:00:00');
+      const time2 = new Date('2026-01-01T11:00:00');
+      const time3 = new Date('2026-01-01T12:00:00');
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: time1 }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: time2 }),
+              makeGame({ refTeam1Id: 'e', refTeam2Id: 'f', date: time3 }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.simultaneousGamesCount()).toBe(0);
+    });
+
+    it('should count multiple conflicting time slots', () => {
+      const time1 = new Date('2026-01-01T10:00:00');
+      const time2 = new Date('2026-01-01T14:00:00');
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: time1 }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: time1 }),
+              makeGame({ refTeam1Id: 'e', refTeam2Id: 'f', date: time2 }),
+              makeGame({ refTeam1Id: 'g', refTeam2Id: 'h', date: time2 }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.simultaneousGamesCount()).toBe(2);
+    });
+
+    it('should ignore games without a date when counting simultaneous games', () => {
+      const sameTime = new Date('2026-01-01T10:00:00');
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: sameTime }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd' }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.simultaneousGamesCount()).toBe(0);
+    });
   });
 
   describe('descriptionHtml', () => {

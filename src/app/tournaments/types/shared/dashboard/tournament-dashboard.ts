@@ -291,6 +291,27 @@ export class TournamentDashboard {
     return count;
   });
 
+  simultaneousGamesCount = computed(() => {
+    const gamesByTime = new Map<string, number>();
+
+    for (const serie of this.series()) {
+      for (const poule of serie.poules ?? []) {
+        for (const game of poule.games ?? []) {
+          if (!game.date) continue;
+          const date = new Date(game.date);
+          const key = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}`;
+          gamesByTime.set(key, (gamesByTime.get(key) ?? 0) + 1);
+        }
+      }
+    }
+
+    let count = 0;
+    for (const numGames of gamesByTime.values()) {
+      if (numGames > 1) count++;
+    }
+    return count;
+  });
+
   showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');
 
   recentGames = computed((): RecentGame[] => {

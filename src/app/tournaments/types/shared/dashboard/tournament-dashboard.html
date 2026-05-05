@@ -71,6 +71,15 @@
           }}
         </p-message>
       }
+
+      @if (simultaneousGamesCount() > 0) {
+        <p-message severity="error" data-testid="dashboard-warning-simultaneous-games">
+          {{
+            'tournaments.dashboard.warningSimultaneousGames'
+              | transloco: { count: simultaneousGamesCount() }
+          }}
+        </p-message>
+      }
     }
 
     <!-- Stats cards -->

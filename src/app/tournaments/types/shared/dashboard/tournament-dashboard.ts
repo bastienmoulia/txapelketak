@@ -298,12 +298,7 @@ export class TournamentDashboard {
       for (const poule of serie.poules ?? []) {
         for (const game of poule.games ?? []) {
           if (!game.date) continue;
-          const date = new Date(game.date);
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          const hour = String(date.getHours()).padStart(2, '0');
-          const minute = String(date.getMinutes()).padStart(2, '0');
-          const key = `${date.getFullYear()}-${month}-${day}-${hour}-${minute}`;
+          const key = String(Math.floor(new Date(game.date).getTime() / (60 * 1000)));
           gamesByTime.set(key, (gamesByTime.get(key) ?? 0) + 1);
         }
       }

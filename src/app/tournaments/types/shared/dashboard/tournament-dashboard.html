@@ -212,8 +212,8 @@
                       <p-button
                         type="button"
                         size="small"
-                        severity="secondary"
-                        [text]="true"
+                        class="ml-auto"
+                        severity="info"
                         icon="pi pi-question-circle"
                         [pTooltip]="'admin.games.commentTooltip' | transloco"
                         tooltipPosition="top"
@@ -280,7 +280,7 @@
                 </div>
                 @if (role() === 'admin' || role() === 'organizer') {
                   <div
-                    class="upcoming-game-meta text-sm"
+                    class="upcoming-game-meta text-sm flex items-center"
                     data-testid="dashboard-upcoming-game-referees"
                   >
                     @if (game.referees.length > 0) {
@@ -300,22 +300,20 @@
                         'tournaments.dashboard.noReferees' | transloco
                       }}</span>
                     }
-                  </div>
-                  @if (game.comment) {
-                    <div class="flex justify-end mt-1">
+                    @if (game.comment) {
                       <p-button
                         type="button"
                         size="small"
-                        severity="secondary"
-                        [text]="true"
+                        class="ml-auto"
+                        severity="info"
                         icon="pi pi-question-circle"
                         [pTooltip]="'admin.games.commentTooltip' | transloco"
                         tooltipPosition="top"
                         [ariaLabel]="'admin.games.commentAria' | transloco"
                         (onClick)="onShowComment($event, game.comment)"
                       />
-                    </div>
-                  }
+                    }
+                  </div>
                 }
               </li>
             }
@@ -391,28 +389,31 @@
                   }
                   {{ game.serieName }} – {{ game.pouleName }}
                 </div>
-                @if ((role() === 'admin' || role() === 'organizer') && game.referees.length > 0) {
+                @if (
+                  (role() === 'admin' || role() === 'organizer') &&
+                  (game.referees.length > 0 || game.comment)
+                ) {
                   <div
-                    class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm"
+                    class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm flex items-center"
                     data-testid="dashboard-recent-game-referees"
                   >
-                    <i class="pi pi-user text-xs mr-1" aria-hidden="true"></i>
-                    <span>{{ game.referees.join(', ') }}</span>
-                  </div>
-                }
-                @if ((role() === 'admin' || role() === 'organizer') && game.comment) {
-                  <div class="flex justify-end mt-1">
-                    <p-button
-                      type="button"
-                      size="small"
-                      severity="secondary"
-                      [text]="true"
-                      icon="pi pi-question-circle"
-                      [pTooltip]="'admin.games.commentTooltip' | transloco"
-                      tooltipPosition="top"
-                      [ariaLabel]="'admin.games.commentAria' | transloco"
-                      (onClick)="onShowComment($event, game.comment)"
-                    />
+                    @if (game.referees.length > 0) {
+                      <i class="pi pi-user text-xs mr-1" aria-hidden="true"></i>
+                      <span>{{ game.referees.join(', ') }}</span>
+                    }
+                    @if (game.comment) {
+                      <p-button
+                        type="button"
+                        size="small"
+                        class="ml-auto"
+                        severity="info"
+                        icon="pi pi-question-circle"
+                        [pTooltip]="'admin.games.commentTooltip' | transloco"
+                        tooltipPosition="top"
+                        [ariaLabel]="'admin.games.commentAria' | transloco"
+                        (onClick)="onShowComment($event, game.comment)"
+                      />
+                    }
                   </div>
                 }
               </li>
@@ -429,5 +430,11 @@
 }
 
 <p-popover #commentPopover>
-  <p class="m-0 max-w-64 whitespace-pre-wrap" role="status" [attr.aria-label]="'admin.games.commentAria' | transloco">{{ currentCommentText() }}</p>
+  <p
+    class="m-0 max-w-64 whitespace-pre-wrap"
+    role="status"
+    [attr.aria-label]="'admin.games.commentAria' | transloco"
+  >
+    {{ currentCommentText() }}
+  </p>
 </p-popover>

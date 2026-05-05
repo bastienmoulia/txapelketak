@@ -126,6 +126,7 @@
           [(ngModel)]="gameComment"
           rows="3"
           class="w-full"
+          [attr.aria-label]="'admin.games.comment' | transloco"
         ></textarea>
         <label for="gameComment">{{ 'admin.games.comment' | transloco }}</label>
       </p-floatlabel>

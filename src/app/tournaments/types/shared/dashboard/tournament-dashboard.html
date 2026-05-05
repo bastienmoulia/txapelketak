@@ -429,5 +429,5 @@
 }
 
 <p-popover #commentPopover>
-  <p class="m-0 max-w-64 whitespace-pre-wrap">{{ currentCommentText() }}</p>
+  <p class="m-0 max-w-64 whitespace-pre-wrap" role="status" [attr.aria-label]="'admin.games.commentAria' | transloco">{{ currentCommentText() }}</p>
 </p-popover>

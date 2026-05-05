@@ -247,7 +247,10 @@
       "scrollToTopTooltip": "Aller en haut",
       "scrollToTodayTooltip": "Aller à aujourd'hui",
       "showOnlyFreeSlots": "Créneaux libres seulement",
-      "freeSlot": "Créneau libre"
+      "freeSlot": "Créneau libre",
+      "comment": "Commentaire",
+      "commentAria": "Voir le commentaire de cette partie",
+      "commentTooltip": "Commentaire"
     },
     "teams": {
       "empty": "Aucune équipe",

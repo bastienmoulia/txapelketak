@@ -9,6 +9,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Select } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DatepickerConfigService } from '../../../../../shared/services/datepicker-config.service';
@@ -29,6 +30,7 @@ interface GameFormDialogData {
   initialScoreTeam2?: number | null;
   initialDate?: Date | null;
   initialReferees?: string[] | null;
+  initialComment?: string | null;
   gameRef?: DocumentReference | null;
   freeSlotDateKeys?: Set<string>;
 }
@@ -47,6 +49,7 @@ interface GameFormDialogData {
     Button,
     Message,
     CallPipe,
+    TextareaModule,
   ],
   templateUrl: './game-form-dialog.html',
   styleUrl: './game-form-dialog.css',
@@ -99,6 +102,7 @@ export class GameFormDialog {
   scoreTeam2 = signal<number | null>(this.data.initialScoreTeam2 ?? null);
   gameDate = signal<Date | null>(this.data.initialDate ?? null);
   gameReferees = signal<string[]>(this.data.initialReferees ? [...this.data.initialReferees] : []);
+  gameComment = signal<string>(this.data.initialComment ?? '');
 
   dialogTeams = computed(() => {
     const poule = this.data.currentPoule;
@@ -157,6 +161,7 @@ export class GameFormDialog {
       scoreTeam2: this.scoreTeam2(),
       date: this.gameDate(),
       referees: this.gameReferees().length > 0 ? this.gameReferees() : null,
+      comment: this.gameComment().trim() || null,
     };
 
     // Include gameRef if editing

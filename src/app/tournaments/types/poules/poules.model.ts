@@ -50,6 +50,7 @@ export interface Game {
   scoreTeam2?: number;
   date?: Date;
   referees?: string[];
+  comment?: string;
 }
 
 export function parseFirestoreDate(value: unknown): Date | undefined {

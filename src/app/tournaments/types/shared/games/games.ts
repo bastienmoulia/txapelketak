@@ -5,6 +5,7 @@ import {
   HostListener,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Game, Poule } from '../../poules/poules';
@@ -28,6 +29,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { CallPipe } from 'ngxtension/call-apply';
+import { PopoverModule } from 'primeng/popover';
+import type { Popover } from 'primeng/popover';
 import { PoulesStore } from '../../../../store/poules.store';
 import { AuthStore } from '../../../../store/auth.store';
 import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
@@ -41,6 +44,7 @@ export interface SaveGameEvent {
   scoreTeam2?: number | null;
   date?: Date | null;
   referees?: string[] | null;
+  comment?: string | null;
   gameRef?: DocumentReference;
 }
 
@@ -101,6 +105,7 @@ export type ScheduleRow = GameByDate | FreeSlotRow;
     ConfirmDialogModule,
     ToggleSwitchModule,
     CallPipe,
+    PopoverModule,
   ],
   providers: [DialogService, ConfirmationService],
   templateUrl: './games.html',
@@ -124,6 +129,9 @@ export class Games {
   tournament = this.tournamentDetailStore.tournament;
   role = this.authStore.role;
   timeSlots = this.poulesStore.timeSlots;
+
+  commentPopover = viewChild<Popover>('commentPopover');
+  currentCommentText = signal<string>('');
 
   showOnlyFreeSlots = signal(false);
 
@@ -428,9 +436,15 @@ export class Games {
         initialScoreTeam2: game.scoreTeam2,
         initialDate: game.date,
         initialReferees: game.referees,
+        initialComment: game.comment,
         gameRef: game.ref,
       });
     }
+  }
+
+  onShowComment(event: MouseEvent, comment: string): void {
+    this.currentCommentText.set(comment);
+    this.commentPopover()?.toggle(event);
   }
 
   scrollToToday(): void {
@@ -462,6 +476,7 @@ export class Games {
     initialScoreTeam2?: number | null;
     initialDate?: Date | null;
     initialReferees?: string[] | null;
+    initialComment?: string | null;
     gameRef?: DocumentReference | null;
   }): void {
     const dialogRef = this.dialogService.open(GameFormDialog, {

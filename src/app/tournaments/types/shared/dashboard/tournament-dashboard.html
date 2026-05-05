@@ -207,18 +207,33 @@
               </div>
               @if (role() === 'admin' || role() === 'organizer') {
                 <div class="flex justify-end">
-                  <p-button
-                    type="button"
-                    size="small"
-                    severity="secondary"
-                    [outlined]="true"
-                    icon="pi pi-pencil"
-                    [pTooltip]="'shared.actions.edit' | transloco"
-                    tooltipPosition="top"
-                    [ariaLabel]="'shared.actions.edit' | transloco"
-                    (onClick)="onEditOverdueGame(game)"
-                    data-testid="dashboard-overdue-game-edit-button"
-                  />
+                  <div class="flex gap-1">
+                    @if (game.comment) {
+                      <p-button
+                        type="button"
+                        size="small"
+                        severity="secondary"
+                        [text]="true"
+                        icon="pi pi-question-circle"
+                        [pTooltip]="'admin.games.commentTooltip' | transloco"
+                        tooltipPosition="top"
+                        [ariaLabel]="'admin.games.commentAria' | transloco"
+                        (onClick)="onShowComment($event, game.comment)"
+                      />
+                    }
+                    <p-button
+                      type="button"
+                      size="small"
+                      severity="secondary"
+                      [outlined]="true"
+                      icon="pi pi-pencil"
+                      [pTooltip]="'shared.actions.edit' | transloco"
+                      tooltipPosition="top"
+                      [ariaLabel]="'shared.actions.edit' | transloco"
+                      (onClick)="onEditOverdueGame(game)"
+                      data-testid="dashboard-overdue-game-edit-button"
+                    />
+                  </div>
                 </div>
               }
             </li>
@@ -286,6 +301,21 @@
                       }}</span>
                     }
                   </div>
+                  @if (game.comment) {
+                    <div class="flex justify-end mt-1">
+                      <p-button
+                        type="button"
+                        size="small"
+                        severity="secondary"
+                        [text]="true"
+                        icon="pi pi-question-circle"
+                        [pTooltip]="'admin.games.commentTooltip' | transloco"
+                        tooltipPosition="top"
+                        [ariaLabel]="'admin.games.commentAria' | transloco"
+                        (onClick)="onShowComment($event, game.comment)"
+                      />
+                    </div>
+                  }
                 }
               </li>
             }
@@ -370,6 +400,21 @@
                     <span>{{ game.referees.join(', ') }}</span>
                   </div>
                 }
+                @if ((role() === 'admin' || role() === 'organizer') && game.comment) {
+                  <div class="flex justify-end mt-1">
+                    <p-button
+                      type="button"
+                      size="small"
+                      severity="secondary"
+                      [text]="true"
+                      icon="pi pi-question-circle"
+                      [pTooltip]="'admin.games.commentTooltip' | transloco"
+                      tooltipPosition="top"
+                      [ariaLabel]="'admin.games.commentAria' | transloco"
+                      (onClick)="onShowComment($event, game.comment)"
+                    />
+                  </div>
+                }
               </li>
             }
           </ul>
@@ -382,3 +427,7 @@
     }
   </div>
 }
+
+<p-popover #commentPopover>
+  <p class="m-0 max-w-64 whitespace-pre-wrap">{{ currentCommentText() }}</p>
+</p-popover>

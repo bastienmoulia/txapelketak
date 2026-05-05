@@ -459,6 +459,7 @@ export class FirebaseService {
     if (gameData.date != null) data['date'] = gameData.date;
     if (gameData.referees != null && gameData.referees.length > 0)
       data['referees'] = gameData.referees;
+    if (gameData.comment != null) data['comment'] = gameData.comment;
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] setDoc: game`);
       await setDoc(gameDocRef, data);
@@ -478,6 +479,7 @@ export class FirebaseService {
     data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
     data['date'] = gameData.date ?? null;
     data['referees'] = gameData.referees?.length ? gameData.referees : null;
+    data['comment'] = gameData.comment ?? null;
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] updateDoc: game`);
       await updateDoc(gameRef, data);
@@ -623,6 +625,9 @@ export class FirebaseService {
             gameData['referees'] = yamlGame.referees
               .map((referee) => referee.trim())
               .filter((referee) => referee.length > 0);
+          }
+          if (yamlGame.comment) {
+            gameData['comment'] = yamlGame.comment.trim();
           }
           await runInInjectionContext(this.environmentInjector, async () => {
             console.debug(`[Firestore] setDoc: game (batch import)`);

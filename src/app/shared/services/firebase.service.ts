@@ -304,13 +304,17 @@ export class FirebaseService {
     });
   }
 
-  async addTeamToTournament(tournamentRef: DocumentReference, teamName: string): Promise<Team> {
+  async addTeamToTournament(
+    tournamentRef: DocumentReference,
+    teamName: string,
+    comment?: string,
+  ): Promise<Team> {
     console.debug(`[Firestore] addTeamToTournament: ${teamName}`);
     const teamDocRef = doc(collection(tournamentRef, 'teams'));
-    const team: Team = { ref: teamDocRef, name: teamName };
+    const team: Team = { ref: teamDocRef, name: teamName, ...(comment ? { comment } : {}) };
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] setDoc: team`);
-      await setDoc(teamDocRef, team);
+      await setDoc(teamDocRef, { name: teamName, ...(comment ? { comment } : {}) });
     });
     return team;
   }
@@ -320,7 +324,7 @@ export class FirebaseService {
     const teamDocRef = doc(collection(tournamentRef, 'teams'), team.ref.id);
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] updateDoc: team`);
-      await updateDoc(teamDocRef, { name: team.name });
+      await updateDoc(teamDocRef, { name: team.name, comment: team.comment ?? null });
     });
   }
 
@@ -583,7 +587,11 @@ export class FirebaseService {
         const teamDocRef = doc(collection(tournamentRef, 'teams'));
         await runInInjectionContext(this.environmentInjector, async () => {
           console.debug(`[Firestore] setDoc: team (batch import)`);
-          await setDoc(teamDocRef, { name: yamlTeam.name });
+          const teamData: Record<string, unknown> = { name: yamlTeam.name };
+          if (yamlTeam.comment) {
+            teamData['comment'] = yamlTeam.comment;
+          }
+          await setDoc(teamDocRef, teamData);
         });
         teamIdMap.set(yamlTeam.id, teamDocRef);
       }),

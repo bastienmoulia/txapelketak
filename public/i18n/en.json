@@ -272,7 +272,10 @@
       "edited": "Team updated",
       "editedDetail": "The team has been successfully updated.",
       "deleted": "Team deleted",
-      "deletedDetail": "The team has been successfully deleted."
+      "deletedDetail": "The team has been successfully deleted.",
+      "comment": "Comment",
+      "commentAria": "View comment for this team",
+      "commentTooltip": "Comment"
     },
     "users": {
       "add": "Add user",

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService } from 'primeng/api';
@@ -11,6 +11,8 @@ import { InputIcon } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogService } from 'primeng/dynamicdialog';
 import { RouterLink } from '@angular/router';
+import { PopoverModule } from 'primeng/popover';
+import type { Popover } from 'primeng/popover';
 import { TeamFormDialog } from './team-form-dialog/team-form-dialog';
 import { TeamBulkDialog } from './team-bulk-dialog/team-bulk-dialog';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -21,6 +23,7 @@ import { TournamentActionsService } from '../../../../shared/services/tournament
 export interface Team {
   ref: DocumentReference;
   name: string;
+  comment?: string;
   serieName?: string;
   pouleName?: string;
 }
@@ -38,6 +41,7 @@ export interface Team {
     IconField,
     InputIcon,
     InputTextModule,
+    PopoverModule,
   ],
   providers: [DialogService, ConfirmationService],
   templateUrl: './teams.html',
@@ -55,13 +59,16 @@ export class Teams {
   teams = this.poulesStore.teamsWithContext;
   role = this.authStore.role;
 
+  commentPopover = viewChild<Popover>('commentPopover');
+  currentCommentText = signal<string>('');
+
   onAddTeam(): void {
     const dialogRef = this.dialogService.open(TeamFormDialog, {
       header: this.translocoService.translate('admin.teams.dialogAdd'),
       modal: true,
       closable: true,
       width: 'min(30rem, 100%)',
-      data: { isEditing: false, team: { ref: null!, name: '' } },
+      data: { isEditing: false, team: { ref: null!, name: '', comment: undefined } },
     });
     dialogRef?.onClose.subscribe((result: Team | undefined) => {
       if (result) {
@@ -91,13 +98,18 @@ export class Teams {
       modal: true,
       closable: true,
       width: 'min(30rem, 100%)',
-      data: { isEditing: true, team: { ref: team.ref, name: team.name } },
+      data: { isEditing: true, team: { ref: team.ref, name: team.name, comment: team.comment ?? '' } },
     });
     dialogRef?.onClose.subscribe((result: Team | undefined) => {
       if (result) {
         void this.tournamentActions.saveTeam(result);
       }
     });
+  }
+
+  onShowComment(event: MouseEvent, comment: string): void {
+    this.currentCommentText.set(comment);
+    this.commentPopover()?.toggle(event);
   }
 
   onDeleteTeam(team: Team): void {

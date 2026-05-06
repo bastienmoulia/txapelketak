@@ -14,6 +14,22 @@
     </p-floatlabel>
   </div>
 
+  <div>
+    <p-floatlabel variant="on">
+      <textarea
+        pTextarea
+        id="teamComment"
+        name="teamComment"
+        [ngModel]="teamComment()"
+        (ngModelChange)="teamComment.set($event)"
+        rows="3"
+        class="w-full"
+        [attr.aria-label]="'admin.teams.comment' | transloco"
+      ></textarea>
+      <label for="teamComment">{{ 'admin.teams.comment' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
   <div class="p-dialog-footer px-0! mt-5">
     <p-button
       type="button"

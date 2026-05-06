@@ -16,6 +16,7 @@ import { Game, Serie, TimeSlot } from '../../../../tournaments/types/poules/poul
 export interface TournamentYamlTeam {
   id: string;
   name: string;
+  comment?: string;
 }
 
 export interface TournamentYamlGame {
@@ -222,10 +223,16 @@ export class AdminImportExport {
     const series = this.series();
     const timeSlotsArray = this.timeSlots();
 
-    const yamlTeams: TournamentYamlTeam[] = teams.map((team) => ({
-      id: team.ref.id,
-      name: team.name,
-    }));
+    const yamlTeams: TournamentYamlTeam[] = teams.map((team) => {
+      const yamlTeam: TournamentYamlTeam = {
+        id: team.ref.id,
+        name: team.name,
+      };
+      if (team.comment) {
+        yamlTeam.comment = team.comment;
+      }
+      return yamlTeam;
+    });
 
     const yamlSeries: TournamentYamlSerie[] = series.map((serie) => ({
       name: serie.name,

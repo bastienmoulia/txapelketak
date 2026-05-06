@@ -78,11 +78,12 @@
                 type="button"
                 size="small"
                 severity="info"
+                [rounded]="true"
                 icon="pi pi-question-circle"
-                [label]="'admin.teams.commentTooltip' | transloco"
                 [ariaLabel]="'admin.teams.commentAria' | transloco"
+                [pTooltip]="'admin.teams.commentTooltip' | transloco"
+                tooltipPosition="top"
                 (onClick)="onShowComment($event, team.comment)"
-                data-testid="team-comment-button"
               />
             }
             <p-button
@@ -131,7 +132,6 @@
                 size="small"
                 severity="info"
                 [rounded]="true"
-                [text]="true"
                 icon="pi pi-question-circle"
                 [ariaLabel]="'admin.teams.commentAria' | transloco"
                 [pTooltip]="'admin.teams.commentTooltip' | transloco"

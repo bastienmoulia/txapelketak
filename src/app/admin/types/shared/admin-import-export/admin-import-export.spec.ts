@@ -44,4 +44,53 @@ describe('AdminImportExport', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should include team comment in exported yaml data', () => {
+    fixture.componentRef.setInput('teams', [
+      {
+        ref: { id: 'team-1' } as DocumentReference,
+        name: 'Team A',
+        comment: 'Important note',
+      } as never,
+    ]);
+    fixture.detectChanges();
+
+    const exportData = (
+      component as unknown as { buildExportData: () => unknown }
+    ).buildExportData() as {
+      teams: { id: string; name: string; comment?: string }[];
+    };
+
+    expect(exportData.teams).toEqual([
+      {
+        id: 'team-1',
+        name: 'Team A',
+        comment: 'Important note',
+      },
+    ]);
+  });
+
+  it('should not include empty team comment in exported yaml data', () => {
+    fixture.componentRef.setInput('teams', [
+      {
+        ref: { id: 'team-2' } as DocumentReference,
+        name: 'Team B',
+      } as never,
+    ]);
+    fixture.detectChanges();
+
+    const exportData = (
+      component as unknown as { buildExportData: () => unknown }
+    ).buildExportData() as {
+      teams: { id: string; name: string; comment?: string }[];
+    };
+
+    expect(exportData.teams).toEqual([
+      {
+        id: 'team-2',
+        name: 'Team B',
+      },
+    ]);
+    expect('comment' in exportData.teams[0]).toBe(false);
+  });
 });

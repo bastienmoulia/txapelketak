@@ -304,7 +304,11 @@ export class FirebaseService {
     });
   }
 
-  async addTeamToTournament(tournamentRef: DocumentReference, teamName: string, comment?: string): Promise<Team> {
+  async addTeamToTournament(
+    tournamentRef: DocumentReference,
+    teamName: string,
+    comment?: string,
+  ): Promise<Team> {
     console.debug(`[Firestore] addTeamToTournament: ${teamName}`);
     const teamDocRef = doc(collection(tournamentRef, 'teams'));
     const team: Team = { ref: teamDocRef, name: teamName, ...(comment ? { comment } : {}) };
@@ -583,7 +587,11 @@ export class FirebaseService {
         const teamDocRef = doc(collection(tournamentRef, 'teams'));
         await runInInjectionContext(this.environmentInjector, async () => {
           console.debug(`[Firestore] setDoc: team (batch import)`);
-          await setDoc(teamDocRef, { name: yamlTeam.name });
+          const teamData: Record<string, unknown> = { name: yamlTeam.name };
+          if (yamlTeam.comment) {
+            teamData.comment = yamlTeam.comment;
+          }
+          await setDoc(teamDocRef, teamData);
         });
         teamIdMap.set(yamlTeam.id, teamDocRef);
       }),

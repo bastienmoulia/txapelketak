@@ -157,4 +157,29 @@ export class GamesPage {
     await saveButton.click();
     await dialog.waitFor({ state: 'hidden' });
   }
+
+  gameCommentButton(team1Name: string, team2Name: string): Locator {
+    return this.gameRow(team1Name, team2Name).locator(
+      '[aria-label="Voir le commentaire de cette partie"]',
+    );
+  }
+
+  async editGameComment(team1Name: string, team2Name: string, comment: string): Promise<void> {
+    await this.ensureGamesTab();
+    const row = this.gameRow(team1Name, team2Name);
+    await row.locator('[aria-label="Modifier cette partie"]').click();
+
+    const dialog = this.page.locator('.p-dialog').filter({ hasText: 'Modifier la partie' });
+    await dialog.waitFor({ state: 'visible' });
+
+    const commentTextarea = dialog.locator('textarea#gameComment');
+    await commentTextarea.clear();
+    if (comment) {
+      await commentTextarea.fill(comment);
+    }
+
+    const saveButton = dialog.locator('button[type="submit"]');
+    await saveButton.click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
 }

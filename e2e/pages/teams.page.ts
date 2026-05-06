@@ -76,4 +76,42 @@ export class TeamsPage {
     await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await dialog.waitFor({ state: 'hidden' });
   }
+
+  teamCommentButton(name: string): Locator {
+    return this.teamRow(name).getByTestId('team-comment-button');
+  }
+
+  async editTeamComment(name: string, newComment: string): Promise<void> {
+    await this.ensureTeamsTab();
+    const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
+    const editButton = row.getByRole('button', { name: 'Modifier cette équipe' });
+    await editButton.click();
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#name') })
+      .filter({ hasText: "Modifier l'équipe" });
+    try {
+      await dialog.waitFor({ state: 'visible', timeout: 2000 });
+    } catch {
+      await editButton.evaluate((element) => {
+        (element as HTMLElement).click();
+      });
+      await dialog.waitFor({ state: 'visible' });
+    }
+    const commentTextarea = dialog.locator('textarea#teamComment');
+    await commentTextarea.clear();
+    if (newComment) {
+      await commentTextarea.fill(newComment);
+    }
+    const saveButton = dialog.getByRole('button', { name: 'Enregistrer' });
+    await saveButton.click();
+    try {
+      await dialog.waitFor({ state: 'hidden', timeout: 5000 });
+    } catch {
+      await saveButton.evaluate((element) => {
+        (element as HTMLElement).click();
+      });
+      await dialog.waitFor({ state: 'hidden' });
+    }
+  }
 }

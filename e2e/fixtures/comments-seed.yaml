@@ -1,0 +1,23 @@
+tournament:
+  name: Comments Seed
+  description: Seed data for comments E2E tests
+  type: poules
+  status: ongoing
+teams:
+  - id: comment-team-1
+    name: Comment Team One
+    comment: "Seeded team comment"
+  - id: comment-team-2
+    name: Comment Team Two
+series:
+  - name: Comment Serie
+    poules:
+      - name: Comment Poule
+        teams:
+          - comment-team-1
+          - comment-team-2
+        games:
+          - team1: comment-team-1
+            team2: comment-team-2
+            date: '2027-06-15T10:00:00.000Z'
+            comment: "Seeded game comment"

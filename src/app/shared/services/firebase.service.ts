@@ -589,7 +589,7 @@ export class FirebaseService {
           console.debug(`[Firestore] setDoc: team (batch import)`);
           const teamData: Record<string, unknown> = { name: yamlTeam.name };
           if (yamlTeam.comment) {
-            teamData.comment = yamlTeam.comment;
+            teamData['comment'] = yamlTeam.comment;
           }
           await setDoc(teamDocRef, teamData);
         });

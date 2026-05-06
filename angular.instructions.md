@@ -51,7 +51,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
 - Use the async pipe to handle observables
 - Do not assume globals like (`new Date()`) are available.
-- NEVER call component methods directly from templates. Always use the `call` pipe (or `async`) from `ngxtension/call-apply` (syntax: `value | call: fn`). The function passed to `call` must be a pure function that does NOT use `this`. For functions that need captured state, use a factory function outside the class that returns a closure, and assign the result to a class property.
+- NEVER call component methods directly from templates (except for output bindings). Always use the `call` pipe (or `async`) from `ngxtension/call-apply` (syntax: `value | call: fn`). The function passed to `call` must be a pure function that does NOT use `this`. For functions that need captured state, use a factory function outside the class that returns a closure, and assign the result to a class property.
 
 ## Services
 

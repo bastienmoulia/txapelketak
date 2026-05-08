@@ -17,13 +17,11 @@ import {
   SavePouleEvent,
   SaveSerieEvent,
   TeamInPouleEvent,
-} from '../../tournaments/types/shared/poules-tab/poules-tab';
-import {
   DeleteFinaleGamesEvent,
   GenerateFinaleEvent,
   SaveFinaleGameEvent,
   SetFinaleSizeEvent,
-} from '../../tournaments/types/shared/finale-tab/finale-tab';
+} from '../../tournaments/types/shared/poules-tab/poules-tab';
 
 @Injectable()
 export class TournamentActionsService {

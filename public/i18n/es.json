@@ -154,6 +154,7 @@
     "validatedDetail": "El torneo ha sido validado y ahora está en curso.",
     "unknownType": "Tipo de torneo desconocido",
     "tabs": {
+      "series": "Series",
       "poules": "Grupos",
       "teams": "Equipos",
       "games": "Partidos",

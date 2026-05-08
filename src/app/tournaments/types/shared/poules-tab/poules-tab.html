@@ -1,67 +1,178 @@
 <p-confirmdialog></p-confirmdialog>
 
-@if (role() === 'admin') {
-  <div class="mb-3 mx-3">
-    <p-button
-      type="button"
-      severity="primary"
-      icon="pi pi-plus"
-      [label]="'admin.poules.addSerie' | transloco"
-      (onClick)="onAddSerie()"
-      data-testid="add-serie-button"
-    />
-  </div>
-}
 @if (sortedSeries().length > 0) {
-  <p-accordion [multiple]="true" [(value)]="openSeriesIds" class="mb-3">
-    @for (serie of sortedSeries(); track serie.ref.id) {
-      <p-accordion-panel [value]="serie.ref.id">
-        <p-accordion-header>
-          <div class="flex align-items-center justify-between w-full pr-2">
-            <span class="font-bold">{{ serie.name }}</span>
-            @if (role() === 'admin') {
-              <div class="flex gap-2">
-                <p-button
-                  type="button"
-                  size="small"
-                  severity="secondary"
-                  [outlined]="true"
-                  icon="pi pi-pencil"
-                  [label]="'shared.actions.edit' | transloco"
-                  [ariaLabel]="'admin.poules.editSerieAria' | transloco"
-                  (onClick)="$event.stopPropagation(); onEditSerie(serie)"
-                  data-testid="edit-serie-button"
-                />
-                <p-button
-                  type="button"
-                  size="small"
-                  severity="danger"
-                  [outlined]="true"
-                  icon="pi pi-trash"
-                  [label]="'shared.actions.delete' | transloco"
-                  [ariaLabel]="'admin.poules.deleteSerieAria' | transloco"
-                  (onClick)="$event.stopPropagation(); onDeleteSerie(serie)"
-                  data-testid="delete-serie-button"
-                />
-              </div>
-            }
-          </div>
-        </p-accordion-header>
-        <p-accordion-content>
+  <p-tabs [value]="activeSerie()" (change)="onSerieTabChange($event)">
+    <p-tablist>
+      @for (serie of sortedSeries(); track serie.ref.id) {
+        <p-tab [value]="serie.ref.id" class="flex items-center gap-2">
+          <span class="flex-1">{{ serie.name }}</span>
+          @if (role() === 'admin') {
+            <div class="flex gap-2 ml-2">
+              <p-button
+                type="button"
+                size="small"
+                severity="secondary"
+                [outlined]="true"
+                icon="pi pi-pencil"
+                [ariaLabel]="'admin.poules.editSerieAria' | transloco"
+                (onClick)="$event.stopPropagation(); onEditSerie(serie)"
+                data-testid="edit-serie-button"
+              />
+              <p-button
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                icon="pi pi-trash"
+                [disabled]="sortedSeries().length === 1"
+                [ariaLabel]="'admin.poules.deleteSerieAria' | transloco"
+                (onClick)="$event.stopPropagation(); onDeleteSerie(serie)"
+                data-testid="delete-serie-button"
+              />
+            </div>
+          }
+        </p-tab>
+      }
+      @if (role() === 'admin') {
+        <div class="p-tab flex items-center ml-2">
+          <p-button
+            type="button"
+            severity="primary"
+            icon="pi pi-plus"
+            size="small"
+            rounded
+            [label]="'admin.poules.addSerie' | transloco"
+            (onClick)="onAddSerie()"
+            data-testid="add-serie-button"
+          />
+        </div>
+      }
+    </p-tablist>
+    <p-tabpanels>
+      @for (serie of sortedSeries(); track serie.ref.id) {
+        <p-tabpanel [value]="serie.ref.id">
+          <!-- Poules Section -->
           <ng-container
-            *ngTemplateOutlet="
-              poules;
-              context: { $implicit: serie.poules, serieRef: serie.ref, serie: serie }
-            "
+            *ngTemplateOutlet="poules; context: { $implicit: serie.poules, serieRef: serie.ref }"
           ></ng-container>
-        </p-accordion-content>
-      </p-accordion-panel>
-    }
-  </p-accordion>
+
+          <!-- Finale Section -->
+          @if (showFinale()) {
+            <div class="mt-6 pt-6 border-t border-surface-200">
+              <h3 class="text-xl font-bold mb-4">{{ 'finale.tab' | transloco }}</h3>
+              <div class="flex flex-wrap gap-3 mb-4 px-2 items-center">
+                <p-select
+                  [options]="sizeOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  [ngModel]="serie.finaleSize ?? null"
+                  (ngModelChange)="onSetFinaleSize(serie, $event)"
+                  [placeholder]="'finale.sizePlaceholder' | transloco"
+                />
+                <p-button
+                  [label]="
+                    (serie.finaleGames && serie.finaleGames.length > 0
+                      ? 'finale.regenerate'
+                      : 'finale.generate'
+                    ) | transloco
+                  "
+                  icon="pi pi-bolt"
+                  [disabled]="!serie.finaleSize"
+                  (onClick)="onGenerateFinale(serie)"
+                />
+                @if (serie.finaleGames && serie.finaleGames.length > 0) {
+                  <p-button
+                    [label]="'shared.actions.delete' | transloco"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    (onClick)="onDeleteFinaleGames(serie)"
+                  />
+                }
+              </div>
+
+              @if (!serie.finaleGames || serie.finaleGames.length === 0) {
+                <p-message severity="info" class="mx-2">
+                  {{ 'finale.noGames' | transloco }}
+                </p-message>
+              } @else {
+                <div class="finale-bracket">
+                  @for (bracketRound of getBracketRounds | apply: serie; track bracketRound.round) {
+                    <div class="finale-round">
+                      <h4 class="finale-round-title">{{ bracketRound.round | transloco }}</h4>
+                      @for (game of bracketRound.games; track game.ref?.id) {
+                        <div class="finale-match">
+                          <div class="finale-match-header">
+                            <span class="text-xs"
+                              >{{ 'finale.matchLabel' | transloco }} {{ game.matchNumber }}</span
+                            >
+                            @if (role() === 'admin' || role() === 'organizer') {
+                              <p-button
+                                icon="pi pi-pencil"
+                                [text]="true"
+                                size="small"
+                                [ariaLabel]="'finale.editGameAria' | transloco"
+                                (onClick)="onEditFinaleGame(game)"
+                              />
+                            }
+                          </div>
+                          <div
+                            class="finale-match-team"
+                            [class.winner]="
+                              game.scoreTeam1 !== undefined &&
+                              game.scoreTeam2 !== undefined &&
+                              game.scoreTeam1 > game.scoreTeam2
+                            "
+                          >
+                            <span class="finale-team-name">{{
+                              getTeamNameForFinale | apply: game.refTeam1 : game.team1Placeholder
+                            }}</span>
+                            @if (game.scoreTeam1 !== undefined && game.scoreTeam1 !== null) {
+                              <span class="finale-score">{{ game.scoreTeam1 }}</span>
+                            }
+                          </div>
+                          <div
+                            class="finale-match-team"
+                            [class.winner]="
+                              game.scoreTeam1 !== undefined &&
+                              game.scoreTeam2 !== undefined &&
+                              game.scoreTeam2 > game.scoreTeam1
+                            "
+                          >
+                            <span class="finale-team-name">{{
+                              getTeamNameForFinale | apply: game.refTeam2 : game.team2Placeholder
+                            }}</span>
+                            @if (game.scoreTeam2 !== undefined && game.scoreTeam2 !== null) {
+                              <span class="finale-score">{{ game.scoreTeam2 }}</span>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
 } @else {
-  <p-message severity="warn" class="mt-4 mx-3">
-    {{ 'admin.poules.noSeriesOrPoules' | transloco }}
-  </p-message>
+  <div class="flex items-center gap-3 p-4">
+    <p-message severity="warn" class="flex-1">
+      {{ 'admin.poules.noSeriesOrPoules' | transloco }}
+    </p-message>
+    @if (role() === 'admin') {
+      <p-button
+        type="button"
+        severity="primary"
+        icon="pi pi-plus"
+        [label]="'admin.poules.addSerie' | transloco"
+        (onClick)="onAddSerie()"
+        data-testid="add-serie-button"
+      />
+    }
+  </div>
 }
 
 <ng-template #poules let-poules let-serieRef="serieRef">

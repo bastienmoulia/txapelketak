@@ -154,6 +154,7 @@
     "validatedDetail": "The tournament has been validated and is now in progress.",
     "unknownType": "Unknown tournament type",
     "tabs": {
+      "series": "Series",
       "poules": "Groups",
       "teams": "Teams",
       "games": "Games",

@@ -80,18 +80,12 @@ test.describe.serial('Admin – series & poules management', () => {
 
     await test.step('add first poule', async () => {
       await poulesPage.addPoule(serieAddName, pouleAddNameA);
-      await poulesPage.ensureSerieExpanded(serieAddName);
-      await expect(
-        page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleAddNameA }),
-      ).toBeVisible();
+      await expect(await poulesPage.pouleCard(serieAddName, pouleAddNameA)).toBeVisible();
     });
 
     await test.step('add second poule', async () => {
       await poulesPage.addPoule(serieAddName, pouleAddNameB);
-      await poulesPage.ensureSerieExpanded(serieAddName);
-      await expect(
-        page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleAddNameB }),
-      ).toBeVisible();
+      await expect(await poulesPage.pouleCard(serieAddName, pouleAddNameB)).toBeVisible();
     });
   });
 
@@ -103,19 +97,11 @@ test.describe.serial('Admin – series & poules management', () => {
 
     await poulesPage.addSerie(pouleEditSerie);
     await poulesPage.addPoule(pouleEditSerie, pouleEditSource);
-    await poulesPage.ensureSerieExpanded(pouleEditSerie);
-    await expect(
-      page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleEditSource }),
-    ).toBeVisible();
+    await expect(await poulesPage.pouleCard(pouleEditSerie, pouleEditSource)).toBeVisible();
 
     await poulesPage.editPoule(pouleEditSerie, pouleEditSource, pouleEditTarget);
-    await poulesPage.ensureSerieExpanded(pouleEditSerie);
-    await expect(
-      page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleEditTarget }),
-    ).toBeVisible();
-    await expect(
-      page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleEditSource }),
-    ).toHaveCount(0);
+    await expect(await poulesPage.pouleCard(pouleEditSerie, pouleEditTarget)).toBeVisible();
+    await expect(await poulesPage.pouleCard(pouleEditSerie, pouleEditSource)).toHaveCount(0);
   });
 
   test('should delete a poule', async ({ page }) => {
@@ -124,14 +110,9 @@ test.describe.serial('Admin – series & poules management', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Poules');
 
-    await poulesPage.ensureSerieExpanded(pouleDeleteSerie);
-    await expect(
-      page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleDeleteName }),
-    ).toBeVisible();
+    await expect(await poulesPage.pouleCard(pouleDeleteSerie, pouleDeleteName)).toBeVisible();
     await poulesPage.deletePoule(pouleDeleteSerie, pouleDeleteName);
-    await expect(
-      page.locator('p-tabpanel:visible p-card').filter({ hasText: pouleDeleteName }),
-    ).toHaveCount(0);
+    await expect(await poulesPage.pouleCard(pouleDeleteSerie, pouleDeleteName)).toHaveCount(0);
   });
 
   test('should edit a serie', async ({ page }) => {

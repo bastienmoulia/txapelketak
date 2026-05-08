@@ -51,6 +51,12 @@ export class PoulesPage {
     await expect(tabPanel).toBeVisible({ timeout: 10000 });
   }
 
+  async pouleCard(serieName: string, pouleName: string): Promise<Locator> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    return tabPanel.locator('p-card').filter({ hasText: pouleName });
+  }
+
   // --- Standings ---
 
   standingsTable(serieName: string, pouleName: string): Locator {

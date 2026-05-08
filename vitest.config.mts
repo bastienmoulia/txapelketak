@@ -1,6 +1,5 @@
 import { defineConfig } from 'vitest/config';
 import angular from '@analogjs/vite-plugin-angular';
-import viteTsConfigPaths from 'vite-tsconfig-paths';
 import { playwright } from '@vitest/browser-playwright';
 
 const playwrightServerDeps = [
@@ -25,7 +24,10 @@ const optimizeDepsExcludes = [
 ];
 
 export default defineConfig({
-  plugins: [angular(), viteTsConfigPaths()],
+  plugins: [angular()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   optimizeDeps: {
     include: [
       '@angular/common/locales/en',

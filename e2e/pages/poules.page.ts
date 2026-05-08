@@ -15,8 +15,13 @@ export class PoulesPage {
     return this.page.getByRole('tab', { name, exact: false });
   }
 
-  private activeTabPanel(): Locator {
-    return this.page.getByRole('tabpanel').first();
+  private async serieTabPanel(name: string): Promise<Locator> {
+    const tab = this.serieTab(name);
+    const controls = await tab.getAttribute('aria-controls');
+    if (!controls) {
+      throw new Error(`Unable to resolve tab panel for serie: ${name}`);
+    }
+    return this.page.locator(`#${controls}`);
   }
 
   // --- Read ---
@@ -40,15 +45,16 @@ export class PoulesPage {
   async ensureSerieExpanded(serieName: string): Promise<void> {
     await this.ensurePoulesTab();
     const serieTab = this.serieTab(serieName);
-    await serieTab.click();
-    await expect(serieTab).toHaveAttribute('aria-selected', 'true');
-    await expect(this.activeTabPanel()).toBeVisible({ timeout: 10000 });
+    // Click the label text to avoid hitting edit/delete icon buttons embedded in the tab.
+    await serieTab.getByText(serieName, { exact: false }).first().click();
+    const tabPanel = await this.serieTabPanel(serieName);
+    await expect(tabPanel).toBeVisible({ timeout: 10000 });
   }
 
   // --- Standings ---
 
   standingsTable(serieName: string, pouleName: string): Locator {
-    const tabPanel = this.activeTabPanel();
+    const tabPanel = this.page.locator('p-tabpanel:visible').first();
     return tabPanel.locator('p-card').filter({ hasText: pouleName }).locator('.standings-table');
   }
 
@@ -101,7 +107,8 @@ export class PoulesPage {
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    await this.page.locator('[data-testid="add-poule-button"]:visible').first().click();
+    const tabPanel = await this.serieTabPanel(serieName);
+    await tabPanel.locator('[data-testid="add-poule-button"] button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#poule-name') });
@@ -117,7 +124,7 @@ export class PoulesPage {
     newPouleName: string,
   ): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const tabPanel = this.activeTabPanel();
+    const tabPanel = await this.serieTabPanel(serieName);
     const pouleCard = tabPanel.locator('p-card').filter({ hasText: currentPouleName });
     const editBtn = pouleCard.getByTestId('edit-poule-button');
     // Ensure the tab is selected and button is interactable
@@ -140,7 +147,7 @@ export class PoulesPage {
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const tabPanel = this.activeTabPanel();
+    const tabPanel = await this.serieTabPanel(serieName);
     const pouleCard = tabPanel.locator('p-card').filter({ hasText: pouleName });
     const deleteBtn = pouleCard.getByTestId('delete-poule-button');
     // Ensure the tab is selected and button is interactable

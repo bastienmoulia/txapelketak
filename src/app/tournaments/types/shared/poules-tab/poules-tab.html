@@ -1,7 +1,7 @@
 <p-confirmdialog></p-confirmdialog>
 
 @if (sortedSeries().length > 0) {
-  <p-tabs [value]="activeSerie()" (change)="onSerieTabChange($event)">
+  <p-tabs [value]="activeSerie()" (valueChange)="onSerieTabChange($event)">
     <p-tablist>
       @for (serie of sortedSeries(); track serie.ref.id) {
         <p-tab [value]="serie.ref.id" class="flex items-center gap-2">

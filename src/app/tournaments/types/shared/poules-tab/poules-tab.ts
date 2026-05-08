@@ -134,9 +134,9 @@ export class PoulesTab {
 
   sizeOptions = [2, 4, 8, 16, 32].map((v) => ({ label: String(v), value: v }));
 
-  onSerieTabChange(event: string): void {
+  onSerieTabChange(event: string | number | undefined): void {
     // PrimeNG tabs passes the value directly in the event
-    this.activeSerie.set(event);
+    this.activeSerie.set(event as string);
   }
 
   private computeStandings(poule: Poule): TeamStanding[] {

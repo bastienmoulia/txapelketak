@@ -134,7 +134,7 @@ export class PoulesTab {
 
   sizeOptions = [2, 4, 8, 16, 32].map((v) => ({ label: String(v), value: v }));
 
-  onSerieTabChange(event: any): void {
+  onSerieTabChange(event: string): void {
     // PrimeNG tabs passes the value directly in the event
     this.activeSerie.set(event);
   }

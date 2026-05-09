@@ -20,7 +20,7 @@
           {{ 'tournaments.detail.loading' | transloco }}
         </div>
       } @else {
-        <app-poules-tab />
+        <app-poules-tab [showFinale]="showFinale()" />
       }
     </p-tabpanel>
     <p-tabpanel value="games">
@@ -33,17 +33,5 @@
         <app-games />
       }
     </p-tabpanel>
-    @if (showFinale()) {
-      <p-tabpanel value="finale">
-        @if (loading()) {
-          <div class="py-8 text-center text-[var(--p-text-muted-color)]">
-            <i class="pi pi-spinner pi-spin mr-2"></i>
-            {{ 'tournaments.detail.loading' | transloco }}
-          </div>
-        } @else {
-          <app-finale-tab />
-        }
-      </p-tabpanel>
-    }
   </p-tabpanels>
 </p-tabs>

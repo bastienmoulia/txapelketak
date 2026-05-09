@@ -19,14 +19,13 @@ import { Games } from '../shared/games/games';
 import { getPoulesRouteTab, POULES_ROUTE_TABS } from './poules.route';
 import { TournamentDashboard } from '../shared/dashboard/tournament-dashboard';
 import { PoulesStore } from '../../../store/poules.store';
-import { FinaleTab } from '../shared/finale-tab/finale-tab';
 
 export type { PoulesData, Serie, Poule, Game, TimeSlot, FinaleGame } from './poules.model';
 export { parseFirestoreDate } from './poules.model';
 
 @Component({
   selector: 'app-poules',
-  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, TournamentDashboard, FinaleTab],
+  imports: [TabsModule, Teams, TranslocoModule, PoulesTab, Games, TournamentDashboard],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

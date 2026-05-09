@@ -154,6 +154,7 @@
     "validatedDetail": "Txapelketa balioztatu da eta orain abian dago.",
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
+      "series": "Serieak",
       "poules": "Multzoak",
       "teams": "Taldeak",
       "games": "Partidak",

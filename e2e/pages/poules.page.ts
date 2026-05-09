@@ -11,14 +11,31 @@ export class PoulesPage {
     await this.page.getByRole('tab', { name: 'Poules' }).click();
   }
 
+  private serieTab(name: string): Locator {
+    return this.page.getByRole('tab', { name, exact: false });
+  }
+
+  private async serieTabPanel(name: string): Promise<Locator> {
+    const tab = this.serieTab(name);
+    const controls = await tab.getAttribute('aria-controls');
+    if (!controls) {
+      throw new Error(`Unable to resolve tab panel for serie: ${name}`);
+    }
+    return this.page.locator(`#${controls}`);
+  }
+
   // --- Read ---
 
+  /**
+   * Returns the tab panel content for a given serie name.
+   * With the tab-based UI, this returns the serie tab itself.
+   */
   seriePanel(name: string): Locator {
-    return this.page.locator('p-accordion-panel').filter({ hasText: name });
+    return this.serieTab(name);
   }
 
   poulesContainer(): Locator {
-    return this.page.locator('.p-accordion, p-accordion');
+    return this.page.locator('p-tabs');
   }
 
   warningMessage(): Locator {
@@ -27,23 +44,24 @@ export class PoulesPage {
 
   async ensureSerieExpanded(serieName: string): Promise<void> {
     await this.ensurePoulesTab();
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
-    await seriePanel.scrollIntoViewIfNeeded();
-    const content = seriePanel.locator('p-accordion-content');
-    // Retry expansion to handle race with linkedSignal recomputing openSeriesIds
-    await expect(async () => {
-      if (!(await content.isVisible())) {
-        await seriePanel.locator('.p-accordionheader').click();
-      }
-      await expect(content).toBeVisible({ timeout: 2000 });
-    }).toPass({ timeout: 10000 });
+    const serieTab = this.serieTab(serieName);
+    // Click the label text to avoid hitting edit/delete icon buttons embedded in the tab.
+    await serieTab.getByText(serieName, { exact: false }).first().click();
+    const tabPanel = await this.serieTabPanel(serieName);
+    await expect(tabPanel).toBeVisible({ timeout: 10000 });
+  }
+
+  async pouleCard(serieName: string, pouleName: string): Promise<Locator> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    return tabPanel.locator('p-card').filter({ hasText: pouleName });
   }
 
   // --- Standings ---
 
   standingsTable(serieName: string, pouleName: string): Locator {
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
-    return seriePanel.locator('p-card').filter({ hasText: pouleName }).locator('.standings-table');
+    const tabPanel = this.page.locator('p-tabpanel:visible').first();
+    return tabPanel.locator('p-card').filter({ hasText: pouleName }).locator('.standings-table');
   }
 
   standingsRows(serieName: string, pouleName: string): Locator {
@@ -66,8 +84,9 @@ export class PoulesPage {
 
   async editSerie(currentName: string, newName: string): Promise<void> {
     await this.ensurePoulesTab();
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: currentName });
-    await seriePanel.getByTestId('edit-serie-button').click();
+    const serieTab = this.serieTab(currentName);
+    const editBtn = serieTab.getByTestId('edit-serie-button');
+    await editBtn.click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#serie-name') });
@@ -81,8 +100,9 @@ export class PoulesPage {
 
   async deleteSerie(name: string): Promise<void> {
     await this.ensurePoulesTab();
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: name });
-    await seriePanel.getByTestId('delete-serie-button').click();
+    const serieTab = this.serieTab(name);
+    const deleteBtn = serieTab.getByTestId('delete-serie-button');
+    await deleteBtn.click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
@@ -93,8 +113,8 @@ export class PoulesPage {
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
     await this.ensureSerieExpanded(serieName);
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
-    await seriePanel.getByTestId('add-poule-button').click();
+    const tabPanel = await this.serieTabPanel(serieName);
+    await tabPanel.locator('[data-testid="add-poule-button"] button').click();
     const dialog = this.page
       .locator('.p-dialog')
       .filter({ has: this.page.locator('input#poule-name') });
@@ -109,10 +129,11 @@ export class PoulesPage {
     currentPouleName: string,
     newPouleName: string,
   ): Promise<void> {
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
-    const pouleCard = seriePanel.locator('p-card').filter({ hasText: currentPouleName });
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    const pouleCard = tabPanel.locator('p-card').filter({ hasText: currentPouleName });
     const editBtn = pouleCard.getByTestId('edit-poule-button');
-    // Ensure the accordion stays expanded and button is interactable
+    // Ensure the tab is selected and button is interactable
     await expect(async () => {
       await this.ensureSerieExpanded(serieName);
       await pouleCard.scrollIntoViewIfNeeded();
@@ -131,10 +152,11 @@ export class PoulesPage {
   }
 
   async deletePoule(serieName: string, pouleName: string): Promise<void> {
-    const seriePanel = this.page.locator('p-accordion-panel').filter({ hasText: serieName });
-    const pouleCard = seriePanel.locator('p-card').filter({ hasText: pouleName });
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    const pouleCard = tabPanel.locator('p-card').filter({ hasText: pouleName });
     const deleteBtn = pouleCard.getByTestId('delete-poule-button');
-    // Ensure the accordion stays expanded and button is interactable
+    // Ensure the tab is selected and button is interactable
     await expect(async () => {
       await this.ensureSerieExpanded(serieName);
       await pouleCard.scrollIntoViewIfNeeded();

@@ -54,22 +54,22 @@ describe('TournamentTabs', () => {
       expect(routes).not.toContain('finale');
     });
 
-    it('should include finale tab for type "finale"', () => {
+    it('should include poules tab for type "finale"', () => {
       fixture.componentRef.setInput('tournament', createTournament('finale'));
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).toContain('finale');
-      expect(routes).not.toContain('poules');
+      expect(routes).toContain('poules');
+      expect(routes).not.toContain('finale');
     });
 
-    it('should include both poules and finale tabs for type "poules_finale"', () => {
+    it('should include poules tab for type "poules_finale"', () => {
       fixture.componentRef.setInput('tournament', createTournament('poules_finale'));
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
       expect(routes).toContain('poules');
-      expect(routes).toContain('finale');
+      expect(routes).not.toContain('finale');
     });
 
     it('should not include settings tab when role is empty', () => {

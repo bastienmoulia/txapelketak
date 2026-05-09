@@ -30,11 +30,6 @@ export const tournamentDetailRoutes: Routes = [
         path: 'games',
         loadComponent: () => import('../types/shared/games/games').then((m) => m.Games),
       },
-      {
-        path: 'finale',
-        loadComponent: () =>
-          import('../types/shared/finale-tab/finale-tab').then((m) => m.FinaleTab),
-      },
     ],
   },
 ];

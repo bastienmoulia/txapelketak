@@ -22,12 +22,12 @@ export class TournamentTabs {
       { route: 'teams', label: 'admin.tabs.teams' },
     ];
 
-    if (['poules', 'poules_finale'].includes(this.tournament().type)) {
-      tabs.push({ route: 'poules', label: 'admin.tabs.poules' });
-    }
+    const tournamentType = this.tournament().type;
 
-    if (['finale', 'poules_finale'].includes(this.tournament().type)) {
-      tabs.push({ route: 'finale', label: 'admin.tabs.finale' });
+    if (tournamentType === 'poules') {
+      tabs.push({ route: 'poules', label: 'admin.tabs.poules' });
+    } else if (['poules_finale', 'finale'].includes(tournamentType)) {
+      tabs.push({ route: 'poules', label: 'admin.tabs.series' });
     }
 
     if (this.role() === 'admin') {

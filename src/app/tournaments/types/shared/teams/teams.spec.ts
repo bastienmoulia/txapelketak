@@ -232,28 +232,28 @@ describe('Teams', () => {
   it('should show comment button for admin when team has comment', async () => {
     authStore.setUser({ role: 'admin' } as never);
     patchState(poulesStore, {
-      teams: [
-        { ref: { id: '1' } as never, name: 'Équipe A', comment: 'A note about this team' },
-      ],
+      teams: [{ ref: { id: '1' } as never, name: 'Équipe A', comment: 'A note about this team' }],
     });
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const commentButton = fixture.nativeElement.querySelector('[data-testid="team-comment-button"]');
+    const commentButton = fixture.nativeElement.querySelector(
+      '[data-testid="team-comment-button"]',
+    );
     expect(commentButton).not.toBeNull();
   });
 
   it('should show comment button for organizer when team has comment', async () => {
     authStore.setUser({ role: 'organizer' } as never);
     patchState(poulesStore, {
-      teams: [
-        { ref: { id: '1' } as never, name: 'Équipe A', comment: 'A note about this team' },
-      ],
+      teams: [{ ref: { id: '1' } as never, name: 'Équipe A', comment: 'A note about this team' }],
     });
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const commentButton = fixture.nativeElement.querySelector('[data-testid="team-comment-button"]');
+    const commentButton = fixture.nativeElement.querySelector(
+      '[data-testid="team-comment-button"]',
+    );
     expect(commentButton).not.toBeNull();
   });
 
@@ -265,7 +265,9 @@ describe('Teams', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const commentButton = fixture.nativeElement.querySelector('[data-testid="team-comment-button"]');
+    const commentButton = fixture.nativeElement.querySelector(
+      '[data-testid="team-comment-button"]',
+    );
     expect(commentButton).toBeNull();
   });
 });

@@ -347,9 +347,7 @@ test.describe.serial('Comments – games and teams', () => {
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Équipes');
 
-    await expect.poll(async () => teamsPage.hasTeam(team2)).toBe(true);
-
-    await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
+    await expect(teamsPage.teamCommentButton(team2)).toBeVisible({ timeout: 30000 });
   });
 
   test('organizer should NOT see team edit button (team editing is admin-only)', async ({

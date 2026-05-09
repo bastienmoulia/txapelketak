@@ -338,9 +338,16 @@ test.describe.serial('Comments – games and teams', () => {
     const adminPage = new AdminPage(page);
     const teamsPage = new TeamsPage(page);
 
-    // team2 has a comment added by admin in a previous test
+    // Ensure team2 has a comment in this test to avoid cross-test timing dependencies.
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Équipes');
+    await teamsPage.editTeamComment(team2, newTeamComment);
+    await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
+
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Équipes');
+
+    await expect.poll(async () => teamsPage.hasTeam(team2)).toBe(true);
 
     await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
   });

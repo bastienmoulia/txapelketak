@@ -86,7 +86,8 @@
               "buildTarget": "txapelketak:build:production"
             },
             "test": {
-              "buildTarget": "txapelketak:build:test"
+              "buildTarget": "txapelketak:build:test",
+              "port": 4299
             },
             "development": {
               "buildTarget": "txapelketak:build:development"

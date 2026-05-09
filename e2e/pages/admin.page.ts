@@ -128,7 +128,6 @@ export class AdminPage extends TournamentBasePage {
       .first()
       .waitFor({
         state: 'visible',
-        timeout: 30000,
       });
   }
 

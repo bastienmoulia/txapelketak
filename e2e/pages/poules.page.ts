@@ -108,9 +108,7 @@ export class PoulesPage {
       .filter({ has: this.page.locator('input#serie-name') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.getByTestId('delete-serie-button').click();
-    const confirmDialog = this.page
-      .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
+    const confirmDialog = this.page.getByRole('alertdialog');
     await confirmDialog.waitFor({ state: 'visible' });
     await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await confirmDialog.waitFor({ state: 'hidden' });
@@ -173,9 +171,7 @@ export class PoulesPage {
       .filter({ has: this.page.locator('input#poule-name') });
     await dialog.waitFor({ state: 'visible' });
     await dialog.getByTestId('delete-poule-button').click();
-    const confirmDialog = this.page
-      .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
+    const confirmDialog = this.page.getByRole('alertdialog');
     await confirmDialog.waitFor({ state: 'visible' });
     await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await confirmDialog.waitFor({ state: 'hidden' });

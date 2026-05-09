@@ -145,7 +145,7 @@ export class TournamentActionsService {
 
   // ── Serie / Poule actions ──────────────────────────────────────
 
-  async saveSerie(event: SaveSerieEvent): Promise<void> {
+  async saveSerie(event: SaveSerieEvent): Promise<DocumentReference | undefined> {
     const tournamentRef = this.tournamentDetailStore.tournament()?.ref;
     if (!tournamentRef) {
       if (event.ref) {
@@ -170,7 +170,7 @@ export class TournamentActionsService {
           detail: this.translocoService.translate('admin.poules.serieAddedDetail'),
         });
       }
-      return;
+      return event.ref;
     }
 
     if (event.ref) {
@@ -180,13 +180,15 @@ export class TournamentActionsService {
         summary: this.translocoService.translate('admin.poules.serieEdited'),
         detail: this.translocoService.translate('admin.poules.serieEditedDetail'),
       });
+      return event.ref;
     } else {
-      await this.firebaseService.addSeriesToTournament(tournamentRef, event.name);
+      const serieRef = await this.firebaseService.addSeriesToTournament(tournamentRef, event.name);
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.serieAdded'),
         detail: this.translocoService.translate('admin.poules.serieAddedDetail'),
       });
+      return serieRef;
     }
   }
 

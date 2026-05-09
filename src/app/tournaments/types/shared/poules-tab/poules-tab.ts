@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { TabsModule } from 'primeng/tabs';
@@ -127,10 +127,27 @@ export class PoulesTab {
       })),
   );
 
-  activeSerie = linkedSignal(() => {
-    const series = this.sortedSeries();
-    return series.length > 0 ? series[0].ref.id : '';
-  });
+  activeSerie = signal('');
+
+  constructor() {
+    // Keep current active serie when data refreshes; fallback only when missing.
+    effect(() => {
+      const series = this.sortedSeries();
+      const currentActiveSerie = this.activeSerie();
+
+      if (series.length === 0) {
+        if (currentActiveSerie !== '') {
+          this.activeSerie.set('');
+        }
+        return;
+      }
+
+      const isCurrentSerieStillPresent = series.some((serie) => serie.ref.id === currentActiveSerie);
+      if (!isCurrentSerieStillPresent) {
+        this.activeSerie.set(series[0].ref.id);
+      }
+    });
+  }
 
   sizeOptions = [2, 4, 8, 16, 32].map((v) => ({ label: String(v), value: v }));
 
@@ -288,9 +305,12 @@ export class PoulesTab {
       data: { isEditing: false, serieName: '', editingSerie: null },
     });
     dialogRef?.onClose.subscribe(
-      (result: { name: string; ref?: DocumentReference } | undefined) => {
+      async (result: { name: string; ref?: DocumentReference } | undefined) => {
         if (result) {
-          void this.tournamentActions.saveSerie(result);
+          const savedSerieRef = await this.tournamentActions.saveSerie(result);
+          if (!result.ref && savedSerieRef?.id) {
+            this.activeSerie.set(savedSerieRef.id);
+          }
         }
       },
     );

@@ -142,7 +142,9 @@ export class PoulesTab {
         return;
       }
 
-      const isCurrentSerieStillPresent = series.some((serie) => serie.ref.id === currentActiveSerie);
+      const isCurrentSerieStillPresent = series.some(
+        (serie) => serie.ref.id === currentActiveSerie,
+      );
       if (!isCurrentSerieStillPresent) {
         this.activeSerie.set(series[0].ref.id);
       }

@@ -13,7 +13,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { RouterLink } from '@angular/router';
 import { PopoverModule } from 'primeng/popover';
 import type { Popover } from 'primeng/popover';
-import { TeamFormDialog } from './team-form-dialog/team-form-dialog';
+import { TeamFormDialog, type DeleteTeamAction } from './team-form-dialog/team-form-dialog';
 import { TeamBulkDialog } from './team-bulk-dialog/team-bulk-dialog';
 import { DocumentReference } from '@angular/fire/firestore';
 import { PoulesStore } from '../../../../store/poules.store';
@@ -100,10 +100,13 @@ export class Teams {
       width: 'min(30rem, 100%)',
       data: { isEditing: true, team: { ref: team.ref, name: team.name, comment: team.comment ?? '' } },
     });
-    dialogRef?.onClose.subscribe((result: Team | undefined) => {
-      if (result) {
-        void this.tournamentActions.saveTeam(result);
+    dialogRef?.onClose.subscribe((result: Team | DeleteTeamAction | undefined) => {
+      if (!result) return;
+      if ('action' in result && result.action === 'delete') {
+        this.onDeleteTeam(team);
+        return;
       }
+      void this.tournamentActions.saveTeam(result as Team);
     });
   }
 

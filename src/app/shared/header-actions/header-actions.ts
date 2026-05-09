@@ -11,13 +11,14 @@ import { translateSignal, TranslocoService } from '@jsverse/transloco';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { TooltipModule } from 'primeng/tooltip';
 
 type ThemeMode = 'light' | 'dark' | 'auto';
 type LanguageCode = 'fr' | 'eu' | 'en' | 'es';
 
 @Component({
   selector: 'app-header-actions',
-  imports: [ButtonModule, MenuModule],
+  imports: [ButtonModule, MenuModule, TooltipModule],
   templateUrl: './header-actions.html',
   styleUrl: './header-actions.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

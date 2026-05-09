@@ -138,6 +138,8 @@ L'application permet de gérer des tournois, les joueurs, les matchs et les scor
 - Éviter les API dépréciées PrimeNG lors des développements et refactors.
 - Ne pas utiliser l'attribut `styleClass` sur les composants PrimeNG (déprécié) ; utiliser `class` ou des bindings de classe Angular (`[class]`, `[class.nom]`) à la place.
 - Lors d'une montée de version PrimeNG, vérifier systématiquement les notes de migration et remplacer les usages dépréciés dans les templates.
+- Tous les boutons icône-seule (sans texte visible) doivent avoir un `ariaLabel` et un `pTooltip` traduits.
+- Cette règle s'applique aussi aux boutons responsives qui deviennent icône-seule sur mobile.
 
 ## Traductions et internationalisation
 

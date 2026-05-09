@@ -8,6 +8,8 @@
     [icon]="themeIcon()"
     [label]="isMobile() ? undefined : themeLabel()"
     [ariaLabel]="themeLabel()"
+    [pTooltip]="isMobile() ? themeLabel() : undefined"
+    tooltipPosition="left"
     (onClick)="toggleMenu(themeMenu, $event)"
   />
 
@@ -20,6 +22,8 @@
     icon="pi pi-language"
     [label]="isMobile() ? languageCode() : languageLabel()"
     [ariaLabel]="languageLabel()"
+    [pTooltip]="languageLabel()"
+    tooltipPosition="left"
     (onClick)="toggleMenu(languageMenu, $event)"
   />
 </div>

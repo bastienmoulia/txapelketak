@@ -5,6 +5,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
+import { TooltipModule } from 'primeng/tooltip';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { TimeSlot } from '../../../../tournaments/types/poules/poules';
 import { Tournament } from '../../../../home/tournament.interface';
@@ -13,7 +14,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-admin-time-slots',
-  imports: [ButtonModule, DatePicker, DatePipe, FormsModule, TranslocoModule],
+  imports: [ButtonModule, DatePicker, DatePipe, FormsModule, TooltipModule, TranslocoModule],
   templateUrl: './admin-time-slots.html',
   styleUrl: './admin-time-slots.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

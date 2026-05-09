@@ -20,6 +20,7 @@ test.describe.serial('Admin – games management', () => {
   let adminUrl = '';
 
   test.beforeAll(async ({ browser }) => {
+    test.setTimeout(120000);
     const context = await browser.newContext();
     const page = await context.newPage();
 

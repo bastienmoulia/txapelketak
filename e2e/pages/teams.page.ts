@@ -76,7 +76,9 @@ export class TeamsPage {
       .filter({ hasText: "Modifier l'équipe" });
     await editDialog.waitFor({ state: 'visible' });
     await editDialog.getByTestId('delete-team-button').click();
-    const confirmDialog = this.page.getByRole('alertdialog');
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
     await confirmDialog.waitFor({ state: 'visible' });
     await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await confirmDialog.waitFor({ state: 'hidden' });

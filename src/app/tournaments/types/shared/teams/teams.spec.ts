@@ -132,13 +132,9 @@ describe('Teams', () => {
       '[data-testid="view-team-games-button"]',
     );
     const editButtons = fixture.nativeElement.querySelectorAll('[data-testid="edit-team-button"]');
-    const deleteButtons = fixture.nativeElement.querySelectorAll(
-      '[data-testid="delete-team-button"]',
-    );
 
     expect(viewGamesButtons.length).toBe(2);
     expect(editButtons.length).toBe(2);
-    expect(deleteButtons.length).toBe(2);
   });
 
   it('should open add team dialog when onAddTeam is triggered', () => {

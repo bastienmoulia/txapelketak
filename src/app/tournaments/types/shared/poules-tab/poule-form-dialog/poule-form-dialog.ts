@@ -9,6 +9,12 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Poule } from '../../../poules/poules';
 import type { SavePouleEvent } from '../poules-tab';
 
+export interface DeletePouleAction {
+  action: 'delete';
+}
+
+export type PouleFormDialogResult = SavePouleEvent | DeletePouleAction;
+
 interface PouleFormDialogData {
   isEditing: boolean;
   pouleName: string;
@@ -43,6 +49,11 @@ export class PouleFormDialog {
     const name = this.pouleName().trim();
     if (!name) return;
     const result: SavePouleEvent = { serieRef: this.data.serieRef, name, ref: this.data.editingPoule?.ref };
+    this.dialogRef.close(result);
+  }
+
+  onDelete(): void {
+    const result: DeletePouleAction = { action: 'delete' };
     this.dialogRef.close(result);
   }
 }

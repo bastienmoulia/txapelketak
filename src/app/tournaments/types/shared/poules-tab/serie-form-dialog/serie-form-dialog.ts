@@ -8,10 +8,17 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Serie } from '../../../poules/poules';
 import type { SaveSerieEvent } from '../poules-tab';
 
+export interface DeleteSerieAction {
+  action: 'delete';
+}
+
+export type SerieFormDialogResult = SaveSerieEvent | DeleteSerieAction;
+
 interface SerieFormDialogData {
   isEditing: boolean;
   serieName: string;
   editingSerie: Serie | null;
+  canDelete?: boolean;
 }
 
 @Component({
@@ -36,6 +43,11 @@ export class SerieFormDialog {
     const name = this.serieName().trim();
     if (!name) return;
     const result: SaveSerieEvent = { name, ref: this.data.editingSerie?.ref };
+    this.dialogRef.close(result);
+  }
+
+  onDelete(): void {
+    const result: DeleteSerieAction = { action: 'delete' };
     this.dialogRef.close(result);
   }
 }

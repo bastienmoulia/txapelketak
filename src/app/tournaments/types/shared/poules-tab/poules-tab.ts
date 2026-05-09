@@ -324,13 +324,21 @@ export class PoulesTab {
       modal: true,
       closable: true,
       width: 'min(30rem, 100%)',
-      data: { isEditing: true, serieName: serie.name, editingSerie: serie },
+      data: {
+        isEditing: true,
+        serieName: serie.name,
+        editingSerie: serie,
+        canDelete: this.sortedSeries().length > 1,
+      },
     });
     dialogRef?.onClose.subscribe(
-      (result: { name: string; ref?: DocumentReference } | undefined) => {
-        if (result) {
-          void this.tournamentActions.saveSerie(result);
+      (result: { name: string; ref?: DocumentReference } | { action: 'delete' } | undefined) => {
+        if (!result) return;
+        if ('action' in result && result.action === 'delete') {
+          this.onDeleteSerie(serie);
+          return;
         }
+        void this.tournamentActions.saveSerie(result as { name: string; ref?: DocumentReference });
       },
     );
   }
@@ -381,11 +389,19 @@ export class PoulesTab {
     });
     dialogRef?.onClose.subscribe(
       (
-        result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined,
+        result:
+          | { serieRef: DocumentReference; name: string; ref?: DocumentReference }
+          | { action: 'delete' }
+          | undefined,
       ) => {
-        if (result) {
-          void this.tournamentActions.savePoule(result);
+        if (!result) return;
+        if ('action' in result && result.action === 'delete') {
+          this.onDeletePoule(serieRef, poule);
+          return;
         }
+        void this.tournamentActions.savePoule(
+          result as { serieRef: DocumentReference; name: string; ref?: DocumentReference },
+        );
       },
     );
   }

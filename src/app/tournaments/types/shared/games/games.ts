@@ -493,13 +493,19 @@ export class Games {
         ...data,
       },
     });
-    dialogRef?.onClose.subscribe((result: SaveGameEvent | undefined) => {
-      if (result) {
+    dialogRef?.onClose.subscribe((result: SaveGameEvent | { action: 'delete' } | undefined) => {
+      if (!result) return;
+      if ('action' in result && result.action === 'delete') {
         if (data.isEditing && data.gameRef) {
-          result.gameRef = data.gameRef;
+          this.onRequestDeleteGame(data.gameRef);
         }
-        void this.tournamentActions.saveGame(result);
+        return;
       }
+      const saveResult = result as SaveGameEvent;
+      if (data.isEditing && data.gameRef) {
+        saveResult.gameRef = data.gameRef;
+      }
+      void this.tournamentActions.saveGame(saveResult);
     });
   }
 

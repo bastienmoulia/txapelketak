@@ -203,19 +203,6 @@
                       [text]="true"
                       (onClick)="onEditGameFromDate(game)"
                     />
-                    @if (role() === 'admin') {
-                      <p-button
-                        icon="pi pi-trash"
-                        [ariaLabel]="'admin.games.deleteAria' | transloco"
-                        [pTooltip]="'shared.actions.delete' | transloco"
-                        tooltipPosition="top"
-                        severity="danger"
-                        size="small"
-                        [rounded]="true"
-                        [text]="true"
-                        (onClick)="onRequestDeleteGame(game.ref)"
-                      />
-                    }
                   </div>
                 </td>
               }

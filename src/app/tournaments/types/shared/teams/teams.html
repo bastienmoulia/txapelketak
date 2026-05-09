@@ -112,17 +112,6 @@
                 (onClick)="onEditTeam(team)"
                 data-testid="edit-team-button"
               />
-              <p-button
-                type="button"
-                size="small"
-                severity="danger"
-                [outlined]="true"
-                icon="pi pi-trash"
-                [label]="'shared.actions.delete' | transloco"
-                [ariaLabel]="'admin.teams.deleteAria' | transloco"
-                (onClick)="onDeleteTeam(team)"
-                data-testid="delete-team-button"
-              />
             }
           </div>
           <!-- Boutons icône + tooltip : petit écran -->
@@ -166,18 +155,6 @@
                 [pTooltip]="'shared.actions.edit' | transloco"
                 tooltipPosition="top"
                 (onClick)="onEditTeam(team)"
-              />
-              <p-button
-                type="button"
-                size="small"
-                severity="danger"
-                [rounded]="true"
-                [text]="true"
-                icon="pi pi-trash"
-                [ariaLabel]="'admin.teams.deleteAria' | transloco"
-                [pTooltip]="'shared.actions.delete' | transloco"
-                tooltipPosition="top"
-                (onClick)="onDeleteTeam(team)"
               />
             }
           </div>

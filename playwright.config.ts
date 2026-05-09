@@ -34,7 +34,7 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter,
   /* Global timeout for each test */
-  timeout: 30000,
+  timeout: 20000,
   /* Increased assertion timeout to handle slow Firebase emulator and Angular operations on CI. */
   expect: {
     timeout: 10000,
@@ -42,7 +42,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://localhost:4200',
+    baseURL: process.env['PLAYWRIGHT_TEST_BASE_URL'] ?? 'http://localhost:4299',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -56,8 +56,8 @@ export default defineConfig({
 
   /* Start dev server automatically when not launched via ng e2e */
   webServer: {
-    command: 'npm run serve:test -- --no-open',
-    url: 'http://localhost:4200',
+    command: 'npm run serve:test -- --no-open --port 4299',
+    url: 'http://localhost:4299',
     reuseExistingServer: true,
     timeout: 120_000,
   },

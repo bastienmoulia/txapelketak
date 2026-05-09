@@ -87,6 +87,11 @@ describe('TeamFormDialog', () => {
     component.onSave();
     expect(mockRef.close).toHaveBeenCalledWith({ ref: teamRef, name: 'Team A', comment: undefined });
   });
+
+  it('should not show delete button when not editing', () => {
+    const deleteBtn = fixture.nativeElement.querySelector('[data-testid="delete-team-button"]');
+    expect(deleteBtn).toBeNull();
+  });
 });
 
 describe('TeamFormDialog (edit mode)', () => {
@@ -128,6 +133,16 @@ describe('TeamFormDialog (edit mode)', () => {
     component.teamName.set('Équipe B');
     component.onSave();
     expect(mockRef.close).toHaveBeenCalledWith({ ref: teamRef, name: 'Équipe B', comment: undefined });
+  });
+
+  it('should show delete button when editing', () => {
+    const deleteBtn = fixture.nativeElement.querySelector('[data-testid="delete-team-button"]');
+    expect(deleteBtn).not.toBeNull();
+  });
+
+  it('should close with { action: "delete" } when delete is clicked', () => {
+    component.onDelete();
+    expect(mockRef.close).toHaveBeenCalledWith({ action: 'delete' });
   });
 });
 

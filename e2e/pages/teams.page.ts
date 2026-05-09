@@ -68,13 +68,20 @@ export class TeamsPage {
   async deleteTeam(name: string): Promise<void> {
     await this.ensureTeamsTab();
     const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });
-    await row.getByTestId('delete-team-button').click();
-    const dialog = this.page
+    const editButton = row.getByRole('button', { name: 'Modifier cette équipe' });
+    await editButton.click();
+    const editDialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
-    await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
-    await dialog.waitFor({ state: 'hidden' });
+      .filter({ has: this.page.locator('input#name') })
+      .filter({ hasText: "Modifier l'équipe" });
+    await editDialog.waitFor({ state: 'visible' });
+    await editDialog.getByTestId('delete-team-button').click();
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
+    await confirmDialog.waitFor({ state: 'visible' });
+    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    await confirmDialog.waitFor({ state: 'hidden' });
   }
 
   teamCommentButton(name: string): Locator {

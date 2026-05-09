@@ -101,14 +101,19 @@ export class PoulesPage {
   async deleteSerie(name: string): Promise<void> {
     await this.ensurePoulesTab();
     const serieTab = this.serieTab(name);
-    const deleteBtn = serieTab.getByTestId('delete-serie-button');
-    await deleteBtn.click();
+    const editBtn = serieTab.getByTestId('edit-serie-button');
+    await editBtn.click();
     const dialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
+      .filter({ has: this.page.locator('input#serie-name') });
     await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
-    await dialog.waitFor({ state: 'hidden' });
+    await dialog.getByTestId('delete-serie-button').click();
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
+    await confirmDialog.waitFor({ state: 'visible' });
+    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    await confirmDialog.waitFor({ state: 'hidden' });
   }
 
   async addPoule(serieName: string, pouleName: string): Promise<void> {
@@ -155,19 +160,24 @@ export class PoulesPage {
     await this.ensureSerieExpanded(serieName);
     const tabPanel = await this.serieTabPanel(serieName);
     const pouleCard = tabPanel.locator('p-card').filter({ hasText: pouleName });
-    const deleteBtn = pouleCard.getByTestId('delete-poule-button');
+    const editBtn = pouleCard.getByTestId('edit-poule-button');
     // Ensure the tab is selected and button is interactable
     await expect(async () => {
       await this.ensureSerieExpanded(serieName);
       await pouleCard.scrollIntoViewIfNeeded();
-      await expect(deleteBtn).toBeVisible({ timeout: 2000 });
+      await expect(editBtn).toBeVisible({ timeout: 2000 });
     }).toPass({ timeout: 15000 });
-    await deleteBtn.click();
+    await editBtn.click();
     const dialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
+      .filter({ has: this.page.locator('input#poule-name') });
     await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
-    await dialog.waitFor({ state: 'hidden' });
+    await dialog.getByTestId('delete-poule-button').click();
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
+    await confirmDialog.waitFor({ state: 'visible' });
+    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    await confirmDialog.waitFor({ state: 'hidden' });
   }
 }

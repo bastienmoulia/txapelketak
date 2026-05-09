@@ -124,13 +124,16 @@ export class GamesPage {
 
   async deleteGame(team1Name: string, team2Name: string): Promise<void> {
     const row = this.gameRow(team1Name, team2Name);
-    await row.locator('[aria-label*="Supprimer"]').click();
-    const dialog = this.page
-      .locator('.p-dialog')
-      .filter({ has: this.page.locator('button').filter({ hasText: 'Supprimer' }) });
-    await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
-    await dialog.waitFor({ state: 'hidden' });
+    await row.locator('[aria-label*="Modifier"]').click();
+    const editDialog = this.page.locator('.p-dialog').filter({ hasText: 'Modifier la partie' });
+    await editDialog.waitFor({ state: 'visible' });
+    await editDialog.getByTestId('delete-game-button').click();
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
+    await confirmDialog.waitFor({ state: 'visible' });
+    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    await confirmDialog.waitFor({ state: 'hidden' });
   }
 
   async editScores(

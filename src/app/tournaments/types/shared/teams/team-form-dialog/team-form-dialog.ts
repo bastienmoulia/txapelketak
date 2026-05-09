@@ -8,6 +8,10 @@ import { TextareaModule } from 'primeng/textarea';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+export interface DeleteTeamAction {
+  action: 'delete';
+}
+
 interface TeamFormDialogData {
   isEditing: boolean;
   team: { ref: DocumentReference; name: string; comment?: string };
@@ -25,6 +29,7 @@ export class TeamFormDialog {
 
   data = this.config.data ?? { isEditing: false, team: { ref: null!, name: '', comment: undefined } };
 
+  isEditing = this.data.isEditing;
   teamName = signal(this.data.team.name);
   teamComment = signal(this.data.team.comment ?? '');
   private readonly teamRef = this.data.team.ref;
@@ -37,5 +42,10 @@ export class TeamFormDialog {
     const name = this.teamName().trim();
     if (!name) return;
     this.dialogRef.close({ ref: this.teamRef, name, comment: this.teamComment().trim() || undefined });
+  }
+
+  onDelete(): void {
+    const result: DeleteTeamAction = { action: 'delete' };
+    this.dialogRef.close(result);
   }
 }

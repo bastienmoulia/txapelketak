@@ -19,6 +19,12 @@ import { UserRole } from '../../../../../home/tournament.interface';
 import type { SaveGameEvent } from '../games';
 import { CallPipe } from 'ngxtension/call-apply';
 
+export interface DeleteGameAction {
+  action: 'delete';
+}
+
+export type GameFormDialogResult = SaveGameEvent | DeleteGameAction;
+
 interface GameFormDialogData {
   teams: Team[];
   role: UserRole | '';
@@ -142,6 +148,11 @@ export class GameFormDialog {
 
   onCancel(): void {
     this.dialogRef.close(undefined);
+  }
+
+  onDelete(): void {
+    const result: DeleteGameAction = { action: 'delete' };
+    this.dialogRef.close(result);
   }
 
   onSave(): void {

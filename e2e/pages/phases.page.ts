@@ -1,14 +1,14 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 
-export class PoulesPage {
+export class PhasesPage {
   readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
   }
 
-  private async ensurePoulesTab(): Promise<void> {
-    await this.page.getByRole('tab', { name: 'Poules' }).click();
+  private async ensurePhasesTab(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Phases' }).click();
   }
 
   private serieTab(name: string): Locator {
@@ -43,7 +43,7 @@ export class PoulesPage {
   }
 
   async ensureSerieExpanded(serieName: string): Promise<void> {
-    await this.ensurePoulesTab();
+    await this.ensurePhasesTab();
     const serieTab = this.serieTab(serieName);
     // Click the label text to avoid hitting edit/delete icon buttons embedded in the tab.
     await serieTab.getByText(serieName, { exact: false }).first().click();
@@ -71,7 +71,7 @@ export class PoulesPage {
   // --- Admin actions ---
 
   async addSerie(name: string): Promise<void> {
-    await this.ensurePoulesTab();
+    await this.ensurePhasesTab();
     await this.page.getByTestId('add-serie-button').click();
     const dialog = this.page
       .locator('.p-dialog')
@@ -83,7 +83,7 @@ export class PoulesPage {
   }
 
   async editSerie(currentName: string, newName: string): Promise<void> {
-    await this.ensurePoulesTab();
+    await this.ensurePhasesTab();
     const serieTab = this.serieTab(currentName);
     const editBtn = serieTab.getByTestId('edit-serie-button');
     await editBtn.click();
@@ -99,7 +99,7 @@ export class PoulesPage {
   }
 
   async deleteSerie(name: string): Promise<void> {
-    await this.ensurePoulesTab();
+    await this.ensurePhasesTab();
     const serieTab = this.serieTab(name);
     const editBtn = serieTab.getByTestId('edit-serie-button');
     await editBtn.click();
@@ -152,6 +152,64 @@ export class PoulesPage {
     const input = dialog.locator('input#poule-name');
     await input.clear();
     await input.fill(newPouleName);
+    await dialog.locator('button[type="submit"]').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  async addTeamToPouleFromModal(
+    serieName: string,
+    pouleName: string,
+    teamName: string,
+  ): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    const pouleCard = tabPanel.locator('p-card').filter({ hasText: pouleName });
+    const editBtn = pouleCard.getByTestId('edit-poule-button');
+    await editBtn.click();
+
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#poule-name') });
+    await dialog.waitFor({ state: 'visible' });
+
+    await dialog.locator('p-select[name="team-select"] .p-select-dropdown').click();
+    await this.page.locator('.p-select-overlay').getByText(teamName, { exact: true }).click();
+    await dialog.getByTestId('dialog-add-team-button').click();
+
+    await dialog.locator('button[type="submit"]').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  async removeTeamFromPouleFromModal(
+    serieName: string,
+    pouleName: string,
+    teamName: string,
+  ): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    const pouleCard = tabPanel.locator('p-card').filter({ hasText: pouleName });
+    const editBtn = pouleCard.getByTestId('edit-poule-button');
+    await editBtn.click();
+
+    const dialog = this.page
+      .locator('.p-dialog')
+      .filter({ has: this.page.locator('input#poule-name') });
+    await dialog.waitFor({ state: 'visible' });
+
+    const teamRow = dialog
+      .getByTestId('dialog-team-list')
+      .locator('div')
+      .filter({ hasText: teamName })
+      .first();
+    await teamRow.getByTestId('dialog-remove-team-button').click();
+
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
+    await confirmDialog.waitFor({ state: 'visible' });
+    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    await confirmDialog.waitFor({ state: 'hidden' });
+
     await dialog.locator('button[type="submit"]').click();
     await dialog.waitFor({ state: 'hidden' });
   }

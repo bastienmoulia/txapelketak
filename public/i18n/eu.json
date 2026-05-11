@@ -126,7 +126,7 @@
       "tab": "Aginte-ohola",
       "teams": "Taldeak",
       "series": "Serieak",
-      "poules": "Taldekatzeak",
+      "phases": "Faseak",
       "games": "Partidak",
       "playedGames": "Jokatutako partidak",
       "totalScoredPoints": "Puntuak",
@@ -182,6 +182,8 @@
       "dialogAddTeam": "Talde bat multzora gehitu",
       "serieName": "Seriearen izena",
       "pouleName": "Multzoaren izena",
+      "teamsInPoule": "Multzoko taldeak",
+      "noTeamsInPoule": "Ez dago talderik multzo honetan",
       "selectTeam": "Talde bat aukeratu",
       "editSerieAria": "Serie hau editatu",
       "deleteSerieAria": "Serie hau ezabatu",
@@ -216,7 +218,11 @@
         "won": "Irabazitako partidak",
         "pointsInLosses": "Ptu. (galerak)",
         "pointsConceded": "Ptu. kontrako"
-      }
+      },
+      "comingSoon": "Laster etorriko da",
+      "addPlayoffsComingSoon": "Ezaugarri hau laster etorriko da.",
+      "teamsUpdated": "Taldeak eguneratu egin dira",
+      "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira"
     },
     "games": {
       "addGame": "Partida gehitu",

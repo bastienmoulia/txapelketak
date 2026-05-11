@@ -10,8 +10,9 @@ import { Team } from '../teams/teams';
 import { PoulesStore } from '../../../../store/poules.store';
 import { AuthStore } from '../../../../store/auth.store';
 import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { Subject } from 'rxjs';
 
 function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
@@ -31,6 +32,14 @@ describe('PoulesTab', () => {
       deletePoule: vi.fn(),
       addTeamToPoule: vi.fn(),
       removeTeamFromPoule: vi.fn(),
+      addTeamToPouleSilent: vi.fn(),
+      removeTeamFromPouleSilent: vi.fn(),
+    };
+
+    const messageServiceMock = {
+      add: vi.fn(),
+      messageObserver: new Subject(),
+      clearObserver: new Subject(),
     };
 
     await TestBed.configureTestingModule({
@@ -42,7 +51,11 @@ describe('PoulesTab', () => {
     })
       .overrideComponent(PoulesTab, {
         set: {
-          providers: [{ provide: DialogService, useValue: { open: vi.fn() } }, ConfirmationService],
+          providers: [
+            { provide: DialogService, useValue: { open: vi.fn() } },
+            ConfirmationService,
+            { provide: MessageService, useValue: messageServiceMock },
+          ],
         },
       })
       .compileComponents();
@@ -231,7 +244,7 @@ describe('PoulesTab', () => {
       const standings = component.sortedSeries()[0].poules[0].standings;
       const standingB = standings.find((s) => s.ref.id === 'teamB')!;
       const standingC = standings.find((s) => s.ref.id === 'teamC')!;
-      // Both have 0 wins, 0 points in losses, 0 conceded → tied, order is stable
+      // Both have 0 wins, 0 points in losses, 0 conceded -> tied, order is stable
       expect(standingB.pointsConceded).toBe(0);
       expect(standingC.pointsConceded).toBe(0);
     });

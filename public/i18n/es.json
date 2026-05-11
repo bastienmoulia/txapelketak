@@ -126,7 +126,7 @@
       "tab": "Panel",
       "teams": "Equipos",
       "series": "Series",
-      "poules": "Grupos",
+      "phases": "Fases",
       "games": "Partidos",
       "playedGames": "Partidos jugados",
       "totalScoredPoints": "Puntos",
@@ -182,6 +182,8 @@
       "dialogAddTeam": "Añadir un equipo al grupo",
       "serieName": "Nombre de la serie",
       "pouleName": "Nombre del grupo",
+      "teamsInPoule": "Equipos del grupo",
+      "noTeamsInPoule": "No hay equipos en este grupo",
       "selectTeam": "Seleccionar un equipo",
       "editSerieAria": "Editar esta serie",
       "deleteSerieAria": "Eliminar esta serie",
@@ -216,7 +218,11 @@
         "won": "Partidos ganados",
         "pointsInLosses": "Pts (derrotas)",
         "pointsConceded": "Pts concedidos"
-      }
+      },
+      "comingSoon": "Próximamente",
+      "addPlayoffsComingSoon": "Esta función estará disponible pronto.",
+      "teamsUpdated": "Equipos actualizados",
+      "teamsUpdatedDetail": "{{added}} equipo(s) añadido(s), {{removed}} equipo(s) eliminado(s)"
     },
     "games": {
       "addGame": "Añadir un partido",

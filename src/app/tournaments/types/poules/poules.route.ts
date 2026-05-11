@@ -1,11 +1,4 @@
-export const POULES_ROUTE_TABS = [
-  'dashboard',
-  'teams',
-  'poules',
-  'games',
-  'finale',
-  'settings',
-] as const;
+export const POULES_ROUTE_TABS = ['dashboard', 'teams', 'phases', 'games', 'settings'] as const;
 export type PoulesRouteTab = (typeof POULES_ROUTE_TABS)[number];
 
 export function isPoulesRouteTab(value: string | null | undefined): value is PoulesRouteTab {

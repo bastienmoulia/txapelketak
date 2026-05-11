@@ -45,7 +45,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./tournaments/new/tournament-new').then((m) => m.TournamentNew),
       },
-
       {
         path: ':tournamentId',
         title: tournamentDetailTitleResolver,

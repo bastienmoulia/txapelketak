@@ -1,3 +1,4 @@
+<p-toast />
 <p-confirmdialog></p-confirmdialog>
 
 @if (sortedSeries().length > 0) {
@@ -170,7 +171,7 @@
 
 <ng-template #poules let-poules let-serieRef="serieRef">
   @if (role() === 'admin') {
-    <div class="mb-2">
+    <div class="mb-2 gap-2 flex items-center">
       <p-button
         type="button"
         severity="primary"
@@ -178,6 +179,14 @@
         [label]="'admin.poules.addPoule' | transloco"
         (onClick)="onAddPoule(serieRef)"
         data-testid="add-poule-button"
+      />
+      <p-button
+        type="button"
+        severity="primary"
+        icon="pi pi-plus"
+        [label]="'admin.poules.addPlayoffs' | transloco"
+        (onClick)="onAddPlayoffs(serieRef)"
+        data-testid="add-playoffs-button"
       />
     </div>
   }
@@ -205,17 +214,6 @@
           </div>
         </ng-template>
         @if (role() === 'admin') {
-          <div class="mb-2">
-            <p-button
-              type="button"
-              severity="primary"
-              icon="pi pi-plus"
-              [label]="'admin.poules.addTeam' | transloco"
-              (onClick)="onAddTeamToPoule(poule)"
-              data-testid="add-team-to-poule-button"
-            />
-          </div>
-
           @if ((getExpectedGamesCount | apply: poule) > 0) {
             @if (hasCompleteRoundRobin | apply: poule) {
               <p-message severity="success" class="mb-2" data-testid="poule-games-coverage-success">
@@ -273,7 +271,6 @@
                   <th class="standings-table__stat">
                     {{ 'admin.poules.standings.pointsConceded' | transloco }}
                   </th>
-                  <th class="standings-table__actions"></th>
                 }
               </tr>
             </thead>
@@ -286,20 +283,6 @@
                   @if (role() === 'admin') {
                     <td class="standings-table__stat">{{ standing.pointsInLosses }}</td>
                     <td class="standings-table__stat">{{ standing.pointsConceded }}</td>
-                    <td class="standings-table__actions">
-                      <p-button
-                        type="button"
-                        size="small"
-                        severity="danger"
-                        [outlined]="true"
-                        icon="pi pi-times"
-                        [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
-                        [pTooltip]="'admin.poules.removeTeamAria' | transloco"
-                        tooltipPosition="top"
-                        (onClick)="onRemoveTeamFromPoule(poule, standing.ref)"
-                        data-testid="remove-team-from-poule-button"
-                      />
-                    </td>
                   }
                 </tr>
               }

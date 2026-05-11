@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
-import { PoulesPage } from './pages/poules.page';
+import { PhasesPage } from './pages/phases.page';
 import { TournamentBasePage } from './pages/tournament-base.page';
 import { TournamentListPage } from './pages/tournament-list.page';
 
@@ -49,11 +49,11 @@ test.describe('Visitor – poules', () => {
 
   test('should display the series and poules tab', async ({ page }) => {
     const basePage = new TournamentBasePage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await basePage.gotoPublic(tournamentId);
     await basePage.waitForLoad();
 
-    await basePage.clickTab('Poules');
+    await basePage.clickTab('Phases');
     await expect(poulesPage.poulesContainer()).toBeVisible();
     await expect(poulesPage.seriePanel(serieName)).toBeVisible();
   });
@@ -63,7 +63,7 @@ test.describe('Visitor – poules', () => {
     await basePage.gotoPublic(tournamentId);
     await basePage.waitForLoad();
 
-    await basePage.clickTab('Poules');
+    await basePage.clickTab('Phases');
     await expect(page.getByTestId('add-serie-button')).not.toBeVisible();
     await expect(page.getByTestId('add-poule-button').first()).not.toBeVisible();
   });

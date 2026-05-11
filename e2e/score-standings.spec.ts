@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { load } from 'js-yaml';
 import { AdminPage } from './pages/admin.page';
 import { GamesPage } from './pages/games.page';
-import { PoulesPage } from './pages/poules.page';
+import { PhasesPage } from './pages/phases.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
 
 /**
@@ -169,7 +169,7 @@ test.describe.serial('Score entry, standings & export', () => {
   test('should verify poule standings reflect all scores', async ({ page }) => {
     const adminPage = new AdminPage(page);
     const gamesPage = new GamesPage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
 
     // Edit scores in the same page session to guarantee Firestore writes are committed
@@ -178,7 +178,7 @@ test.describe.serial('Score entry, standings & export', () => {
     await gamesPage.editScores(teamBeta, teamGamma, 10, 25);
     await gamesPage.editScores(teamAlpha, teamBeta, 12, 21);
 
-    await adminPage.clickTab('Poules');
+    await adminPage.clickTab('Phases');
 
     await poulesPage.ensureSerieExpanded(serieName);
     const rows = poulesPage.standingsRows(serieName, pouleName);

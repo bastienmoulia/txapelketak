@@ -24,6 +24,7 @@ export const tournamentAdminRoutes: Routes = [
       {
         path: 'poules',
         redirectTo: 'phases',
+        pathMatch: 'full',
       },
       {
         path: 'phases',

@@ -391,11 +391,17 @@ export class PoulesTab {
             };
 
             for (const teamRef of selectedTeamRefs) {
-              await this.tournamentActions.addTeamToPoule({
+              await this.tournamentActions.addTeamToPouleSilent({
                 poule: createdPoule,
                 teamRef,
               });
             }
+
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translocoService.translate('admin.poules.dialogAddPoule'),
+              detail: `${selectedTeamRefs.length} team(s) added to "${result.name}".`,
+            });
           })();
         }
       },

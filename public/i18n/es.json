@@ -155,7 +155,7 @@
     "unknownType": "Tipo de torneo desconocido",
     "tabs": {
       "series": "Series",
-      "poules": "Grupos",
+      "phases": "Fases",
       "teams": "Equipos",
       "games": "Partidos",
       "users": "Usuarios",
@@ -173,6 +173,7 @@
     "poules": {
       "addSerie": "Añadir una serie",
       "addPoule": "Añadir un grupo",
+      "addPlayoffs": "Añadir playoffs",
       "addTeam": "Añadir un equipo",
       "noSeriesOrPoules": "No hay series ni grupos disponibles",
       "dialogAddSerie": "Añadir una serie",

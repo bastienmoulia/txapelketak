@@ -155,7 +155,7 @@
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
       "series": "Serieak",
-      "poules": "Multzoak",
+      "phases": "Faseak",
       "teams": "Taldeak",
       "games": "Partidak",
       "users": "Erabiltzaileak",
@@ -173,6 +173,7 @@
     "poules": {
       "addSerie": "Serie bat gehitu",
       "addPoule": "Multzo bat gehitu",
+      "addPlayoffs": "Playoffak gehitu",
       "addTeam": "Talde bat gehitu",
       "noSeriesOrPoules": "Ez dago serie edo multzorik eskuragarri",
       "dialogAddSerie": "Serie bat gehitu",

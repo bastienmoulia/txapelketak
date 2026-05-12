@@ -4,7 +4,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { patchState } from '@ngrx/signals';
 import { vi } from 'vitest';
 
-import { PoulesTab } from './poules-tab';
+import { Phases } from './phases';
 import { Serie } from '../../poules/poules';
 import { Team } from '../teams/teams';
 import { PoulesStore } from '../../../../store/poules.store';
@@ -18,9 +18,9 @@ function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
 }
 
-describe('PoulesTab', () => {
-  let component: PoulesTab;
-  let fixture: ComponentFixture<PoulesTab>;
+describe('Phases', () => {
+  let component: Phases;
+  let fixture: ComponentFixture<Phases>;
   let poulesStore: InstanceType<typeof PoulesStore>;
   let mockTournamentActions: Record<string, ReturnType<typeof vi.fn>>;
   let dialogServiceMock: { open: ReturnType<typeof vi.fn> };
@@ -50,13 +50,13 @@ describe('PoulesTab', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [PoulesTab],
+      imports: [Phases],
       providers: [
         ...provideTranslocoTesting(),
         { provide: TournamentActionsService, useValue: mockTournamentActions },
       ],
     })
-      .overrideComponent(PoulesTab, {
+      .overrideComponent(Phases, {
         set: {
           providers: [
             { provide: DialogService, useValue: dialogServiceMock },
@@ -69,7 +69,7 @@ describe('PoulesTab', () => {
 
     poulesStore = TestBed.inject(PoulesStore);
 
-    fixture = TestBed.createComponent(PoulesTab);
+    fixture = TestBed.createComponent(Phases);
     fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();

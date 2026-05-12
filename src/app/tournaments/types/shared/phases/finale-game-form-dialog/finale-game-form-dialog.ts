@@ -7,7 +7,7 @@ import { Select } from 'primeng/select';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { DocumentReference } from '@angular/fire/firestore';
-import type { Team } from '../../../shared/teams/teams';
+import type { Team } from '../../teams/teams';
 import type { UserRole } from '../../../../../home/tournament.interface';
 
 interface FinaleGameFormDialogData {

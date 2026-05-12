@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Game, Poule } from '../../poules/poules';
+import { Game, Poule } from '../../poules/poules.model';
 import { Message } from 'primeng/message';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';

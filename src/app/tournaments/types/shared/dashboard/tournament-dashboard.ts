@@ -18,7 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
 import type { Popover } from 'primeng/popover';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Game, Poule } from '../../poules/poules';
+import { Game, Poule } from '../../poules/poules.model';
 import { MarkdownService } from '../../../../shared/services/markdown.service';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { GameFormDialog } from '../games/game-form-dialog/game-form-dialog';
@@ -62,7 +62,15 @@ export interface RecentGame {
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [CardModule, ButtonModule, TranslocoPipe, DatePipe, MessageModule, TooltipModule, PopoverModule],
+  imports: [
+    CardModule,
+    ButtonModule,
+    TranslocoPipe,
+    DatePipe,
+    MessageModule,
+    TooltipModule,
+    PopoverModule,
+  ],
   providers: [DialogService],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',

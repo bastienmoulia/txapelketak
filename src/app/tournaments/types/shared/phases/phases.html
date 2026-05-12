@@ -1,5 +1,5 @@
 <p-toast />
-<p-confirmdialog></p-confirmdialog>
+<p-confirmdialog />
 
 @if (sortedSeries().length > 0) {
   <p-tabs [value]="activeSerie()" (valueChange)="onSerieTabChange($event)">
@@ -154,7 +154,7 @@
 } @else {
   <div class="flex items-center gap-3 p-4">
     <p-message severity="warn" class="flex-1">
-      {{ 'admin.poules.noSeriesOrPoules' | transloco }}
+      {{ 'admin.poules.noSeries' | transloco }}
     </p-message>
     @if (role() === 'admin') {
       <p-button

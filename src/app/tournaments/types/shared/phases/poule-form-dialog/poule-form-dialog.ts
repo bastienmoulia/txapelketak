@@ -11,8 +11,8 @@ import { Select } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import type { Poule } from '../../../poules/poules';
-import type { SavePouleEvent } from '../poules-tab';
+import type { Poule } from '../../../poules/poules.model';
+import type { SavePouleEvent } from '../phases';
 import type { Team } from '../../teams/teams';
 
 export interface DeletePouleAction {
@@ -82,8 +82,6 @@ export class PouleFormDialog {
       .filter((team: Team) => !selectedIds.has(team.ref.id))
       .sort((teamA: Team, teamB: Team) => teamA.name.localeCompare(teamB.name));
   });
-
-  hasTeamManagement = computed(() => true);
 
   onCancel(): void {
     this.dialogRef.close(undefined);

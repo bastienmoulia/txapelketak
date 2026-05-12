@@ -11,7 +11,7 @@ import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
 import { Team } from '../../../../tournaments/types/shared/teams/teams';
-import { Game, Serie, TimeSlot } from '../../../../tournaments/types/poules/poules';
+import { Game, Serie, TimeSlot } from '../../../../tournaments/types/poules/poules.model';
 
 export interface TournamentYamlTeam {
   id: string;

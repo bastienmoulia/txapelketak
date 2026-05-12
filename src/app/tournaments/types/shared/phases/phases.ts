@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, input, signal } from '@angular/cor
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { TabsModule } from 'primeng/tabs';
-import { Poule, Serie, FinaleGame } from '../../poules/poules';
+import { Poule, Serie, FinaleGame } from '../../poules/poules.model';
 import { NgTemplateOutlet } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -81,7 +81,7 @@ export interface BracketRound {
 }
 
 @Component({
-  selector: 'app-poules-tab',
+  selector: 'app-phases',
   imports: [
     TabsModule,
     AccordionModule,
@@ -98,10 +98,10 @@ export interface BracketRound {
     ToastModule,
   ],
   providers: [DialogService, ConfirmationService, MessageService],
-  templateUrl: './poules-tab.html',
-  styleUrl: './poules-tab.css',
+  templateUrl: './phases.html',
+  styleUrl: './phases.css',
 })
-export class PoulesTab {
+export class Phases {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private confirmationService = inject(ConfirmationService);

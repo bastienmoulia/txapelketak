@@ -21,7 +21,7 @@ import {
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { Team } from '../../tournaments/types/shared/teams/teams';
-import { Game, TimeSlot, FinaleGame } from '../../tournaments/types/poules/poules';
+import { Game, TimeSlot, FinaleGame } from '../../tournaments/types/poules/poules.model';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 
 @Injectable({

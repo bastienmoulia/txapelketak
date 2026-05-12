@@ -8,7 +8,7 @@ import {
   GenerateAllGamesEvent,
   SaveGameEvent,
 } from '../../tournaments/types/shared/games/games';
-import { Game, Serie } from '../../tournaments/types/poules/poules';
+import { Game, Serie } from '../../tournaments/types/poules/poules.model';
 import { Team } from '../../tournaments/types/shared/teams/teams';
 import { TournamentDetailStore } from '../../store/tournament-detail.store';
 import { PoulesStore } from '../../store/poules.store';
@@ -21,7 +21,7 @@ import {
   GenerateFinaleEvent,
   SaveFinaleGameEvent,
   SetFinaleSizeEvent,
-} from '../../tournaments/types/shared/poules-tab/poules-tab';
+} from '../../tournaments/types/shared/phases/phases';
 
 @Injectable()
 export class TournamentActionsService {

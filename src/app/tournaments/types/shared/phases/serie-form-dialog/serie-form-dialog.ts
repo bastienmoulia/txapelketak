@@ -5,8 +5,8 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import type { Serie } from '../../../poules/poules';
-import type { SaveSerieEvent } from '../poules-tab';
+import type { Serie } from '../../../poules/poules.model';
+import type { SaveSerieEvent } from '../phases';
 
 export interface DeleteSerieAction {
   action: 'delete';

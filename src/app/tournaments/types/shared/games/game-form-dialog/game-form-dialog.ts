@@ -14,7 +14,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DatepickerConfigService } from '../../../../../shared/services/datepicker-config.service';
 import { Team } from '../../teams/teams';
-import { Poule } from '../../../poules/poules';
+import { Poule } from '../../../poules/poules.model';
 import { UserRole } from '../../../../../home/tournament.interface';
 import type { SaveGameEvent } from '../games';
 import { CallPipe } from 'ngxtension/call-apply';

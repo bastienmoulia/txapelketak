@@ -29,7 +29,7 @@ export const tournamentAdminRoutes: Routes = [
       {
         path: 'phases',
         loadComponent: () =>
-          import('../tournaments/types/shared/poules-tab/poules-tab').then((m) => m.PoulesTab),
+          import('../tournaments/types/shared/phases/phases').then((m) => m.Phases),
       },
       {
         path: 'games',

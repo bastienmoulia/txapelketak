@@ -28,8 +28,7 @@ export const tournamentDetailRoutes: Routes = [
       },
       {
         path: 'phases',
-        loadComponent: () =>
-          import('../types/shared/poules-tab/poules-tab').then((m) => m.PoulesTab),
+        loadComponent: () => import('../types/shared/phases/phases').then((m) => m.Phases),
       },
       {
         path: 'games',

@@ -17,6 +17,9 @@
         <p-button
           icon="pi pi-download"
           [label]="'tournaments.calendar.download' | transloco"
+          [ariaLabel]="'tournaments.calendar.download' | transloco"
+          [pTooltip]="'tournaments.calendar.download' | transloco"
+          tooltipPosition="top"
           (onClick)="onDownload()"
         />
       </div>

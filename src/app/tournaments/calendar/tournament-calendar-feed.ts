@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
+import { TooltipModule } from 'primeng/tooltip';
 import { DocumentReference } from '@angular/fire/firestore';
 import { FirebaseService } from '../../shared/services/firebase.service';
 import { FinaleGame, parseFirestoreDate, Poule, Serie } from '../types/poules/poules';
@@ -14,7 +15,7 @@ import {
 
 @Component({
   selector: 'app-tournament-calendar-feed',
-  imports: [ButtonModule, MessageModule, TranslocoModule],
+  imports: [ButtonModule, MessageModule, TooltipModule, TranslocoModule],
   templateUrl: './tournament-calendar-feed.html',
   styleUrl: './tournament-calendar-feed.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

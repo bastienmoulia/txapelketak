@@ -23,6 +23,12 @@ describe('PoulesTab', () => {
   let fixture: ComponentFixture<PoulesTab>;
   let poulesStore: InstanceType<typeof PoulesStore>;
   let mockTournamentActions: Record<string, ReturnType<typeof vi.fn>>;
+  let dialogServiceMock: { open: ReturnType<typeof vi.fn> };
+  let messageServiceMock: {
+    add: ReturnType<typeof vi.fn>;
+    messageObserver: Subject<unknown>;
+    clearObserver: Subject<unknown>;
+  };
 
   beforeEach(async () => {
     mockTournamentActions = {
@@ -36,7 +42,8 @@ describe('PoulesTab', () => {
       removeTeamFromPouleSilent: vi.fn(),
     };
 
-    const messageServiceMock = {
+    dialogServiceMock = { open: vi.fn() };
+    messageServiceMock = {
       add: vi.fn(),
       messageObserver: new Subject(),
       clearObserver: new Subject(),
@@ -52,7 +59,7 @@ describe('PoulesTab', () => {
       .overrideComponent(PoulesTab, {
         set: {
           providers: [
-            { provide: DialogService, useValue: { open: vi.fn() } },
+            { provide: DialogService, useValue: dialogServiceMock },
             ConfirmationService,
             { provide: MessageService, useValue: messageServiceMock },
           ],
@@ -381,6 +388,109 @@ describe('PoulesTab', () => {
       const tooltip = component.getMissingGamesTooltip(poule);
       expect(tooltip).toContain('Team A contre Team C');
       expect(tooltip).toContain('Team B contre Team C');
+    });
+  });
+
+  describe('poule team sync on edit', () => {
+    it('should add and remove teams based on dialog selection and show grouped toast', async () => {
+      const serieRef = createRef('serie1');
+      const pouleRef = createRef('poule1');
+      const teamARef = createRef('teamA');
+      const teamBRef = createRef('teamB');
+      const teamCRef = createRef('teamC');
+
+      const poule = {
+        ref: pouleRef,
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef],
+        games: [],
+      };
+
+      const close$ = new Subject<
+        | {
+            serieRef: DocumentReference;
+            name: string;
+            ref?: DocumentReference;
+            teamRefs?: DocumentReference[];
+          }
+        | { action: 'delete' }
+        | undefined
+      >();
+
+      dialogServiceMock.open.mockReturnValue({ onClose: close$ });
+
+      component.onEditPoule(serieRef, poule);
+
+      close$.next({
+        serieRef,
+        name: 'Poule 1',
+        ref: pouleRef,
+        teamRefs: [teamBRef, teamCRef],
+      });
+
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(mockTournamentActions.savePoule).toHaveBeenCalledWith({
+        serieRef,
+        name: 'Poule 1',
+        ref: pouleRef,
+      });
+      expect(mockTournamentActions.addTeamToPouleSilent).toHaveBeenCalledWith({
+        poule,
+        teamRef: teamCRef,
+      });
+      expect(mockTournamentActions.removeTeamFromPouleSilent).toHaveBeenCalledWith({
+        poule,
+        teamRef: teamARef,
+      });
+      expect(messageServiceMock.add).toHaveBeenCalledTimes(1);
+      expect(messageServiceMock.add).toHaveBeenCalledWith(
+        expect.objectContaining({ severity: 'success' }),
+      );
+    });
+
+    it('should not show grouped toast when team list did not change', async () => {
+      const serieRef = createRef('serie1');
+      const pouleRef = createRef('poule1');
+      const teamARef = createRef('teamA');
+      const teamBRef = createRef('teamB');
+
+      const poule = {
+        ref: pouleRef,
+        name: 'Poule 1',
+        refTeams: [teamARef, teamBRef],
+        games: [],
+      };
+
+      const close$ = new Subject<
+        | {
+            serieRef: DocumentReference;
+            name: string;
+            ref?: DocumentReference;
+            teamRefs?: DocumentReference[];
+          }
+        | { action: 'delete' }
+        | undefined
+      >();
+
+      dialogServiceMock.open.mockReturnValue({ onClose: close$ });
+
+      component.onEditPoule(serieRef, poule);
+
+      close$.next({
+        serieRef,
+        name: 'Poule 1',
+        ref: pouleRef,
+        teamRefs: [teamARef, teamBRef],
+      });
+
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(mockTournamentActions.addTeamToPouleSilent).not.toHaveBeenCalled();
+      expect(mockTournamentActions.removeTeamFromPouleSilent).not.toHaveBeenCalled();
+      expect(messageServiceMock.add).not.toHaveBeenCalled();
     });
   });
 });

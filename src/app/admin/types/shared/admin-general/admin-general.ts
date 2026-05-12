@@ -17,7 +17,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
-import { TooltipModule } from 'primeng/tooltip';
 import { Tournament } from '../../../../home/tournament.interface';
 import {
   buildTournamentCalendarUrl,
@@ -35,7 +34,6 @@ import { FirebaseService } from '../../../../shared/services/firebase.service';
     InputTextModule,
     TextareaModule,
     ToastModule,
-    TooltipModule,
     TranslocoModule,
   ],
   templateUrl: './admin-general.html',

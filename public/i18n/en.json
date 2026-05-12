@@ -7,7 +7,8 @@
     "tournaments": "Tournaments",
     "tournamentNew": "Create a tournament",
     "tournamentDetail": "Tournament details",
-    "admin": "Administration"
+    "admin": "Administration",
+    "tournamentCalendar": "Tournament calendar"
   },
   "header": {
     "theme": {
@@ -119,6 +120,15 @@
       },
       "waitingValidation": "The administrator must validate this tournament before it can be visible. Thank you for your patience."
     },
+    "calendar": {
+      "loading": "Preparing calendar…",
+      "ready": "The calendar is ready.",
+      "readyDetail": "The download should start automatically. If not, use the button below.",
+      "download": "Download calendar",
+      "notFound": "This tournament could not be found.",
+      "noScheduledGames": "No scheduled games with a date are available for this tournament.",
+      "unavailable": "The calendar is not available right now."
+    },
     "types": {
       "unknown": "Unknown tournament type"
     },
@@ -167,6 +177,11 @@
       "title": "General",
       "name": "Tournament name",
       "description": "Description",
+      "gameDurationMinutes": "Game duration (minutes)",
+      "gameDurationHelp": "Used to calculate the end time of exported calendar events.",
+      "calendarUrl": "Calendar URL",
+      "calendarHelp": "Share this URL to open or import scheduled games in a calendar application.",
+      "openCalendar": "Open calendar",
       "saved": "Tournament updated",
       "savedDetail": "Tournament information has been saved successfully."
     },

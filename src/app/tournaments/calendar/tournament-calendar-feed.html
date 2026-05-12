@@ -1,0 +1,25 @@
+<div class="mx-3 my-6 max-w-2xl">
+  @if (loading()) {
+    <p>{{ 'tournaments.calendar.loading' | transloco }}</p>
+  } @else if (errorKey(); as errorKey) {
+    <p-message severity="warn">
+      {{ errorKey | transloco }}
+    </p-message>
+  } @else {
+    <div class="flex flex-col gap-4">
+      <p-message severity="success">
+        {{ 'tournaments.calendar.ready' | transloco }}
+      </p-message>
+      <p class="m-0 text-[var(--p-text-muted-color)]">
+        {{ 'tournaments.calendar.readyDetail' | transloco }}
+      </p>
+      <div>
+        <p-button
+          icon="pi pi-download"
+          [label]="'tournaments.calendar.download' | transloco"
+          (onClick)="onDownload()"
+        />
+      </div>
+    </div>
+  }
+</div>

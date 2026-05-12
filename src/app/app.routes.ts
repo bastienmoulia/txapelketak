@@ -46,6 +46,14 @@ export const routes: Routes = [
           import('./tournaments/new/tournament-new').then((m) => m.TournamentNew),
       },
       {
+        path: ':tournamentId/calendar.ics',
+        title: 'routes.tournamentCalendar',
+        loadComponent: () =>
+          import('./tournaments/calendar/tournament-calendar-feed').then(
+            (m) => m.TournamentCalendarFeed,
+          ),
+      },
+      {
         path: ':tournamentId',
         title: tournamentDetailTitleResolver,
         loadChildren: () =>

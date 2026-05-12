@@ -14,6 +14,11 @@ service cloud.firestore {
         || value == 'archived';
     }
 
+    function isValidGameDuration(value) {
+      return value == null
+        || (value is int && value > 0 && value <= 1440);
+    }
+
     function isValidRole(value) {
       return value == 'admin' || value == 'organizer';
     }
@@ -23,12 +28,14 @@ service cloud.firestore {
 
       allow create: if request.resource.data.name is string
         && request.resource.data.description is string
+        && isValidGameDuration(request.resource.data.gameDurationMinutes)
         && isValidTournamentType(request.resource.data.type)
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;
 
       allow update: if request.resource.data.name is string
         && request.resource.data.description is string
+        && isValidGameDuration(request.resource.data.gameDurationMinutes)
         && isValidTournamentType(request.resource.data.type)
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;

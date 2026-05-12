@@ -30,6 +30,26 @@
     {{ 'tournaments.new.step1.descriptionHelp' | transloco }}
   </small>
 
+  <p-floatlabel variant="on">
+    <p-inputnumber
+      inputId="tournament-game-duration"
+      name="gameDurationMinutes"
+      [ngModel]="gameDurationMinutes()"
+      (ngModelChange)="gameDurationMinutes.set($event)"
+      [min]="1"
+      [max]="1440"
+      [style]="{ width: '100%' }"
+      [inputStyle]="{ width: '100%' }"
+      [disabled]="!isEditing()"
+    />
+    <label for="tournament-game-duration">{{
+      'admin.general.gameDurationMinutes' | transloco
+    }}</label>
+  </p-floatlabel>
+  <small class="text-[var(--p-text-muted-color)]">
+    {{ 'admin.general.gameDurationHelp' | transloco }}
+  </small>
+
   <div class="flex gap-2">
     @if (isEditing()) {
       <p-button
@@ -44,7 +64,7 @@
         icon="pi pi-save"
         [label]="'shared.actions.save' | transloco"
         [loading]="isSaving()"
-        [disabled]="!name()"
+        [disabled]="!name() || !gameDurationMinutes()"
       />
     } @else {
       <p-button
@@ -56,5 +76,32 @@
         (onClick)="onEdit()"
       />
     }
+  </div>
+
+  <div class="flex flex-col gap-2 pt-2">
+    <label class="text-sm font-medium" for="tournament-calendar-url">{{
+      'admin.general.calendarUrl' | transloco
+    }}</label>
+    <input
+      pInputText
+      id="tournament-calendar-url"
+      class="w-full"
+      [value]="calendarUrl()"
+      readonly
+    />
+    <small class="text-[var(--p-text-muted-color)]">
+      {{ 'admin.general.calendarHelp' | transloco }}
+    </small>
+    <div>
+      <a
+        pButton
+        class="inline-flex"
+        [href]="calendarUrl()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{ 'admin.general.openCalendar' | transloco }}
+      </a>
+    </div>
   </div>
 </form>

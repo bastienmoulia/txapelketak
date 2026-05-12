@@ -7,7 +7,8 @@
     "tournaments": "Tournois",
     "tournamentNew": "Créer un tournoi",
     "tournamentDetail": "Détail du tournoi",
-    "admin": "Administration"
+    "admin": "Administration",
+    "tournamentCalendar": "Calendrier du tournoi"
   },
   "header": {
     "theme": {
@@ -119,6 +120,15 @@
       },
       "waitingValidation": "L'administrateur doit valider ce tournoi avant qu'il puisse être visible. Merci de votre patience."
     },
+    "calendar": {
+      "loading": "Préparation du calendrier…",
+      "ready": "Le calendrier est prêt.",
+      "readyDetail": "Le téléchargement devrait démarrer automatiquement. Sinon, utilisez le bouton ci-dessous.",
+      "download": "Télécharger le calendrier",
+      "notFound": "Ce tournoi est introuvable.",
+      "noScheduledGames": "Aucune partie planifiée avec une date n'est disponible pour ce tournoi.",
+      "unavailable": "Le calendrier n'est pas disponible pour le moment."
+    },
     "types": {
       "unknown": "Type de tournoi inconnu"
     },
@@ -167,6 +177,11 @@
       "title": "Général",
       "name": "Nom du tournoi",
       "description": "Description",
+      "gameDurationMinutes": "Durée d'une partie (minutes)",
+      "gameDurationHelp": "Utilisée pour calculer la fin des évènements exportés au format calendrier.",
+      "calendarUrl": "URL du calendrier",
+      "calendarHelp": "Partagez cette URL pour ouvrir ou importer les parties planifiées dans une application de calendrier.",
+      "openCalendar": "Ouvrir le calendrier",
       "saved": "Tournoi mis à jour",
       "savedDetail": "Les informations du tournoi ont été enregistrées avec succès."
     },

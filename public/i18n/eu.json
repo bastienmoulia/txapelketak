@@ -7,7 +7,8 @@
     "tournaments": "Txapelketak",
     "tournamentNew": "Txapelketa sortu",
     "tournamentDetail": "Txapelketaren xehetasunak",
-    "admin": "Administrazioa"
+    "admin": "Administrazioa",
+    "tournamentCalendar": "Txapelketaren egutegia"
   },
   "header": {
     "theme": {
@@ -119,6 +120,15 @@
       },
       "waitingValidation": "Administratzaileak txapelketa hau balioztatu behar du ikusteko moduan egon aurretik. Eskerrik asko zure pazientziagatik."
     },
+    "calendar": {
+      "loading": "Egutegia prestatzen…",
+      "ready": "Egutegia prest dago.",
+      "readyDetail": "Deskarga automatikoki hasi beharko litzateke. Bestela, erabili beheko botoia.",
+      "download": "Deskargatu egutegia",
+      "notFound": "Txapelketa hau ez da aurkitu.",
+      "noScheduledGames": "Ez dago datadun partida programaturik txapelketa honetarako.",
+      "unavailable": "Egutegia ez dago erabilgarri une honetan."
+    },
     "types": {
       "unknown": "Txapelketa mota ezezaguna"
     },
@@ -167,6 +177,11 @@
       "title": "Orokorra",
       "name": "Txapelketaren izena",
       "description": "Deskribapena",
+      "gameDurationMinutes": "Partidaren iraupena (minutuak)",
+      "gameDurationHelp": "Egutegi formatuan esportatutako gertaeren amaiera kalkulatzeko erabiltzen da.",
+      "calendarUrl": "Egutegiaren URLa",
+      "calendarHelp": "Partekatu URL hau programatutako partidak egutegi aplikazio batean irekitzeko edo inportatzeko.",
+      "openCalendar": "Ireki egutegia",
       "saved": "Txapelketa eguneratua",
       "savedDetail": "Txapelketaren informazioa arrakastaz gorde da."
     },

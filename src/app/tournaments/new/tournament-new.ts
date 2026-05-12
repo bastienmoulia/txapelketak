@@ -153,6 +153,7 @@ export class TournamentNew {
       const tournament: Omit<Tournament, 'ref'> = {
         name: tournamentName,
         description: value.description ?? '',
+        gameDurationMinutes: 60,
         type: value.type as TournamentType,
         status: 'waitingValidation' as const,
         createdAt: new Date().toISOString(),

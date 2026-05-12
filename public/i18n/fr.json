@@ -223,7 +223,8 @@
       "comingSoon": "Bientôt disponible",
       "addPlayoffsComingSoon": "Cette fonctionnalité sera bientôt disponible.",
       "teamsUpdated": "Équipes mises à jour",
-      "teamsUpdatedDetail": "{{added}} équipe(s) ajoutée(s), {{removed}} équipe(s) retirée(s)"
+      "teamsUpdatedDetail": "{{added}} équipe(s) ajoutée(s), {{removed}} équipe(s) retirée(s)",
+      "teamsAddedToPouleDetail": "{{count}} équipe(s) ajoutée(s) à \"{{pouleName}}\"."
     },
     "games": {
       "addGame": "Ajouter une partie",

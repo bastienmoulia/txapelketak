@@ -400,7 +400,10 @@ export class PoulesTab {
             this.messageService.add({
               severity: 'success',
               summary: this.translocoService.translate('admin.poules.dialogAddPoule'),
-              detail: `${selectedTeamRefs.length} team(s) added to "${result.name}".`,
+              detail: this.translocoService.translate('admin.poules.teamsAddedToPouleDetail', {
+                count: selectedTeamRefs.length,
+                pouleName: result.name,
+              }),
             });
           })();
         }

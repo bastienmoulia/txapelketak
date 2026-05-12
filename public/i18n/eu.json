@@ -223,7 +223,8 @@
       "comingSoon": "Laster etorriko da",
       "addPlayoffsComingSoon": "Ezaugarri hau laster etorriko da.",
       "teamsUpdated": "Taldeak eguneratu egin dira",
-      "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira"
+      "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira",
+      "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora."
     },
     "games": {
       "addGame": "Partida gehitu",

@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { DocumentReference } from '@angular/fire/firestore';
 import { FirebaseService } from '../../shared/services/firebase.service';
-import { Tournament } from '../../home/tournament.interface';
 import { FinaleGame, parseFirestoreDate, Poule, Serie } from '../types/poules/poules';
 import { Team } from '../types/shared/teams/teams';
 import {

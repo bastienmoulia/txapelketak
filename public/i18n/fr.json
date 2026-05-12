@@ -126,7 +126,7 @@
       "tab": "Tableau de bord",
       "teams": "Équipes",
       "series": "Séries",
-      "poules": "Poules",
+      "phases": "Phases",
       "games": "Parties",
       "playedGames": "Parties jouées",
       "totalScoredPoints": "Points",
@@ -155,7 +155,7 @@
     "unknownType": "Type de tournoi inconnu",
     "tabs": {
       "series": "Séries",
-      "poules": "Poules",
+      "phases": "Phases",
       "teams": "Équipes",
       "games": "Parties",
       "users": "Utilisateurs",
@@ -173,6 +173,7 @@
     "poules": {
       "addSerie": "Ajouter une série",
       "addPoule": "Ajouter une poule",
+      "addPlayoffs": "Ajouter des playoffs",
       "addTeam": "Ajouter une équipe",
       "noSeriesOrPoules": "Aucune série ou poule disponible",
       "dialogAddSerie": "Ajouter une série",
@@ -182,6 +183,8 @@
       "dialogAddTeam": "Ajouter une équipe à la poule",
       "serieName": "Nom de la série",
       "pouleName": "Nom de la poule",
+      "teamsInPoule": "Équipes de la poule",
+      "noTeamsInPoule": "Aucune équipe dans cette poule",
       "selectTeam": "Sélectionner une équipe",
       "editSerieAria": "Modifier cette série",
       "deleteSerieAria": "Supprimer cette série",
@@ -216,7 +219,12 @@
         "won": "Parties gagnées",
         "pointsInLosses": "Pts (défaites)",
         "pointsConceded": "Pts concédés"
-      }
+      },
+      "comingSoon": "Bientôt disponible",
+      "addPlayoffsComingSoon": "Cette fonctionnalité sera bientôt disponible.",
+      "teamsUpdated": "Équipes mises à jour",
+      "teamsUpdatedDetail": "{{added}} équipe(s) ajoutée(s), {{removed}} équipe(s) retirée(s)",
+      "teamsAddedToPouleDetail": "{{count}} équipe(s) ajoutée(s) à \"{{pouleName}}\"."
     },
     "games": {
       "addGame": "Ajouter une partie",

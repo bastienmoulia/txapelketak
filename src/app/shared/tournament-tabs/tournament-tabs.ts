@@ -20,15 +20,8 @@ export class TournamentTabs {
       { route: 'dashboard', label: 'tournaments.dashboard.tab' },
       { route: 'games', label: 'admin.tabs.games' },
       { route: 'teams', label: 'admin.tabs.teams' },
+      { route: 'phases', label: 'admin.tabs.phases' },
     ];
-
-    const tournamentType = this.tournament().type;
-
-    if (tournamentType === 'poules') {
-      tabs.push({ route: 'poules', label: 'admin.tabs.poules' });
-    } else if (['poules_finale', 'finale'].includes(tournamentType)) {
-      tabs.push({ route: 'poules', label: 'admin.tabs.series' });
-    }
 
     if (this.role() === 'admin') {
       tabs.push({ route: 'settings', label: 'admin.tabs.settings' });

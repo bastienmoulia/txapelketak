@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { AdminPage } from './pages/admin.page';
-import { PoulesPage } from './pages/poules.page';
+import { PhasesPage } from './pages/phases.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
 
 /**
@@ -17,6 +17,10 @@ test.describe.serial('Admin – series & poules management', () => {
   const pouleEditSource = `Poule Edit Source ${timestamp}`;
   const pouleEditTarget = `Poule Edit Target ${timestamp}`;
   const pouleEditSerie = `Série Poule Edit ${timestamp}`;
+  const pouleTeamsSerie = `Série Poule Teams ${timestamp}`;
+  const pouleTeamsName = `Poule Teams ${timestamp}`;
+  const pouleTeamToAdd = 'Admin Seed Team Delete';
+  const pouleTeamToRemove = 'Admin Seed Team One';
   const pouleDeleteSerie = 'Admin Seed Poule Delete Serie';
   const pouleDeleteName = 'Admin Seed Poule Delete B';
   const serieDeleteOnly = 'Admin Seed Serie Delete';
@@ -44,8 +48,8 @@ test.describe.serial('Admin – series & poules management', () => {
       await adminPage.goto(adminUrl);
       await adminPage.importYamlFixture(fixturePath);
 
-      const poulesPage = new PoulesPage(page);
-      await adminPage.clickTab('Poules');
+      const poulesPage = new PhasesPage(page);
+      await adminPage.clickTab('Phases');
       await expect(poulesPage.seriePanel(pouleDeleteSerie)).toBeVisible();
       await expect(poulesPage.seriePanel(serieDeleteOnly)).toBeVisible();
     } finally {
@@ -70,9 +74,9 @@ test.describe.serial('Admin – series & poules management', () => {
 
   test('should add a serie and poules', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Poules');
+    await adminPage.clickTab('Phases');
 
     await test.step('add serie', async () => {
       await poulesPage.addSerie(serieAddName);
@@ -92,9 +96,9 @@ test.describe.serial('Admin – series & poules management', () => {
 
   test('should edit a poule', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Poules');
+    await adminPage.clickTab('Phases');
 
     await poulesPage.addSerie(pouleEditSerie);
     await poulesPage.addPoule(pouleEditSerie, pouleEditSource);
@@ -105,11 +109,38 @@ test.describe.serial('Admin – series & poules management', () => {
     await expect(await poulesPage.pouleCard(pouleEditSerie, pouleEditSource)).toHaveCount(0);
   });
 
+  test('should manage poule teams through edit modal', async ({ page }) => {
+    const adminPage = new AdminPage(page);
+    const poulesPage = new PhasesPage(page);
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Phases');
+
+    await poulesPage.addSerie(pouleTeamsSerie);
+    await poulesPage.addPoule(pouleTeamsSerie, pouleTeamsName);
+
+    await poulesPage.addTeamToPouleFromModal(pouleTeamsSerie, pouleTeamsName, pouleTeamToAdd);
+    await poulesPage.addTeamToPouleFromModal(pouleTeamsSerie, pouleTeamsName, pouleTeamToRemove);
+
+    await poulesPage.ensureSerieExpanded(pouleTeamsSerie);
+    const rowsAfterAdd = poulesPage.standingsRows(pouleTeamsSerie, pouleTeamsName);
+    await expect(rowsAfterAdd).toHaveCount(2);
+
+    await poulesPage.removeTeamFromPouleFromModal(
+      pouleTeamsSerie,
+      pouleTeamsName,
+      pouleTeamToRemove,
+    );
+
+    await poulesPage.ensureSerieExpanded(pouleTeamsSerie);
+    const rowsAfterRemove = poulesPage.standingsRows(pouleTeamsSerie, pouleTeamsName);
+    await expect(rowsAfterRemove).toHaveCount(1);
+  });
+
   test('should delete a poule', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Poules');
+    await adminPage.clickTab('Phases');
 
     await expect(await poulesPage.pouleCard(pouleDeleteSerie, pouleDeleteName)).toBeVisible();
     await poulesPage.deletePoule(pouleDeleteSerie, pouleDeleteName);
@@ -118,9 +149,9 @@ test.describe.serial('Admin – series & poules management', () => {
 
   test('should edit a serie', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Poules');
+    await adminPage.clickTab('Phases');
 
     await poulesPage.addSerie(serieEditSource);
     await expect(poulesPage.seriePanel(serieEditSource)).toBeVisible();
@@ -132,9 +163,9 @@ test.describe.serial('Admin – series & poules management', () => {
 
   test('should delete a serie', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    const poulesPage = new PoulesPage(page);
+    const poulesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Poules');
+    await adminPage.clickTab('Phases');
 
     await poulesPage.deleteSerie(serieDeleteOnly);
     await expect(poulesPage.seriePanel(serieDeleteOnly)).not.toBeVisible();

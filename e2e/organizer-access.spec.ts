@@ -73,7 +73,7 @@ test.describe.serial('Organizer – access & tab visibility', () => {
     await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
   });
 
-  test('should show Dashboard, Parties, Équipes and Poules tabs to the organizer', async ({
+  test('should show Dashboard, Parties, Équipes and Phases tabs to the organizer', async ({
     page,
   }) => {
     const adminPage = new AdminPage(page);
@@ -82,7 +82,7 @@ test.describe.serial('Organizer – access & tab visibility', () => {
     await expect(page.getByRole('tab', { name: 'Tableau de bord' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Parties' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Équipes' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Poules' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Phases' })).toBeVisible();
   });
 
   test('should NOT show the Paramètres tab to the organizer', async ({ page }) => {

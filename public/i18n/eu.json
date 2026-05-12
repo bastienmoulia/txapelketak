@@ -126,7 +126,7 @@
       "tab": "Aginte-ohola",
       "teams": "Taldeak",
       "series": "Serieak",
-      "poules": "Taldekatzeak",
+      "phases": "Faseak",
       "games": "Partidak",
       "playedGames": "Jokatutako partidak",
       "totalScoredPoints": "Puntuak",
@@ -155,7 +155,7 @@
     "unknownType": "Txapelketa mota ezezaguna",
     "tabs": {
       "series": "Serieak",
-      "poules": "Multzoak",
+      "phases": "Faseak",
       "teams": "Taldeak",
       "games": "Partidak",
       "users": "Erabiltzaileak",
@@ -173,6 +173,7 @@
     "poules": {
       "addSerie": "Serie bat gehitu",
       "addPoule": "Multzo bat gehitu",
+      "addPlayoffs": "Playoffak gehitu",
       "addTeam": "Talde bat gehitu",
       "noSeriesOrPoules": "Ez dago serie edo multzorik eskuragarri",
       "dialogAddSerie": "Serie bat gehitu",
@@ -182,6 +183,8 @@
       "dialogAddTeam": "Talde bat multzora gehitu",
       "serieName": "Seriearen izena",
       "pouleName": "Multzoaren izena",
+      "teamsInPoule": "Multzoko taldeak",
+      "noTeamsInPoule": "Ez dago talderik multzo honetan",
       "selectTeam": "Talde bat aukeratu",
       "editSerieAria": "Serie hau editatu",
       "deleteSerieAria": "Serie hau ezabatu",
@@ -216,7 +219,12 @@
         "won": "Irabazitako partidak",
         "pointsInLosses": "Ptu. (galerak)",
         "pointsConceded": "Ptu. kontrako"
-      }
+      },
+      "comingSoon": "Laster etorriko da",
+      "addPlayoffsComingSoon": "Ezaugarri hau laster etorriko da.",
+      "teamsUpdated": "Taldeak eguneratu egin dira",
+      "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira",
+      "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora."
     },
     "games": {
       "addGame": "Partida gehitu",

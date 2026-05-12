@@ -212,7 +212,7 @@ export class TournamentActionsService {
     });
   }
 
-  async savePoule(event: SavePouleEvent): Promise<void> {
+  async savePoule(event: SavePouleEvent): Promise<DocumentReference> {
     if (event.ref) {
       await this.firebaseService.updatePouleInSerie(event.ref, event.name);
       this.messageService.add({
@@ -220,13 +220,15 @@ export class TournamentActionsService {
         summary: this.translocoService.translate('admin.poules.pouleEdited'),
         detail: this.translocoService.translate('admin.poules.pouleEditedDetail'),
       });
+      return event.ref;
     } else {
-      await this.firebaseService.addPouleToSerie(event.serieRef, event.name);
+      const pouleRef = await this.firebaseService.addPouleToSerie(event.serieRef, event.name);
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.pouleAdded'),
         detail: this.translocoService.translate('admin.poules.pouleAddedDetail'),
       });
+      return pouleRef;
     }
   }
 
@@ -248,6 +250,10 @@ export class TournamentActionsService {
     });
   }
 
+  async addTeamToPouleSilent(event: TeamInPouleEvent): Promise<void> {
+    await this.firebaseService.addTeamRefToPoule(event.poule.ref, event.teamRef);
+  }
+
   async removeTeamFromPoule(event: TeamInPouleEvent): Promise<void> {
     await this.firebaseService.removeTeamRefFromPoule(event.poule.ref, event.teamRef);
     this.messageService.add({
@@ -255,6 +261,10 @@ export class TournamentActionsService {
       summary: this.translocoService.translate('admin.poules.teamRemoved'),
       detail: this.translocoService.translate('admin.poules.teamRemovedDetail'),
     });
+  }
+
+  async removeTeamFromPouleSilent(event: TeamInPouleEvent): Promise<void> {
+    await this.firebaseService.removeTeamRefFromPoule(event.poule.ref, event.teamRef);
   }
 
   // ── Game actions ───────────────────────────────────────────────

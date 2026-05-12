@@ -2,7 +2,6 @@ import { Component, computed, effect, inject, input, signal } from '@angular/cor
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { TabsModule } from 'primeng/tabs';
-import { Team } from '../teams/teams';
 import { Poule, Serie, FinaleGame } from '../../poules/poules';
 import { NgTemplateOutlet } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
@@ -10,15 +9,15 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Message } from 'primeng/message';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { SerieFormDialog } from './serie-form-dialog/serie-form-dialog';
 import { PouleFormDialog } from './poule-form-dialog/poule-form-dialog';
-import { TeamPouleDialog } from './team-poule-dialog/team-poule-dialog';
 import {
   FinaleGameFormDialog,
   SaveFinaleGameEvent,
@@ -38,6 +37,7 @@ export interface SavePouleEvent {
   serieRef: DocumentReference;
   name: string;
   ref?: DocumentReference;
+  teamRefs?: DocumentReference[];
 }
 
 export interface DeletePouleEvent {
@@ -95,8 +95,9 @@ export interface BracketRound {
     TooltipModule,
     FormsModule,
     Select,
+    ToastModule,
   ],
-  providers: [DialogService, ConfirmationService],
+  providers: [DialogService, ConfirmationService, MessageService],
   templateUrl: './poules-tab.html',
   styleUrl: './poules-tab.css',
 })
@@ -104,6 +105,7 @@ export class PoulesTab {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
   private poulesStore = inject(PoulesStore);
   private authStore = inject(AuthStore);
   private tournamentActions = inject(TournamentActionsService);
@@ -199,14 +201,6 @@ export class PoulesTab {
       if (b.pointsInLosses !== a.pointsInLosses) return b.pointsInLosses - a.pointsInLosses;
       return a.pointsConceded - b.pointsConceded;
     });
-  }
-
-  getTeamName(ref: DocumentReference, teams: Team[]): string {
-    if (!ref) {
-      return 'Unknown Team';
-    }
-    const team = teams.find((t) => t.ref.id === ref.id);
-    return team ? team.name : 'Unknown Team';
   }
 
   getExpectedGamesCount = (poule: Poule): number => {
@@ -365,18 +359,65 @@ export class PoulesTab {
       header: this.translocoService.translate('admin.poules.dialogAddPoule'),
       modal: true,
       closable: true,
-      width: 'min(30rem, 100%)',
-      data: { isEditing: false, pouleName: '', editingPoule: null, serieRef },
+      width: 'min(50rem, 100%)',
+      data: { isEditing: false, pouleName: '', editingPoule: null, serieRef, teams: this.teams() },
     });
     dialogRef?.onClose.subscribe(
       (
-        result: { serieRef: DocumentReference; name: string; ref?: DocumentReference } | undefined,
+        result:
+          | {
+              serieRef: DocumentReference;
+              name: string;
+              ref?: DocumentReference;
+              teamRefs?: DocumentReference[];
+            }
+          | undefined,
       ) => {
         if (result) {
-          void this.tournamentActions.savePoule(result);
+          void (async () => {
+            const createdPouleRef = await this.tournamentActions.savePoule({
+              serieRef: result.serieRef,
+              name: result.name,
+              ref: result.ref,
+            });
+
+            const selectedTeamRefs = result.teamRefs ?? [];
+            if (selectedTeamRefs.length === 0) return;
+
+            const createdPoule: Poule = {
+              ref: createdPouleRef,
+              name: result.name,
+              refTeams: [],
+            };
+
+            for (const teamRef of selectedTeamRefs) {
+              await this.tournamentActions.addTeamToPouleSilent({
+                poule: createdPoule,
+                teamRef,
+              });
+            }
+
+            this.messageService.add({
+              severity: 'success',
+              summary: this.translocoService.translate('admin.poules.dialogAddPoule'),
+              detail: this.translocoService.translate('admin.poules.teamsAddedToPouleDetail', {
+                count: selectedTeamRefs.length,
+                pouleName: result.name,
+              }),
+            });
+          })();
         }
       },
     );
+  }
+
+  onAddPlayoffs(serieRef: DocumentReference): void {
+    console.log('Add playoffs for serie', serieRef);
+    this.messageService.add({
+      severity: 'info',
+      summary: this.translocoService.translate('admin.poules.comingSoon'),
+      detail: this.translocoService.translate('admin.poules.addPlayoffsComingSoon'),
+    });
   }
 
   onEditPoule(serieRef: DocumentReference, poule: Poule): void {
@@ -384,13 +425,24 @@ export class PoulesTab {
       header: this.translocoService.translate('admin.poules.dialogEditPoule'),
       modal: true,
       closable: true,
-      width: 'min(30rem, 100%)',
-      data: { isEditing: true, pouleName: poule.name, editingPoule: poule, serieRef },
+      width: 'min(50rem, 100%)',
+      data: {
+        isEditing: true,
+        pouleName: poule.name,
+        editingPoule: poule,
+        serieRef,
+        teams: this.teams(),
+      },
     });
     dialogRef?.onClose.subscribe(
       (
         result:
-          | { serieRef: DocumentReference; name: string; ref?: DocumentReference }
+          | {
+              serieRef: DocumentReference;
+              name: string;
+              ref?: DocumentReference;
+              teamRefs?: DocumentReference[];
+            }
           | { action: 'delete' }
           | undefined,
       ) => {
@@ -399,11 +451,66 @@ export class PoulesTab {
           this.onDeletePoule(serieRef, poule);
           return;
         }
-        void this.tournamentActions.savePoule(
-          result as { serieRef: DocumentReference; name: string; ref?: DocumentReference },
-        );
+
+        const saveResult = result as {
+          serieRef: DocumentReference;
+          name: string;
+          ref?: DocumentReference;
+          teamRefs?: DocumentReference[];
+        };
+
+        void this.tournamentActions.savePoule({
+          serieRef: saveResult.serieRef,
+          name: saveResult.name,
+          ref: saveResult.ref,
+        });
+
+        const initialTeamRefs = poule.refTeams ?? [];
+        const nextTeamRefs = saveResult.teamRefs ?? initialTeamRefs;
+
+        this.applyPouleTeamChanges(poule, initialTeamRefs, nextTeamRefs);
       },
     );
+  }
+
+  private applyPouleTeamChanges(
+    poule: Poule,
+    initialTeamRefs: DocumentReference[],
+    nextTeamRefs: DocumentReference[],
+  ): void {
+    const initialById = new Map(initialTeamRefs.map((teamRef) => [teamRef.id, teamRef]));
+    const nextById = new Map(nextTeamRefs.map((teamRef) => [teamRef.id, teamRef]));
+
+    let addedCount = 0;
+    let removedCount = 0;
+
+    void (async () => {
+      for (const [teamId, teamRef] of nextById) {
+        if (!initialById.has(teamId)) {
+          await this.tournamentActions.addTeamToPouleSilent({ poule, teamRef });
+          addedCount++;
+        }
+      }
+
+      for (const [teamId, teamRef] of initialById) {
+        if (!nextById.has(teamId)) {
+          await this.tournamentActions.removeTeamFromPouleSilent({ poule, teamRef });
+          removedCount++;
+        }
+      }
+
+      // Show grouped toast if teams were modified
+      if (addedCount > 0 || removedCount > 0) {
+        this.messageService.add({
+          severity: 'success',
+          summary: this.translocoService.translate('admin.poules.teamsUpdated'),
+          detail: this.translocoService.translate('admin.poules.teamsUpdatedDetail', {
+            added: addedCount,
+            removed: removedCount,
+          }),
+        });
+      }
+    })();
   }
 
   onDeletePoule(serieRef: DocumentReference, poule: Poule): void {
@@ -419,39 +526,6 @@ export class PoulesTab {
       rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         void this.tournamentActions.deletePoule({ serieRef, poule });
-      },
-    });
-  }
-
-  onAddTeamToPoule(poule: Poule): void {
-    const dialogRef = this.dialogService.open(TeamPouleDialog, {
-      header: this.translocoService.translate('admin.poules.dialogAddTeam'),
-      modal: true,
-      closable: true,
-      width: 'min(30rem, 100%)',
-      data: { poule, teams: this.teams() },
-    });
-    dialogRef?.onClose.subscribe((result: DocumentReference[] | undefined) => {
-      if (result && result.length > 0) {
-        for (const teamRef of result) {
-          void this.tournamentActions.addTeamToPoule({ poule, teamRef });
-        }
-      }
-    });
-  }
-
-  onRemoveTeamFromPoule(poule: Poule, teamRef: DocumentReference): void {
-    const teamName = this.getTeamName(teamRef, this.teams());
-    this.confirmationService.confirm({
-      header: this.translocoService.translate('shared.confirm.deleteHeader'),
-      message: this.translocoService.translate('shared.confirm.deleteMessage', { name: teamName }),
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
-      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => {
-        void this.tournamentActions.removeTeamFromPoule({ poule, teamRef });
       },
     });
   }

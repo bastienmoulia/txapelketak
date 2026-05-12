@@ -23,6 +23,11 @@ export const tournamentAdminRoutes: Routes = [
       },
       {
         path: 'poules',
+        redirectTo: 'phases',
+        pathMatch: 'full',
+      },
+      {
+        path: 'phases',
         loadComponent: () =>
           import('../tournaments/types/shared/poules-tab/poules-tab').then((m) => m.PoulesTab),
       },

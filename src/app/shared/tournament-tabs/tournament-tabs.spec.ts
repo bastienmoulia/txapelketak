@@ -45,30 +45,30 @@ describe('TournamentTabs', () => {
       expect(routes).toContain('teams');
     });
 
-    it('should include poules tab for type "poules"', () => {
+    it('should include phases tab for type "poules"', () => {
       fixture.componentRef.setInput('tournament', createTournament('poules'));
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).toContain('poules');
+      expect(routes).toContain('phases');
       expect(routes).not.toContain('finale');
     });
 
-    it('should include poules tab for type "finale"', () => {
+    it('should include phases tab for type "finale"', () => {
       fixture.componentRef.setInput('tournament', createTournament('finale'));
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).toContain('poules');
+      expect(routes).toContain('phases');
       expect(routes).not.toContain('finale');
     });
 
-    it('should include poules tab for type "poules_finale"', () => {
+    it('should include phases tab for type "poules_finale"', () => {
       fixture.componentRef.setInput('tournament', createTournament('poules_finale'));
       fixture.detectChanges();
 
       const routes = component.tabs().map((t) => t.route);
-      expect(routes).toContain('poules');
+      expect(routes).toContain('phases');
       expect(routes).not.toContain('finale');
     });
 

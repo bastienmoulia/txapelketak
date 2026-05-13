@@ -1,5 +1,5 @@
 import type { DocumentReference } from '@angular/fire/firestore';
-import type { PoulesData } from '../tournaments/types/poules/poules';
+import type { PoulesData } from '../tournaments/poules.model';
 
 export interface Tournament<T extends TournamentType = TournamentType> {
   ref: DocumentReference;

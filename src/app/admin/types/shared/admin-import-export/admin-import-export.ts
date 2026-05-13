@@ -10,8 +10,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
-import { Team } from '../../../../tournaments/types/shared/teams/teams';
-import { Game, Serie, TimeSlot } from '../../../../tournaments/types/poules/poules.model';
+import { Game, Serie, TimeSlot } from '../../../../tournaments/poules.model';
+import { Team } from '../../../../tournaments/shared/teams/teams';
 
 export interface TournamentYamlTeam {
   id: string;

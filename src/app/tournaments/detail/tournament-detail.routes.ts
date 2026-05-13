@@ -13,13 +13,11 @@ export const tournamentDetailRoutes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('../types/shared/dashboard/tournament-dashboard').then(
-            (m) => m.TournamentDashboard,
-          ),
+          import('../shared/dashboard/tournament-dashboard').then((m) => m.TournamentDashboard),
       },
       {
         path: 'teams',
-        loadComponent: () => import('../types/shared/teams/teams').then((m) => m.Teams),
+        loadComponent: () => import('../shared/teams/teams').then((m) => m.Teams),
       },
       {
         path: 'poules',
@@ -28,11 +26,11 @@ export const tournamentDetailRoutes: Routes = [
       },
       {
         path: 'phases',
-        loadComponent: () => import('../types/shared/phases/phases').then((m) => m.Phases),
+        loadComponent: () => import('../shared/phases/phases').then((m) => m.Phases),
       },
       {
         path: 'games',
-        loadComponent: () => import('../types/shared/games/games').then((m) => m.Games),
+        loadComponent: () => import('../shared/games/games').then((m) => m.Games),
       },
     ],
   },

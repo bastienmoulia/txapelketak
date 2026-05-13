@@ -2,16 +2,16 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
-import { Team } from '../tournaments/types/shared/teams/teams';
+import { FirebaseService } from '../shared/services/firebase.service';
 import {
-  FinaleGame,
-  Game,
-  parseFirestoreDate,
-  Poule,
   Serie,
   TimeSlot,
-} from '../tournaments/types/poules/poules.model';
-import { FirebaseService } from '../shared/services/firebase.service';
+  Poule,
+  Game,
+  parseFirestoreDate,
+  FinaleGame,
+} from '../tournaments/poules.model';
+import { Team } from '../tournaments/shared/teams/teams';
 
 interface PoulesStoreState {
   teams: Team[];

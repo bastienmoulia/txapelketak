@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { TooltipModule } from 'primeng/tooltip';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
-import { TimeSlot } from '../../../../tournaments/types/poules/poules.model';
+import { TimeSlot } from '../../../../tournaments/poules.model';
 import { Tournament } from '../../../../home/tournament.interface';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { DocumentReference } from '@angular/fire/firestore';

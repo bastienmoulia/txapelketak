@@ -170,13 +170,16 @@ describe('PouleFormDialog (editing)', () => {
   });
 
   it('should add multiple selected teams at once', () => {
-    component.pendingTeamRef.set([teamCRef]);
+    const teamDRef = { id: 'team-d' } as DocumentReference;
+
+    component.pendingTeamRef.set([teamCRef, teamDRef]);
     component.onAddSelectedTeam();
 
     expect(component.selectedTeamRefs().map((ref) => ref.id)).toEqual([
       'team-a',
       'team-b',
       'team-c',
+      'team-d',
     ]);
     expect(component.pendingTeamRef()).toEqual([]);
   });

@@ -356,6 +356,7 @@ export class TournamentActionsService {
       event.name,
       event.size,
       event.orderedTeamRefs,
+      event.matchOrganization,
     );
     const count = event.size - 1;
     this.messageService.add({

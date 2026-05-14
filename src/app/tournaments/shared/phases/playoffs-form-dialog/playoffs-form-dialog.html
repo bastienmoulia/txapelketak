@@ -80,6 +80,25 @@
         <p-message severity="info" class="w-full mt-2" data-testid="playoffs-dialog-bracket-size">
           {{ 'playoffs.bracketSize' | transloco: { size: bracketSize() } }}
         </p-message>
+
+        <div class="mt-4 flex flex-col gap-2" data-testid="playoffs-dialog-match-organization">
+          <label class="text-sm font-medium" for="playoffs-match-organization">
+            {{ 'playoffs.matchOrganization.label' | transloco }}
+          </label>
+          <p-selectbutton
+            id="playoffs-match-organization"
+            [options]="matchOrganizationOptions()"
+            [ngModel]="matchOrganization()"
+            (ngModelChange)="matchOrganization.set($event)"
+            optionLabel="label"
+            optionValue="value"
+            [allowEmpty]="false"
+            data-testid="playoffs-dialog-match-organization-select"
+          />
+          <small class="text-surface-500">
+            {{ 'playoffs.matchOrganization.help' | transloco }}
+          </small>
+        </div>
       }
     </div>
 

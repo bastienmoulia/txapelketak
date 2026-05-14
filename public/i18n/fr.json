@@ -450,6 +450,14 @@
     "step2Title": "Aperçu de l'arbre",
     "noTeamsSelected": "Aucune équipe sélectionnée",
     "bracketSize": "Taille du bracket : {{size}} équipes",
+    "matchOrganization": {
+      "label": "Organisation des matchs",
+      "help": "Linéaire: 1 vs 2, 3 vs 4. Compétition: 1 vs N, 2 vs N-1.",
+      "options": {
+        "linear": "Linéaire",
+        "competition": "Compétition"
+      }
+    },
     "bye": "Exempt",
     "seed": "Tête de série {{n}}",
     "generated": "Playoffs générés",

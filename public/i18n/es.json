@@ -450,6 +450,14 @@
     "step2Title": "Vista previa del cuadro",
     "noTeamsSelected": "No hay equipos seleccionados",
     "bracketSize": "Tamaño del cuadro: {{size}} equipos",
+    "matchOrganization": {
+      "label": "Organización de los partidos",
+      "help": "Lineal: 1 vs 2, 3 vs 4. Competición: 1 vs N, 2 vs N-1.",
+      "options": {
+        "linear": "Lineal",
+        "competition": "Competición"
+      }
+    },
     "bye": "Exento",
     "seed": "Cabeza de serie {{n}}",
     "generated": "Playoffs generados",

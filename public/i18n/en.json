@@ -450,6 +450,14 @@
     "step2Title": "Bracket preview",
     "noTeamsSelected": "No teams selected",
     "bracketSize": "Bracket size: {{size}} teams",
+    "matchOrganization": {
+      "label": "Match organization",
+      "help": "Linear: 1 vs 2, 3 vs 4. Competition: 1 vs N, 2 vs N-1.",
+      "options": {
+        "linear": "Linear",
+        "competition": "Competition"
+      }
+    },
     "bye": "Bye",
     "seed": "Seed {{n}}",
     "generated": "Playoffs generated",

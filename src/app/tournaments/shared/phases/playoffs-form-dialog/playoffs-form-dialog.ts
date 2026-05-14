@@ -8,16 +8,20 @@ import { Message } from 'primeng/message';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { OrderListModule } from 'primeng/orderlist';
+import { SelectButton } from 'primeng/selectbutton';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Team } from '../../teams/teams';
 import { KeyValue } from '@angular/common';
+
+export type PlayoffsMatchOrganization = 'linear' | 'competition';
 
 export interface SavePlayoffsEvent {
   serieRef: DocumentReference;
   name: string;
   orderedTeamRefs: DocumentReference[];
   size: number;
+  matchOrganization: PlayoffsMatchOrganization;
 }
 
 interface PlayoffsFormDialogData {
@@ -49,6 +53,24 @@ function getRoundLabel(size: number): string {
   return `finale.rounds.${size}`;
 }
 
+function getFirstRoundPairingIndexes(
+  bracketSize: number,
+  matchOrganization: PlayoffsMatchOrganization,
+): { team1Index: number; team2Index: number }[] {
+  const matchCount = bracketSize / 2;
+  if (matchOrganization === 'competition') {
+    return Array.from({ length: matchCount }, (_, index) => ({
+      team1Index: index,
+      team2Index: bracketSize - 1 - index,
+    }));
+  }
+
+  return Array.from({ length: matchCount }, (_, index) => ({
+    team1Index: index * 2,
+    team2Index: index * 2 + 1,
+  }));
+}
+
 @Component({
   selector: 'app-playoffs-form-dialog',
   imports: [
@@ -61,6 +83,7 @@ function getRoundLabel(size: number): string {
     Message,
     TooltipModule,
     OrderListModule,
+    SelectButton,
   ],
   templateUrl: './playoffs-form-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -80,6 +103,18 @@ export class PlayoffsFormDialog {
   playoffsName = signal('');
   selectedTeams = signal<KeyValue<string, string>[]>([]);
   pendingTeamRef = signal<string[]>([]);
+  matchOrganization = signal<PlayoffsMatchOrganization>('linear');
+
+  matchOrganizationOptions = computed(() => [
+    {
+      label: this.translocoService.translate('playoffs.matchOrganization.options.linear'),
+      value: 'linear' as const,
+    },
+    {
+      label: this.translocoService.translate('playoffs.matchOrganization.options.competition'),
+      value: 'competition' as const,
+    },
+  ]);
 
   availableTeams = computed<KeyValue<string, string>[]>(() => {
     const selectedIds = new Set(this.selectedTeams().map((t) => t.key));
@@ -97,6 +132,7 @@ export class PlayoffsFormDialog {
   bracketPreview = computed((): BracketPreviewRound[] => {
     const teams = this.selectedTeams();
     const size = this.bracketSize();
+    const firstRoundPairings = getFirstRoundPairingIndexes(size, this.matchOrganization());
     const rounds: BracketPreviewRound[] = [];
 
     // Generate all rounds from first round (largest) down to final
@@ -110,9 +146,9 @@ export class PlayoffsFormDialog {
 
       for (let matchNumber = 1; matchNumber <= matchCount; matchNumber++) {
         if (prevRoundLabel === null) {
-          // First round: assign teams linearly
-          const team1Index = (matchNumber - 1) * 2;
-          const team2Index = (matchNumber - 1) * 2 + 1;
+          const pairing = firstRoundPairings[matchNumber - 1];
+          const team1Index = pairing.team1Index;
+          const team2Index = pairing.team2Index;
           const team1 = teams[team1Index];
           const team2 = teams[team2Index];
           const team1Name = team1?.value ?? this.translocoService.translate('playoffs.bye');
@@ -204,13 +240,15 @@ export class PlayoffsFormDialog {
   onSave(): void {
     const name = this.playoffsName().trim();
     if (!name || this.selectedTeams().length === 0) return;
+    const teamById = new Map(this.data.teams.map((team) => [team.ref.id, team.ref]));
     const result: SavePlayoffsEvent = {
       serieRef: this.data.serieRef,
       name,
-      orderedTeamRefs: this.data.teams
-        .filter((t) => this.selectedTeams().some((st) => st.key === t.ref.id))
-        .map((t) => t.ref),
+      orderedTeamRefs: this.selectedTeams()
+        .map((team) => teamById.get(team.key))
+        .filter((teamRef): teamRef is DocumentReference => teamRef !== undefined),
       size: this.bracketSize(),
+      matchOrganization: this.matchOrganization(),
     };
     this.dialogRef.close(result);
   }

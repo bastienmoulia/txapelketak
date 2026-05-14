@@ -23,6 +23,7 @@ import { Tournament, TournamentStatus, User } from '../../home/tournament.interf
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 import { Game, TimeSlot, FinaleGame } from '../../tournaments/poules.model';
 import { Team } from '../../tournaments/shared/teams/teams';
+import type { PlayoffsMatchOrganization } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -766,6 +767,7 @@ export class FirebaseService {
     serieName: string,
     bracketSize: number,
     orderedTeamRefs: DocumentReference[],
+    matchOrganization: PlayoffsMatchOrganization,
   ): Promise<void> {
     console.debug(`[Firestore] generatePlayoffsForSerie: bracketSize=${bracketSize}`);
     await this.deleteFinaleGamesForSerie(serieRef);
@@ -792,9 +794,18 @@ export class FirebaseService {
           gameData['team1Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber - 1}`;
           gameData['team2Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber}`;
         } else {
-          // First round: assign seeded teams linearly (match j → teams[2j-2] vs teams[2j-1])
-          const team1Ref = orderedTeamRefs[(matchNumber - 1) * 2] ?? null;
-          const team2Ref = orderedTeamRefs[(matchNumber - 1) * 2 + 1] ?? null;
+          const linearTeam1Index = (matchNumber - 1) * 2;
+          const linearTeam2Index = (matchNumber - 1) * 2 + 1;
+          const competitionTeam1Index = matchNumber - 1;
+          const competitionTeam2Index = roundSize - matchNumber;
+
+          const team1Index =
+            matchOrganization === 'competition' ? competitionTeam1Index : linearTeam1Index;
+          const team2Index =
+            matchOrganization === 'competition' ? competitionTeam2Index : linearTeam2Index;
+
+          const team1Ref = orderedTeamRefs[team1Index] ?? null;
+          const team2Ref = orderedTeamRefs[team2Index] ?? null;
           if (team1Ref) gameData['refTeam1'] = team1Ref;
           if (team2Ref) gameData['refTeam2'] = team2Ref;
         }

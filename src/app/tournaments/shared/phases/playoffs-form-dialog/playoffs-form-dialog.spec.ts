@@ -61,6 +61,10 @@ describe('PlayoffsFormDialog', () => {
     expect(component.currentStep()).toBe(1);
   });
 
+  it('should default match organization to linear', () => {
+    expect(component.matchOrganization()).toBe('linear');
+  });
+
   it('should close dialog on cancel', () => {
     component.onCancel();
     expect(mockRef.close).toHaveBeenCalledWith(undefined);
@@ -177,6 +181,19 @@ describe('PlayoffsFormDialog', () => {
     expect(result.serieRef).toBeDefined();
     expect(result.orderedTeamRefs).toHaveLength(2);
     expect(result.size).toBe(2);
+    expect(result.matchOrganization).toBe('linear');
+  });
+
+  it('should keep selected team order in save payload', () => {
+    component.playoffsName.set('My Playoffs');
+    component.matchOrganization.set('competition');
+    component.selectedTeams.set([asSelectedTeam(teams[2]), asSelectedTeam(teams[0])]);
+    component.onSave();
+
+    const result = mockRef.close.mock.calls[0][0];
+    expect(result.orderedTeamRefs[0].id).toBe(teamCRef.id);
+    expect(result.orderedTeamRefs[1].id).toBe(teamARef.id);
+    expect(result.matchOrganization).toBe('competition');
   });
 
   it('should compute bracket preview for first round with actual teams', () => {
@@ -202,6 +219,19 @@ describe('PlayoffsFormDialog', () => {
     expect(firstRound).toBeDefined();
     expect(firstRound!.matches).toHaveLength(2);
     expect(firstRound!.matches[1].isBye).toBe(true);
+  });
+
+  it('should compute first round in competition mode', () => {
+    component.matchOrganization.set('competition');
+    component.selectedTeams.set(teams.map(asSelectedTeam));
+
+    const preview = component.bracketPreview();
+    const firstRound = preview.find((r) => r.roundOrder === 4);
+    expect(firstRound).toBeDefined();
+    expect(firstRound!.matches[0].team1Name).toBe('Team A');
+    expect(firstRound!.matches[0].team2Name).toBe('Team D');
+    expect(firstRound!.matches[1].team1Name).toBe('Team B');
+    expect(firstRound!.matches[1].team2Name).toBe('Team C');
   });
 
   it('should exclude already-selected teams from availableTeams', () => {

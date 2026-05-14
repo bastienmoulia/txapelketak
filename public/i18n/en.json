@@ -175,7 +175,7 @@
       "addPoule": "Add a group",
       "addPlayoffs": "Add playoffs",
       "addFreePhase": "Add a free phase",
-      "addTeam": "Add a team",
+      "addTeam": "Add",
       "noSeries": "No series available",
       "dialogAddSerie": "Add a series",
       "dialogEditSerie": "Edit series",
@@ -225,7 +225,8 @@
       "addPlayoffsComingSoon": "This feature will be available soon.",
       "teamsUpdated": "Teams updated",
       "teamsUpdatedDetail": "{{added}} team(s) added, {{removed}} team(s) removed",
-      "teamsAddedToPouleDetail": "{{count}} team(s) added to \"{{pouleName}}\"."
+      "teamsAddedToPouleDetail": "{{count}} team(s) added to \"{{pouleName}}\".",
+      "dialogAddPlayoffs": "Add playoffs"
     },
     "games": {
       "addGame": "Add a game",
@@ -374,6 +375,7 @@
       "save": "Save",
       "cancel": "Cancel",
       "next": "Next",
+      "previous": "Previous",
       "edit": "Edit",
       "delete": "Delete",
       "viewGames": "Games"
@@ -441,5 +443,16 @@
       "32": "Round of 32"
     },
     "winnerOf": "Winner of {{round}} {{match}}"
+  },
+  "playoffs": {
+    "name": "Playoffs name",
+    "step1Title": "Teams and seeding order",
+    "step2Title": "Bracket preview",
+    "noTeamsSelected": "No teams selected",
+    "bracketSize": "Bracket size: {{size}} teams",
+    "bye": "Bye",
+    "seed": "Seed {{n}}",
+    "generated": "Playoffs generated",
+    "generatedDetail": "{{count}} playoff matches have been generated."
   }
 }

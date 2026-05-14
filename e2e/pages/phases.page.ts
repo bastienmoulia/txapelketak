@@ -172,9 +172,16 @@ export class PhasesPage {
       .filter({ has: this.page.locator('input#poule-name') });
     await dialog.waitFor({ state: 'visible' });
 
-    await dialog.locator('p-select[name="team-select"] .p-select-dropdown').click();
-    await this.page.locator('.p-select-overlay').getByText(teamName, { exact: true }).click();
-    await dialog.getByTestId('dialog-add-team-button').click();
+    const teamMultiSelect = dialog.locator('p-multiselect[name="team-select"]');
+    await teamMultiSelect.click();
+
+    const overlay = this.page.locator('.p-multiselect-overlay:visible').last();
+    await expect(overlay).toBeVisible();
+    await overlay.getByText(teamName, { exact: true }).first().click();
+
+    const addTeamButton = dialog.getByTestId('dialog-add-team-button');
+    await expect(addTeamButton).toBeEnabled();
+    await addTeamButton.click();
 
     await dialog.locator('button[type="submit"]').click();
     await dialog.waitFor({ state: 'hidden' });

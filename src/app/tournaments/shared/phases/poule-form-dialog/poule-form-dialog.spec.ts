@@ -158,7 +158,7 @@ describe('PouleFormDialog (editing)', () => {
   });
 
   it('should add a selected team', () => {
-    component.pendingTeamRef.set(teamCRef);
+    component.pendingTeamRef.set([teamCRef]);
     component.onAddSelectedTeam();
 
     expect(component.selectedTeamRefs().map((ref) => ref.id)).toEqual([
@@ -166,7 +166,19 @@ describe('PouleFormDialog (editing)', () => {
       'team-b',
       'team-c',
     ]);
-    expect(component.pendingTeamRef()).toBeNull();
+    expect(component.pendingTeamRef()).toEqual([]);
+  });
+
+  it('should add multiple selected teams at once', () => {
+    component.pendingTeamRef.set([teamCRef]);
+    component.onAddSelectedTeam();
+
+    expect(component.selectedTeamRefs().map((ref) => ref.id)).toEqual([
+      'team-a',
+      'team-b',
+      'team-c',
+    ]);
+    expect(component.pendingTeamRef()).toEqual([]);
   });
 
   it('should confirm and remove a selected team', () => {
@@ -184,7 +196,7 @@ describe('PouleFormDialog (editing)', () => {
   });
 
   it('should return final team refs on save', () => {
-    component.pendingTeamRef.set(teamCRef);
+    component.pendingTeamRef.set([teamCRef]);
     component.onAddSelectedTeam();
 
     component.pouleName.set('Poule edit');

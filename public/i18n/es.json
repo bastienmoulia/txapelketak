@@ -175,7 +175,7 @@
       "addPoule": "Añadir un grupo",
       "addPlayoffs": "Añadir playoffs",
       "addFreePhase": "Añadir una fase libre",
-      "addTeam": "Añadir un equipo",
+      "addTeam": "Añadir",
       "noSeries": "No hay series disponibles",
       "dialogAddSerie": "Añadir una serie",
       "dialogEditSerie": "Editar serie",
@@ -225,7 +225,8 @@
       "addPlayoffsComingSoon": "Esta función estará disponible pronto.",
       "teamsUpdated": "Equipos actualizados",
       "teamsUpdatedDetail": "{{added}} equipo(s) añadido(s), {{removed}} equipo(s) eliminado(s)",
-      "teamsAddedToPouleDetail": "{{count}} equipo(s) añadido(s) a \"{{pouleName}}\"."
+      "teamsAddedToPouleDetail": "{{count}} equipo(s) añadido(s) a \"{{pouleName}}\".",
+      "dialogAddPlayoffs": "Añadir playoffs"
     },
     "games": {
       "addGame": "Añadir un partido",
@@ -374,6 +375,7 @@
       "save": "Guardar",
       "cancel": "Cancelar",
       "next": "Siguiente",
+      "previous": "Anterior",
       "edit": "Editar",
       "delete": "Eliminar",
       "viewGames": "Partidos"
@@ -441,5 +443,16 @@
       "32": "Dieciseisavos de final"
     },
     "winnerOf": "Ganador de {{round}} {{match}}"
+  },
+  "playoffs": {
+    "name": "Nombre de los playoffs",
+    "step1Title": "Equipos y orden de participación",
+    "step2Title": "Vista previa del cuadro",
+    "noTeamsSelected": "No hay equipos seleccionados",
+    "bracketSize": "Tamaño del cuadro: {{size}} equipos",
+    "bye": "Exento",
+    "seed": "Cabeza de serie {{n}}",
+    "generated": "Playoffs generados",
+    "generatedDetail": "{{count}} partidas de playoffs han sido generadas."
   }
 }

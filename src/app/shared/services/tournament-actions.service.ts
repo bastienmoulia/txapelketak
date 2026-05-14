@@ -20,6 +20,7 @@ import {
   SaveFinaleGameEvent,
   SetFinaleSizeEvent,
 } from '../../tournaments/shared/phases/phases';
+import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 import { Game, Serie } from '../../tournaments/poules.model';
 import { Team } from '../../tournaments/shared/teams/teams';
 
@@ -346,6 +347,21 @@ export class TournamentActionsService {
       severity: 'success',
       summary: this.translocoService.translate('finale.gameEdited'),
       detail: this.translocoService.translate('finale.gameEditedDetail'),
+    });
+  }
+
+  async generatePlayoffs(event: SavePlayoffsEvent): Promise<void> {
+    await this.firebaseService.generatePlayoffsForSerie(
+      event.serieRef,
+      event.name,
+      event.size,
+      event.orderedTeamRefs,
+    );
+    const count = event.size - 1;
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('playoffs.generated'),
+      detail: this.translocoService.translate('playoffs.generatedDetail', { count }),
     });
   }
 }

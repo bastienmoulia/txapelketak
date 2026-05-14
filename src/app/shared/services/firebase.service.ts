@@ -761,6 +761,53 @@ export class FirebaseService {
     }
   }
 
+  async generatePlayoffsForSerie(
+    serieRef: DocumentReference,
+    serieName: string,
+    bracketSize: number,
+    orderedTeamRefs: DocumentReference[],
+  ): Promise<void> {
+    console.debug(`[Firestore] generatePlayoffsForSerie: bracketSize=${bracketSize}`);
+    await this.deleteFinaleGamesForSerie(serieRef);
+
+    const allRoundNames: { name: string; size: number }[] = [];
+    let currentSize = bracketSize;
+    while (currentSize >= 2) {
+      allRoundNames.push({ name: this.getRoundName(currentSize), size: currentSize });
+      currentSize = Math.floor(currentSize / 2);
+    }
+
+    let prevRoundName: string | null = null;
+    for (const { name: roundName, size: roundSize } of allRoundNames) {
+      const matchCount = roundSize / 2;
+      for (let matchNumber = 1; matchNumber <= matchCount; matchNumber++) {
+        const gameData: Record<string, unknown> = {
+          name: `${serieName} - ${roundName} ${matchNumber}`,
+          round: roundName,
+          roundOrder: roundSize,
+          matchNumber,
+        };
+        if (prevRoundName) {
+          // Subsequent rounds: winner placeholders
+          gameData['team1Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber - 1}`;
+          gameData['team2Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber}`;
+        } else {
+          // First round: assign seeded teams linearly (match j → teams[2j-2] vs teams[2j-1])
+          const team1Ref = orderedTeamRefs[(matchNumber - 1) * 2] ?? null;
+          const team2Ref = orderedTeamRefs[(matchNumber - 1) * 2 + 1] ?? null;
+          if (team1Ref) gameData['refTeam1'] = team1Ref;
+          if (team2Ref) gameData['refTeam2'] = team2Ref;
+        }
+        const gameDocRef = doc(collection(serieRef, 'finaleGames'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] setDoc: finaleGame (playoffs)`);
+          await setDoc(gameDocRef, gameData);
+        });
+      }
+      prevRoundName = roundName;
+    }
+  }
+
   async deleteFinaleGamesForSerie(serieRef: DocumentReference): Promise<void> {
     console.debug(`[Firestore] deleteFinaleGamesForSerie`);
     const gameDocs = await this.getCollectionFromDocumentRef(serieRef, 'finaleGames');

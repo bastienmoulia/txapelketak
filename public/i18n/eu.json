@@ -175,7 +175,7 @@
       "addPoule": "Multzo bat gehitu",
       "addPlayoffs": "Playoffak gehitu",
       "addFreePhase": "Fase libre bat gehitu",
-      "addTeam": "Talde bat gehitu",
+      "addTeam": "Gehitu",
       "noSeries": "Ez dago serierik",
       "dialogAddSerie": "Serie bat gehitu",
       "dialogEditSerie": "Seriea editatu",
@@ -225,7 +225,8 @@
       "addPlayoffsComingSoon": "Ezaugarri hau laster etorriko da.",
       "teamsUpdated": "Taldeak eguneratu egin dira",
       "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira",
-      "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora."
+      "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora.",
+      "dialogAddPlayoffs": "Playoffak gehitu"
     },
     "games": {
       "addGame": "Partida gehitu",
@@ -374,6 +375,7 @@
       "save": "Gorde",
       "cancel": "Utzi",
       "next": "Hurrengoa",
+      "previous": "Aurrekoa",
       "edit": "Editatu",
       "delete": "Ezabatu",
       "viewGames": "Partidak"
@@ -441,5 +443,16 @@
       "32": "32ko txanda"
     },
     "winnerOf": "{{round}} {{match}} irabazlea"
+  },
+  "playoffs": {
+    "name": "Playoff izena",
+    "step1Title": "Taldeak eta ordena",
+    "step2Title": "Zuhaitzaren aurrebista",
+    "noTeamsSelected": "Ez dago talderik hautatuta",
+    "bracketSize": "Bracket tamaina: {{size}} talde",
+    "bye": "Salbuespena",
+    "seed": "{{n}}. hazia",
+    "generated": "Playoffak sortuta",
+    "generatedDetail": "{{count}} playoff partida sortu dira."
   }
 }

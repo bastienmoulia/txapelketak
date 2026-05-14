@@ -7,7 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Message } from 'primeng/message';
-import { Select } from 'primeng/select';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -37,7 +37,7 @@ interface PouleFormDialogData {
     InputTextModule,
     Button,
     TranslocoPipe,
-    Select,
+    MultiSelectModule,
     Message,
     ConfirmDialogModule,
     TooltipModule,
@@ -61,7 +61,7 @@ export class PouleFormDialog {
   };
 
   pouleName = signal(this.data.pouleName);
-  pendingTeamRef = signal<DocumentReference | null>(null);
+  pendingTeamRef = signal<DocumentReference[]>([]);
   selectedTeamRefs = signal<DocumentReference[]>(this.data.editingPoule?.refTeams ?? []);
 
   selectedTeams = computed(() => {
@@ -88,16 +88,16 @@ export class PouleFormDialog {
   }
 
   onAddSelectedTeam(): void {
-    const teamRef = this.pendingTeamRef();
-    if (!teamRef) return;
+    const pendingTeamRefs = this.pendingTeamRef();
+    if (pendingTeamRefs.length === 0) return;
 
-    const hasTeamAlready = this.selectedTeamRefs().some(
-      (currentRef) => currentRef.id === teamRef.id,
-    );
-    if (hasTeamAlready) return;
+    const selectedIds = new Set(this.selectedTeamRefs().map((teamRef) => teamRef.id));
+    const refsToAdd = pendingTeamRefs.filter((teamRef) => !selectedIds.has(teamRef.id));
+    if (refsToAdd.length > 0) {
+      this.selectedTeamRefs.update((teamRefs) => [...teamRefs, ...refsToAdd]);
+    }
 
-    this.selectedTeamRefs.update((teamRefs) => [...teamRefs, teamRef]);
-    this.pendingTeamRef.set(null);
+    this.pendingTeamRef.set([]);
   }
 
   onRequestRemoveTeam(teamRef: DocumentReference): void {

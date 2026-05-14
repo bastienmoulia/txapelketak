@@ -20,16 +20,18 @@
     <h5 class="text-lg font-semibold mb-2">{{ 'admin.poules.teamsInPoule' | transloco }}</h5>
 
     <div class="flex gap-2 items-center mb-3">
-      <p-select
+      <p-multiselect
         class="flex-1"
         [options]="availableTeams()"
         optionLabel="name"
         optionValue="ref"
         [placeholder]="'admin.poules.selectTeam' | transloco"
+        display="chip"
         [ngModel]="pendingTeamRef()"
         (ngModelChange)="pendingTeamRef.set($event)"
         name="team-select"
         appendTo="body"
+        [filter]="true"
         [showClear]="true"
       />
       <p-button
@@ -37,7 +39,7 @@
         severity="primary"
         icon="pi pi-plus"
         [label]="'admin.poules.addTeam' | transloco"
-        [disabled]="!pendingTeamRef()"
+        [disabled]="pendingTeamRef().length === 0"
         (onClick)="onAddSelectedTeam()"
         data-testid="dialog-add-team-button"
       />

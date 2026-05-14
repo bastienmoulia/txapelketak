@@ -175,7 +175,7 @@
       "addPoule": "Ajouter une poule",
       "addPlayoffs": "Ajouter des playoffs",
       "addFreePhase": "Ajouter une phase libre",
-      "addTeam": "Ajouter une équipe",
+      "addTeam": "Ajouter",
       "noSeries": "Aucune série disponible",
       "dialogAddSerie": "Ajouter une série",
       "dialogEditSerie": "Modifier la série",
@@ -225,7 +225,8 @@
       "addPlayoffsComingSoon": "Cette fonctionnalité sera bientôt disponible.",
       "teamsUpdated": "Équipes mises à jour",
       "teamsUpdatedDetail": "{{added}} équipe(s) ajoutée(s), {{removed}} équipe(s) retirée(s)",
-      "teamsAddedToPouleDetail": "{{count}} équipe(s) ajoutée(s) à \"{{pouleName}}\"."
+      "teamsAddedToPouleDetail": "{{count}} équipe(s) ajoutée(s) à \"{{pouleName}}\".",
+      "dialogAddPlayoffs": "Ajouter des playoffs"
     },
     "games": {
       "addGame": "Ajouter une partie",
@@ -374,6 +375,7 @@
       "save": "Enregistrer",
       "cancel": "Annuler",
       "next": "Suivant",
+      "previous": "Précédent",
       "edit": "Modifier",
       "delete": "Supprimer",
       "viewGames": "Parties"
@@ -441,5 +443,16 @@
       "32": "Seizième de finale"
     },
     "winnerOf": "Gagnant {{round}} {{match}}"
+  },
+  "playoffs": {
+    "name": "Nom des playoffs",
+    "step1Title": "Équipes et ordre de jeu",
+    "step2Title": "Aperçu de l'arbre",
+    "noTeamsSelected": "Aucune équipe sélectionnée",
+    "bracketSize": "Taille du bracket : {{size}} équipes",
+    "bye": "Exempt",
+    "seed": "Tête de série {{n}}",
+    "generated": "Playoffs générés",
+    "generatedDetail": "{{count}} matchs de playoffs ont été générés."
   }
 }

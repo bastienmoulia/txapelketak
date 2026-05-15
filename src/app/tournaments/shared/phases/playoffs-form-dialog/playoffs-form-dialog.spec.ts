@@ -249,12 +249,12 @@ describe('PlayoffsFormDialog', () => {
     component.selectedTeams.set(teams.map(asSelectedTeam));
 
     const treeRounds = component.bracketTreeRounds();
-    // Round 0 (first round): 2 matches, slotSpan=1, gridRow = (2*i+1)*1
+    // Round 0 (first round): 2 matches, slotSpan=1, gridRow = i*1 + 1
     expect(treeRounds[0].matches[0].gridRow).toBe(1);
-    expect(treeRounds[0].matches[1].gridRow).toBe(3);
+    expect(treeRounds[0].matches[1].gridRow).toBe(2);
     expect(treeRounds[0].matches[0].slotSpan).toBe(1);
-    // Round 1 (final): 1 match, slotSpan=2, gridRow = (2*0+1)*2 = 2
-    expect(treeRounds[1].matches[0].gridRow).toBe(2);
+    // Round 1 (final): 1 match, slotSpan=2, gridRow = 0*2 + 1 = 1
+    expect(treeRounds[1].matches[0].gridRow).toBe(1);
     expect(treeRounds[1].matches[0].slotSpan).toBe(2);
   });
 

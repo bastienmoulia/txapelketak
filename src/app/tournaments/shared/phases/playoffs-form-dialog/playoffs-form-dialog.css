@@ -1,0 +1,101 @@
+:host {
+  --playoffs-tree-column-width: 16rem;
+  --playoffs-tree-slot-height: 5.75rem;
+  --playoffs-tree-row-gap: 0.875rem;
+  --playoffs-tree-round-gap: 2rem;
+  --playoffs-tree-connector-color: var(--p-content-border-color);
+}
+
+.playoffs-tree-wrapper {
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem;
+}
+
+.playoffs-tree {
+  display: grid;
+  grid-template-columns: repeat(
+    var(--playoffs-tree-round-count),
+    var(--playoffs-tree-column-width)
+  );
+  gap: calc(var(--playoffs-tree-round-gap) + 0.5 * var(--playoffs-tree-round-gap));
+  min-width: max-content;
+}
+
+.playoffs-tree-round {
+  display: flex;
+  flex-direction: column;
+  min-width: var(--playoffs-tree-column-width);
+}
+
+.playoffs-tree-round-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 0.5rem;
+  color: var(--p-text-muted-color);
+  white-space: nowrap;
+}
+
+.playoffs-tree-round-lane {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(
+    var(--playoffs-tree-slot-count),
+    calc(var(--playoffs-tree-slot-height) + var(--playoffs-tree-row-gap))
+  );
+}
+
+.playoffs-tree-match {
+  position: relative;
+  grid-row-start: var(--playoffs-tree-grid-row);
+  grid-row-end: span var(--playoffs-tree-slot-span);
+  display: flex;
+  align-items: center;
+}
+
+.playoffs-tree-match--with-connector::before {
+  content: '';
+  position: absolute;
+  right: calc(-1 * var(--playoffs-tree-round-gap));
+  top: 50%;
+  width: var(--playoffs-tree-round-gap);
+  border-top: 1px solid var(--playoffs-tree-connector-color);
+  transform: translateY(-50%);
+}
+
+.playoffs-tree-connector {
+  position: absolute;
+  right: calc(-1 * var(--playoffs-tree-round-gap));
+  top: 50%;
+  height: calc(
+    var(--playoffs-tree-slot-span) *
+      (var(--playoffs-tree-slot-height) + var(--playoffs-tree-row-gap)) / 2
+  );
+  border-right: 1px solid var(--playoffs-tree-connector-color);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.playoffs-tree-match--with-connector:nth-child(odd) {
+  .playoffs-tree-connector {
+    top: 75%;
+  }
+}
+
+.playoffs-tree-match--with-connector:nth-child(even) {
+  .playoffs-tree-connector {
+    top: 25%;
+  }
+}
+
+.finale-match {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  :host {
+    --playoffs-tree-column-width: 14.5rem;
+    --playoffs-tree-round-gap: 1.5rem;
+    --playoffs-tree-slot-height: 5.5rem;
+  }
+}

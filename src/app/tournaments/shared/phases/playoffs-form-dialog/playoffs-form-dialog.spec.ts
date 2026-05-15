@@ -234,6 +234,49 @@ describe('PlayoffsFormDialog', () => {
     expect(firstRound!.matches[1].team2Name).toBe('Team C');
   });
 
+  it('should compute tree rounds with final round as last column', () => {
+    component.selectedTeams.set(teams.map(asSelectedTeam));
+
+    const treeRounds = component.bracketTreeRounds();
+    expect(treeRounds).toHaveLength(2);
+    expect(treeRounds[0].roundOrder).toBe(4);
+    expect(treeRounds[0].isFinalRound).toBe(false);
+    expect(treeRounds[1].roundOrder).toBe(2);
+    expect(treeRounds[1].isFinalRound).toBe(true);
+  });
+
+  it('should compute centered tree match slot positions across rounds', () => {
+    component.selectedTeams.set(teams.map(asSelectedTeam));
+
+    const treeRounds = component.bracketTreeRounds();
+    // Round 0 (first round): 2 matches, slotSpan=1, gridRow = (2*i+1)*1
+    expect(treeRounds[0].matches[0].gridRow).toBe(1);
+    expect(treeRounds[0].matches[1].gridRow).toBe(3);
+    expect(treeRounds[0].matches[0].slotSpan).toBe(1);
+    // Round 1 (final): 1 match, slotSpan=2, gridRow = (2*0+1)*2 = 2
+    expect(treeRounds[1].matches[0].gridRow).toBe(2);
+    expect(treeRounds[1].matches[0].slotSpan).toBe(2);
+  });
+
+  it('should render bracket columns and connectors in step 2', async () => {
+    component.playoffsName.set('My Playoffs');
+    component.selectedTeams.set(teams.map(asSelectedTeam));
+    component.onNext();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(
+      element.querySelectorAll('[data-testid="playoffs-dialog-bracket-round-column"]').length,
+    ).toBe(2);
+    expect(element.querySelectorAll('[data-testid="playoffs-dialog-bracket-match"]').length).toBe(
+      3,
+    );
+    expect(
+      element.querySelectorAll('[data-testid="playoffs-dialog-bracket-connector"]').length,
+    ).toBe(2);
+  });
+
   it('should exclude already-selected teams from availableTeams', () => {
     component.selectedTeams.set([asSelectedTeam(teams[0])]);
     const available = component.availableTeams();

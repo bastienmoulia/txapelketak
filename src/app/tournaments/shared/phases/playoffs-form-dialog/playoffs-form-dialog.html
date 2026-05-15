@@ -131,27 +131,56 @@
       {{ 'playoffs.bracketSize' | transloco: { size: bracketSize() } }}
     </p>
 
-    <div class="finale-bracket" data-testid="playoffs-dialog-bracket-preview">
-      @for (round of bracketPreview(); track round.roundLabel) {
-        <div class="finale-round">
-          <h4 class="finale-round-title">{{ round.roundLabel | transloco }}</h4>
-          @for (match of round.matches; track match.matchNumber) {
-            <div class="finale-match">
-              <div class="finale-match-header">
-                <span class="text-xs"
-                  >{{ 'finale.matchLabel' | transloco }} {{ match.matchNumber }}</span
+    <div class="playoffs-tree-wrapper" data-testid="playoffs-dialog-bracket-preview-wrapper">
+      <div
+        class="playoffs-tree"
+        data-testid="playoffs-dialog-bracket-preview"
+        [ngStyle]="bracketTreeStyle()"
+      >
+        @for (round of bracketTreeRounds(); track round.roundLabel) {
+          <div class="playoffs-tree-round" data-testid="playoffs-dialog-bracket-round-column">
+            <h4 class="playoffs-tree-round-title">{{ round.roundLabel | transloco }}</h4>
+            <div class="playoffs-tree-round-lane">
+              @for (match of round.matches; track match.data.matchNumber) {
+                <div
+                  class="playoffs-tree-match"
+                  [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
+                  [style.--playoffs-tree-grid-row]="match.gridRow"
+                  [style.--playoffs-tree-slot-span]="match.slotSpan"
+                  data-testid="playoffs-dialog-bracket-match"
                 >
-              </div>
-              <div class="finale-match-team" [class.opacity-50]="match.isBye && !match.team1Name">
-                <span class="finale-team-name">{{ match.team1Name }}</span>
-              </div>
-              <div class="finale-match-team" [class.opacity-50]="match.isBye && !match.team2Name">
-                <span class="finale-team-name">{{ match.team2Name }}</span>
-              </div>
+                  <div class="finale-match">
+                    <div class="finale-match-header">
+                      <span class="text-xs"
+                        >{{ 'finale.matchLabel' | transloco }} {{ match.data.matchNumber }}</span
+                      >
+                    </div>
+                    <div
+                      class="finale-match-team"
+                      [class.opacity-50]="match.data.isBye && !match.data.team1Name"
+                    >
+                      <span class="finale-team-name">{{ match.data.team1Name }}</span>
+                    </div>
+                    <div
+                      class="finale-match-team"
+                      [class.opacity-50]="match.data.isBye && !match.data.team2Name"
+                    >
+                      <span class="finale-team-name">{{ match.data.team2Name }}</span>
+                    </div>
+                  </div>
+                  @if (!round.isFinalRound) {
+                    <span
+                      class="playoffs-tree-connector"
+                      aria-hidden="true"
+                      data-testid="playoffs-dialog-bracket-connector"
+                    ></span>
+                  }
+                </div>
+              }
             </div>
-          }
-        </div>
-      }
+          </div>
+        }
+      </div>
     </div>
 
     <div class="p-dialog-footer px-0! mt-5 flex items-center justify-end gap-2">

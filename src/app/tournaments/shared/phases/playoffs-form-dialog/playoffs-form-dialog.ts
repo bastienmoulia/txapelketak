@@ -12,7 +12,7 @@ import { SelectButton } from 'primeng/selectbutton';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Team } from '../../teams/teams';
-import { KeyValue } from '@angular/common';
+import { KeyValue, NgStyle } from '@angular/common';
 
 export type PlayoffsMatchOrganization = 'linear' | 'competition';
 
@@ -40,6 +40,19 @@ export interface BracketPreviewRound {
   roundLabel: string;
   roundOrder: number;
   matches: BracketPreviewMatch[];
+}
+
+export interface BracketTreeMatch {
+  data: BracketPreviewMatch;
+  slotSpan: number;
+  gridRow: number;
+}
+
+export interface BracketTreeRound {
+  roundLabel: string;
+  roundOrder: number;
+  matches: BracketTreeMatch[];
+  isFinalRound: boolean;
 }
 
 function nextPowerOf2(n: number): number {
@@ -84,8 +97,10 @@ function getFirstRoundPairingIndexes(
     TooltipModule,
     OrderListModule,
     SelectButton,
+    NgStyle,
   ],
   templateUrl: './playoffs-form-dialog.html',
+  styleUrl: './playoffs-form-dialog.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayoffsFormDialog {
@@ -184,6 +199,39 @@ export class PlayoffsFormDialog {
 
     // Sort from largest round (first round) to final
     return rounds.sort((a, b) => b.roundOrder - a.roundOrder);
+  });
+
+  bracketTreeRounds = computed((): BracketTreeRound[] => {
+    const rounds = this.bracketPreview();
+    const finalRoundOrder = rounds[rounds.length - 1]?.roundOrder;
+
+    return rounds.map((round, roundIndex) => {
+      const slotSpan = 2 ** roundIndex;
+      // Center slot index: midpoint of the span assigned to this match
+      const matches = round.matches.map((match, matchIndex) => ({
+        data: match,
+        slotSpan,
+        // gridRow is 1-based center of the span block
+        gridRow: matchIndex * slotSpan + 1,
+      }));
+
+      return {
+        roundLabel: round.roundLabel,
+        roundOrder: round.roundOrder,
+        matches,
+        isFinalRound: round.roundOrder === finalRoundOrder,
+      };
+    });
+  });
+
+  bracketTreeStyle = computed(() => {
+    const rounds = this.bracketTreeRounds();
+    const firstRoundMatchCount = rounds[0]?.matches.length ?? 0;
+
+    return {
+      '--playoffs-tree-round-count': String(Math.max(rounds.length, 1)),
+      '--playoffs-tree-slot-count': String(firstRoundMatchCount > 0 ? firstRoundMatchCount * 2 : 2),
+    };
   });
 
   canGoNext = computed(

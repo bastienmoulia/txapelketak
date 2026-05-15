@@ -58,9 +58,18 @@ service cloud.firestore {
           }
         }
 
-        match /finaleGames/{gameId} {
+        match /playoffs/{playoffId} {
           allow get, list: if true;
-          allow create, update, delete: if request.resource.data.name is string;
+          allow create, update, delete: if request.resource.data.name is string
+            && request.resource.data.refTeams is list;
+
+          match /games/{gameId} {
+            allow get, list: if true;
+            allow create, delete: if true;
+            allow update: if request.resource.data.scoreTeam1 is int
+              || request.resource.data.scoreTeam2 is int
+              || request.resource.data.date is string;
+          }
         }
       }
 

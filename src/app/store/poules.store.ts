@@ -3,14 +3,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { FirebaseService } from '../shared/services/firebase.service';
-import {
-  Serie,
-  TimeSlot,
-  Poule,
-  Game,
-  parseFirestoreDate,
-  FinaleGame,
-} from '../tournaments/poules.model';
+import { Serie, TimeSlot, Poule, Game, parseFirestoreDate } from '../tournaments/poules.model';
 import { Team } from '../tournaments/shared/teams/teams';
 
 interface PoulesStoreState {
@@ -125,49 +118,12 @@ export const PoulesStore = signalStore(
       gameSubscriptionMap.set(poule.ref.id, sub);
     }
 
-    function startFinaleGameWatcher(serie: Serie): void {
-      if (finaleGameSubscriptionMap.has(serie.ref.id)) return;
-      const sub = firebaseService.watchFinaleGamesForSerie(serie.ref).subscribe({
-        next: (items) => {
-          const finaleGames: FinaleGame[] = items.map((item) => {
-            const data = item.data as Partial<FinaleGame>;
-            return {
-              ...data,
-              ref: item.ref,
-              date: parseFirestoreDate(data.date),
-            } as FinaleGame;
-          });
-          patchState(store, {
-            series: store
-              .series()
-              .map((s) => (s.ref.id === serie.ref.id ? { ...s, finaleGames } : s)),
-          });
-        },
-        error: (err: unknown) => {
-          patchState(store, {
-            error: err instanceof Error ? err.message : 'Unable to watch finaleGames',
-          });
-        },
-        complete: () => {
-          finaleGameSubscriptionMap.delete(serie.ref.id);
-        },
-      });
-      finaleGameSubscriptionMap.set(serie.ref.id, sub);
-    }
-
     function watchGames(series: Serie[]): void {
       stopGameWatchers();
       for (const serie of series) {
         for (const poule of serie.poules ?? []) {
           startGameWatcher(poule);
         }
-      }
-    }
-
-    function watchFinaleGames(series: Serie[]): void {
-      stopFinaleGameWatchers();
-      for (const serie of series) {
-        startFinaleGameWatcher(serie);
       }
     }
 
@@ -329,7 +285,6 @@ export const PoulesStore = signalStore(
               patchState(store, { series, loading: false });
               watchGames(series);
               watchPoules(series);
-              watchFinaleGames(series);
             },
             error: (err: unknown) => {
               resetWatchingState();

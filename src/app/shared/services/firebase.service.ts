@@ -23,6 +23,7 @@ import { Tournament, TournamentStatus, User } from '../../home/tournament.interf
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 import { Game, TimeSlot, FinaleGame } from '../../tournaments/poules.model';
 import { Team } from '../../tournaments/shared/teams/teams';
+import type { PlayoffsMatchOrganization } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -754,6 +755,63 @@ export class FirebaseService {
         const gameDocRef = doc(collection(serieRef, 'finaleGames'));
         await runInInjectionContext(this.environmentInjector, async () => {
           console.debug(`[Firestore] setDoc: finaleGame`);
+          await setDoc(gameDocRef, gameData);
+        });
+      }
+      prevRoundName = roundName;
+    }
+  }
+
+  async generatePlayoffsForSerie(
+    serieRef: DocumentReference,
+    playoffsName: string,
+    bracketSize: number,
+    orderedTeamRefs: DocumentReference[],
+    matchOrganization: PlayoffsMatchOrganization,
+  ): Promise<void> {
+    console.debug(`[Firestore] generatePlayoffsForSerie: bracketSize=${bracketSize}`);
+    await this.deleteFinaleGamesForSerie(serieRef);
+
+    const allRoundNames: { name: string; size: number }[] = [];
+    let currentSize = bracketSize;
+    while (currentSize >= 2) {
+      allRoundNames.push({ name: this.getRoundName(currentSize), size: currentSize });
+      currentSize = Math.floor(currentSize / 2);
+    }
+
+    let prevRoundName: string | null = null;
+    for (const { name: roundName, size: roundSize } of allRoundNames) {
+      const matchCount = roundSize / 2;
+      for (let matchNumber = 1; matchNumber <= matchCount; matchNumber++) {
+        const gameData: Record<string, unknown> = {
+          name: `${playoffsName} - ${roundName} ${matchNumber}`,
+          round: roundName,
+          roundOrder: roundSize,
+          matchNumber,
+        };
+        if (prevRoundName) {
+          // Subsequent rounds: winner placeholders
+          gameData['team1Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber - 1}`;
+          gameData['team2Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber}`;
+        } else {
+          const linearTeam1Index = (matchNumber - 1) * 2;
+          const linearTeam2Index = (matchNumber - 1) * 2 + 1;
+          const competitionTeam1Index = matchNumber - 1;
+          const competitionTeam2Index = roundSize - matchNumber;
+
+          const team1Index =
+            matchOrganization === 'competition' ? competitionTeam1Index : linearTeam1Index;
+          const team2Index =
+            matchOrganization === 'competition' ? competitionTeam2Index : linearTeam2Index;
+
+          const team1Ref = orderedTeamRefs[team1Index] ?? null;
+          const team2Ref = orderedTeamRefs[team2Index] ?? null;
+          if (team1Ref) gameData['refTeam1'] = team1Ref;
+          if (team2Ref) gameData['refTeam2'] = team2Ref;
+        }
+        const gameDocRef = doc(collection(serieRef, 'finaleGames'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] setDoc: finaleGame (playoffs)`);
           await setDoc(gameDocRef, gameData);
         });
       }

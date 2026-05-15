@@ -21,6 +21,7 @@ import {
   FinaleGameFormDialog,
   SaveFinaleGameEvent,
 } from './finale-game-form-dialog/finale-game-form-dialog';
+import { PlayoffsFormDialog, SavePlayoffsEvent } from './playoffs-form-dialog/playoffs-form-dialog';
 
 export type { SaveFinaleGameEvent };
 import { PoulesStore } from '../../../store/poules.store';
@@ -412,7 +413,28 @@ export class Phases {
   }
 
   onAddPlayoffs(serieRef: DocumentReference): void {
-    console.log('Add playoffs for serie', serieRef);
+    const dialogRef = this.dialogService.open(PlayoffsFormDialog, {
+      header: this.translocoService.translate('admin.poules.dialogAddPlayoffs'),
+      modal: true,
+      closable: true,
+      width: 'min(60rem, 100%)',
+      data: { serieRef, teams: this.teams() },
+    });
+    dialogRef?.onClose.subscribe((result: SavePlayoffsEvent | undefined) => {
+      if (result) {
+        console.log('Playoffs to save', result);
+        //void this.tournamentActions.generatePlayoffs(result);
+        this.messageService.add({
+          severity: 'info',
+          summary: this.translocoService.translate('admin.poules.comingSoon'),
+          detail: this.translocoService.translate('admin.poules.addPlayoffsComingSoon'),
+        });
+      }
+    });
+  }
+
+  onAddFreePhase(serieRef: DocumentReference): void {
+    console.log('Add free phase for serie', serieRef);
     this.messageService.add({
       severity: 'info',
       summary: this.translocoService.translate('admin.poules.comingSoon'),

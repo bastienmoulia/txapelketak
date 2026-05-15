@@ -1,0 +1,211 @@
+<!-- Step 1: Name + team selection and ordering -->
+@if (currentStep() === 1) {
+  <div>
+    <div class="mb-4">
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="playoffs-name"
+          class="w-full"
+          autocomplete="off"
+          [ngModel]="playoffsName()"
+          (ngModelChange)="playoffsName.set($event)"
+          name="playoffs-name"
+        />
+        <label for="playoffs-name">{{ 'playoffs.name' | transloco }}</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="mb-4">
+      <h5 class="text-lg font-semibold mb-2">{{ 'playoffs.step1Title' | transloco }}</h5>
+
+      <div class="flex gap-2 items-center mb-3">
+        <p-multiselect
+          class="flex-1"
+          [options]="availableTeams()"
+          optionLabel="value"
+          optionValue="key"
+          [placeholder]="'admin.poules.selectTeam' | transloco"
+          display="chip"
+          [ngModel]="pendingTeamRef()"
+          (ngModelChange)="pendingTeamRef.set($event)"
+          name="team-select"
+          appendTo="body"
+          [filter]="true"
+          [showClear]="true"
+        />
+        <p-button
+          type="button"
+          severity="primary"
+          icon="pi pi-plus"
+          [label]="'admin.poules.addTeam' | transloco"
+          [disabled]="pendingTeamRef().length === 0"
+          (onClick)="onAddSelectedTeam()"
+          data-testid="playoffs-dialog-add-team-button"
+        />
+      </div>
+
+      @if (selectedTeams().length === 0) {
+        <p-message severity="info" class="w-full" data-testid="playoffs-dialog-no-team-message">
+          {{ 'playoffs.noTeamsSelected' | transloco }}
+        </p-message>
+      } @else {
+        <p-orderlist
+          [value]="selectedTeams()"
+          dataKey="key"
+          [dragdrop]="true"
+          [listStyle]="{ 'max-height': '16rem' }"
+          data-testid="playoffs-dialog-order-list"
+        >
+          <ng-template #item let-team let-index="index">
+            <div class="flex items-center justify-between w-full gap-2">
+              <span class="font-medium text-sm text-surface-500 min-w-6">{{ index + 1 }}.</span>
+              <span class="flex-1">{{ team.value }}</span>
+              <p-button
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                icon="pi pi-times"
+                [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
+                [pTooltip]="'admin.poules.removeTeamAria' | transloco"
+                tooltipPosition="top"
+                (onClick)="onRemoveTeam(team)"
+                data-testid="playoffs-dialog-remove-team-button"
+              />
+            </div>
+          </ng-template>
+        </p-orderlist>
+
+        <p-message severity="info" class="w-full mt-2" data-testid="playoffs-dialog-bracket-size">
+          {{ 'playoffs.bracketSize' | transloco: { size: bracketSize() } }}
+        </p-message>
+
+        <div class="mt-4 flex flex-col gap-2" data-testid="playoffs-dialog-match-organization">
+          <label class="text-sm font-medium" for="playoffs-match-organization">
+            {{ 'playoffs.matchOrganization.label' | transloco }}
+          </label>
+          <p-selectbutton
+            id="playoffs-match-organization"
+            [options]="matchOrganizationOptions()"
+            [ngModel]="matchOrganization()"
+            (ngModelChange)="matchOrganization.set($event)"
+            optionLabel="label"
+            optionValue="value"
+            [allowEmpty]="false"
+            data-testid="playoffs-dialog-match-organization-select"
+          />
+          <small class="text-surface-500">
+            {{ 'playoffs.matchOrganization.help' | transloco }}
+          </small>
+        </div>
+      }
+    </div>
+
+    <div class="p-dialog-footer px-0! mt-5 flex items-center justify-end gap-2">
+      <p-button
+        type="button"
+        [label]="'shared.actions.cancel' | transloco"
+        severity="secondary"
+        (onClick)="onCancel()"
+        data-testid="playoffs-dialog-cancel-button"
+      />
+      <p-button
+        type="button"
+        [label]="'shared.actions.next' | transloco"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        [disabled]="!canGoNext()"
+        (onClick)="onNext()"
+        data-testid="playoffs-dialog-next-button"
+      />
+    </div>
+  </div>
+}
+
+<!-- Step 2: Bracket preview -->
+@if (currentStep() === 2) {
+  <div>
+    <h5 class="text-lg font-semibold mb-3">{{ 'playoffs.step2Title' | transloco }}</h5>
+    <p class="text-sm text-surface-500 mb-4">
+      {{ 'playoffs.bracketSize' | transloco: { size: bracketSize() } }}
+    </p>
+
+    <div class="playoffs-tree-wrapper" data-testid="playoffs-dialog-bracket-preview-wrapper">
+      <div
+        class="playoffs-tree"
+        data-testid="playoffs-dialog-bracket-preview"
+        [ngStyle]="bracketTreeStyle()"
+      >
+        @for (round of bracketTreeRounds(); track round.roundLabel) {
+          <div class="playoffs-tree-round" data-testid="playoffs-dialog-bracket-round-column">
+            <h4 class="playoffs-tree-round-title">{{ round.roundLabel | transloco }}</h4>
+            <div class="playoffs-tree-round-lane">
+              @for (match of round.matches; track match.data.matchNumber) {
+                <div
+                  class="playoffs-tree-match"
+                  [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
+                  [style.--playoffs-tree-grid-row]="match.gridRow"
+                  [style.--playoffs-tree-slot-span]="match.slotSpan"
+                  data-testid="playoffs-dialog-bracket-match"
+                >
+                  <div class="finale-match">
+                    <div class="finale-match-header">
+                      <span class="text-xs"
+                        >{{ 'finale.matchLabel' | transloco }} {{ match.data.matchNumber }}</span
+                      >
+                    </div>
+                    <div
+                      class="finale-match-team"
+                      [class.opacity-50]="match.data.isBye && !match.data.team1Name"
+                    >
+                      <span class="finale-team-name">{{ match.data.team1Name }}</span>
+                    </div>
+                    <div
+                      class="finale-match-team"
+                      [class.opacity-50]="match.data.isBye && !match.data.team2Name"
+                    >
+                      <span class="finale-team-name">{{ match.data.team2Name }}</span>
+                    </div>
+                  </div>
+                  @if (!round.isFinalRound) {
+                    <span
+                      class="playoffs-tree-connector"
+                      aria-hidden="true"
+                      data-testid="playoffs-dialog-bracket-connector"
+                    ></span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="p-dialog-footer px-0! mt-5 flex items-center justify-end gap-2">
+      <p-button
+        type="button"
+        [label]="'shared.actions.cancel' | transloco"
+        severity="secondary"
+        (onClick)="onCancel()"
+        data-testid="playoffs-dialog-cancel-button-step2"
+      />
+      <p-button
+        type="button"
+        [label]="'shared.actions.previous' | transloco"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (onClick)="onBack()"
+        data-testid="playoffs-dialog-back-button"
+      />
+      <p-button
+        type="button"
+        [label]="'shared.actions.save' | transloco"
+        icon="pi pi-check"
+        (onClick)="onSave()"
+        data-testid="playoffs-dialog-save-button"
+      />
+    </div>
+  </div>
+}

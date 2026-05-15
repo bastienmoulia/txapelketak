@@ -1,0 +1,303 @@
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { DocumentReference } from '@angular/fire/firestore';
+import { Button } from 'primeng/button';
+import { FloatLabel } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { Message } from 'primeng/message';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { TooltipModule } from 'primeng/tooltip';
+import { OrderListModule } from 'primeng/orderlist';
+import { SelectButton } from 'primeng/selectbutton';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import type { Team } from '../../teams/teams';
+import { KeyValue, NgStyle } from '@angular/common';
+
+export type PlayoffsMatchOrganization = 'linear' | 'competition';
+
+export interface SavePlayoffsEvent {
+  serieRef: DocumentReference;
+  name: string;
+  orderedTeamRefs: DocumentReference[];
+  size: number;
+  matchOrganization: PlayoffsMatchOrganization;
+}
+
+interface PlayoffsFormDialogData {
+  serieRef: DocumentReference;
+  teams: Team[];
+}
+
+export interface BracketPreviewMatch {
+  matchNumber: number;
+  team1Name: string;
+  team2Name: string;
+  isBye: boolean;
+}
+
+export interface BracketPreviewRound {
+  roundLabel: string;
+  roundOrder: number;
+  matches: BracketPreviewMatch[];
+}
+
+export interface BracketTreeMatch {
+  data: BracketPreviewMatch;
+  slotSpan: number;
+  gridRow: number;
+}
+
+export interface BracketTreeRound {
+  roundLabel: string;
+  roundOrder: number;
+  matches: BracketTreeMatch[];
+  isFinalRound: boolean;
+}
+
+function nextPowerOf2(n: number): number {
+  if (n <= 0) return 2;
+  let power = 1;
+  while (power < n) power *= 2;
+  return power;
+}
+
+function getRoundLabel(size: number): string {
+  return `finale.rounds.${size}`;
+}
+
+function getFirstRoundPairingIndexes(
+  bracketSize: number,
+  matchOrganization: PlayoffsMatchOrganization,
+): { team1Index: number; team2Index: number }[] {
+  const matchCount = bracketSize / 2;
+  if (matchOrganization === 'competition') {
+    return Array.from({ length: matchCount }, (_, index) => ({
+      team1Index: index,
+      team2Index: bracketSize - 1 - index,
+    }));
+  }
+
+  return Array.from({ length: matchCount }, (_, index) => ({
+    team1Index: index * 2,
+    team2Index: index * 2 + 1,
+  }));
+}
+
+@Component({
+  selector: 'app-playoffs-form-dialog',
+  imports: [
+    FormsModule,
+    FloatLabel,
+    InputTextModule,
+    Button,
+    TranslocoPipe,
+    MultiSelectModule,
+    Message,
+    TooltipModule,
+    OrderListModule,
+    SelectButton,
+    NgStyle,
+  ],
+  templateUrl: './playoffs-form-dialog.html',
+  styleUrl: './playoffs-form-dialog.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PlayoffsFormDialog {
+  private readonly config =
+    inject<DynamicDialogConfig<PlayoffsFormDialogData>>(DynamicDialogConfig);
+  private readonly dialogRef = inject(DynamicDialogRef);
+  private readonly translocoService = inject(TranslocoService);
+
+  data = this.config.data ?? {
+    serieRef: null!,
+    teams: [],
+  };
+
+  currentStep = signal<1 | 2>(1);
+  playoffsName = signal('');
+  selectedTeams = signal<KeyValue<string, string>[]>([]);
+  pendingTeamRef = signal<string[]>([]);
+  matchOrganization = signal<PlayoffsMatchOrganization>('linear');
+
+  matchOrganizationOptions = computed(() => [
+    {
+      label: this.translocoService.translate('playoffs.matchOrganization.options.linear'),
+      value: 'linear' as const,
+    },
+    {
+      label: this.translocoService.translate('playoffs.matchOrganization.options.competition'),
+      value: 'competition' as const,
+    },
+  ]);
+
+  availableTeams = computed<KeyValue<string, string>[]>(() => {
+    const selectedIds = new Set(this.selectedTeams().map((t) => t.key));
+    return this.data.teams
+      .filter((team) => !selectedIds.has(team.ref.id))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((team) => ({ value: team.name, key: team.ref.id }));
+  });
+
+  bracketSize = computed(() => {
+    const size = nextPowerOf2(this.selectedTeams().length);
+    return size > 2 ? size : 2; // Minimum size is 2 for a final match
+  });
+
+  bracketPreview = computed((): BracketPreviewRound[] => {
+    const teams = this.selectedTeams();
+    const size = this.bracketSize();
+    const firstRoundPairings = getFirstRoundPairingIndexes(size, this.matchOrganization());
+    const rounds: BracketPreviewRound[] = [];
+
+    // Generate all rounds from first round (largest) down to final
+    let currentSize = size;
+    let prevRoundLabel: string | null = null;
+
+    while (currentSize >= 2) {
+      const roundLabel = getRoundLabel(currentSize);
+      const matchCount = currentSize / 2;
+      const matches: BracketPreviewMatch[] = [];
+
+      for (let matchNumber = 1; matchNumber <= matchCount; matchNumber++) {
+        if (prevRoundLabel === null) {
+          const pairing = firstRoundPairings[matchNumber - 1];
+          const team1Index = pairing.team1Index;
+          const team2Index = pairing.team2Index;
+          const team1 = teams[team1Index];
+          const team2 = teams[team2Index];
+          const team1Name = team1?.value ?? this.translocoService.translate('playoffs.bye');
+          const team2Name = team2?.value ?? this.translocoService.translate('playoffs.bye');
+          matches.push({
+            matchNumber,
+            team1Name,
+            team2Name,
+            isBye: !team1 || !team2,
+          });
+        } else {
+          // Subsequent rounds: show "Winner of match X"
+          const winnerOf = (round: string, match: number) => {
+            const roundLabel2 = this.translocoService.translate(round);
+            return this.translocoService.translate('finale.winnerOf', {
+              round: roundLabel2,
+              match: String(match),
+            });
+          };
+          matches.push({
+            matchNumber,
+            team1Name: winnerOf(prevRoundLabel, 2 * matchNumber - 1),
+            team2Name: winnerOf(prevRoundLabel, 2 * matchNumber),
+            isBye: false,
+          });
+        }
+      }
+
+      rounds.push({ roundLabel, roundOrder: currentSize, matches });
+      prevRoundLabel = roundLabel;
+      currentSize = Math.floor(currentSize / 2);
+    }
+
+    // Sort from largest round (first round) to final
+    return rounds.sort((a, b) => b.roundOrder - a.roundOrder);
+  });
+
+  bracketTreeRounds = computed((): BracketTreeRound[] => {
+    const rounds = this.bracketPreview();
+    const finalRoundOrder = rounds[rounds.length - 1]?.roundOrder;
+
+    return rounds.map((round, roundIndex) => {
+      const slotSpan = 2 ** roundIndex;
+      // Center slot index: midpoint of the span assigned to this match
+      const matches = round.matches.map((match, matchIndex) => ({
+        data: match,
+        slotSpan,
+        // gridRow is 1-based center of the span block
+        gridRow: matchIndex * slotSpan + 1,
+      }));
+
+      return {
+        roundLabel: round.roundLabel,
+        roundOrder: round.roundOrder,
+        matches,
+        isFinalRound: round.roundOrder === finalRoundOrder,
+      };
+    });
+  });
+
+  bracketTreeStyle = computed(() => {
+    const rounds = this.bracketTreeRounds();
+    const firstRoundMatchCount = rounds[0]?.matches.length ?? 0;
+
+    return {
+      '--playoffs-tree-round-count': String(Math.max(rounds.length, 1)),
+      '--playoffs-tree-slot-count': String(firstRoundMatchCount > 0 ? firstRoundMatchCount * 2 : 2),
+    };
+  });
+
+  canGoNext = computed(
+    () => this.playoffsName().trim().length > 0 && this.selectedTeams().length > 0,
+  );
+
+  onAddSelectedTeam(): void {
+    const pendingTeamRefs = this.pendingTeamRef();
+    if (pendingTeamRefs.length === 0) return;
+
+    const teamsById = new Map(this.data.teams.map((team) => [team.ref.id, team.name]));
+    const selectedIds = new Set(this.selectedTeams().map((team) => team.key));
+    const teamsToAdd: KeyValue<string, string>[] = [];
+
+    for (const teamRef of pendingTeamRefs) {
+      if (selectedIds.has(teamRef)) {
+        continue;
+      }
+
+      const teamName = teamsById.get(teamRef);
+      if (!teamName) {
+        continue;
+      }
+
+      selectedIds.add(teamRef);
+      teamsToAdd.push({ key: teamRef, value: teamName });
+    }
+
+    if (teamsToAdd.length > 0) {
+      this.selectedTeams.update((teams) => [...teams, ...teamsToAdd]);
+    }
+
+    this.pendingTeamRef.set([]);
+  }
+
+  onRemoveTeam(team: KeyValue<string, string>): void {
+    this.selectedTeams.update((teams) => teams.filter((t) => t.key !== team.key));
+  }
+
+  onNext(): void {
+    if (this.canGoNext()) {
+      this.currentStep.set(2);
+    }
+  }
+
+  onBack(): void {
+    this.currentStep.set(1);
+  }
+
+  onCancel(): void {
+    this.dialogRef.close(undefined);
+  }
+
+  onSave(): void {
+    const name = this.playoffsName().trim();
+    if (!name || this.selectedTeams().length === 0) return;
+    const teamById = new Map(this.data.teams.map((team) => [team.ref.id, team.ref]));
+    const result: SavePlayoffsEvent = {
+      serieRef: this.data.serieRef,
+      name,
+      orderedTeamRefs: this.selectedTeams()
+        .map((team) => teamById.get(team.key))
+        .filter((teamRef): teamRef is DocumentReference => teamRef !== undefined),
+      size: this.bracketSize(),
+      matchOrganization: this.matchOrganization(),
+    };
+    this.dialogRef.close(result);
+  }
+}

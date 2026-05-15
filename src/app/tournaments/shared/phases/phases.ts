@@ -424,6 +424,11 @@ export class Phases {
       if (result) {
         console.log('Playoffs to save', result);
         //void this.tournamentActions.generatePlayoffs(result);
+        this.messageService.add({
+          severity: 'info',
+          summary: this.translocoService.translate('admin.poules.comingSoon'),
+          detail: this.translocoService.translate('admin.poules.addPlayoffsComingSoon'),
+        });
       }
     });
   }

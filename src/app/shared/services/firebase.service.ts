@@ -764,7 +764,7 @@ export class FirebaseService {
 
   async generatePlayoffsForSerie(
     serieRef: DocumentReference,
-    serieName: string,
+    playoffsName: string,
     bracketSize: number,
     orderedTeamRefs: DocumentReference[],
     matchOrganization: PlayoffsMatchOrganization,
@@ -784,7 +784,7 @@ export class FirebaseService {
       const matchCount = roundSize / 2;
       for (let matchNumber = 1; matchNumber <= matchCount; matchNumber++) {
         const gameData: Record<string, unknown> = {
-          name: `${serieName} - ${roundName} ${matchNumber}`,
+          name: `${playoffsName} - ${roundName} ${matchNumber}`,
           round: roundName,
           roundOrder: roundSize,
           matchNumber,

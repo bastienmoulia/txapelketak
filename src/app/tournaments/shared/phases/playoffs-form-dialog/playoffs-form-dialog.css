@@ -13,10 +13,8 @@
 
 .playoffs-tree {
   display: grid;
-  grid-template-columns: repeat(
-    var(--playoffs-tree-round-count),
-    var(--playoffs-tree-column-width)
-  );
+  grid-auto-flow: column;
+  grid-auto-columns: var(--playoffs-tree-column-width);
   gap: calc(var(--playoffs-tree-round-gap) + 0.5 * var(--playoffs-tree-round-gap));
   min-width: max-content;
 }
@@ -39,10 +37,7 @@
 .playoffs-tree-round-lane {
   position: relative;
   display: grid;
-  grid-template-rows: repeat(
-    var(--playoffs-tree-slot-count),
-    calc(var(--playoffs-tree-slot-height) + var(--playoffs-tree-row-gap))
-  );
+  grid-auto-rows: calc(var(--playoffs-tree-slot-height) + var(--playoffs-tree-row-gap));
 }
 
 .playoffs-tree-match {

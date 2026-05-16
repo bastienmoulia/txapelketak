@@ -5,13 +5,12 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Steps } from 'primeng/steps';
 import { InputText } from 'primeng/inputtext';
-import { SelectButton } from 'primeng/selectbutton';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Textarea } from 'primeng/textarea';
 import { MessageModule } from 'primeng/message';
 import { startWith } from 'rxjs';
-import { Tournament, TournamentType, User } from '../../home/tournament.interface';
+import { Tournament, User } from '../../home/tournament.interface';
 import { FirebaseService } from '../../shared/services/firebase.service';
 
 @Component({
@@ -21,7 +20,6 @@ import { FirebaseService } from '../../shared/services/firebase.service';
     RouterLink,
     Steps,
     InputText,
-    SelectButton,
     Button,
     FloatLabel,
     Textarea,
@@ -53,7 +51,6 @@ export class TournamentNew {
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
     description: new FormControl(''),
-    type: new FormControl<TournamentType>('poules', [Validators.required]),
     creatorUsername: new FormControl('', [Validators.required]),
     creatorEmail: new FormControl('', [Validators.required, Validators.email]),
   });
@@ -63,24 +60,6 @@ export class TournamentNew {
 
   private formValue = toSignal(this.form.valueChanges.pipe(startWith(this.form.getRawValue())), {
     initialValue: this.form.getRawValue(),
-  });
-
-  typeOptions = computed<{ label: string; value: TournamentType }[]>(() => {
-    this.activeLang();
-    const name = this.formValue()?.name ?? '';
-    const options: { label: string; value: TournamentType }[] = [
-      { label: this.translocoService.translate('tournaments.new.type.poules'), value: 'poules' },
-    ];
-    if (name.startsWith('_')) {
-      options.push(
-        { label: this.translocoService.translate('tournaments.new.type.finale'), value: 'finale' },
-        {
-          label: this.translocoService.translate('tournaments.new.type.poulesFinale'),
-          value: 'poules_finale',
-        },
-      );
-    }
-    return options;
   });
 
   isStep1Valid = computed(() => {
@@ -153,7 +132,6 @@ export class TournamentNew {
       const tournament: Omit<Tournament, 'ref'> = {
         name: tournamentName,
         description: value.description ?? '',
-        type: value.type as TournamentType,
         status: 'waitingValidation' as const,
         createdAt: new Date().toISOString(),
       };

@@ -44,7 +44,7 @@ export interface TournamentYamlData {
   tournament: {
     name: string;
     description: string;
-    type: string;
+    type?: string;
     status: string;
   };
   teams: TournamentYamlTeam[];
@@ -262,12 +262,15 @@ export class AdminImportExport {
       tournament: {
         name: tournament.name,
         description: tournament.description ?? '',
-        type: tournament.type,
         status: tournament.status,
       },
       teams: yamlTeams,
       series: yamlSeries,
     };
+
+    if (tournament.type) {
+      result.tournament.type = tournament.type;
+    }
 
     if (timeSlotsArray.length > 0) {
       result.timeSlots = timeSlotsArray

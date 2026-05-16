@@ -54,19 +54,6 @@
               </small>
             </div>
 
-            <div class="field flex flex-col gap-2">
-              <label class="text-sm font-medium text-[var(--p-text-color)]" for="type">{{
-                'tournaments.new.step1.type' | transloco
-              }}</label>
-              <p-selectbutton
-                id="type"
-                formControlName="type"
-                [options]="typeOptions()"
-                optionLabel="label"
-                optionValue="value"
-                data-testid="field-type"
-              />
-            </div>
           </div>
         }
 

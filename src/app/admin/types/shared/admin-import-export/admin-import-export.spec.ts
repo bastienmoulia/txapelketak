@@ -93,4 +93,23 @@ describe('AdminImportExport', () => {
     ]);
     expect('comment' in exportData.teams[0]).toBe(false);
   });
+
+  it('should not include tournament type in exported yaml data when absent', () => {
+    fixture.componentRef.setInput('tournament', {
+      ref: { id: 'tournament-1' } as DocumentReference,
+      name: 'Tournament test',
+      description: 'Tournament description',
+      status: 'ongoing',
+      createdAt: '2026-03-21T00:00:00.000Z',
+    });
+    fixture.detectChanges();
+
+    const exportData = (
+      component as unknown as { buildExportData: () => unknown }
+    ).buildExportData() as {
+      tournament: { type?: string };
+    };
+
+    expect('type' in exportData.tournament).toBe(false);
+  });
 });

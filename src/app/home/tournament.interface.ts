@@ -5,7 +5,7 @@ export interface Tournament<T extends TournamentType = TournamentType> {
   ref: DocumentReference;
   name: string;
   description: string;
-  type: T;
+  type?: T;
   status: TournamentStatus;
   createdAt: string;
   data?: TournamentData<T>;

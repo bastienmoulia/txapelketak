@@ -31,10 +31,6 @@ describe('TournamentNew', () => {
     expect(component.steps().length).toBe(2);
   });
 
-  it('should have 1 tournament type options', () => {
-    expect(component.typeOptions().length).toBe(1);
-  });
-
   it('should mark step 1 as invalid when name is empty', () => {
     component.form.get('name')?.setValue('');
     expect(component.isStep1Valid()).toBe(false);
@@ -76,10 +72,6 @@ describe('TournamentNew', () => {
     expect(component.currentStep()).toBe(0);
   });
 
-  it('should default tournament type to poules', () => {
-    expect(component.form.get('type')?.value).toBe('poules');
-  });
-
   it('should mark step 2 as invalid when creator info is empty', () => {
     expect(component.isStep2Valid()).toBe(false);
   });
@@ -103,7 +95,6 @@ describe('TournamentNew', () => {
 
   it('should submit when form is valid and show success state', () => {
     component.form.get('name')?.setValue('Mon Tournoi');
-    component.form.get('type')?.setValue('poules');
     component.form.get('creatorUsername')?.setValue('MonPseudo');
     component.form.get('creatorEmail')?.setValue('test@example.com');
     component.onSubmit();

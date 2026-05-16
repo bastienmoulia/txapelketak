@@ -22,7 +22,6 @@ import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 import { Game, Team, TimeSlot } from '../../tournaments/models';
-import type { PlayoffsMatchOrganization } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -713,7 +712,6 @@ export class FirebaseService {
     playoffsName: string,
     bracketSize: number,
     orderedTeamRefs: DocumentReference[],
-    matchOrganization: PlayoffsMatchOrganization,
   ): Promise<void> {
     console.debug(`[Firestore] generatePlayoffsForSerie: bracketSize=${bracketSize}`);
 
@@ -739,15 +737,8 @@ export class FirebaseService {
           gameData['team1Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber - 1}`;
           gameData['team2Placeholder'] = `finale.winnerOf:${prevRoundName}:${2 * matchNumber}`;
         } else {
-          const linearTeam1Index = (matchNumber - 1) * 2;
-          const linearTeam2Index = (matchNumber - 1) * 2 + 1;
-          const competitionTeam1Index = matchNumber - 1;
-          const competitionTeam2Index = roundSize - matchNumber;
-
-          const team1Index =
-            matchOrganization === 'competition' ? competitionTeam1Index : linearTeam1Index;
-          const team2Index =
-            matchOrganization === 'competition' ? competitionTeam2Index : linearTeam2Index;
+          const team1Index = matchNumber - 1;
+          const team2Index = bracketSize - matchNumber;
 
           const team1Ref = orderedTeamRefs[team1Index] ?? null;
           const team2Ref = orderedTeamRefs[team2Index] ?? null;

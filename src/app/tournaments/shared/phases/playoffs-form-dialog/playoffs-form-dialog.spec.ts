@@ -61,10 +61,6 @@ describe('PlayoffsFormDialog', () => {
     expect(component.currentStep()).toBe(1);
   });
 
-  it('should default match organization to linear', () => {
-    expect(component.matchOrganization()).toBe('linear');
-  });
-
   it('should close dialog on cancel', () => {
     component.onCancel();
     expect(mockRef.close).toHaveBeenCalledWith(undefined);
@@ -172,7 +168,7 @@ describe('PlayoffsFormDialog', () => {
     expect(mockRef.close).not.toHaveBeenCalled();
   });
 
-  it('should close with playoffs event on save', () => {
+  it('should close with playoffs event on save with competition organization', () => {
     component.playoffsName.set('My Playoffs');
     component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
     component.onSave();
@@ -181,12 +177,11 @@ describe('PlayoffsFormDialog', () => {
     expect(result.serieRef).toBeDefined();
     expect(result.orderedTeamRefs).toHaveLength(2);
     expect(result.size).toBe(2);
-    expect(result.matchOrganization).toBe('linear');
+    expect(result.matchOrganization).toBe('competition');
   });
 
   it('should keep selected team order in save payload', () => {
     component.playoffsName.set('My Playoffs');
-    component.matchOrganization.set('competition');
     component.selectedTeams.set([asSelectedTeam(teams[2]), asSelectedTeam(teams[0])]);
     component.onSave();
 
@@ -208,7 +203,7 @@ describe('PlayoffsFormDialog', () => {
 
   it('should show bye for missing team slots', () => {
     // 3 teams → bracketSize=4, first round has 2 matches (4/2=2)
-    // Match 1: team[0] vs team[1], Match 2: team[2] vs bye
+    // Match 1: team[0] vs bye (3 < 4), Match 2: team[1] vs team[2]
     component.selectedTeams.set([
       asSelectedTeam(teams[0]),
       asSelectedTeam(teams[1]),
@@ -218,11 +213,10 @@ describe('PlayoffsFormDialog', () => {
     const firstRound = preview.find((r) => r.roundOrder === 4);
     expect(firstRound).toBeDefined();
     expect(firstRound!.matches).toHaveLength(2);
-    expect(firstRound!.matches[1].isBye).toBe(true);
+    expect(firstRound!.matches[0].isBye).toBe(true);
   });
 
   it('should compute first round in competition mode', () => {
-    component.matchOrganization.set('competition');
     component.selectedTeams.set(teams.map(asSelectedTeam));
 
     const preview = component.bracketPreview();

@@ -159,20 +159,9 @@ export class FirebaseService {
 
     const tournament = { ref: tournamentRef, ...tournamentSnapshot.data() } as Tournament;
 
-    const collectionSnapshot = await runInInjectionContext(this.environmentInjector, async () => {
-      console.debug(`[Firestore] getDocs: collection ${collectionName}`);
-      return getDocs(collection(tournamentRef, collectionName));
-    });
-    const collectionData = collectionSnapshot.docs.map((doc) => doc.data() as unknown);
-
     return {
       ref: tournamentRef,
-      tournament: {
-        ...tournament,
-        data: {
-          [collectionName]: collectionData,
-        },
-      } as Tournament,
+      tournament,
     };
   }
 

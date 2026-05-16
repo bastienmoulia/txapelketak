@@ -11,28 +11,10 @@ export interface PoulesData {
   series?: Serie[];
 }
 
-export interface FinaleGame {
-  ref: DocumentReference;
-  name: string;
-  round: string;
-  roundOrder: number;
-  matchNumber: number;
-  refTeam1?: DocumentReference | null;
-  refTeam2?: DocumentReference | null;
-  team1Placeholder?: string;
-  team2Placeholder?: string;
-  scoreTeam1?: number;
-  scoreTeam2?: number;
-  date?: Date;
-  referees?: string[];
-}
-
 export interface Serie {
   ref: DocumentReference;
   name: string;
   poules: Poule[];
-  finaleSize?: number;
-  finaleGames?: FinaleGame[];
 }
 
 export interface Poule {

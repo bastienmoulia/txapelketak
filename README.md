@@ -6,7 +6,7 @@ Application web de gestion de tournois et de scores, pensée pour des organisate
 
 Txapelketak permet de :
 
-- créer et configurer des tournois (poules, phase finale, ou combiné) ;
+- créer et configurer des tournois ;
 - gérer joueurs/équipes, matchs, créneaux horaires et scores ;
 - visualiser classements et résultats en temps réel ;
 - administrer les tournois via un accès par jeton URL (sans inscription) ;

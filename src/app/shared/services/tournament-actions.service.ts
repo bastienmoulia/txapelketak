@@ -15,10 +15,6 @@ import {
   SavePouleEvent,
   SaveSerieEvent,
   TeamInPouleEvent,
-  DeleteFinaleGamesEvent,
-  GenerateFinaleEvent,
-  SaveFinaleGameEvent,
-  SetFinaleSizeEvent,
 } from '../../tournaments/shared/phases/phases';
 import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 import { Game, Serie } from '../../tournaments/poules.model';
@@ -299,54 +295,6 @@ export class TournamentActionsService {
       detail: this.translocoService.translate('admin.games.generatedDetail', {
         count: event.games.length,
       }),
-    });
-  }
-
-  // ── Finale actions ─────────────────────────────────────────────
-
-  async setFinaleSize(event: SetFinaleSizeEvent): Promise<void> {
-    await this.firebaseService.setSerieFinaleSize(event.serieRef, event.size);
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translocoService.translate('finale.sizeUpdated'),
-      detail: this.translocoService.translate('finale.sizeUpdatedDetail'),
-    });
-  }
-
-  async generateFinale(event: GenerateFinaleEvent): Promise<void> {
-    await this.firebaseService.generateFinaleGamesForSerie(
-      event.serieRef,
-      event.serieName,
-      event.finaleSize,
-    );
-    const count = event.finaleSize - 1;
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translocoService.translate('finale.generated'),
-      detail: this.translocoService.translate('finale.generatedDetail', { count }),
-    });
-  }
-
-  async deleteFinaleGames(event: DeleteFinaleGamesEvent): Promise<void> {
-    await this.firebaseService.deleteFinaleGamesForSerie(event.serieRef);
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translocoService.translate('finale.gamesDeleted'),
-      detail: this.translocoService.translate('finale.gamesDeletedDetail'),
-    });
-  }
-
-  async saveFinaleGame(event: SaveFinaleGameEvent): Promise<void> {
-    await this.firebaseService.updateFinaleGame(event.gameRef, {
-      refTeam1: event.refTeam1,
-      refTeam2: event.refTeam2,
-      scoreTeam1: event.scoreTeam1 ?? undefined,
-      scoreTeam2: event.scoreTeam2 ?? undefined,
-    });
-    this.messageService.add({
-      severity: 'success',
-      summary: this.translocoService.translate('finale.gameEdited'),
-      detail: this.translocoService.translate('finale.gameEditedDetail'),
     });
   }
 

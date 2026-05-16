@@ -15,18 +15,10 @@ import { PopoverModule } from 'primeng/popover';
 import type { Popover } from 'primeng/popover';
 import { TeamFormDialog, type DeleteTeamAction } from './team-form-dialog/team-form-dialog';
 import { TeamBulkDialog } from './team-bulk-dialog/team-bulk-dialog';
-import { DocumentReference } from '@angular/fire/firestore';
 import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
-
-export interface Team {
-  ref: DocumentReference;
-  name: string;
-  comment?: string;
-  serieName?: string;
-  pouleName?: string;
-}
+import { Team } from '../../models';
 
 @Component({
   selector: 'app-teams',

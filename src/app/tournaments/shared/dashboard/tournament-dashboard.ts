@@ -18,7 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
 import type { Popover } from 'primeng/popover';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Game, Poule } from '../../poules.model';
+import { Game, Poule } from '../../models';
 import { MarkdownService } from '../../../shared/services/markdown.service';
 import { DatepickerConfigService } from '../../../shared/services/datepicker-config.service';
 import { GameFormDialog } from '../games/game-form-dialog/game-form-dialog';

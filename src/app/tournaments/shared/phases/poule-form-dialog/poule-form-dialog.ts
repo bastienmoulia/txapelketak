@@ -11,9 +11,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import type { Poule } from '../../../poules.model';
+import type { Poule, Team } from '../../../models';
 import type { SavePouleEvent } from '../phases';
-import type { Team } from '../../teams/teams';
 
 export interface DeletePouleAction {
   action: 'delete';

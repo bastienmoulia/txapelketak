@@ -5,8 +5,7 @@ import { vi } from 'vitest';
 
 import { PoulesStore } from './poules.store';
 import { FirebaseService } from '../shared/services/firebase.service';
-import { Team } from '../tournaments/types/shared/teams/teams';
-import { TimeSlot } from '../tournaments/types/poules/poules.model';
+import { Team, TimeSlot } from '../tournaments/models';
 
 function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
@@ -38,7 +37,9 @@ describe('PoulesStore', () => {
       watchCollectionFromDocumentRef: vi.fn(),
       getCollectionFromDocumentRef: vi.fn().mockResolvedValue([]),
       watchTimeSlots: vi.fn().mockReturnValue(timeSlots$.asObservable()),
-      watchFinaleGamesForSerie: vi.fn().mockReturnValue(new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable()),
+      watchFinaleGamesForSerie: vi
+        .fn()
+        .mockReturnValue(new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable()),
     };
 
     firebaseService.watchCollectionFromDocumentRef.mockImplementation(

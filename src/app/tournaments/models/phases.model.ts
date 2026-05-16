@@ -1,14 +1,8 @@
 import { DocumentReference } from '@angular/fire/firestore';
-import { Team } from './shared/teams/teams';
 
 export interface TimeSlot {
   ref: DocumentReference;
   date: Date;
-}
-
-export interface PoulesData {
-  teams?: Team[];
-  series?: Serie[];
 }
 
 export interface Serie {

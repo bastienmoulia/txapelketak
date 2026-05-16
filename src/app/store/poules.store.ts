@@ -3,14 +3,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { FirebaseService } from '../shared/services/firebase.service';
-import {
-  Game,
-  parseFirestoreDate,
-  Poule,
-  Serie,
-  Team,
-  TimeSlot,
-} from '../tournaments/models';
+import { Game, parseFirestoreDate, Poule, Serie, Team, TimeSlot } from '../tournaments/models';
 
 interface PoulesStoreState {
   teams: Team[];

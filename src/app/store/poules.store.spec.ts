@@ -37,7 +37,9 @@ describe('PoulesStore', () => {
       watchCollectionFromDocumentRef: vi.fn(),
       getCollectionFromDocumentRef: vi.fn().mockResolvedValue([]),
       watchTimeSlots: vi.fn().mockReturnValue(timeSlots$.asObservable()),
-      watchFinaleGamesForSerie: vi.fn().mockReturnValue(new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable()),
+      watchFinaleGamesForSerie: vi
+        .fn()
+        .mockReturnValue(new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable()),
     };
 
     firebaseService.watchCollectionFromDocumentRef.mockImplementation(

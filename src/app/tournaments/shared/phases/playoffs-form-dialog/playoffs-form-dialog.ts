@@ -8,20 +8,16 @@ import { Message } from 'primeng/message';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { OrderListModule } from 'primeng/orderlist';
-import { SelectButton } from 'primeng/selectbutton';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Team } from '../../../models';
 import { KeyValue, NgStyle } from '@angular/common';
-
-export type PlayoffsMatchOrganization = 'linear' | 'competition';
 
 export interface SavePlayoffsEvent {
   serieRef: DocumentReference;
   name: string;
   orderedTeamRefs: DocumentReference[];
   size: number;
-  matchOrganization: PlayoffsMatchOrganization;
 }
 
 interface PlayoffsFormDialogData {
@@ -68,19 +64,11 @@ function getRoundLabel(size: number): string {
 
 function getFirstRoundPairingIndexes(
   bracketSize: number,
-  matchOrganization: PlayoffsMatchOrganization,
 ): { team1Index: number; team2Index: number }[] {
   const matchCount = bracketSize / 2;
-  if (matchOrganization === 'competition') {
-    return Array.from({ length: matchCount }, (_, index) => ({
-      team1Index: index,
-      team2Index: bracketSize - 1 - index,
-    }));
-  }
-
   return Array.from({ length: matchCount }, (_, index) => ({
-    team1Index: index * 2,
-    team2Index: index * 2 + 1,
+    team1Index: index,
+    team2Index: bracketSize - 1 - index,
   }));
 }
 
@@ -96,7 +84,6 @@ function getFirstRoundPairingIndexes(
     Message,
     TooltipModule,
     OrderListModule,
-    SelectButton,
     NgStyle,
   ],
   templateUrl: './playoffs-form-dialog.html',
@@ -118,18 +105,6 @@ export class PlayoffsFormDialog {
   playoffsName = signal('');
   selectedTeams = signal<KeyValue<string, string>[]>([]);
   pendingTeamRef = signal<string[]>([]);
-  matchOrganization = signal<PlayoffsMatchOrganization>('linear');
-
-  matchOrganizationOptions = computed(() => [
-    {
-      label: this.translocoService.translate('playoffs.matchOrganization.options.linear'),
-      value: 'linear' as const,
-    },
-    {
-      label: this.translocoService.translate('playoffs.matchOrganization.options.competition'),
-      value: 'competition' as const,
-    },
-  ]);
 
   availableTeams = computed<KeyValue<string, string>[]>(() => {
     const selectedIds = new Set(this.selectedTeams().map((t) => t.key));
@@ -147,7 +122,7 @@ export class PlayoffsFormDialog {
   bracketPreview = computed((): BracketPreviewRound[] => {
     const teams = this.selectedTeams();
     const size = this.bracketSize();
-    const firstRoundPairings = getFirstRoundPairingIndexes(size, this.matchOrganization());
+    const firstRoundPairings = getFirstRoundPairingIndexes(size);
     const rounds: BracketPreviewRound[] = [];
 
     // Generate all rounds from first round (largest) down to final
@@ -296,7 +271,6 @@ export class PlayoffsFormDialog {
         .map((team) => teamById.get(team.key))
         .filter((teamRef): teamRef is DocumentReference => teamRef !== undefined),
       size: this.bracketSize(),
-      matchOrganization: this.matchOrganization(),
     };
     this.dialogRef.close(result);
   }

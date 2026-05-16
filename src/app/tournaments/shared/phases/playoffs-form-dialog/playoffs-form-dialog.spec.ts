@@ -61,10 +61,6 @@ describe('PlayoffsFormDialog', () => {
     expect(component.currentStep()).toBe(1);
   });
 
-  it('should default match organization to linear', () => {
-    expect(component.matchOrganization()).toBe('linear');
-  });
-
   it('should close dialog on cancel', () => {
     component.onCancel();
     expect(mockRef.close).toHaveBeenCalledWith(undefined);
@@ -181,19 +177,16 @@ describe('PlayoffsFormDialog', () => {
     expect(result.serieRef).toBeDefined();
     expect(result.orderedTeamRefs).toHaveLength(2);
     expect(result.size).toBe(2);
-    expect(result.matchOrganization).toBe('linear');
   });
 
   it('should keep selected team order in save payload', () => {
     component.playoffsName.set('My Playoffs');
-    component.matchOrganization.set('competition');
     component.selectedTeams.set([asSelectedTeam(teams[2]), asSelectedTeam(teams[0])]);
     component.onSave();
 
     const result = mockRef.close.mock.calls[0][0];
     expect(result.orderedTeamRefs[0].id).toBe(teamCRef.id);
     expect(result.orderedTeamRefs[1].id).toBe(teamARef.id);
-    expect(result.matchOrganization).toBe('competition');
   });
 
   it('should compute bracket preview for first round with actual teams', () => {
@@ -208,7 +201,7 @@ describe('PlayoffsFormDialog', () => {
 
   it('should show bye for missing team slots', () => {
     // 3 teams → bracketSize=4, first round has 2 matches (4/2=2)
-    // Match 1: team[0] vs team[1], Match 2: team[2] vs bye
+    // Match 1: team[0] vs bye (3 < 4), Match 2: team[1] vs team[2]
     component.selectedTeams.set([
       asSelectedTeam(teams[0]),
       asSelectedTeam(teams[1]),
@@ -218,11 +211,10 @@ describe('PlayoffsFormDialog', () => {
     const firstRound = preview.find((r) => r.roundOrder === 4);
     expect(firstRound).toBeDefined();
     expect(firstRound!.matches).toHaveLength(2);
-    expect(firstRound!.matches[1].isBye).toBe(true);
+    expect(firstRound!.matches[0].isBye).toBe(true);
   });
 
-  it('should compute first round in competition mode', () => {
-    component.matchOrganization.set('competition');
+  it('should compute first round in bracket preview', () => {
     component.selectedTeams.set(teams.map(asSelectedTeam));
 
     const preview = component.bracketPreview();

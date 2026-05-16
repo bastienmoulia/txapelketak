@@ -19,7 +19,7 @@ export type { SavePlayoffsEvent };
 import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
-import { Poule, Serie } from '../../poules.model';
+import { Poule, Serie } from '../../models';
 
 export interface SaveSerieEvent {
   name: string;

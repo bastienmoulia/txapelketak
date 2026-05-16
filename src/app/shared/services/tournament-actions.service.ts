@@ -17,8 +17,7 @@ import {
   TeamInPouleEvent,
 } from '../../tournaments/shared/phases/phases';
 import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
-import { Game, Serie } from '../../tournaments/poules.model';
-import { Team } from '../../tournaments/shared/teams/teams';
+import { Game, Serie, Team } from '../../tournaments/models';
 
 @Injectable()
 export class TournamentActionsService {

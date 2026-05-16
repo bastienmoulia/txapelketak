@@ -9,8 +9,7 @@ import { provideTranslocoTesting } from '../../../../testing/transloco-testing.p
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
 import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
-import { Serie } from '../../../poules.model';
-import { Team } from '../../teams/teams';
+import { Serie, Team } from '../../../models';
 import { Poules } from './poules';
 import type { SavePouleEvent } from '../phases';
 

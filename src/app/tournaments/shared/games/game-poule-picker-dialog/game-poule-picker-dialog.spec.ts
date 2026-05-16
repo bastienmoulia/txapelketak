@@ -5,7 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DocumentReference } from '@angular/fire/firestore';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
-import { Poule, Serie } from '../../../poules.model';
+import { Poule, Serie } from '../../../models';
 
 describe('GamePoulePickerDialog', () => {
   let component: GamePoulePickerDialog;

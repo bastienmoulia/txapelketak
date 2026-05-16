@@ -12,7 +12,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
 import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
-import { Poule } from '../../../poules.model';
+import { Poule } from '../../../models';
 import { PouleFormDialog } from '../poule-form-dialog/poule-form-dialog';
 import type { SavePouleEvent } from '../phases';
 

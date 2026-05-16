@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { SaveSerieEvent } from '../phases';
-import { Serie } from '../../../poules.model';
+import { Serie } from '../../../models';
 
 export interface DeleteSerieAction {
   action: 'delete';

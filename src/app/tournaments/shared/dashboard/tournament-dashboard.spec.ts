@@ -3,13 +3,12 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { patchState } from '@ngrx/signals';
 import { TournamentDashboard } from './tournament-dashboard';
 import { Tournament, TournamentStatus, UserRole } from '../../../home/tournament.interface';
-import { Team } from '../teams/teams';
+import { Game, Serie, Team } from '../../models';
 import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
 import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
-import { Serie } from '../../poules.model';
 
 function makeRef(id: string): DocumentReference {
   return { id } as DocumentReference;

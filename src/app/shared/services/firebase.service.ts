@@ -21,8 +21,7 @@ import {
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
-import { Game, TimeSlot } from '../../tournaments/poules.model';
-import { Team } from '../../tournaments/shared/teams/teams';
+import { Game, Team, TimeSlot } from '../../tournaments/models';
 import type { PlayoffsMatchOrganization } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 
 @Injectable({
@@ -171,7 +170,6 @@ export class FirebaseService {
       tournament: {
         ...tournament,
         data: {
-          ...(tournament.data ?? {}),
           [collectionName]: collectionData,
         },
       } as Tournament,

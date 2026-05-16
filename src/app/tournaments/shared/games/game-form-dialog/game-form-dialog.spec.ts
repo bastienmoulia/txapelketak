@@ -2,11 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GameFormDialog } from './game-form-dialog';
-import { Team } from '../../teams/teams';
+import { Poule, Team } from '../../../models';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
-import { Poule } from '../../../poules.model';
 
 describe('GameFormDialog', () => {
   let component: GameFormDialog;

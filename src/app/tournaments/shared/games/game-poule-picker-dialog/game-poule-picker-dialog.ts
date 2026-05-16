@@ -5,7 +5,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Poule, Serie } from '../../../poules.model';
+import { Poule, Serie } from '../../../models';
 
 interface GamePoulePickerDialogData {
   series: Serie[];

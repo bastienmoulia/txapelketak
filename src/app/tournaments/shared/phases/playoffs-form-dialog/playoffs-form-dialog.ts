@@ -11,7 +11,7 @@ import { OrderListModule } from 'primeng/orderlist';
 import { SelectButton } from 'primeng/selectbutton';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import type { Team } from '../../teams/teams';
+import type { Team } from '../../../models';
 import { KeyValue, NgStyle } from '@angular/common';
 
 export type PlayoffsMatchOrganization = 'linear' | 'competition';

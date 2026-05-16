@@ -5,8 +5,7 @@ import { vi } from 'vitest';
 
 import { PoulesStore } from './poules.store';
 import { FirebaseService } from '../shared/services/firebase.service';
-import { Team } from '../tournaments/types/shared/teams/teams';
-import { TimeSlot } from '../tournaments/types/poules/poules.model';
+import { Team, TimeSlot } from '../tournaments/models';
 
 function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;

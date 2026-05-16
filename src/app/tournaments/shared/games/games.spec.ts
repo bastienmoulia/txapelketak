@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DocumentReference } from '@angular/fire/firestore';
-import { Team } from '../teams/teams';
+import { Poule, Team } from '../../models';
 
 import { Games, GAMES_TEAM_FILTER_QUERY_PARAM } from './games';
 import { provideTranslocoTesting } from '../../../testing/transloco-testing.providers';
@@ -11,7 +11,6 @@ import { vi } from 'vitest';
 import { PoulesStore } from '../../../store/poules.store';
 import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
-import { Poule } from '../../poules.model';
 
 describe('Games', () => {
   let component: Games;

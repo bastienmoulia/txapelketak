@@ -168,7 +168,7 @@ describe('PlayoffsFormDialog', () => {
     expect(mockRef.close).not.toHaveBeenCalled();
   });
 
-  it('should close with playoffs event on save with competition organization', () => {
+  it('should close with playoffs event on save', () => {
     component.playoffsName.set('My Playoffs');
     component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
     component.onSave();
@@ -177,7 +177,6 @@ describe('PlayoffsFormDialog', () => {
     expect(result.serieRef).toBeDefined();
     expect(result.orderedTeamRefs).toHaveLength(2);
     expect(result.size).toBe(2);
-    expect(result.matchOrganization).toBe('competition');
   });
 
   it('should keep selected team order in save payload', () => {
@@ -188,7 +187,6 @@ describe('PlayoffsFormDialog', () => {
     const result = mockRef.close.mock.calls[0][0];
     expect(result.orderedTeamRefs[0].id).toBe(teamCRef.id);
     expect(result.orderedTeamRefs[1].id).toBe(teamARef.id);
-    expect(result.matchOrganization).toBe('competition');
   });
 
   it('should compute bracket preview for first round with actual teams', () => {
@@ -216,7 +214,7 @@ describe('PlayoffsFormDialog', () => {
     expect(firstRound!.matches[0].isBye).toBe(true);
   });
 
-  it('should compute first round in competition mode', () => {
+  it('should compute first round in bracket preview', () => {
     component.selectedTeams.set(teams.map(asSelectedTeam));
 
     const preview = component.bracketPreview();

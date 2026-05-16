@@ -50,18 +50,12 @@ export const PoulesStore = signalStore(
     let seriesSubscription: Subscription | null = null;
     let timeSlotsSubscription: Subscription | null = null;
     const gameSubscriptionMap = new Map<string, Subscription>(); // key: poule ref ID
-    const finaleGameSubscriptionMap = new Map<string, Subscription>(); // key: serie ref ID
     const pouleSubscriptions: Subscription[] = [];
     let watchedTournamentId: string | null = null;
 
     function stopGameWatchers(): void {
       gameSubscriptionMap.forEach((sub) => sub.unsubscribe());
       gameSubscriptionMap.clear();
-    }
-
-    function stopFinaleGameWatchers(): void {
-      finaleGameSubscriptionMap.forEach((sub) => sub.unsubscribe());
-      finaleGameSubscriptionMap.clear();
     }
 
     function stopPouleWatchers(): void {
@@ -78,7 +72,6 @@ export const PoulesStore = signalStore(
       timeSlotsSubscription = null;
       stopPouleWatchers();
       stopGameWatchers();
-      stopFinaleGameWatchers();
       watchedTournamentId = null;
     }
 
@@ -265,7 +258,6 @@ export const PoulesStore = signalStore(
             switchMap(({ items }) => {
               stopGameWatchers();
               stopPouleWatchers();
-              stopFinaleGameWatchers();
               const series = items.map((item) => ({
                 ...(item.data as Partial<Serie>),
                 ref: item.ref,
@@ -323,7 +315,6 @@ export const PoulesStore = signalStore(
         timeSlotsSubscription = null;
         stopPouleWatchers();
         stopGameWatchers();
-        stopFinaleGameWatchers();
         watchedTournamentId = null;
         patchState(store, initialState);
       },

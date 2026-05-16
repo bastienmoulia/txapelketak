@@ -4,10 +4,6 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Firestore rules allow operations but validation done in app + future Cloud Functions
 
-    function isValidTournamentType(value) {
-      return value == 'poules' || value == 'finale' || value == 'poules_finale';
-    }
-
     function isValidTournamentStatus(value) {
       return value == 'waitingValidation'
         || value == 'ongoing'
@@ -23,13 +19,11 @@ service cloud.firestore {
 
       allow create: if request.resource.data.name is string
         && request.resource.data.description is string
-        && isValidTournamentType(request.resource.data.type)
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;
 
       allow update: if request.resource.data.name is string
         && request.resource.data.description is string
-        && isValidTournamentType(request.resource.data.type)
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;
 

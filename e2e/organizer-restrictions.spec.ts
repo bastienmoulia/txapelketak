@@ -106,20 +106,11 @@ test.describe.serial('Organizer – restrictions', () => {
     const gamesPage = new GamesPage(page);
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Parties');
-    // Attendre une ligne contenant Org Team One ou un message d'absence
-    const row = page.locator('.p-datatable-tbody tr').filter({ hasText: orgTeam1 });
-    const emptyMsg = page.locator('p-message');
-    await Promise.race([
-      row.waitFor({ state: 'visible', timeout: 10000 }),
-      emptyMsg.waitFor({ state: 'visible', timeout: 10000 }),
-    ]);
-    if (await row.isVisible()) {
-      await expect(row).toContainText(orgTeam2);
-    } else {
-      throw new Error(
-        "Aucune ligne de match trouvée pour Org Team One (vérifier le seed ou la visibilité pour l'organisateur)",
-      );
-    }
+
+    const gameRow = gamesPage.gameRow(orgTeam1, orgTeam2);
+    await expect(gameRow).toBeVisible();
+    await expect(gameRow).toContainText(orgTeam1);
+    await expect(gameRow).toContainText(orgTeam2);
   });
 
   test('should show the edit game button to the organizer', async ({ page }) => {

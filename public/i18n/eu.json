@@ -226,7 +226,10 @@
       "teamsUpdated": "Taldeak eguneratu egin dira",
       "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira",
       "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora.",
-      "dialogAddPlayoffs": "Playoffak gehitu"
+      "dialogAddPlayoffs": "Playoffak gehitu",
+      "deletePlayoffAria": "Playoff hauek ezabatu",
+      "playoffDeleted": "Playoffak ezabatu dira",
+      "playoffDeletedDetail": "Playoffak ondo ezabatu dira."
     },
     "games": {
       "addGame": "Partida gehitu",
@@ -445,7 +448,7 @@
     "winnerOf": "{{round}} {{match}} irabazlea"
   },
   "playoffs": {
-    "name": "Playoff izena",
+    "name": "Playoff izena (aukerako)",
     "step1Title": "Taldeak eta ordena",
     "step2Title": "Zuhaitzaren aurrebista",
     "noTeamsSelected": "Ez dago talderik hautatuta",

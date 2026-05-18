@@ -70,6 +70,7 @@ export class Poules {
       let pointsConceded = 0;
 
       for (const game of poule.games ?? []) {
+        if (!game.refTeam1 || !game.refTeam2) continue;
         const isTeam1 = game.refTeam1.id === ref.id;
         const isTeam2 = game.refTeam2.id === ref.id;
         const gameFinished =

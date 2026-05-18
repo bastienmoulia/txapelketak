@@ -8,7 +8,23 @@ export interface TimeSlot {
 export interface Serie {
   ref: DocumentReference;
   name: string;
-  poules: Poule[];
+  poules?: Poule[];
+  playoffs?: Playoff[];
+  freePhases?: FreePhase[];
+}
+
+export interface Playoff {
+  ref: DocumentReference;
+  name: string;
+  orderedTeamRefs: DocumentReference[];
+  size: number;
+  games?: Game[];
+}
+
+export interface FreePhase {
+  ref: DocumentReference;
+  name: string;
+  games?: Game[];
 }
 
 export interface Poule {
@@ -20,19 +36,14 @@ export interface Poule {
 
 export interface Game {
   ref: DocumentReference;
-  refTeam1: DocumentReference;
-  refTeam2: DocumentReference;
+  refTeam1?: DocumentReference;
+  refTeam2?: DocumentReference;
   scoreTeam1?: number;
   scoreTeam2?: number;
   date?: Date;
   referees?: string[];
   comment?: string;
-}
-
-export function parseFirestoreDate(value: unknown): Date | undefined {
-  if (!value) return undefined;
-  if (typeof (value as { toDate?: unknown }).toDate === 'function') {
-    return (value as { toDate: () => Date }).toDate();
-  }
-  return new Date(value as string);
+  name?: string;
+  roundSize?: number;
+  matchNumber?: number;
 }

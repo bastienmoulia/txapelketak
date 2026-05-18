@@ -15,7 +15,7 @@ export class PhasesPage {
     return this.page.getByRole('tab', { name, exact: false });
   }
 
-  private async serieTabPanel(name: string): Promise<Locator> {
+  async serieTabPanel(name: string): Promise<Locator> {
     const tab = this.serieTab(name);
     const controls = await tab.getAttribute('aria-controls');
     if (!controls) {
@@ -217,6 +217,77 @@ export class PhasesPage {
     await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await confirmDialog.waitFor({ state: 'hidden' });
 
+    await dialog.locator('button[type="submit"]').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  // --- Playoffs ---
+
+  playoffCard(serieName: string, playoffName: string): Locator {
+    const tabPanel = this.page.locator('p-tabpanel:visible').first();
+    return tabPanel.locator('p-card').filter({ hasText: playoffName });
+  }
+
+  async addPlayoffs(serieName: string, playoffName: string, teamNames: string[]): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    await tabPanel.getByTestId('add-playoffs-button').click();
+
+    const dialog = this.page.locator('.p-dynamic-dialog, .p-dialog').last();
+    await dialog.waitFor({ state: 'visible' });
+
+    // Fill name
+    await dialog.locator('input#playoffs-name').fill(playoffName);
+
+    // Add each team
+    for (const teamName of teamNames) {
+      const multiSelect = dialog.locator('p-multiselect[name="team-select"]');
+      await multiSelect.click();
+      const overlay = this.page.locator('.p-multiselect-overlay:visible').last();
+      await expect(overlay).toBeVisible();
+      await overlay.getByText(teamName, { exact: true }).first().click();
+      await this.page.keyboard.press('Escape');
+      await dialog.getByTestId('playoffs-dialog-add-team-button').click();
+    }
+
+    // Go to step 2
+    await dialog.getByTestId('playoffs-dialog-next-button').click();
+    // Save
+    await dialog.getByTestId('playoffs-dialog-save-button').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  async deletePlayoff(serieName: string, playoffName: string): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
+    await card.getByTestId('delete-playoff-button').click();
+    const confirmDialog = this.page.getByRole('alertdialog', {
+      name: 'Confirmer la suppression',
+    });
+    await confirmDialog.waitFor({ state: 'visible' });
+    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    await confirmDialog.waitFor({ state: 'hidden' });
+  }
+
+  playoffMatchCard(playoffName: string, matchLabel: string): Locator {
+    return this.page.locator('.playoff-match-card').filter({ hasText: matchLabel });
+  }
+
+  async editPlayoffMatch(
+    playoffName: string,
+    matchLabel: string,
+    scoreTeam1: number,
+    scoreTeam2: number,
+  ): Promise<void> {
+    const matchCard = this.playoffMatchCard(playoffName, matchLabel);
+    await matchCard.scrollIntoViewIfNeeded();
+    await matchCard.getByTestId('playoff-match-edit-button').click();
+
+    const dialog = this.page.locator('.p-dialog').last();
+    await dialog.waitFor({ state: 'visible' });
+    await dialog.locator('input[name="scoreTeam1"], #scoreTeam1').fill(String(scoreTeam1));
+    await dialog.locator('input[name="scoreTeam2"], #scoreTeam2').fill(String(scoreTeam2));
     await dialog.locator('button[type="submit"]').click();
     await dialog.waitFor({ state: 'hidden' });
   }

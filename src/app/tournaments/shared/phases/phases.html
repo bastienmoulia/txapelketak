@@ -71,6 +71,12 @@
               />
             </div>
           }
+          <!-- Playoffs Section -->
+          @if (serie.playoffs && serie.playoffs.length > 0) {
+            <div class="mb-4">
+              <app-phases-playoffs [playoffs]="serie.playoffs" [serieRef]="serie.ref" />
+            </div>
+          }
           <!-- Poules Section -->
           <app-phases-poules [poules]="serie.poules" [serieRef]="serie.ref" />
         </p-tabpanel>

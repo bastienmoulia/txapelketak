@@ -209,9 +209,7 @@ export class PlayoffsFormDialog {
     };
   });
 
-  canGoNext = computed(
-    () => this.playoffsName().trim().length > 0 && this.selectedTeams().length > 0,
-  );
+  canGoNext = computed(() => this.selectedTeams().length > 0);
 
   onAddSelectedTeam(): void {
     const pendingTeamRefs = this.pendingTeamRef();
@@ -262,7 +260,7 @@ export class PlayoffsFormDialog {
 
   onSave(): void {
     const name = this.playoffsName().trim();
-    if (!name || this.selectedTeams().length === 0) return;
+    if (this.selectedTeams().length === 0) return;
     const teamById = new Map(this.data.teams.map((team) => [team.ref.id, team.ref]));
     const result: SavePlayoffsEvent = {
       serieRef: this.data.serieRef,

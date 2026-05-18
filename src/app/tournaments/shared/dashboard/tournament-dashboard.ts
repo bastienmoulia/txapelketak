@@ -18,7 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
 import type { Popover } from 'primeng/popover';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Game, Poule } from '../../models';
+import { Game, Playoff, Poule, Serie } from '../../models';
 import { MarkdownService } from '../../../shared/services/markdown.service';
 import { DatepickerConfigService } from '../../../shared/services/datepicker-config.service';
 import { GameFormDialog } from '../games/game-form-dialog/game-form-dialog';
@@ -42,8 +42,8 @@ export interface UpcomingGame {
   comment?: string;
   gameRef: DocumentReference;
   pouleRef: DocumentReference;
-  refTeam1: DocumentReference;
-  refTeam2: DocumentReference;
+  refTeam1?: DocumentReference;
+  refTeam2?: DocumentReference;
   scoreTeam1?: number | null;
   scoreTeam2?: number | null;
 }
@@ -140,8 +140,8 @@ export class TournamentDashboard {
   playedGamesCount = computed(() => {
     let count = 0;
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
             count++;
           }
@@ -154,8 +154,8 @@ export class TournamentDashboard {
   totalScoredPoints = computed(() => {
     let total = 0;
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
             total += game.scoreTeam1 + game.scoreTeam2;
           }
@@ -174,8 +174,8 @@ export class TournamentDashboard {
   gamesCount = computed(() => {
     let count = 0;
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        count += poule.games?.length ?? 0;
+      for (const phase of this.getSeriePhases(serie)) {
+        count += phase.games.length;
       }
     }
     return count;
@@ -187,19 +187,19 @@ export class TournamentDashboard {
     const upcoming: UpcomingGame[] = [];
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (game.date && new Date(game.date) > now) {
             upcoming.push({
               team1Name: this.getTeamName(game.refTeam1, teamNameMap),
               team2Name: this.getTeamName(game.refTeam2, teamNameMap),
               date: new Date(game.date),
               serieName: serie.name,
-              pouleName: poule.name,
+              pouleName: phase.name,
               referees: game.referees ?? [],
               comment: game.comment,
               gameRef: game.ref,
-              pouleRef: poule.ref,
+              pouleRef: phase.ref,
               refTeam1: game.refTeam1,
               refTeam2: game.refTeam2,
               scoreTeam1: game.scoreTeam1 ?? null,
@@ -221,8 +221,8 @@ export class TournamentDashboard {
     const overdue: UpcomingGame[] = [];
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (
             game.date &&
             new Date(game.date) <= now &&
@@ -233,11 +233,11 @@ export class TournamentDashboard {
               team2Name: this.getTeamName(game.refTeam2, teamNameMap),
               date: new Date(game.date),
               serieName: serie.name,
-              pouleName: poule.name,
+              pouleName: phase.name,
               referees: game.referees ?? [],
               comment: game.comment,
               gameRef: game.ref,
-              pouleRef: poule.ref,
+              pouleRef: phase.ref,
               refTeam1: game.refTeam1,
               refTeam2: game.refTeam2,
               scoreTeam1: game.scoreTeam1 ?? null,
@@ -254,8 +254,8 @@ export class TournamentDashboard {
   undatedGamesCount = computed(() => {
     let count = 0;
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (!game.date) {
             count++;
           }
@@ -270,8 +270,8 @@ export class TournamentDashboard {
     let count = 0;
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (!game.date) continue;
           const gameDateMs = new Date(game.date).getTime();
           const hasNoScore = game.scoreTeam1 == null || game.scoreTeam2 == null;
@@ -291,8 +291,8 @@ export class TournamentDashboard {
     let count = 0;
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (!game.date) continue;
           const gameDateMs = new Date(game.date).getTime();
           const isInNextWeek = gameDateMs >= now && gameDateMs <= oneWeekAhead;
@@ -312,8 +312,8 @@ export class TournamentDashboard {
     const gamesByMinute = new Map<number, number>();
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (!game.date) continue;
           const minuteKey = Math.floor(new Date(game.date).getTime() / (60 * 1000));
           gamesByMinute.set(minuteKey, (gamesByMinute.get(minuteKey) ?? 0) + 1);
@@ -351,8 +351,8 @@ export class TournamentDashboard {
     const recent: RecentGame[] = [];
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules ?? []) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
             recent.push({
               team1Name: this.getTeamName(game.refTeam1, teamNameMap),
@@ -361,7 +361,7 @@ export class TournamentDashboard {
               scoreTeam2: game.scoreTeam2,
               date: game.date ? new Date(game.date) : undefined,
               serieName: serie.name,
-              pouleName: poule.name,
+              pouleName: phase.name,
               referees: game.referees ?? [],
               comment: game.comment,
             });
@@ -431,8 +431,39 @@ export class TournamentDashboard {
       for (const poule of serie.poules ?? []) {
         if (poule.ref?.id === pouleRef?.id) return poule;
       }
+
+      for (const playoff of serie.playoffs ?? []) {
+        if (playoff.ref?.id === pouleRef?.id) {
+          return this.toPouleLikePlayoff(playoff);
+        }
+      }
     }
     return undefined;
+  }
+
+  private getSeriePhases(serie: Serie): { ref: DocumentReference; name: string; games: Game[] }[] {
+    const poules = (serie.poules ?? []).map((poule) => ({
+      ref: poule.ref,
+      name: poule.name,
+      games: poule.games ?? [],
+    }));
+
+    const playoffs = (serie.playoffs ?? []).map((playoff) => ({
+      ref: playoff.ref,
+      name: playoff.name,
+      games: playoff.games ?? [],
+    }));
+
+    return [...poules, ...playoffs];
+  }
+
+  private toPouleLikePlayoff(playoff: Playoff): Poule {
+    return {
+      ref: playoff.ref,
+      name: playoff.name,
+      refTeams: playoff.orderedTeamRefs ?? [],
+      games: playoff.games ?? [],
+    };
   }
 
   private buildTeamNameMap(): Map<string, string> {

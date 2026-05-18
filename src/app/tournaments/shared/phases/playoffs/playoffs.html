@@ -1,0 +1,110 @@
+<div class="playoffs-list">
+  @for (playoffTree of bracketTreePlayoffs(); track playoffTree.playoff.ref.id) {
+    <p-card>
+      <ng-template #header>
+        <div class="flex align-items-center justify-between px-3 pt-3">
+          <div class="flex flex-col gap-1">
+            <span class="font-bold">{{ playoffTree.playoff.name }}</span>
+          </div>
+          @if (role() === 'admin') {
+            <p-button
+              type="button"
+              size="small"
+              severity="danger"
+              icon="pi pi-trash"
+              [ariaLabel]="'admin.poules.deletePlayoffAria' | transloco"
+              [pTooltip]="'admin.poules.deletePlayoffAria' | transloco"
+              tooltipPosition="top"
+              (onClick)="onDeletePlayoff(playoffTree.playoff)"
+              data-testid="delete-playoff-button"
+            />
+          }
+        </div>
+      </ng-template>
+
+      @if (playoffTree.rounds.length > 0) {
+        <div class="playoffs-tree-wrapper">
+          <div class="playoffs-tree">
+            @for (round of playoffTree.rounds; track round.roundLabel) {
+              <div class="playoffs-tree-round">
+                <h4 class="playoffs-tree-round-title">{{ round.roundLabel }}</h4>
+                <div class="playoffs-tree-round-lane">
+                  @for (match of round.matches; track match.game.ref?.id) {
+                    <div
+                      class="playoffs-tree-match"
+                      [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
+                      [style.--playoffs-tree-grid-row]="match.gridRow"
+                      [style.--playoffs-tree-slot-span]="match.slotSpan"
+                    >
+                      <div class="finale-match playoff-match-card">
+                        @if (!round.isFinalRound || role() === 'admin' || role() === 'organizer') {
+                          <div class="finale-match-header">
+                            @if (!round.isFinalRound) {
+                              <span class="text-xs text-color-secondary">
+                                {{ 'finale.matchLabel' | transloco }} {{ match.game.matchNumber }}
+                              </span>
+                            }
+                            @if (role() === 'admin' || role() === 'organizer') {
+                              <div class="flex gap-1 ml-auto">
+                                @if (match.game.comment) {
+                                  <p-button
+                                    type="button"
+                                    icon="pi pi-question-circle"
+                                    [ariaLabel]="'admin.games.commentAria' | transloco"
+                                    severity="info"
+                                    size="small"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    data-testid="playoff-match-comment-button"
+                                  />
+                                }
+                                <p-button
+                                  type="button"
+                                  icon="pi pi-pencil"
+                                  [ariaLabel]="'shared.actions.edit' | transloco"
+                                  severity="secondary"
+                                  size="small"
+                                  [rounded]="true"
+                                  [text]="true"
+                                  (onClick)="onEditMatch(match.game, playoffTree.playoff)"
+                                  data-testid="playoff-match-edit-button"
+                                />
+                              </div>
+                            }
+                          </div>
+                        }
+                        <div class="finale-match-team">
+                          <span class="finale-team-name">{{
+                            getTeamName(match.game.refTeam1)
+                          }}</span>
+                          @if (
+                            match.game.scoreTeam1 !== null && match.game.scoreTeam1 !== undefined
+                          ) {
+                            <span class="finale-team-score">{{ match.game.scoreTeam1 }}</span>
+                          }
+                        </div>
+                        <div class="finale-match-team">
+                          <span class="finale-team-name">{{
+                            getTeamName(match.game.refTeam2)
+                          }}</span>
+                          @if (
+                            match.game.scoreTeam2 !== null && match.game.scoreTeam2 !== undefined
+                          ) {
+                            <span class="finale-team-score">{{ match.game.scoreTeam2 }}</span>
+                          }
+                        </div>
+                      </div>
+                      @if (!round.isFinalRound) {
+                        <span class="playoffs-tree-connector" aria-hidden="true"></span>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </p-card>
+  }
+</div>

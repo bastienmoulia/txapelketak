@@ -66,11 +66,11 @@ describe('PlayoffsFormDialog', () => {
     expect(mockRef.close).toHaveBeenCalledWith(undefined);
   });
 
-  it('should not go to step 2 when name is empty', () => {
+  it('should go to step 2 when name is empty but teams are selected', () => {
     component.playoffsName.set('');
     component.selectedTeams.set([asSelectedTeam(teams[0])]);
     component.onNext();
-    expect(component.currentStep()).toBe(1);
+    expect(component.currentStep()).toBe(2);
   });
 
   it('should not go to step 2 when no teams selected', () => {
@@ -80,14 +80,14 @@ describe('PlayoffsFormDialog', () => {
     expect(component.currentStep()).toBe(1);
   });
 
-  it('canGoNext is false when name empty and no teams', () => {
+  it('canGoNext is false when no teams selected', () => {
     component.playoffsName.set('');
     component.selectedTeams.set([]);
     expect(component.canGoNext()).toBe(false);
   });
 
-  it('canGoNext is true when name and teams provided', () => {
-    component.playoffsName.set('My Playoffs');
+  it('canGoNext is true when teams are provided', () => {
+    component.playoffsName.set('');
     component.selectedTeams.set([asSelectedTeam(teams[0])]);
     expect(component.canGoNext()).toBe(true);
   });
@@ -154,11 +154,12 @@ describe('PlayoffsFormDialog', () => {
     expect(component.bracketSize()).toBe(4);
   });
 
-  it('should not save when name is empty', () => {
+  it('should save with empty name when teams are selected', () => {
     component.playoffsName.set('');
     component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
     component.onSave();
-    expect(mockRef.close).not.toHaveBeenCalled();
+    const result = mockRef.close.mock.calls[0][0] as { name: string };
+    expect(result.name).toBe('');
   });
 
   it('should not save when no teams selected', () => {

@@ -39,7 +39,7 @@ export class GamePoulePickerDialog {
   poulesForSelectedSerie = computed(() => {
     const serie = this.selectedSerie();
     if (!serie) return [];
-    return [...serie.poules].sort((a, b) => a.name.localeCompare(b.name));
+    return [...(serie.poules ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   });
 
   isNextDisabled = computed(() => !this.selectedSerie() || !this.selectedPoule());

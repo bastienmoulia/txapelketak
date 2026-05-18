@@ -8,7 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Game, Poule } from '../../models';
+import { Game, Playoff, Poule, Serie } from '../../models';
 import { Message } from 'primeng/message';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -63,8 +63,7 @@ interface SortableGame extends Game {
 }
 
 export interface GameByDate extends SortableGame {
-  pouleName: string;
-  serieName: string;
+  name: string;
   pouleRef: DocumentReference;
   dateKey: string;
 }
@@ -166,15 +165,18 @@ export class Games {
     const dateMap = new Map<string, GameByDate[]>();
 
     for (const serie of this.series()) {
-      for (const poule of serie.poules) {
-        for (const game of poule.games ?? []) {
+      for (const phase of this.getSeriePhases(serie)) {
+        for (const game of phase.games) {
           const sortable = this.toSortableGame(game);
           const dateKey = this.getDateKey(game.date);
+          const phaseLabel = [phase.name, phase.isPlayoff ? game.name : null]
+            .filter(Boolean)
+            .join(' - ');
+          const displayName = [serie.name, phaseLabel].filter(Boolean).join(' - ');
           const gameWithContext: GameByDate = {
             ...sortable,
-            pouleName: poule.name,
-            serieName: serie.name,
-            pouleRef: poule.ref,
+            name: displayName,
+            pouleRef: phase.ref,
             dateKey,
           };
           const existing = dateMap.get(dateKey);
@@ -200,7 +202,9 @@ export class Games {
     this.gamesByDate().flatMap((group) => group.games),
   );
 
-  hasPoules = computed(() => this.series().some((serie) => serie.poules.length > 0));
+  hasPoules = computed(() =>
+    this.series().some((serie) => (serie.poules?.length ?? 0) + (serie.playoffs?.length ?? 0) > 0),
+  );
 
   sortedTeams = computed(() => [...this.teams()].sort((a, b) => a.name.localeCompare(b.name)));
 
@@ -310,7 +314,7 @@ export class Games {
     return map;
   });
 
-  getTeamName(ref: DocumentReference): string {
+  getTeamName(ref: DocumentReference | undefined): string {
     if (!ref) return '?';
     return this.teamNameMap().get(ref.id) ?? '?';
   }
@@ -343,7 +347,7 @@ export class Games {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((serie) => ({
         ...serie,
-        poules: [...serie.poules]
+        poules: [...(serie.poules ?? [])]
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((poule) => ({
             ...poule,
@@ -578,9 +582,43 @@ export class Games {
 
   private findPouleByRef(pouleRef: DocumentReference): Poule | undefined {
     for (const serie of this.series()) {
-      const poule = serie.poules.find((p) => p.ref?.id === pouleRef?.id);
+      const poule = (serie.poules ?? []).find((p) => p.ref?.id === pouleRef?.id);
       if (poule) return poule;
+
+      const playoff = (serie.playoffs ?? []).find((p) => p.ref?.id === pouleRef?.id);
+      if (playoff) {
+        return this.toPouleLikePlayoff(playoff);
+      }
     }
     return undefined;
+  }
+
+  private getSeriePhases(
+    serie: Serie,
+  ): { ref: DocumentReference; name: string; games: Game[]; isPlayoff: boolean }[] {
+    const poules = (serie.poules ?? []).map((poule) => ({
+      ref: poule.ref,
+      name: poule.name,
+      games: poule.games ?? [],
+      isPlayoff: false,
+    }));
+
+    const playoffs = (serie.playoffs ?? []).map((playoff) => ({
+      ref: playoff.ref,
+      name: playoff.name,
+      games: playoff.games ?? [],
+      isPlayoff: true,
+    }));
+
+    return [...poules, ...playoffs];
+  }
+
+  private toPouleLikePlayoff(playoff: Playoff): Poule {
+    return {
+      ref: playoff.ref,
+      name: playoff.name,
+      refTeams: playoff.orderedTeamRefs ?? [],
+      games: playoff.games ?? [],
+    };
   }
 }

@@ -322,8 +322,7 @@ describe('Games', () => {
     const groups = component.gamesByDate();
     const game = groups[0].games[0];
 
-    expect(game.serieName).toBe('Serie A');
-    expect(game.pouleName).toBe('Poule A');
+    expect(game.name).toBe('Serie A - Poule A');
     expect(game.team1Name).toBe('Alpha');
     expect(game.team2Name).toBe('Bravo');
   });

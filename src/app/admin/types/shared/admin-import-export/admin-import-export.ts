@@ -238,22 +238,24 @@ export class AdminImportExport {
       poules: (serie.poules ?? []).map((poule) => ({
         name: poule.name,
         teams: (poule.refTeams ?? []).map((ref) => ref.id),
-        games: (poule.games ?? []).map((game: Game) => {
-          const yamlGame: TournamentYamlGame = {
-            team1: game.refTeam1.id,
-            team2: game.refTeam2.id,
-          };
-          if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
-          if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
-          if (game.date != null) yamlGame.date = game.date.toISOString();
-          if (game.referees && game.referees.length > 0) {
-            yamlGame.referees = game.referees;
-          }
-          if (game.comment) {
-            yamlGame.comment = game.comment;
-          }
-          return yamlGame;
-        }),
+        games: (poule.games ?? [])
+          .filter((game: Game) => game.refTeam1 && game.refTeam2)
+          .map((game: Game) => {
+            const yamlGame: TournamentYamlGame = {
+              team1: game.refTeam1!.id,
+              team2: game.refTeam2!.id,
+            };
+            if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
+            if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
+            if (game.date != null) yamlGame.date = game.date.toISOString();
+            if (game.referees && game.referees.length > 0) {
+              yamlGame.referees = game.referees;
+            }
+            if (game.comment) {
+              yamlGame.comment = game.comment;
+            }
+            return yamlGame;
+          }),
       })),
     }));
 

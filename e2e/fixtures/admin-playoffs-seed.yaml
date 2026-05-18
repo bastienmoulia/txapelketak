@@ -1,0 +1,17 @@
+tournament:
+  name: Admin Playoffs Seed
+  description: Seed data for admin playoffs management E2E tests
+  type: playoffs
+  status: ongoing
+teams:
+  - id: playoffs-seed-team-1
+    name: Playoffs Team One
+  - id: playoffs-seed-team-2
+    name: Playoffs Team Two
+  - id: playoffs-seed-team-3
+    name: Playoffs Team Three
+  - id: playoffs-seed-team-4
+    name: Playoffs Team Four
+series:
+  - name: Playoffs Seed Serie
+    poules: []

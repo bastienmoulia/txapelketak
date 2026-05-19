@@ -32,7 +32,7 @@ export class GamePoulePickerDialog {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((serie) => ({
         ...serie,
-        poules: [...serie.poules].sort((a, b) => a.name.localeCompare(b.name)),
+        poules: [...(serie.poules ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
       })),
   );
 

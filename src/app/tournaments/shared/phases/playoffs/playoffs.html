@@ -51,6 +51,8 @@
                                     type="button"
                                     icon="pi pi-question-circle"
                                     [ariaLabel]="'admin.games.commentAria' | transloco"
+                                    [pTooltip]="('admin.games.commentAria' | transloco) + ': ' + match.game.comment"
+                                    tooltipPosition="top"
                                     severity="info"
                                     size="small"
                                     [rounded]="true"

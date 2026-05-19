@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -43,9 +44,22 @@ interface PlayoffWithTreeRounds {
   rounds: TreeRound[];
 }
 
+interface TeamLike {
+  ref?: DocumentReference;
+  name: string;
+}
+
+const createTeamNameLookup =
+  (teams: () => TeamLike[]) =>
+  (ref: DocumentReference | undefined): string => {
+    if (!ref) return '?';
+    const team = teams().find((currentTeam) => currentTeam.ref?.id === ref.id);
+    return team?.name ?? '?';
+  };
+
 @Component({
   selector: 'app-phases-playoffs',
-  imports: [Button, CardModule, TranslocoPipe, TooltipModule],
+  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule],
   templateUrl: './playoffs.html',
   styleUrl: './playoffs.css',
 })
@@ -63,6 +77,7 @@ export class Playoffs {
 
   teams = this.poulesStore.teams;
   role = this.authStore.role;
+  getTeamName = createTeamNameLookup(this.teams);
 
   sortedPlayoffs = computed((): PlayoffWithRounds[] =>
     [...this.playoffs()].map((playoff) => ({
@@ -115,12 +130,6 @@ export class Playoffs {
   private getRoundLabel(roundSize: number): string {
     const key = `finale.rounds.${roundSize}`;
     return this.translocoService.translate(key);
-  }
-
-  getTeamName(ref: DocumentReference | undefined): string {
-    if (!ref) return '?';
-    const team = this.teams().find((t) => t.ref?.id === ref.id);
-    return team?.name ?? '?';
   }
 
   onEditMatch(game: Game, playoff: Playoff): void {

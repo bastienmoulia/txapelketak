@@ -78,7 +78,7 @@
                         }
                         <div class="finale-match-team">
                           <span class="finale-team-name">{{
-                            getTeamName(match.game.refTeam1)
+                            getTeamName | apply: match.game.refTeam1
                           }}</span>
                           @if (
                             match.game.scoreTeam1 !== null && match.game.scoreTeam1 !== undefined
@@ -88,7 +88,7 @@
                         </div>
                         <div class="finale-match-team">
                           <span class="finale-team-name">{{
-                            getTeamName(match.game.refTeam2)
+                            getTeamName | apply: match.game.refTeam2
                           }}</span>
                           @if (
                             match.game.scoreTeam2 !== null && match.game.scoreTeam2 !== undefined

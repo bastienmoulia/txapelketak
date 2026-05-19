@@ -453,6 +453,8 @@
     "step2Title": "Vista previa del cuadro",
     "noTeamsSelected": "No hay equipos seleccionados",
     "bracketSize": "Tamaño del cuadro: {{size}} equipos",
+    "addPlaceholder": "Añadir equipo por definir",
+    "placeholder": "Por definir",
     "bye": "Exento",
     "seed": "Cabeza de serie {{n}}",
     "generated": "Playoffs generados",

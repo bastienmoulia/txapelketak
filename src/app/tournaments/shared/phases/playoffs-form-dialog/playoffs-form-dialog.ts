@@ -103,15 +103,32 @@ export class PlayoffsFormDialog {
 
   currentStep = signal<1 | 2>(1);
   playoffsName = signal('');
-  selectedTeams = signal<KeyValue<string, string>[]>([]);
+
+  selectedTeams = signal<KeyValue<string, string & { isPlaceholder?: boolean }>[]>([]);
   pendingTeamRef = signal<string[]>([]);
+  placeholderCount = signal(0);
+
+  get placeholderTeamKey() {
+    return (n: number) => `placeholder-${n}`;
+  }
+
+  get placeholderTeamLabel() {
+    return () => this.translocoService.translate('playoffs.placeholder');
+  }
 
   availableTeams = computed<KeyValue<string, string>[]>(() => {
     const selectedIds = new Set(this.selectedTeams().map((t) => t.key));
-    return this.data.teams
+    const teams = this.data.teams
       .filter((team) => !selectedIds.has(team.ref.id))
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((team) => ({ value: team.name, key: team.ref.id }));
+    return teams;
+  });
+
+  canAddPlaceholder = computed(() => {
+    // Limite : max 32 équipes (y compris placeholders)
+    const MAX_BRACKET_SIZE = 32;
+    return this.selectedTeams().length < MAX_BRACKET_SIZE;
   });
 
   bracketSize = computed(() => {
@@ -240,8 +257,21 @@ export class PlayoffsFormDialog {
     this.pendingTeamRef.set([]);
   }
 
+  onAddPlaceholderTeam(): void {
+    if (!this.canAddPlaceholder()) return;
+    const n = this.placeholderCount() + 1;
+    this.selectedTeams.update((teams) => [
+      ...teams,
+      { key: this.placeholderTeamKey(n), value: this.placeholderTeamLabel(), isPlaceholder: true },
+    ]);
+    this.placeholderCount.set(n);
+  }
+
   onRemoveTeam(team: KeyValue<string, string>): void {
     this.selectedTeams.update((teams) => teams.filter((t) => t.key !== team.key));
+    if (team.key.startsWith('placeholder-')) {
+      this.placeholderCount.set(this.placeholderCount() - 1);
+    }
   }
 
   onNext(): void {

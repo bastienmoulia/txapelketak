@@ -453,6 +453,8 @@
     "step2Title": "Bracket preview",
     "noTeamsSelected": "No teams selected",
     "bracketSize": "Bracket size: {{size}} teams",
+    "addPlaceholder": "Add placeholder team",
+    "placeholder": "To be determined",
     "bye": "Bye",
     "seed": "Seed {{n}}",
     "generated": "Playoffs generated",

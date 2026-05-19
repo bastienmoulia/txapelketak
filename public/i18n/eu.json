@@ -453,6 +453,8 @@
     "step2Title": "Zuhaitzaren aurrebista",
     "noTeamsSelected": "Ez dago talderik hautatuta",
     "bracketSize": "Bracket tamaina: {{size}} talde",
+    "addPlaceholder": "Gehitu zehaztu gabeko taldea",
+    "placeholder": "Zehaztu gabe",
     "bye": "Salbuespena",
     "seed": "{{n}}. hazia",
     "generated": "Playoffak sortuta",

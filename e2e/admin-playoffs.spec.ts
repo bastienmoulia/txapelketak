@@ -204,4 +204,3 @@ test.describe.serial('Admin – playoffs import', () => {
     await expect(gameRows.filter({ hasText: /13\s*-\s*11|13.*11/ })).toHaveCount(1);
     await expect(gameRows.filter({ hasText: /10\s*-\s*12|10.*12/ })).toHaveCount(1);
   });
-});

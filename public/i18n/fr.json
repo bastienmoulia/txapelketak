@@ -453,6 +453,8 @@
     "step2Title": "Aperçu de l'arbre",
     "noTeamsSelected": "Aucune équipe sélectionnée",
     "bracketSize": "Taille du bracket : {{size}} équipes",
+    "addPlaceholder": "Ajouter une équipe à renseigner",
+    "placeholder": "À renseigner",
     "bye": "Exempt",
     "seed": "Tête de série {{n}}",
     "generated": "Playoffs générés",

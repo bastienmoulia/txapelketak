@@ -143,7 +143,9 @@ export class Playoffs {
     const pouleAdapter: Poule = {
       ref: playoff.ref,
       name: playoff.name,
-      refTeams: playoff.orderedTeamRefs ?? [],
+      refTeams: this.teams()
+        .map((team) => team.ref)
+        .filter((ref): ref is DocumentReference => !!ref),
     };
 
     const dialogRef = this.dialogService.open(GameFormDialog, {

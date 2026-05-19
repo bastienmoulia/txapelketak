@@ -53,6 +53,35 @@ describe('PlayoffsFormDialog', () => {
     await fixture.whenStable();
   });
 
+  it('should add a placeholder team and display it in selectedTeams', () => {
+    component.onAddPlaceholderTeam();
+    expect(component.selectedTeams().length).toBe(1);
+    expect(component.selectedTeams()[0].isPlaceholder).toBe(true);
+    expect(component.selectedTeams()[0].value).toBe(component.placeholderTeamLabel());
+  });
+
+  it('should remove a placeholder team and decrement placeholderCount', () => {
+    component.onAddPlaceholderTeam();
+    expect(component.placeholderCount()).toBe(1);
+    const placeholder = component.selectedTeams()[0];
+    component.onRemoveTeam(placeholder);
+    expect(component.selectedTeams().length).toBe(0);
+    expect(component.placeholderCount()).toBe(0);
+  });
+
+  it('should display placeholder in bracket preview', () => {
+    component.onAddPlaceholderTeam();
+    component.selectedTeams.set([
+      { key: 'placeholder-1', value: component.placeholderTeamLabel(), isPlaceholder: true },
+      { key: 'team-a', value: 'Team A' },
+    ]);
+    const preview = component.bracketPreview();
+    const firstRound = preview.find((r) => r.roundOrder === 2);
+    expect(firstRound).toBeDefined();
+    expect(firstRound!.matches[0].team1Name).toBe(component.placeholderTeamLabel());
+    expect(firstRound!.matches[0].team2Name).toBe('Team A');
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

@@ -1,10 +1,11 @@
 <div class="playoffs-list">
   @for (playoffTree of bracketTreePlayoffs(); track playoffTree.playoff.ref.id) {
+    @let playoffDisplayName = playoffTree.playoff.name?.trim() ? playoffTree.playoff.name : 'Playoffs';
     <p-card>
       <ng-template #header>
         <div class="flex align-items-center justify-between px-3 pt-3">
           <div class="flex flex-col gap-1">
-            <span class="font-bold">{{ playoffTree.playoff.name }}</span>
+            <span class="font-bold">{{ playoffDisplayName }}</span>
           </div>
           @if (role() === 'admin') {
             <p-button

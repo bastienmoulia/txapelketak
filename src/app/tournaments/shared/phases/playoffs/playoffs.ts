@@ -4,7 +4,7 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
 
@@ -67,7 +67,6 @@ export class Playoffs {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
   private confirmationService = inject(ConfirmationService);
-  private messageService = inject(MessageService);
   private poulesStore = inject(PoulesStore);
   private authStore = inject(AuthStore);
   private tournamentActions = inject(TournamentActionsService);

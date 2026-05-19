@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Playoffs } from './playoffs';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
@@ -78,7 +78,6 @@ describe('Playoffs', () => {
           },
         },
         ConfirmationService,
-        MessageService,
       ],
     }).compileComponents();
 

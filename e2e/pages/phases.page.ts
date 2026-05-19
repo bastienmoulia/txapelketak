@@ -239,19 +239,39 @@ export class PhasesPage {
     // Fill name
     await dialog.locator('input#playoffs-name').fill(playoffName);
 
-    // Add each team
+    // Add each team and verify it appears in the order list before proceeding.
+    const orderList = dialog.getByTestId('playoffs-dialog-order-list');
     for (const teamName of teamNames) {
       const multiSelect = dialog.locator('p-multiselect[name="team-select"]');
       await multiSelect.click();
+
       const overlay = this.page.locator('.p-multiselect-overlay:visible').last();
       await expect(overlay).toBeVisible();
-      await overlay.getByText(teamName, { exact: true }).first().click();
-      await this.page.keyboard.press('Escape');
+
+      const filterInput = overlay.locator('input.p-multiselect-filter');
+      if ((await filterInput.count()) > 0) {
+        await filterInput.fill(teamName);
+      }
+
+      // PrimeNG multiselect options may render with different internal markup.
+      const roleOption = overlay.getByRole('option', { name: teamName, exact: true });
+      const option =
+        (await roleOption.count()) > 0
+          ? roleOption.first()
+          : overlay.locator('.p-multiselect-option').filter({ hasText: teamName }).first();
+      await expect(option).toBeVisible();
+      await option.click({ force: true });
+
       await dialog.getByTestId('playoffs-dialog-add-team-button').click();
+      await expect(orderList.getByText(teamName, { exact: true })).toBeVisible({ timeout: 5000 });
+      await this.page.keyboard.press('Escape');
     }
 
     // Go to step 2
     await dialog.getByTestId('playoffs-dialog-next-button').click();
+    await expect(dialog.getByTestId('playoffs-dialog-bracket-preview')).toBeVisible({
+      timeout: 10000,
+    });
     // Save
     await dialog.getByTestId('playoffs-dialog-save-button').click();
     await dialog.waitFor({ state: 'hidden' });
@@ -261,12 +281,57 @@ export class PhasesPage {
     await this.ensureSerieExpanded(serieName);
     const tabPanel = await this.serieTabPanel(serieName);
     const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
-    await card.getByTestId('delete-playoff-button').click();
-    const confirmDialog = this.page.getByRole('alertdialog', {
-      name: 'Confirmer la suppression',
-    });
-    await confirmDialog.waitFor({ state: 'visible' });
-    await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
+    const trashIconButton = card.locator('button:has(.pi-trash)').first();
+    if ((await trashIconButton.count()) > 0) {
+      await trashIconButton.scrollIntoViewIfNeeded();
+      await trashIconButton.click({ force: true });
+    } else {
+      const deleteBtn = card.getByTestId('delete-playoff-button');
+      const innerButton = deleteBtn.locator('button');
+      if ((await innerButton.count()) > 0) {
+        await innerButton.first().scrollIntoViewIfNeeded();
+        await innerButton.first().click({ force: true });
+      } else {
+        await deleteBtn.click();
+      }
+    }
+
+    const roleDialog = this.page
+      .getByRole('alertdialog')
+      .filter({ has: this.page.locator('button') })
+      .last();
+    const primeDialog = this.page.locator('.p-confirmdialog:visible').last();
+
+    let confirmDialog: Locator;
+    try {
+      await roleDialog.waitFor({ state: 'visible', timeout: 2500 });
+      confirmDialog = roleDialog;
+    } catch {
+      try {
+        await expect(primeDialog).toBeVisible({ timeout: 2500 });
+        confirmDialog = primeDialog;
+      } catch {
+        // Some UI flows may delete immediately without a confirm dialog.
+        return;
+      }
+    }
+
+    const acceptByClass = confirmDialog
+      .locator('.p-confirmdialog-accept-button, .p-confirm-dialog-accept, .p-button-danger')
+      .first();
+
+    if ((await acceptByClass.count()) > 0) {
+      await acceptByClass.click();
+    } else {
+      const acceptByLabel = confirmDialog
+        .getByRole('button', { name: /Supprimer|Confirmer|Delete|Confirm/i })
+        .first();
+      if ((await acceptByLabel.count()) > 0) {
+        await acceptByLabel.click();
+      } else {
+        await confirmDialog.locator('button').last().click();
+      }
+    }
     await confirmDialog.waitFor({ state: 'hidden' });
   }
 

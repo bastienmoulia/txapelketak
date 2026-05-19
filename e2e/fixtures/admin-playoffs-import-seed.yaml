@@ -1,0 +1,42 @@
+tournament:
+  name: Admin Playoffs Import Seed
+  description: Seed data with playoffs for import E2E tests
+  type: playoffs
+  status: ongoing
+teams:
+  - id: playoffs-import-team-1
+    name: Import Team One
+  - id: playoffs-import-team-2
+    name: Import Team Two
+  - id: playoffs-import-team-3
+    name: Import Team Three
+  - id: playoffs-import-team-4
+    name: Import Team Four
+series:
+  - name: Playoffs Import Serie
+    poules: []
+    playoffs:
+      - name: Imported Bracket
+        size: 4
+        orderedTeams:
+          - playoffs-import-team-1
+          - playoffs-import-team-2
+          - playoffs-import-team-3
+          - playoffs-import-team-4
+        games:
+          - roundSize: 4
+            matchNumber: 1
+            team1: playoffs-import-team-1
+            team2: playoffs-import-team-4
+            score1: 13
+            score2: 11
+          - roundSize: 4
+            matchNumber: 2
+            team1: playoffs-import-team-2
+            team2: playoffs-import-team-3
+            score1: 10
+            score2: 12
+          - roundSize: 2
+            matchNumber: 1
+            team1: playoffs-import-team-1
+            team2: playoffs-import-team-3

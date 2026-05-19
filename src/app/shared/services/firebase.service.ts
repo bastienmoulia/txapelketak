@@ -719,6 +719,55 @@ export class FirebaseService {
           });
         }
       }
+
+      for (const yamlPlayoff of yamlSerie.playoffs ?? []) {
+        const orderedTeamRefs = (yamlPlayoff.orderedTeams ?? [])
+          .map((id) => teamIdMap.get(id))
+          .filter((ref): ref is DocumentReference => ref != null);
+
+        const playoffDocRef = doc(collection(serieDocRef, 'playoffs'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] setDoc: playoff (batch import)`);
+          await setDoc(playoffDocRef, {
+            name: yamlPlayoff.name,
+            size: yamlPlayoff.size,
+            orderedTeamRefs,
+          });
+        });
+
+        for (const yamlGame of yamlPlayoff.games ?? []) {
+          const gameDocRef = doc(collection(playoffDocRef, 'games'));
+          const gameData: Record<string, unknown> = {
+            roundSize: yamlGame.roundSize,
+            matchNumber: yamlGame.matchNumber,
+            name: `${getRoundLabel(yamlGame.roundSize)} ${yamlGame.matchNumber}`,
+          };
+
+          const refTeam1 = yamlGame.team1 ? teamIdMap.get(yamlGame.team1) : undefined;
+          const refTeam2 = yamlGame.team2 ? teamIdMap.get(yamlGame.team2) : undefined;
+          if (refTeam1) gameData['refTeam1'] = refTeam1;
+          if (refTeam2) gameData['refTeam2'] = refTeam2;
+          if (yamlGame.score1 != null) gameData['scoreTeam1'] = yamlGame.score1;
+          if (yamlGame.score2 != null) gameData['scoreTeam2'] = yamlGame.score2;
+          if (yamlGame.date != null) gameData['date'] = new Date(yamlGame.date);
+          if (Array.isArray(yamlGame.referees) && yamlGame.referees.length > 0) {
+            gameData['referees'] = yamlGame.referees
+              .map((referee) => referee.trim())
+              .filter((referee) => referee.length > 0);
+          }
+          if (yamlGame.comment) {
+            const trimmedComment = yamlGame.comment.trim();
+            if (trimmedComment.length > 0) {
+              gameData['comment'] = trimmedComment;
+            }
+          }
+
+          await runInInjectionContext(this.environmentInjector, async () => {
+            console.debug(`[Firestore] setDoc: playoff game (batch import)`);
+            await setDoc(gameDocRef, gameData);
+          });
+        }
+      }
     }
 
     // Import time slots

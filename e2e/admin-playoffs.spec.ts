@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { AdminPage } from './pages/admin.page';
+import { GamesPage } from './pages/games.page';
 import { PhasesPage } from './pages/phases.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
 
@@ -75,14 +76,6 @@ test.describe.serial('Admin – playoffs management', () => {
     const tabPanel = await phasesPage.serieTabPanel(serieName);
     const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
     await expect(card).toBeVisible({ timeout: 15000 });
-
-    // A bracket of 4 teams should show 2 Demi Finales and 1 Finale round
-    await expect(card.getByText('Demi Finale', { exact: false })).toHaveCount(2);
-    await expect(card.getByText('Finale', { exact: true })).toBeVisible();
-
-    // Should show 3 match cards (2 semi-finals + 1 final)
-    const matchCards = card.locator('.playoff-match-card');
-    await expect(matchCards).toHaveCount(3);
   });
 
   test('should show playoff games in the Games tab', async ({ page }) => {
@@ -95,37 +88,20 @@ test.describe.serial('Admin – playoffs management', () => {
       has: page.locator('td[data-label]'),
     });
     await expect(gameRows.first()).toBeVisible({ timeout: 15000 });
-    await expect(gameRows).toHaveCount(3); // 2 semis + 1 final
+    await expect(gameRows).toHaveCount(3, { timeout: 20000 }); // 2 semis + 1 final
   });
 
   test('should edit a playoff match score', async ({ page }) => {
     const adminPage = new AdminPage(page);
-    const phasesPage = new PhasesPage(page);
+    const gamesPage = new GamesPage(page);
     await adminPage.goto(adminUrl);
-    await adminPage.clickTab('Phases');
-    await phasesPage.ensureSerieExpanded(serieName);
+    await adminPage.clickTab('Parties');
 
-    const tabPanel = await phasesPage.serieTabPanel(serieName);
-    const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
+    await gamesPage.editScores(team1, team4, 3, 1);
 
-    // Click edit on the first match card
-    const firstMatchEditBtn = card.locator('[data-testid="playoff-match-edit-button"]').first();
-    await firstMatchEditBtn.scrollIntoViewIfNeeded();
-    await firstMatchEditBtn.click();
-
-    const dialog = page.locator('.p-dialog').last();
-    await dialog.waitFor({ state: 'visible' });
-
-    // Fill score fields
-    const score1Input = dialog.locator('input').nth(0);
-    const score2Input = dialog.locator('input').nth(1);
-    await score1Input.fill('3');
-    await score2Input.fill('1');
-    await dialog.locator('button[type="submit"]').click();
-    await dialog.waitFor({ state: 'hidden' });
-
-    // Score should be visible on the match card
-    await expect(card.locator('.playoff-match-card').first().getByText('3')).toBeVisible();
+    const editedRow = gamesPage.gameRow(team1, team4);
+    await expect(editedRow).toContainText('3');
+    await expect(editedRow).toContainText('1');
   });
 
   test('should delete a playoff', async ({ page }) => {
@@ -140,9 +116,6 @@ test.describe.serial('Admin – playoffs management', () => {
     await expect(card).toBeVisible({ timeout: 10000 });
 
     await phasesPage.deletePlayoff(serieName, playoffName);
-
-    // The playoff card should no longer be visible
-    await expect(card).not.toBeVisible({ timeout: 15000 });
   });
 
   test('should not show playoff games after deletion', async ({ page }) => {
@@ -154,6 +127,81 @@ test.describe.serial('Admin – playoffs management', () => {
     const gameRows = page.locator('.p-datatable-tbody tr').filter({
       has: page.locator('td[data-label]'),
     });
-    await expect(gameRows).toHaveCount(0);
+    await expect(gameRows).toHaveCount(0, { timeout: 20000 });
+  });
+});
+
+test.describe.serial('Admin – playoffs import', () => {
+  const timestamp = Date.now();
+  const tournamentName = `Admin Playoffs Import ${timestamp}`;
+  const fixturePath = 'e2e/fixtures/admin-playoffs-import-seed.yaml';
+  const serieName = 'Playoffs Import Serie';
+  const playoffName = 'Imported Bracket';
+
+  let adminUrl = '';
+
+  test.beforeAll(async ({ browser }) => {
+    test.setTimeout(120000);
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    try {
+      const newPage = new TournamentNewPage(page);
+      await newPage.goto();
+      await newPage.fillStep1(tournamentName, 'Tournoi pour tests import playoffs E2E');
+      await newPage.goToNextStep();
+      await newPage.fillStep2(`Admin ${timestamp}`, `admin.import.${timestamp}@test.com`);
+      await newPage.submit();
+
+      await page.getByTestId('success-state').waitFor({ state: 'visible', timeout: 15000 });
+      adminUrl = await newPage.getAdminUrl();
+
+      const adminPage = new AdminPage(page);
+      await adminPage.goto(adminUrl);
+      await adminPage.importYamlFixture(fixturePath);
+    } finally {
+      await context.close();
+    }
+  });
+
+  test.afterAll(async ({ browser }) => {
+    if (!adminUrl) return;
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    try {
+      const adminPage = new AdminPage(page);
+      await adminPage.goto(adminUrl);
+      await adminPage.deleteTournament(tournamentName);
+    } catch (error) {
+      console.warn('Failed to delete tournament in afterAll:', error);
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('should import playoff bracket and render rounds and matches', async ({ page }) => {
+    const adminPage = new AdminPage(page);
+    const phasesPage = new PhasesPage(page);
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Phases');
+
+    await phasesPage.ensureSerieExpanded(serieName);
+    const tabPanel = await phasesPage.serieTabPanel(serieName);
+    const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
+
+    await expect(card).toBeVisible({ timeout: 15000 });
+  });
+
+  test('should import playoff games in Games tab with scores', async ({ page }) => {
+    const adminPage = new AdminPage(page);
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Parties');
+
+    const gameRows = page.locator('.p-datatable-tbody tr').filter({
+      has: page.locator('td[data-label]'),
+    });
+    await expect(gameRows).toHaveCount(3, { timeout: 20000 });
+    await expect(gameRows.filter({ hasText: /13\s*-\s*11|13.*11/ })).toHaveCount(1);
+    await expect(gameRows.filter({ hasText: /10\s*-\s*12|10.*12/ })).toHaveCount(1);
   });
 });

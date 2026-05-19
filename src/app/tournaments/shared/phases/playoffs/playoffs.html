@@ -41,7 +41,7 @@
                           <div class="finale-match-header">
                             @if (!round.isFinalRound) {
                               <span class="text-xs text-color-secondary">
-                                {{ 'finale.matchLabel' | transloco }} {{ match.game.matchNumber }}
+                                {{ round.roundLabel }} {{ match.game.matchNumber }}
                               </span>
                             }
                             @if (role() === 'admin' || role() === 'organizer') {

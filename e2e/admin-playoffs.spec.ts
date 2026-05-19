@@ -76,9 +76,9 @@ test.describe.serial('Admin – playoffs management', () => {
     const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
     await expect(card).toBeVisible({ timeout: 15000 });
 
-    // A bracket of 4 teams should show Demi Finales and Finale rounds
-    await expect(card.getByText('Demi Finale', { exact: false }).first()).toBeVisible();
-    await expect(card.getByText('Finale', { exact: false }).first()).toBeVisible();
+    // A bracket of 4 teams should show 2 Demi Finales and 1 Finale round
+    await expect(card.getByText('Demi Finale', { exact: false })).toHaveCount(2);
+    await expect(card.getByText('Finale', { exact: true })).toBeVisible();
 
     // Should show 3 match cards (2 semi-finals + 1 final)
     const matchCards = card.locator('.playoff-match-card');

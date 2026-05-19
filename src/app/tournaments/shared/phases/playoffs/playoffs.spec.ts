@@ -22,10 +22,6 @@ describe('Playoffs', () => {
     id: 'team-1',
     path: 'tournaments/test/teams/team-1',
   } as unknown as DocumentReference;
-  const mockSerieRef = {
-    id: 'serie-1',
-    path: 'tournaments/test/series/serie-1',
-  } as unknown as DocumentReference;
 
   const mockGame: Game = {
     ref: {
@@ -92,7 +88,6 @@ describe('Playoffs', () => {
   it('should display sorted playoffs', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', [mockPlayoff]);
-      fixture.componentRef.setInput('serieRef', mockSerieRef);
       fixture.detectChanges();
 
       const playoffsWithRounds = component.sortedPlayoffs();
@@ -104,7 +99,6 @@ describe('Playoffs', () => {
   it('should group matches by round size', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', [mockPlayoff]);
-      fixture.componentRef.setInput('serieRef', mockSerieRef);
       fixture.detectChanges();
 
       const playoffsWithRounds = component.sortedPlayoffs();
@@ -117,7 +111,6 @@ describe('Playoffs', () => {
   it('should get team name from ref', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', []);
-      fixture.componentRef.setInput('serieRef', mockSerieRef);
       fixture.detectChanges();
 
       expect(component.getTeamName(mockTeamRef)).toBe('Team 1');
@@ -127,7 +120,6 @@ describe('Playoffs', () => {
   it('should return ? for unknown team', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', []);
-      fixture.componentRef.setInput('serieRef', mockSerieRef);
       fixture.detectChanges();
 
       const unknownRef = {

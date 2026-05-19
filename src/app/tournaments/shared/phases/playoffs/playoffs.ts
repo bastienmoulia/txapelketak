@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -14,6 +14,7 @@ import { TournamentActionsService } from '../../../../shared/services/tournament
 import { Playoff, Game, Poule } from '../../../models';
 import { GameFormDialog } from '../../games/game-form-dialog/game-form-dialog';
 import type { SaveGameEvent } from '../../games/games';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface RoundGroup {
   roundSize: number;
@@ -62,6 +63,7 @@ const createTeamNameLookup =
   imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule],
   templateUrl: './playoffs.html',
   styleUrl: './playoffs.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Playoffs {
   private translocoService = inject(TranslocoService);
@@ -72,7 +74,6 @@ export class Playoffs {
   private tournamentActions = inject(TournamentActionsService);
 
   playoffs = input.required<Playoff[]>();
-  serieRef = input.required<DocumentReference>();
 
   teams = this.poulesStore.teams;
   role = this.authStore.role;
@@ -128,6 +129,7 @@ export class Playoffs {
 
   private getRoundLabel(roundSize: number): string {
     const key = `finale.rounds.${roundSize}`;
+    toSignal(this.translocoService.langChanges$);
     return this.translocoService.translate(key);
   }
 

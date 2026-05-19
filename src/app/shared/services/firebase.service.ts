@@ -25,14 +25,14 @@ import { Game, Team, TimeSlot } from '../../tournaments/models';
 
 function getRoundLabel(roundSize: number): string {
   const labels: Record<number, string> = {
-    2: 'Finale',
-    4: 'Demi Finale',
-    8: 'Quart de Finale',
-    16: 'Huitieme de Finale',
-    32: 'Seizieme de Finale',
+    2: 'playoff.round.final',
+    4: 'playoff.round.semiFinal',
+    8: 'playoff.round.quarterFinal',
+    16: 'playoff.round.roundOf16',
+    32: 'playoff.round.roundOf32',
   };
 
-  return labels[roundSize] ?? `Round ${roundSize}`;
+  return labels[roundSize] ?? `playoff.round.size.${roundSize}`;
 }
 
 @Injectable({

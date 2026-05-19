@@ -90,4 +90,21 @@ describe('GamePoulePickerDialog', () => {
 
     expect(mockRef.close).toHaveBeenCalledWith(poule);
   });
+
+  it('should handle series without poules in sortedSeries', async () => {
+    mockConfig.data = {
+      series: [{ ref: { id: 'serie-2' } as DocumentReference, name: 'Serie B' } as Serie],
+    };
+
+    fixture = TestBed.createComponent(GamePoulePickerDialog);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.sortedSeries()).toEqual([
+      expect.objectContaining({
+        name: 'Serie B',
+        poules: [],
+      }),
+    ]);
+  });
 });

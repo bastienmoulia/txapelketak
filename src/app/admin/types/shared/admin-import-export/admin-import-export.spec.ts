@@ -148,14 +148,14 @@ describe('AdminImportExport', () => {
     const exportData = (
       component as unknown as { buildExportData: () => unknown }
     ).buildExportData() as {
-      series: Array<{
-        playoffs?: Array<{
+      series: {
+        playoffs?: {
           name: string;
           size: number;
           orderedTeams: string[];
-          games: Array<{ roundSize: number; matchNumber: number; team1?: string; team2?: string }>;
-        }>;
-      }>;
+          games: { roundSize: number; matchNumber: number; team1?: string; team2?: string }[];
+        }[];
+      }[];
     };
 
     expect(exportData.series[0].playoffs).toEqual([

@@ -127,9 +127,13 @@ export class Playoffs {
     return result.sort((a, b) => b.roundSize - a.roundSize);
   }
 
+  private readonly activeLanguage = toSignal(this.translocoService.langChanges$, {
+    initialValue: this.translocoService.getActiveLang(),
+  });
+
   private getRoundLabel(roundSize: number): string {
     const key = `finale.rounds.${roundSize}`;
-    toSignal(this.translocoService.langChanges$);
+    this.activeLanguage();
     return this.translocoService.translate(key);
   }
 

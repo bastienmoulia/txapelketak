@@ -344,6 +344,11 @@ test.describe.serial('Comments – games and teams', () => {
     await teamsPage.editTeamComment(team2, newTeamComment);
     await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
 
+    // Reload once to ensure the updated team comment has been persisted before checking organizer access.
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Équipes');
+    await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
+
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Équipes');
 

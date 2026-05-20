@@ -17,7 +17,7 @@ import {
   TeamInPouleEvent,
 } from '../../tournaments/shared/phases/phases';
 import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
-import { Game, Serie, Team } from '../../tournaments/models';
+import { Game, Playoff, Serie, Team } from '../../tournaments/models';
 
 @Injectable()
 export class TournamentActionsService {
@@ -28,7 +28,10 @@ export class TournamentActionsService {
   private poulesStore = inject(PoulesStore);
 
   async saveGame(event: SaveGameEvent): Promise<void> {
-    const gameData: Omit<Game, 'ref'> = {
+    const gameData: Omit<Game, 'ref' | 'refTeam1' | 'refTeam2'> & {
+      refTeam1: DocumentReference;
+      refTeam2: DocumentReference;
+    } = {
       refTeam1: event.refTeam1,
       refTeam2: event.refTeam2,
       scoreTeam1: event.scoreTeam1 ?? undefined,
@@ -298,17 +301,28 @@ export class TournamentActionsService {
   }
 
   async generatePlayoffs(event: SavePlayoffsEvent): Promise<void> {
-    await this.firebaseService.generatePlayoffsForSerie(
+    const generatedGames = await this.firebaseService.generatePlayoffsForSerie(
       event.serieRef,
       event.name,
       event.size,
       event.orderedTeamRefs,
     );
-    const count = event.size - 1;
+
     this.messageService.add({
       severity: 'success',
       summary: this.translocoService.translate('playoffs.generated'),
-      detail: this.translocoService.translate('playoffs.generatedDetail', { count }),
+      detail: this.translocoService.translate('playoffs.generatedDetail', {
+        count: generatedGames,
+      }),
+    });
+  }
+
+  async deletePlayoff(playoff: Playoff): Promise<void> {
+    await this.firebaseService.deletePlayoffFromSerie(playoff.ref);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.playoffDeleted'),
+      detail: this.translocoService.translate('admin.poules.playoffDeletedDetail'),
     });
   }
 }

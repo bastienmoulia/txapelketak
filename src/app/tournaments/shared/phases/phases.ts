@@ -14,6 +14,7 @@ import { SerieFormDialog } from './serie-form-dialog/serie-form-dialog';
 import { PouleFormDialog } from './poule-form-dialog/poule-form-dialog';
 import { PlayoffsFormDialog, SavePlayoffsEvent } from './playoffs-form-dialog/playoffs-form-dialog';
 import { Poules } from './poules/poules';
+import { Playoffs } from './playoffs/playoffs';
 
 export type { SavePlayoffsEvent };
 import { PoulesStore } from '../../../store/poules.store';
@@ -55,6 +56,7 @@ export interface TeamInPouleEvent {
     ToastModule,
     TooltipModule,
     Poules,
+    Playoffs,
   ],
   providers: [DialogService, ConfirmationService, MessageService],
   templateUrl: './phases.html',
@@ -78,7 +80,8 @@ export class Phases {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((serie) => ({
         ...serie,
-        poules: [...serie.poules].sort((a, b) => a.name.localeCompare(b.name)),
+        poules: [...(serie.poules ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
+        playoffs: [...(serie.playoffs ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
       })),
   );
 
@@ -239,13 +242,7 @@ export class Phases {
     });
     dialogRef?.onClose.subscribe((result: SavePlayoffsEvent | undefined) => {
       if (result) {
-        console.log('Playoffs to save', result);
-        //void this.tournamentActions.generatePlayoffs(result);
-        this.messageService.add({
-          severity: 'info',
-          summary: this.translocoService.translate('admin.poules.comingSoon'),
-          detail: this.translocoService.translate('admin.poules.addPlayoffsComingSoon'),
-        });
+        void this.tournamentActions.generatePlayoffs(result);
       }
     });
   }

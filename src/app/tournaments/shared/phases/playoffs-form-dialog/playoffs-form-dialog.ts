@@ -51,6 +51,12 @@ export interface BracketTreeRound {
   isFinalRound: boolean;
 }
 
+interface SelectedTeam {
+  ref: string;
+  name: string;
+  isPlaceholder?: boolean;
+}
+
 function nextPowerOf2(n: number): number {
   if (n <= 0) return 2;
   let power = 1;
@@ -103,15 +109,43 @@ export class PlayoffsFormDialog {
 
   currentStep = signal<1 | 2>(1);
   playoffsName = signal('');
-  selectedTeams = signal<KeyValue<string, string>[]>([]);
+
+  selectedTeams = signal<SelectedTeam[]>([]);
   pendingTeamRef = signal<string[]>([]);
 
+  get placeholderTeamKey() {
+    return (n: number) => `placeholder-${n}`;
+  }
+
+  get placeholderTeamLabel() {
+    return this.translocoService.translate('playoffs.placeholder');
+  }
+
+  private getNextPlaceholderIndex(): number {
+    const placeholderPrefix = 'placeholder-';
+    const indexes = this.selectedTeams()
+      .map((team) => team.ref)
+      .filter((key) => key.startsWith(placeholderPrefix))
+      .map((key) => Number.parseInt(key.slice(placeholderPrefix.length), 10))
+      .filter((index) => Number.isFinite(index));
+
+    const maxExistingIndex = indexes.length > 0 ? Math.max(...indexes) : 0;
+    return maxExistingIndex + 1;
+  }
+
   availableTeams = computed<KeyValue<string, string>[]>(() => {
-    const selectedIds = new Set(this.selectedTeams().map((t) => t.key));
-    return this.data.teams
+    const selectedIds = new Set(this.selectedTeams().map((t) => t.ref));
+    const teams = this.data.teams
       .filter((team) => !selectedIds.has(team.ref.id))
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((team) => ({ value: team.name, key: team.ref.id }));
+    return teams;
+  });
+
+  canAddPlaceholder = computed(() => {
+    // Limite : max 32 équipes (y compris placeholders)
+    const MAX_BRACKET_SIZE = 32;
+    return this.selectedTeams().length < MAX_BRACKET_SIZE;
   });
 
   bracketSize = computed(() => {
@@ -141,8 +175,8 @@ export class PlayoffsFormDialog {
           const team2Index = pairing.team2Index;
           const team1 = teams[team1Index];
           const team2 = teams[team2Index];
-          const team1Name = team1?.value ?? this.translocoService.translate('playoffs.bye');
-          const team2Name = team2?.value ?? this.translocoService.translate('playoffs.bye');
+          const team1Name = team1?.name ?? this.translocoService.translate('playoffs.bye');
+          const team2Name = team2?.name ?? this.translocoService.translate('playoffs.bye');
           matches.push({
             matchNumber,
             team1Name,
@@ -209,16 +243,14 @@ export class PlayoffsFormDialog {
     };
   });
 
-  canGoNext = computed(
-    () => this.playoffsName().trim().length > 0 && this.selectedTeams().length > 0,
-  );
+  canGoNext = computed(() => this.selectedTeams().length > 0);
 
   onAddSelectedTeam(): void {
     const pendingTeamRefs = this.pendingTeamRef();
     if (pendingTeamRefs.length === 0) return;
 
     const teamsById = new Map(this.data.teams.map((team) => [team.ref.id, team.name]));
-    const selectedIds = new Set(this.selectedTeams().map((team) => team.key));
+    const selectedIds = new Set(this.selectedTeams().map((team) => team.ref));
     const teamsToAdd: KeyValue<string, string>[] = [];
 
     for (const teamRef of pendingTeamRefs) {
@@ -236,14 +268,30 @@ export class PlayoffsFormDialog {
     }
 
     if (teamsToAdd.length > 0) {
-      this.selectedTeams.update((teams) => [...teams, ...teamsToAdd]);
+      this.selectedTeams.update((teams) => [
+        ...teams,
+        ...teamsToAdd.map((team) => ({ ref: team.key, name: team.value })),
+      ]);
     }
 
     this.pendingTeamRef.set([]);
   }
 
-  onRemoveTeam(team: KeyValue<string, string>): void {
-    this.selectedTeams.update((teams) => teams.filter((t) => t.key !== team.key));
+  onAddPlaceholderTeam(): void {
+    if (!this.canAddPlaceholder()) return;
+    const n = this.getNextPlaceholderIndex();
+    this.selectedTeams.update((teams) => [
+      ...teams,
+      {
+        ref: this.placeholderTeamKey(n),
+        name: this.placeholderTeamLabel,
+        isPlaceholder: true,
+      },
+    ]);
+  }
+
+  onRemoveTeam(team: SelectedTeam): void {
+    this.selectedTeams.update((teams) => teams.filter((t) => t.ref !== team.ref));
   }
 
   onNext(): void {
@@ -262,13 +310,13 @@ export class PlayoffsFormDialog {
 
   onSave(): void {
     const name = this.playoffsName().trim();
-    if (!name || this.selectedTeams().length === 0) return;
+    if (this.selectedTeams().length === 0) return;
     const teamById = new Map(this.data.teams.map((team) => [team.ref.id, team.ref]));
     const result: SavePlayoffsEvent = {
       serieRef: this.data.serieRef,
       name,
       orderedTeamRefs: this.selectedTeams()
-        .map((team) => teamById.get(team.key))
+        .map((team) => teamById.get(team.ref))
         .filter((teamRef): teamRef is DocumentReference => teamRef !== undefined),
       size: this.bracketSize(),
     };

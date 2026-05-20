@@ -28,6 +28,25 @@ export interface TournamentYamlGame {
   comment?: string;
 }
 
+export interface TournamentYamlPlayoffGame {
+  roundSize: number;
+  matchNumber: number;
+  team1?: string;
+  team2?: string;
+  score1?: number;
+  score2?: number;
+  date?: string;
+  referees?: string[];
+  comment?: string;
+}
+
+export interface TournamentYamlPlayoff {
+  name: string;
+  size: number;
+  orderedTeams: string[];
+  games: TournamentYamlPlayoffGame[];
+}
+
 export interface TournamentYamlPoule {
   name: string;
   teams: string[];
@@ -37,6 +56,7 @@ export interface TournamentYamlPoule {
 export interface TournamentYamlSerie {
   name: string;
   poules: TournamentYamlPoule[];
+  playoffs?: TournamentYamlPlayoff[];
 }
 
 export interface TournamentYamlData {
@@ -147,7 +167,13 @@ export class AdminImportExport {
     // Calculate counts
     const poulesCount = data.series.reduce((sum, serie) => sum + serie.poules.length, 0);
     const gamesCount = data.series.reduce(
-      (sum, serie) => sum + serie.poules.reduce((pSum, poule) => pSum + poule.games.length, 0),
+      (sum, serie) =>
+        sum +
+        serie.poules.reduce((pSum, poule) => pSum + poule.games.length, 0) +
+        (serie.playoffs ?? []).reduce(
+          (playoffSum, playoff) => playoffSum + playoff.games.length,
+          0,
+        ),
       0,
     );
     const timeSlotsCount = data.timeSlots?.length ?? 0;
@@ -238,22 +264,53 @@ export class AdminImportExport {
       poules: (serie.poules ?? []).map((poule) => ({
         name: poule.name,
         teams: (poule.refTeams ?? []).map((ref) => ref.id),
-        games: (poule.games ?? []).map((game: Game) => {
-          const yamlGame: TournamentYamlGame = {
-            team1: game.refTeam1.id,
-            team2: game.refTeam2.id,
-          };
-          if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
-          if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
-          if (game.date != null) yamlGame.date = game.date.toISOString();
-          if (game.referees && game.referees.length > 0) {
-            yamlGame.referees = game.referees;
-          }
-          if (game.comment) {
-            yamlGame.comment = game.comment;
-          }
-          return yamlGame;
-        }),
+        games: (poule.games ?? [])
+          .filter((game: Game) => game.refTeam1 && game.refTeam2)
+          .map((game: Game) => {
+            const yamlGame: TournamentYamlGame = {
+              team1: game.refTeam1!.id,
+              team2: game.refTeam2!.id,
+            };
+            if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
+            if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
+            if (game.date != null) yamlGame.date = game.date.toISOString();
+            if (game.referees && game.referees.length > 0) {
+              yamlGame.referees = game.referees;
+            }
+            if (game.comment) {
+              yamlGame.comment = game.comment;
+            }
+            return yamlGame;
+          }),
+      })),
+      playoffs: (serie.playoffs ?? []).map((playoff) => ({
+        name: playoff.name,
+        size: playoff.size,
+        orderedTeams: (playoff.orderedTeamRefs ?? []).map((ref) => ref.id),
+        games: [...(playoff.games ?? [])]
+          .sort((a, b) => {
+            const roundCompare = (b.roundSize ?? 0) - (a.roundSize ?? 0);
+            if (roundCompare !== 0) return roundCompare;
+            return (a.matchNumber ?? 0) - (b.matchNumber ?? 0);
+          })
+          .map((game) => {
+            const yamlGame: TournamentYamlPlayoffGame = {
+              roundSize: game.roundSize ?? 2,
+              matchNumber: game.matchNumber ?? 1,
+            };
+            if (game.refTeam1) yamlGame.team1 = game.refTeam1.id;
+            if (game.refTeam2) yamlGame.team2 = game.refTeam2.id;
+            if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
+            if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
+            if (game.date != null) yamlGame.date = game.date.toISOString();
+            if (game.referees && game.referees.length > 0) {
+              yamlGame.referees = game.referees;
+            }
+            if (game.comment) {
+              yamlGame.comment = game.comment;
+            }
+            return yamlGame;
+          }),
       })),
     }));
 

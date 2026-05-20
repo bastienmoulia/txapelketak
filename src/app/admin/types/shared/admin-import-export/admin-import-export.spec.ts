@@ -112,4 +112,68 @@ describe('AdminImportExport', () => {
 
     expect('type' in exportData.tournament).toBe(false);
   });
+
+  it('should include playoffs in exported yaml data', () => {
+    const team1Ref = { id: 'team-1' } as DocumentReference;
+    const team2Ref = { id: 'team-2' } as DocumentReference;
+
+    fixture.componentRef.setInput('series', [
+      {
+        ref: { id: 'serie-1' } as DocumentReference,
+        name: 'Serie A',
+        poules: [],
+        playoffs: [
+          {
+            ref: { id: 'playoff-1' } as DocumentReference,
+            name: 'Tableau principal',
+            size: 2,
+            orderedTeamRefs: [team1Ref, team2Ref],
+            games: [
+              {
+                ref: { id: 'game-1' } as DocumentReference,
+                roundSize: 2,
+                matchNumber: 1,
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                scoreTeam1: 10,
+                scoreTeam2: 8,
+              },
+            ],
+          },
+        ],
+      } as never,
+    ]);
+    fixture.detectChanges();
+
+    const exportData = (
+      component as unknown as { buildExportData: () => unknown }
+    ).buildExportData() as {
+      series: {
+        playoffs?: {
+          name: string;
+          size: number;
+          orderedTeams: string[];
+          games: { roundSize: number; matchNumber: number; team1?: string; team2?: string }[];
+        }[];
+      }[];
+    };
+
+    expect(exportData.series[0].playoffs).toEqual([
+      {
+        name: 'Tableau principal',
+        size: 2,
+        orderedTeams: ['team-1', 'team-2'],
+        games: [
+          {
+            roundSize: 2,
+            matchNumber: 1,
+            team1: 'team-1',
+            team2: 'team-2',
+            score1: 10,
+            score2: 8,
+          },
+        ],
+      },
+    ]);
+  });
 });

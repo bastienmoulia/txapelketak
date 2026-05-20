@@ -43,6 +43,15 @@
           (onClick)="onAddSelectedTeam()"
           data-testid="playoffs-dialog-add-team-button"
         />
+        <p-button
+          type="button"
+          severity="secondary"
+          icon="pi pi-user-plus"
+          [label]="'playoffs.addPlaceholder' | transloco"
+          [disabled]="!canAddPlaceholder()"
+          (onClick)="onAddPlaceholderTeam()"
+          data-testid="playoffs-dialog-add-placeholder-button"
+        />
       </div>
 
       @if (selectedTeams().length === 0) {
@@ -52,7 +61,7 @@
       } @else {
         <p-orderlist
           [value]="selectedTeams()"
-          dataKey="key"
+          dataKey="ref"
           [dragdrop]="true"
           [listStyle]="{ 'max-height': '16rem' }"
           data-testid="playoffs-dialog-order-list"
@@ -60,7 +69,12 @@
           <ng-template #item let-team let-index="index">
             <div class="flex items-center justify-between w-full gap-2">
               <span class="font-medium text-sm text-surface-500 min-w-6">{{ index + 1 }}.</span>
-              <span class="flex-1">{{ team.value }}</span>
+              <span
+                class="flex-1"
+                [class.italic]="team.isPlaceholder"
+                [class.text-surface-400]="team.isPlaceholder"
+                >{{ team.name }}</span
+              >
               <p-button
                 type="button"
                 size="small"
@@ -140,13 +154,33 @@
                       class="finale-match-team"
                       [class.opacity-50]="match.data.isBye && !match.data.team1Name"
                     >
-                      <span class="finale-team-name">{{ match.data.team1Name }}</span>
+                      <span
+                        class="finale-team-name"
+                        [class.italic]="
+                          match.data.team1Name === ('playoffs.placeholder' | transloco)
+                        "
+                        [class.text-surface-400]="
+                          match.data.team1Name === ('playoffs.placeholder' | transloco)
+                        "
+                      >
+                        {{ match.data.team1Name }}
+                      </span>
                     </div>
                     <div
                       class="finale-match-team"
                       [class.opacity-50]="match.data.isBye && !match.data.team2Name"
                     >
-                      <span class="finale-team-name">{{ match.data.team2Name }}</span>
+                      <span
+                        class="finale-team-name"
+                        [class.italic]="
+                          match.data.team2Name === ('playoffs.placeholder' | transloco)
+                        "
+                        [class.text-surface-400]="
+                          match.data.team2Name === ('playoffs.placeholder' | transloco)
+                        "
+                      >
+                        {{ match.data.team2Name }}
+                      </span>
                     </div>
                   </div>
                   @if (!round.isFinalRound) {

@@ -7,8 +7,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 
 const asSelectedTeam = (team: { ref: DocumentReference; name: string }) => ({
-  key: team.ref.id,
-  value: team.name,
+  ref: team.ref.id,
+  name: team.name,
 });
 
 describe('PlayoffsFormDialog', () => {
@@ -53,6 +53,33 @@ describe('PlayoffsFormDialog', () => {
     await fixture.whenStable();
   });
 
+  it('should add a placeholder team and display it in selectedTeams', () => {
+    component.onAddPlaceholderTeam();
+    expect(component.selectedTeams().length).toBe(1);
+    expect(component.selectedTeams()[0].isPlaceholder).toBe(true);
+    expect(component.selectedTeams()[0].name).toBe(component.placeholderTeamLabel);
+  });
+
+  it('should remove a placeholder team from selectedTeams', () => {
+    component.onAddPlaceholderTeam();
+    const placeholder = component.selectedTeams()[0];
+    component.onRemoveTeam(placeholder);
+    expect(component.selectedTeams().length).toBe(0);
+  });
+
+  it('should display placeholder in bracket preview', () => {
+    component.onAddPlaceholderTeam();
+    component.selectedTeams.set([
+      { ref: 'placeholder-1', name: component.placeholderTeamLabel, isPlaceholder: true },
+      { ref: 'team-a', name: 'Team A' },
+    ]);
+    const preview = component.bracketPreview();
+    const firstRound = preview.find((r) => r.roundOrder === 2);
+    expect(firstRound).toBeDefined();
+    expect(firstRound!.matches[0].team1Name).toBe(component.placeholderTeamLabel);
+    expect(firstRound!.matches[0].team2Name).toBe('Team A');
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -66,11 +93,11 @@ describe('PlayoffsFormDialog', () => {
     expect(mockRef.close).toHaveBeenCalledWith(undefined);
   });
 
-  it('should not go to step 2 when name is empty', () => {
+  it('should go to step 2 when name is empty but teams are selected', () => {
     component.playoffsName.set('');
     component.selectedTeams.set([asSelectedTeam(teams[0])]);
     component.onNext();
-    expect(component.currentStep()).toBe(1);
+    expect(component.currentStep()).toBe(2);
   });
 
   it('should not go to step 2 when no teams selected', () => {
@@ -80,14 +107,14 @@ describe('PlayoffsFormDialog', () => {
     expect(component.currentStep()).toBe(1);
   });
 
-  it('canGoNext is false when name empty and no teams', () => {
+  it('canGoNext is false when no teams selected', () => {
     component.playoffsName.set('');
     component.selectedTeams.set([]);
     expect(component.canGoNext()).toBe(false);
   });
 
-  it('canGoNext is true when name and teams provided', () => {
-    component.playoffsName.set('My Playoffs');
+  it('canGoNext is true when teams are provided', () => {
+    component.playoffsName.set('');
     component.selectedTeams.set([asSelectedTeam(teams[0])]);
     expect(component.canGoNext()).toBe(true);
   });
@@ -111,7 +138,7 @@ describe('PlayoffsFormDialog', () => {
     component.pendingTeamRef.set([teamARef.id]);
     component.onAddSelectedTeam();
     expect(component.selectedTeams().length).toBe(1);
-    expect(component.selectedTeams()[0].value).toBe('Team A');
+    expect(component.selectedTeams()[0].name).toBe('Team A');
     expect(component.pendingTeamRef()).toEqual([]);
   });
 
@@ -133,7 +160,7 @@ describe('PlayoffsFormDialog', () => {
     component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
     component.onRemoveTeam(asSelectedTeam(teams[0]));
     expect(component.selectedTeams().length).toBe(1);
-    expect(component.selectedTeams()[0].value).toBe('Team B');
+    expect(component.selectedTeams()[0].name).toBe('Team B');
   });
 
   it('should compute bracket size as next power of 2', () => {
@@ -154,11 +181,12 @@ describe('PlayoffsFormDialog', () => {
     expect(component.bracketSize()).toBe(4);
   });
 
-  it('should not save when name is empty', () => {
+  it('should save with empty name when teams are selected', () => {
     component.playoffsName.set('');
     component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
     component.onSave();
-    expect(mockRef.close).not.toHaveBeenCalled();
+    const result = mockRef.close.mock.calls[0][0] as { name: string };
+    expect(result.name).toBe('');
   });
 
   it('should not save when no teams selected', () => {

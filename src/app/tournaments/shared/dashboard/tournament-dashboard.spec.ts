@@ -44,6 +44,22 @@ function makeSerie(name: string, poules: Serie['poules']): Serie {
   return { ref: makeRef(`serie-${name}`), name, poules };
 }
 
+function makePlayoffSerie(name: string, playoffName: string, games: Game[]): Serie {
+  return {
+    ref: makeRef(`serie-${name}`),
+    name,
+    playoffs: [
+      {
+        ref: makeRef(`playoff-${playoffName}`),
+        name: playoffName,
+        orderedTeamRefs: [],
+        size: Math.max(2, games.length * 2),
+        games,
+      },
+    ],
+  };
+}
+
 describe('TournamentDashboard', () => {
   let fixture: ComponentFixture<TournamentDashboard>;
   let component: TournamentDashboard;
@@ -122,6 +138,19 @@ describe('TournamentDashboard', () => {
       ];
       setInputs({ series });
       expect(component.gamesCount()).toBe(3);
+    });
+
+    it('should count playoff games when a serie has no poules', () => {
+      const series: Serie[] = [
+        makePlayoffSerie('S1', 'Playoff A', [
+          makeGame({ refTeam1Id: 'a', refTeam2Id: 'b' }),
+          makeGame({ refTeam1Id: 'c', refTeam2Id: 'd' }),
+        ]),
+      ];
+
+      setInputs({ series });
+
+      expect(component.gamesCount()).toBe(2);
     });
   });
 
@@ -344,6 +373,22 @@ describe('TournamentDashboard', () => {
       setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
       const result = component.upcomingGames();
       expect(result[0].referees).toEqual([]);
+    });
+
+    it('should include future playoff games when a serie has no poules', () => {
+      const series: Serie[] = [
+        makePlayoffSerie('S1', 'Playoff A', [
+          makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: futureDate1 }),
+        ]),
+      ];
+
+      setInputs({ teams: [makeTeam('a', 'Alpha'), makeTeam('b', 'Beta')], series });
+
+      const result = component.upcomingGames();
+      expect(result.length).toBe(1);
+      expect(result[0].pouleName).toBe('Playoff A');
+      expect(result[0].team1Name).toBe('Alpha');
+      expect(result[0].team2Name).toBe('Beta');
     });
   });
 
@@ -661,6 +706,28 @@ describe('TournamentDashboard', () => {
       const result = component.recentGames();
       expect(result[0].referees).toEqual([]);
     });
+
+    it('should include scored playoff games when a serie has no poules', () => {
+      const series: Serie[] = [
+        makePlayoffSerie('S1', 'Playoff A', [
+          makeGame({
+            refTeam1Id: 'a',
+            refTeam2Id: 'b',
+            date: pastDate1,
+            scoreTeam1: 3,
+            scoreTeam2: 2,
+          }),
+        ]),
+      ];
+
+      setInputs({ teams: [makeTeam('a', 'Alpha'), makeTeam('b', 'Beta')], series });
+
+      const result = component.recentGames();
+      expect(result.length).toBe(1);
+      expect(result[0].pouleName).toBe('Playoff A');
+      expect(result[0].scoreTeam1).toBe(3);
+      expect(result[0].scoreTeam2).toBe(2);
+    });
   });
 
   describe('overdueGames', () => {
@@ -853,6 +920,22 @@ describe('TournamentDashboard', () => {
         series,
       });
       expect(component.overdueGames().length).toBe(2);
+    });
+
+    it('should include overdue playoff games when a serie has no poules', () => {
+      const series: Serie[] = [
+        makePlayoffSerie('S1', 'Playoff A', [
+          makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastDate1 }),
+        ]),
+      ];
+
+      setInputs({ teams: [makeTeam('a', 'Alpha'), makeTeam('b', 'Beta')], series });
+
+      const result = component.overdueGames();
+      expect(result.length).toBe(1);
+      expect(result[0].pouleName).toBe('Playoff A');
+      expect(result[0].team1Name).toBe('Alpha');
+      expect(result[0].team2Name).toBe('Beta');
     });
   });
 

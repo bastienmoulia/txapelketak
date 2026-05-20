@@ -15,7 +15,7 @@ export class PhasesPage {
     return this.page.getByRole('tab', { name, exact: false });
   }
 
-  private async serieTabPanel(name: string): Promise<Locator> {
+  async serieTabPanel(name: string): Promise<Locator> {
     const tab = this.serieTab(name);
     const controls = await tab.getAttribute('aria-controls');
     if (!controls) {
@@ -217,6 +217,142 @@ export class PhasesPage {
     await confirmDialog.locator('button').filter({ hasText: 'Supprimer' }).last().click();
     await confirmDialog.waitFor({ state: 'hidden' });
 
+    await dialog.locator('button[type="submit"]').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  // --- Playoffs ---
+
+  playoffCard(serieName: string, playoffName: string): Locator {
+    const tabPanel = this.page.locator('p-tabpanel:visible').first();
+    return tabPanel.locator('p-card').filter({ hasText: playoffName });
+  }
+
+  async addPlayoffs(serieName: string, playoffName: string, teamNames: string[]): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    await tabPanel.getByTestId('add-playoffs-button').click();
+
+    const dialog = this.page.locator('.p-dynamic-dialog, .p-dialog').last();
+    await dialog.waitFor({ state: 'visible' });
+
+    // Fill name
+    await dialog.locator('input#playoffs-name').fill(playoffName);
+
+    // Add each team and verify it appears in the order list before proceeding.
+    const orderList = dialog.getByTestId('playoffs-dialog-order-list');
+    for (const teamName of teamNames) {
+      const multiSelect = dialog.locator('p-multiselect[name="team-select"]');
+      await multiSelect.click();
+
+      const overlay = this.page.locator('.p-multiselect-overlay:visible').last();
+      await expect(overlay).toBeVisible();
+
+      const filterInput = overlay.locator('input.p-multiselect-filter');
+      if ((await filterInput.count()) > 0) {
+        await filterInput.fill(teamName);
+      }
+
+      // PrimeNG multiselect options may render with different internal markup.
+      const roleOption = overlay.getByRole('option', { name: teamName, exact: true });
+      const option =
+        (await roleOption.count()) > 0
+          ? roleOption.first()
+          : overlay.locator('.p-multiselect-option').filter({ hasText: teamName }).first();
+      await expect(option).toBeVisible();
+      await option.click({ force: true });
+
+      await dialog.getByTestId('playoffs-dialog-add-team-button').click();
+      await expect(orderList.getByText(teamName, { exact: true })).toBeVisible({ timeout: 5000 });
+      await this.page.keyboard.press('Escape');
+    }
+
+    // Go to step 2
+    await dialog.getByTestId('playoffs-dialog-next-button').click();
+    await expect(dialog.getByTestId('playoffs-dialog-bracket-preview')).toBeVisible({
+      timeout: 10000,
+    });
+    // Save
+    await dialog.getByTestId('playoffs-dialog-save-button').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  async deletePlayoff(serieName: string, playoffName: string): Promise<void> {
+    await this.ensureSerieExpanded(serieName);
+    const tabPanel = await this.serieTabPanel(serieName);
+    const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
+    const trashIconButton = card.locator('button:has(.pi-trash)').first();
+    if ((await trashIconButton.count()) > 0) {
+      await trashIconButton.scrollIntoViewIfNeeded();
+      await trashIconButton.click({ force: true });
+    } else {
+      const deleteBtn = card.getByTestId('delete-playoff-button');
+      const innerButton = deleteBtn.locator('button');
+      if ((await innerButton.count()) > 0) {
+        await innerButton.first().scrollIntoViewIfNeeded();
+        await innerButton.first().click({ force: true });
+      } else {
+        await deleteBtn.click();
+      }
+    }
+
+    const roleDialog = this.page
+      .getByRole('alertdialog')
+      .filter({ has: this.page.locator('button') })
+      .last();
+    const primeDialog = this.page.locator('.p-confirmdialog:visible').last();
+
+    let confirmDialog: Locator;
+    try {
+      await roleDialog.waitFor({ state: 'visible', timeout: 2500 });
+      confirmDialog = roleDialog;
+    } catch {
+      try {
+        await expect(primeDialog).toBeVisible({ timeout: 2500 });
+        confirmDialog = primeDialog;
+      } catch {
+        // Some UI flows may delete immediately without a confirm dialog.
+        return;
+      }
+    }
+
+    const acceptByClass = confirmDialog
+      .locator('.p-confirmdialog-accept-button, .p-confirm-dialog-accept, .p-button-danger')
+      .first();
+
+    if ((await acceptByClass.count()) > 0) {
+      await acceptByClass.click();
+    } else {
+      const acceptByLabel = confirmDialog
+        .getByRole('button', { name: /Supprimer|Confirmer|Delete|Confirm/i })
+        .first();
+      if ((await acceptByLabel.count()) > 0) {
+        await acceptByLabel.click();
+      } else {
+        await confirmDialog.locator('button').last().click();
+      }
+    }
+    await confirmDialog.waitFor({ state: 'hidden' });
+  }
+
+  playoffMatchCard(playoffName: string, matchLabel: string): Locator {
+    return this.page.locator('.playoff-match-card').filter({ hasText: matchLabel });
+  }
+
+  async editPlayoffMatch(
+    playoffName: string,
+    matchLabel: string,
+    scoreTeam1: number,
+    scoreTeam2: number,
+  ): Promise<void> {
+    const matchCard = this.playoffMatchCard(playoffName, matchLabel);
+    await matchCard.scrollIntoViewIfNeeded();
+    await matchCard.getByTestId('playoff-match-edit-button').click();
+
+    const dialog = this.page.locator('.p-dialog').last();
+    await dialog.waitFor({ state: 'visible' });
+    await dialog.locator('input[name="scoreTeam1"], #scoreTeam1').fill(String(scoreTeam1));
+    await dialog.locator('input[name="scoreTeam2"], #scoreTeam2').fill(String(scoreTeam2));
     await dialog.locator('button[type="submit"]').click();
     await dialog.waitFor({ state: 'hidden' });
   }

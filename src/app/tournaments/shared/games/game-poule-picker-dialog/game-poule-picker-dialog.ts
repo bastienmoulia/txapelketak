@@ -32,14 +32,14 @@ export class GamePoulePickerDialog {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((serie) => ({
         ...serie,
-        poules: [...serie.poules].sort((a, b) => a.name.localeCompare(b.name)),
+        poules: [...(serie.poules ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
       })),
   );
 
   poulesForSelectedSerie = computed(() => {
     const serie = this.selectedSerie();
     if (!serie) return [];
-    return [...serie.poules].sort((a, b) => a.name.localeCompare(b.name));
+    return [...(serie.poules ?? [])].sort((a, b) => a.name.localeCompare(b.name));
   });
 
   isNextDisabled = computed(() => !this.selectedSerie() || !this.selectedPoule());

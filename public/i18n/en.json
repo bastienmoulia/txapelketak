@@ -226,7 +226,10 @@
       "teamsUpdated": "Teams updated",
       "teamsUpdatedDetail": "{{added}} team(s) added, {{removed}} team(s) removed",
       "teamsAddedToPouleDetail": "{{count}} team(s) added to \"{{pouleName}}\".",
-      "dialogAddPlayoffs": "Add playoffs"
+      "dialogAddPlayoffs": "Add playoffs",
+      "deletePlayoffAria": "Delete this playoff",
+      "playoffDeleted": "Playoff deleted",
+      "playoffDeletedDetail": "The playoff has been successfully deleted."
     },
     "games": {
       "addGame": "Add a game",
@@ -445,11 +448,14 @@
     "winnerOf": "Winner of {{round}} {{match}}"
   },
   "playoffs": {
-    "name": "Playoffs name",
+    "name": "Playoffs name (optional)",
+    "defaultName": "Playoffs",
     "step1Title": "Teams and seeding order",
     "step2Title": "Bracket preview",
     "noTeamsSelected": "No teams selected",
     "bracketSize": "Bracket size: {{size}} teams",
+    "addPlaceholder": "Add placeholder team",
+    "placeholder": "To be determined",
     "bye": "Bye",
     "seed": "Seed {{n}}",
     "generated": "Playoffs generated",

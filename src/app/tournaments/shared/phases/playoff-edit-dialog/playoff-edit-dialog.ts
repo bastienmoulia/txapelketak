@@ -27,14 +27,7 @@ interface PlayoffEditDialogData {
 
 @Component({
   selector: 'app-playoff-edit-dialog',
-  imports: [
-    FormsModule,
-    TranslocoPipe,
-    Button,
-    FloatLabel,
-    InputTextModule,
-    ToggleSwitchModule,
-  ],
+  imports: [FormsModule, TranslocoPipe, Button, FloatLabel, InputTextModule, ToggleSwitchModule],
   templateUrl: './playoff-edit-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -53,7 +53,7 @@ export class PlayoffEditDialog {
 
   onSave(): void {
     const name = this.playoffName().trim();
-    if (!name || !this.data.playoff?.ref) {
+    if (!this.data.playoff?.ref) {
       return;
     }
 

@@ -77,4 +77,17 @@ describe('PlayoffEditDialog', () => {
       hiddenFromVisitors: false,
     });
   });
+
+  it('should allow saving with empty playoff name', () => {
+    component.playoffName.set('   ');
+    component.hiddenFromVisitors.set(true);
+
+    component.onSave();
+
+    expect(mockRef.close).toHaveBeenCalledWith({
+      ref: playoffRef,
+      name: '',
+      hiddenFromVisitors: true,
+    });
+  });
 });

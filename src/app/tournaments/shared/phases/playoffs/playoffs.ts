@@ -14,7 +14,10 @@ import { Playoff, Game, Poule } from '../../../models';
 import { GameFormDialog } from '../../games/game-form-dialog/game-form-dialog';
 import type { SaveGameEvent } from '../../games/games';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { PlayoffEditDialog, SavePlayoffEvent } from '../playoff-edit-dialog/playoff-edit-dialog';
+import {
+  PlayoffEditDialog,
+  PlayoffEditDialogResult,
+} from '../playoff-edit-dialog/playoff-edit-dialog';
 
 interface RoundGroup {
   roundSize: number;
@@ -184,9 +187,10 @@ export class Playoffs {
       data: { playoff },
     });
 
-    dialogRef?.onClose.subscribe((result: SavePlayoffEvent | { action: 'delete' } | undefined) => {
+    dialogRef?.onClose.subscribe((result: PlayoffEditDialogResult | undefined) => {
       if (!result) return;
-      if ('action' in result && result.action === 'delete') {
+
+      if ('action' in result) {
         void this.tournamentActions.deletePlayoff(playoff);
         return;
       }

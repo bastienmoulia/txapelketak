@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export class GamesPage {
   readonly page: Page;
@@ -81,45 +81,59 @@ export class GamesPage {
   ): Promise<void> {
     await this.ensureGamesTab();
     await this.page.getByTestId('add-game-button').click();
-    // Step 1: pick serie + poule
-    let dialog = this.page
+    const pickerDialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.locator('.p-select') })
-      .first();
-    await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('.p-select').first().click();
+      .filter({ has: this.page.locator('label[for="newSerie"]') });
+    await pickerDialog.waitFor({ state: 'visible' });
+
+    await pickerDialog.locator('.p-select').first().click();
     const serieOption = options?.serieName
       ? this.page
           .locator('.p-select-overlay .p-select-option')
           .filter({ hasText: options.serieName })
       : this.page.locator('.p-select-overlay .p-select-option').first();
     await serieOption.click();
-    await dialog.locator('.p-select').last().click();
+
+    await pickerDialog.locator('.p-select').last().click();
     const pouleOption = options?.pouleName
       ? this.page
           .locator('.p-select-overlay .p-select-option')
           .filter({ hasText: options.pouleName })
       : this.page.locator('.p-select-overlay .p-select-option').first();
     await pouleOption.click();
-    await dialog.locator('button').filter({ hasText: 'Suivant' }).click();
-    // Step 2: fill teams
-    dialog = this.page
+    await pickerDialog.locator('button').filter({ hasText: 'Suivant' }).click();
+    await pickerDialog.waitFor({ state: 'hidden' });
+
+    const formDialog = this.page
       .locator('.p-dialog')
-      .filter({ has: this.page.locator('.p-select') })
-      .first();
-    await dialog.waitFor({ state: 'visible' });
-    await dialog.locator('.p-select').first().click();
+      .filter({ has: this.page.locator('label[for="team1"]') });
+    await formDialog.waitFor({ state: 'visible' });
+
+    await formDialog.locator('.p-select').first().click();
     await this.page
       .locator('.p-select-overlay .p-select-option')
       .filter({ hasText: team1Name })
+      .first()
       .click();
-    await dialog.locator('.p-select').nth(1).click();
+
+    await formDialog.locator('.p-select').nth(1).click();
     await this.page
       .locator('.p-select-overlay .p-select-option')
       .filter({ hasText: team2Name })
+      .first()
       .click();
-    await dialog.locator('button').filter({ hasText: 'Enregistrer' }).click();
-    await dialog.waitFor({ state: 'hidden' });
+
+    await formDialog.locator('button[type="submit"]').click();
+    await formDialog.waitFor({ state: 'hidden' });
+
+    await this.page.reload();
+    await this.ensureGamesTab();
+
+    await expect
+      .poll(async () => await this.gameRow(team1Name, team2Name).count(), {
+        timeout: 15000,
+      })
+      .toBeGreaterThan(0);
   }
 
   async deleteGame(team1Name: string, team2Name: string): Promise<void> {

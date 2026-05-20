@@ -53,13 +53,15 @@ export class TournamentActionsService {
       if (!event.refTeam1 || !event.refTeam2) {
         return;
       }
-      await this.firebaseService.addGameToPoule(event.pouleRef, gameData as Omit<
-        Game,
-        'ref'
-      > & {
-        refTeam1: DocumentReference;
-        refTeam2: DocumentReference;
-      });
+      gameData.refTeam1 = event.refTeam1;
+      gameData.refTeam2 = event.refTeam2;
+      await this.firebaseService.addGameToPoule(
+        event.pouleRef,
+        gameData as Omit<Game, 'ref'> & {
+          refTeam1: DocumentReference;
+          refTeam2: DocumentReference;
+        },
+      );
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.games.added'),

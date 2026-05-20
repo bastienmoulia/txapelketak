@@ -12,6 +12,12 @@ function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
 }
 
+async function flushMicrotasks(times = 5): Promise<void> {
+  for (let attempt = 0; attempt < times; attempt++) {
+    await Promise.resolve();
+  }
+}
+
 describe('PoulesStore', () => {
   let store: InstanceType<typeof PoulesStore>;
   let authStore: InstanceType<typeof AuthStore>;
@@ -244,11 +250,16 @@ describe('PoulesStore', () => {
     store.startWatching(createRef('t1'));
     series$.next([{ data: { name: 'Serie A' }, ref: createRef('s1') }]);
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushMicrotasks();
+
+    expect(store.series()[0]).toBeDefined();
+    expect(playoffStreams.get('s1')).toBeDefined();
 
     playoffStreams.get('s1')?.next([
-      { data: { name: 'Visible Playoff', orderedTeamRefs: [], size: 2 }, ref: createRef('pl-visible') },
+      {
+        data: { name: 'Visible Playoff', orderedTeamRefs: [], size: 2 },
+        ref: createRef('pl-visible'),
+      },
       {
         data: { name: 'Hidden Playoff', orderedTeamRefs: [], size: 2, hiddenFromVisitors: true },
         ref: createRef('pl-hidden'),
@@ -278,11 +289,16 @@ describe('PoulesStore', () => {
     store.startWatching(createRef('t1'));
     series$.next([{ data: { name: 'Serie A' }, ref: createRef('s1') }]);
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await flushMicrotasks();
+
+    expect(store.series()[0]).toBeDefined();
+    expect(playoffStreams.get('s1')).toBeDefined();
 
     playoffStreams.get('s1')?.next([
-      { data: { name: 'Visible Playoff', orderedTeamRefs: [], size: 2 }, ref: createRef('pl-visible') },
+      {
+        data: { name: 'Visible Playoff', orderedTeamRefs: [], size: 2 },
+        ref: createRef('pl-visible'),
+      },
       {
         data: { name: 'Hidden Playoff', orderedTeamRefs: [], size: 2, hiddenFromVisitors: true },
         ref: createRef('pl-hidden'),

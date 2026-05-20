@@ -4,7 +4,6 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
 
@@ -15,6 +14,7 @@ import { Playoff, Game, Poule } from '../../../models';
 import { GameFormDialog } from '../../games/game-form-dialog/game-form-dialog';
 import type { SaveGameEvent } from '../../games/games';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { PlayoffEditDialog, SavePlayoffEvent } from '../playoff-edit-dialog/playoff-edit-dialog';
 
 interface RoundGroup {
   roundSize: number;
@@ -68,7 +68,6 @@ const createTeamNameLookup =
 export class Playoffs {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
-  private confirmationService = inject(ConfirmationService);
   private poulesStore = inject(PoulesStore);
   private authStore = inject(AuthStore);
   private tournamentActions = inject(TournamentActionsService);
@@ -176,20 +175,23 @@ export class Playoffs {
     });
   }
 
-  onDeletePlayoff(playoff: Playoff): void {
-    this.confirmationService.confirm({
-      header: this.translocoService.translate('shared.confirm.deleteHeader'),
-      message: this.translocoService.translate('shared.confirm.deleteMessage', {
-        name: playoff.name,
-      }),
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
-      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-secondary',
-      accept: () => {
+  onEditPlayoff(playoff: Playoff): void {
+    const dialogRef = this.dialogService.open(PlayoffEditDialog, {
+      header: this.translocoService.translate('admin.poules.dialogEditPlayoff'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { playoff },
+    });
+
+    dialogRef?.onClose.subscribe((result: SavePlayoffEvent | { action: 'delete' } | undefined) => {
+      if (!result) return;
+      if ('action' in result && result.action === 'delete') {
         void this.tournamentActions.deletePlayoff(playoff);
-      },
+        return;
+      }
+
+      void this.tournamentActions.savePlayoff(result);
     });
   }
 }

@@ -27,13 +27,14 @@
             <p-button
               type="button"
               size="small"
-              severity="danger"
-              icon="pi pi-trash"
-              [ariaLabel]="'admin.poules.deletePlayoffAria' | transloco"
-              [pTooltip]="'admin.poules.deletePlayoffAria' | transloco"
+              severity="secondary"
+              [outlined]="true"
+              icon="pi pi-pencil"
+              [ariaLabel]="'admin.poules.editPlayoffAria' | transloco"
+              [pTooltip]="'admin.poules.editPlayoffAria' | transloco"
               tooltipPosition="top"
-              (onClick)="onDeletePlayoff(playoffTree.playoff)"
-              data-testid="delete-playoff-button"
+              (onClick)="onEditPlayoff(playoffTree.playoff)"
+              data-testid="edit-playoff-button"
             />
           }
         </div>

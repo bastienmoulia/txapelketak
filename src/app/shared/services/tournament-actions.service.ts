@@ -17,6 +17,7 @@ import {
   TeamInPouleEvent,
 } from '../../tournaments/shared/phases/phases';
 import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
+import { SavePlayoffEvent } from '../../tournaments/shared/phases/playoff-edit-dialog/playoff-edit-dialog';
 import { Game, Playoff, Serie, Team } from '../../tournaments/models';
 
 @Injectable()
@@ -323,6 +324,19 @@ export class TournamentActionsService {
       detail: this.translocoService.translate('playoffs.generatedDetail', {
         count: generatedGames,
       }),
+    });
+  }
+
+  async savePlayoff(event: SavePlayoffEvent): Promise<void> {
+    await this.firebaseService.updatePlayoffInSerie(
+      event.ref,
+      event.name,
+      event.hiddenFromVisitors ?? false,
+    );
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.playoffEdited'),
+      detail: this.translocoService.translate('admin.poules.playoffEditedDetail'),
     });
   }
 

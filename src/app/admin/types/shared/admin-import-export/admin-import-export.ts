@@ -42,6 +42,7 @@ export interface TournamentYamlPlayoffGame {
 
 export interface TournamentYamlPlayoff {
   name: string;
+  hiddenFromVisitors?: boolean;
   size: number;
   orderedTeams: string[];
   games: TournamentYamlPlayoffGame[];
@@ -49,6 +50,7 @@ export interface TournamentYamlPlayoff {
 
 export interface TournamentYamlPoule {
   name: string;
+  hiddenFromVisitors?: boolean;
   teams: string[];
   games: TournamentYamlGame[];
 }
@@ -261,10 +263,11 @@ export class AdminImportExport {
 
     const yamlSeries: TournamentYamlSerie[] = series.map((serie) => ({
       name: serie.name,
-      poules: (serie.poules ?? []).map((poule) => ({
-        name: poule.name,
-        teams: (poule.refTeams ?? []).map((ref) => ref.id),
-        games: (poule.games ?? [])
+       poules: (serie.poules ?? []).map((poule) => ({
+         name: poule.name,
+         ...(poule.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
+         teams: (poule.refTeams ?? []).map((ref) => ref.id),
+         games: (poule.games ?? [])
           .filter((game: Game) => game.refTeam1 && game.refTeam2)
           .map((game: Game) => {
             const yamlGame: TournamentYamlGame = {
@@ -283,11 +286,12 @@ export class AdminImportExport {
             return yamlGame;
           }),
       })),
-      playoffs: (serie.playoffs ?? []).map((playoff) => ({
-        name: playoff.name,
-        size: playoff.size,
-        orderedTeams: (playoff.orderedTeamRefs ?? []).map((ref) => ref.id),
-        games: [...(playoff.games ?? [])]
+       playoffs: (serie.playoffs ?? []).map((playoff) => ({
+         name: playoff.name,
+         ...(playoff.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
+         size: playoff.size,
+         orderedTeams: (playoff.orderedTeamRefs ?? []).map((ref) => ref.id),
+         games: [...(playoff.games ?? [])]
           .sort((a, b) => {
             const roundCompare = (b.roundSize ?? 0) - (a.roundSize ?? 0);
             if (roundCompare !== 0) return roundCompare;

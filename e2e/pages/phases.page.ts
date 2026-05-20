@@ -281,20 +281,19 @@ export class PhasesPage {
     await this.ensureSerieExpanded(serieName);
     const tabPanel = await this.serieTabPanel(serieName);
     const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
-    const trashIconButton = card.locator('button:has(.pi-trash)').first();
-    if ((await trashIconButton.count()) > 0) {
-      await trashIconButton.scrollIntoViewIfNeeded();
-      await trashIconButton.click({ force: true });
+    const editBtn = card.getByTestId('edit-playoff-button');
+    const innerButton = editBtn.locator('button');
+    if ((await innerButton.count()) > 0) {
+      await innerButton.first().scrollIntoViewIfNeeded();
+      await innerButton.first().click({ force: true });
     } else {
-      const deleteBtn = card.getByTestId('delete-playoff-button');
-      const innerButton = deleteBtn.locator('button');
-      if ((await innerButton.count()) > 0) {
-        await innerButton.first().scrollIntoViewIfNeeded();
-        await innerButton.first().click({ force: true });
-      } else {
-        await deleteBtn.click();
-      }
+      await editBtn.click();
     }
+
+    const dialog = this.page.locator('.p-dynamic-dialog, .p-dialog').last();
+    await dialog.waitFor({ state: 'visible' });
+    await dialog.getByTestId('delete-playoff-button').click();
+    await dialog.waitFor({ state: 'hidden' });
 
     const roleDialog = this.page
       .getByRole('alertdialog')

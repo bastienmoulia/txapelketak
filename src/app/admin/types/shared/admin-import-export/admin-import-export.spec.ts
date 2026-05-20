@@ -6,6 +6,12 @@ import { AdminImportExport } from './admin-import-export';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 
+async function flushMicrotasks(times = 5): Promise<void> {
+  for (let attempt = 0; attempt < times; attempt++) {
+    await Promise.resolve();
+  }
+}
+
 describe('AdminImportExport', () => {
   let component: AdminImportExport;
   let fixture: ComponentFixture<AdminImportExport>;
@@ -175,5 +181,88 @@ describe('AdminImportExport', () => {
         ],
       },
     ]);
+  });
+
+  it('should include hiddenFromVisitors in exported yaml data when set', () => {
+    fixture.componentRef.setInput('series', [
+      {
+        ref: { id: 'serie-1' } as DocumentReference,
+        name: 'Serie A',
+        poules: [
+          {
+            ref: { id: 'poule-1' } as DocumentReference,
+            name: 'Poule A',
+            refTeams: [],
+            hiddenFromVisitors: true,
+            games: [],
+          },
+        ],
+        playoffs: [
+          {
+            ref: { id: 'playoff-1' } as DocumentReference,
+            name: 'Playoff A',
+            size: 2,
+            orderedTeamRefs: [],
+            hiddenFromVisitors: true,
+            games: [],
+          },
+        ],
+      } as never,
+    ]);
+    fixture.detectChanges();
+
+    const exportData = (
+      component as unknown as { buildExportData: () => unknown }
+    ).buildExportData() as {
+      series: {
+        poules: { hiddenFromVisitors?: boolean }[];
+        playoffs?: { hiddenFromVisitors?: boolean }[];
+      }[];
+    };
+
+    expect(exportData.series[0].poules[0].hiddenFromVisitors).toBe(true);
+    expect(exportData.series[0].playoffs?.[0].hiddenFromVisitors).toBe(true);
+  });
+
+  it('should import hiddenFromVisitors from parsed yaml data', async () => {
+    const parsedData = {
+      tournament: { name: 'Tournament test', description: '', status: 'ongoing' },
+      teams: [],
+      series: [
+        {
+          name: 'Serie A',
+          poules: [{ name: 'Poule A', hiddenFromVisitors: true, teams: [], games: [] }],
+          playoffs: [
+            {
+              name: 'Playoff A',
+              hiddenFromVisitors: true,
+              size: 2,
+              orderedTeams: [],
+              games: [],
+            },
+          ],
+        },
+      ],
+    };
+
+    component.parsedImportData.set(parsedData as never);
+    (
+      component as unknown as {
+        confirmImport: () => Promise<void>;
+      }
+    ).confirmImport();
+    await flushMicrotasks();
+
+    expect(firebaseServiceStub.importTournamentData).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        series: [
+          expect.objectContaining({
+            poules: [expect.objectContaining({ hiddenFromVisitors: true })],
+            playoffs: [expect.objectContaining({ hiddenFromVisitors: true })],
+          }),
+        ],
+      }),
+    );
   });
 });

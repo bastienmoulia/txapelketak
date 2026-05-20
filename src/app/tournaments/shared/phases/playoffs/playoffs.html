@@ -8,7 +8,20 @@
       <ng-template #header>
         <div class="flex align-items-center justify-between px-3 pt-3">
           <div class="flex flex-col gap-1">
-            <span class="font-bold">{{ playoffDisplayName }}</span>
+            <div class="flex items-center gap-2">
+              <span class="font-bold">{{ playoffDisplayName }}</span>
+              @if (
+                (role() === 'admin' || role() === 'organizer') &&
+                playoffTree.playoff.hiddenFromVisitors
+              ) {
+                <i
+                  class="pi pi-eye-slash text-color-secondary"
+                  [pTooltip]="'admin.poules.hiddenFromVisitorsIndicator' | transloco"
+                  tooltipPosition="top"
+                  data-testid="playoff-hidden-indicator"
+                ></i>
+              }
+            </div>
           </div>
           @if (role() === 'admin') {
             <p-button

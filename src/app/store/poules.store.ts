@@ -4,6 +4,7 @@ import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { FirebaseService } from '../shared/services/firebase.service';
 import { Game, Playoff, Poule, Serie, Team, TimeSlot } from '../tournaments/models';
+import { AuthStore } from './auth.store';
 
 interface PoulesStoreState {
   teams: Team[];
@@ -44,7 +45,7 @@ export const PoulesStore = signalStore(
       });
     }),
   })),
-  withMethods((store, firebaseService = inject(FirebaseService)) => {
+  withMethods((store, firebaseService = inject(FirebaseService), authStore = inject(AuthStore)) => {
     let teamsSubscription: Subscription | null = null;
     let seriesSubscription: Subscription | null = null;
     let timeSlotsSubscription: Subscription | null = null;
@@ -86,6 +87,23 @@ export const PoulesStore = signalStore(
       stopPlayoffCollectionWatchers();
       stopPlayoffGameWatchers();
       watchedTournamentId = null;
+    }
+
+    function shouldHidePhaseFromVisitors(): boolean {
+      const role = authStore.role();
+      return role !== 'admin' && role !== 'organizer';
+    }
+
+    function filterSeriesForCurrentRole(series: Serie[]): Serie[] {
+      if (!shouldHidePhaseFromVisitors()) {
+        return series;
+      }
+
+      return series.map((serie) => ({
+        ...serie,
+        poules: (serie.poules ?? []).filter((poule) => !poule.hiddenFromVisitors),
+        playoffs: (serie.playoffs ?? []).filter((playoff) => !playoff.hiddenFromVisitors),
+      }));
     }
 
     function startGameWatcher(poule: Poule): void {
@@ -238,11 +256,14 @@ export const PoulesStore = signalStore(
               } as Poule;
             });
 
-            const newSeries = currentSeries.map((s) =>
-              s.ref.id === serie.ref.id ? { ...s, poules: poulesWithGames } : s,
-            );
-            patchState(store, { series: newSeries, error: null });
-            syncGameWatchers(oldPoules, poulesWithGames);
+             const newSeries = currentSeries.map((s) =>
+               s.ref.id === serie.ref.id ? { ...s, poules: poulesWithGames } : s,
+             );
+             const filteredSeries = filterSeriesForCurrentRole(newSeries);
+             const filteredCurrentSerie = filteredSeries.find((s) => s.ref.id === serie.ref.id);
+             const filteredPoules = filteredCurrentSerie?.poules ?? [];
+             patchState(store, { series: filteredSeries, error: null });
+             syncGameWatchers(oldPoules, filteredPoules);
           },
           error: (err: unknown) => {
             patchState(store, {
@@ -282,12 +303,15 @@ export const PoulesStore = signalStore(
                 } as Playoff;
               });
 
-              const newSeries = currentSeries.map((s) =>
-                s.ref.id === serie.ref.id ? { ...s, playoffs: playoffsWithGames } : s,
-              );
+               const newSeries = currentSeries.map((s) =>
+                 s.ref.id === serie.ref.id ? { ...s, playoffs: playoffsWithGames } : s,
+               );
 
-              patchState(store, { series: newSeries, error: null });
-              syncPlayoffGameWatchers(serie, oldPlayoffs, playoffsWithGames);
+               const filteredSeries = filterSeriesForCurrentRole(newSeries);
+               const filteredCurrentSerie = filteredSeries.find((s) => s.ref.id === serie.ref.id);
+               const filteredPlayoffs = filteredCurrentSerie?.playoffs ?? [];
+               patchState(store, { series: filteredSeries, error: null });
+               syncPlayoffGameWatchers(serie, oldPlayoffs, filteredPlayoffs);
             },
             error: (err: unknown) => {
               patchState(store, {
@@ -401,8 +425,9 @@ export const PoulesStore = signalStore(
           )
           .subscribe({
             next: (series) => {
-              patchState(store, { series, loading: false });
-              watchGames(series);
+              const filteredSeries = filterSeriesForCurrentRole(series);
+              patchState(store, { series: filteredSeries, loading: false });
+              watchGames(filteredSeries);
               watchPoules(series);
               watchPlayoffs(series);
             },
@@ -454,7 +479,7 @@ export const PoulesStore = signalStore(
       },
 
       patchSeries(series: Serie[]): void {
-        patchState(store, { series });
+        patchState(store, { series: filterSeriesForCurrentRole(series) });
       },
     };
   }),

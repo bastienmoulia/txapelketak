@@ -18,6 +18,7 @@ export interface Playoff {
   name: string;
   orderedTeamRefs: DocumentReference[];
   size: number;
+  hiddenFromVisitors?: boolean;
   games?: Game[];
 }
 
@@ -31,6 +32,7 @@ export interface Poule {
   ref: DocumentReference;
   name: string;
   refTeams: DocumentReference[];
+  hiddenFromVisitors?: boolean;
   games?: Game[];
 }
 

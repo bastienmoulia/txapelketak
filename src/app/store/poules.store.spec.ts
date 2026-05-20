@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import { PoulesStore } from './poules.store';
 import { FirebaseService } from '../shared/services/firebase.service';
 import { Team, TimeSlot } from '../tournaments/models';
+import { AuthStore } from './auth.store';
 
 function createRef(id: string): DocumentReference {
   return { id, path: id } as DocumentReference;
@@ -13,6 +14,7 @@ function createRef(id: string): DocumentReference {
 
 describe('PoulesStore', () => {
   let store: InstanceType<typeof PoulesStore>;
+  let authStore: InstanceType<typeof AuthStore>;
   let firebaseService: {
     isAvailable: ReturnType<typeof vi.fn>;
     watchCollectionFromDocumentRef: ReturnType<typeof vi.fn>;
@@ -25,12 +27,16 @@ describe('PoulesStore', () => {
   let series$: Subject<{ data: unknown; ref: DocumentReference }[]>;
   let timeSlots$: Subject<TimeSlot[]>;
   let gameStreams: Map<string, Subject<{ data: unknown; ref: DocumentReference }[]>>;
+  let pouleStreams: Map<string, Subject<{ data: unknown; ref: DocumentReference }[]>>;
+  let playoffStreams: Map<string, Subject<{ data: unknown; ref: DocumentReference }[]>>;
 
   beforeEach(() => {
     teams$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
     series$ = new Subject<{ data: unknown; ref: DocumentReference }[]>();
     timeSlots$ = new Subject<TimeSlot[]>();
     gameStreams = new Map();
+    pouleStreams = new Map();
+    playoffStreams = new Map();
 
     firebaseService = {
       isAvailable: vi.fn().mockReturnValue(true),
@@ -57,6 +63,20 @@ describe('PoulesStore', () => {
           gameStreams.set(key, stream);
           return stream.asObservable();
         }
+        if (collectionName === 'poules') {
+          const key = _ref.id;
+          const stream =
+            pouleStreams.get(key) ?? new Subject<{ data: unknown; ref: DocumentReference }[]>();
+          pouleStreams.set(key, stream);
+          return stream.asObservable();
+        }
+        if (collectionName === 'playoffs') {
+          const key = _ref.id;
+          const stream =
+            playoffStreams.get(key) ?? new Subject<{ data: unknown; ref: DocumentReference }[]>();
+          playoffStreams.set(key, stream);
+          return stream.asObservable();
+        }
         return new Subject<{ data: unknown; ref: DocumentReference }[]>().asObservable();
       },
     );
@@ -68,6 +88,7 @@ describe('PoulesStore', () => {
     });
 
     store = TestBed.inject(PoulesStore);
+    authStore = TestBed.inject(AuthStore);
   });
 
   it('should set active id and not subscribe when firebase is unavailable', () => {
@@ -209,5 +230,72 @@ describe('PoulesStore', () => {
     gamesStream?.error(new Error('games failed'));
 
     expect(store.error()).toBe('games failed');
+  });
+
+  it('should hide hidden poules and playoffs for visitors', async () => {
+    firebaseService.getCollectionFromDocumentRef.mockResolvedValue([
+      { data: { name: 'Visible Poule' }, ref: createRef('p-visible') },
+      {
+        data: { name: 'Hidden Poule', hiddenFromVisitors: true },
+        ref: createRef('p-hidden'),
+      },
+    ]);
+
+    store.startWatching(createRef('t1'));
+    series$.next([{ data: { name: 'Serie A' }, ref: createRef('s1') }]);
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    playoffStreams.get('s1')?.next([
+      { data: { name: 'Visible Playoff', orderedTeamRefs: [], size: 2 }, ref: createRef('pl-visible') },
+      {
+        data: { name: 'Hidden Playoff', orderedTeamRefs: [], size: 2, hiddenFromVisitors: true },
+        ref: createRef('pl-hidden'),
+      },
+    ]);
+
+    expect(store.series()[0].poules?.map((poule) => poule.name)).toEqual(['Visible Poule']);
+    expect(store.series()[0].playoffs?.map((playoff) => playoff.name)).toEqual(['Visible Playoff']);
+
+    const gameCalls = firebaseService.watchCollectionFromDocumentRef.mock.calls.filter(
+      ([, collectionName]) => collectionName === 'games',
+    );
+    expect(gameCalls.map(([ref]) => (ref as DocumentReference).id)).toContain('p-visible');
+    expect(gameCalls.map(([ref]) => (ref as DocumentReference).id)).not.toContain('p-hidden');
+  });
+
+  it('should keep hidden poules and playoffs for admins', async () => {
+    authStore.setUser({ role: 'admin' } as never);
+    firebaseService.getCollectionFromDocumentRef.mockResolvedValue([
+      { data: { name: 'Visible Poule' }, ref: createRef('p-visible') },
+      {
+        data: { name: 'Hidden Poule', hiddenFromVisitors: true },
+        ref: createRef('p-hidden'),
+      },
+    ]);
+
+    store.startWatching(createRef('t1'));
+    series$.next([{ data: { name: 'Serie A' }, ref: createRef('s1') }]);
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    playoffStreams.get('s1')?.next([
+      { data: { name: 'Visible Playoff', orderedTeamRefs: [], size: 2 }, ref: createRef('pl-visible') },
+      {
+        data: { name: 'Hidden Playoff', orderedTeamRefs: [], size: 2, hiddenFromVisitors: true },
+        ref: createRef('pl-hidden'),
+      },
+    ]);
+
+    expect(store.series()[0].poules?.map((poule) => poule.name)).toEqual([
+      'Visible Poule',
+      'Hidden Poule',
+    ]);
+    expect(store.series()[0].playoffs?.map((playoff) => playoff.name)).toEqual([
+      'Visible Playoff',
+      'Hidden Playoff',
+    ]);
   });
 });

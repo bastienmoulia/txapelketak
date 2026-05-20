@@ -385,21 +385,29 @@ export class FirebaseService {
     });
   }
 
-  async addPouleToSerie(serieRef: DocumentReference, name: string): Promise<DocumentReference> {
+  async addPouleToSerie(
+    serieRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<DocumentReference> {
     console.debug(`[Firestore] addPouleToSerie: ${name}`);
     const pouleDocRef = doc(collection(serieRef, 'poules'));
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] setDoc: poule`);
-      await setDoc(pouleDocRef, { name, refTeams: [] });
+      await setDoc(pouleDocRef, { name, refTeams: [], hiddenFromVisitors });
     });
     return pouleDocRef;
   }
 
-  async updatePouleInSerie(pouleRef: DocumentReference, name: string): Promise<void> {
+  async updatePouleInSerie(
+    pouleRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<void> {
     console.debug(`[Firestore] updatePouleInSerie: ${name}`);
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] updateDoc: poule`);
-      await updateDoc(pouleRef, { name });
+      await updateDoc(pouleRef, { name, hiddenFromVisitors });
     });
   }
 
@@ -463,6 +471,7 @@ export class FirebaseService {
     playoffsName: string,
     bracketSize: number,
     orderedTeamRefs: DocumentReference[],
+    hiddenFromVisitors = false,
   ): Promise<number> {
     console.debug(`[Firestore] generatePlayoffsForSerie: ${playoffsName}`);
 
@@ -472,6 +481,7 @@ export class FirebaseService {
         name: playoffsName,
         orderedTeamRefs,
         size: bracketSize,
+        hiddenFromVisitors,
       });
     });
 

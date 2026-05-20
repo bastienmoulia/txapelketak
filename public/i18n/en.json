@@ -227,6 +227,8 @@
       "teamsUpdatedDetail": "{{added}} team(s) added, {{removed}} team(s) removed",
       "teamsAddedToPouleDetail": "{{count}} team(s) added to \"{{pouleName}}\".",
       "dialogAddPlayoffs": "Add playoffs",
+      "hideFromVisitors": "Hide from visitors",
+      "hiddenFromVisitorsIndicator": "Hidden from visitors",
       "deletePlayoffAria": "Delete this playoff",
       "playoffDeleted": "Playoff deleted",
       "playoffDeletedDetail": "The playoff has been successfully deleted."

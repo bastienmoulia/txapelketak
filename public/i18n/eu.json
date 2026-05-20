@@ -227,6 +227,8 @@
       "teamsUpdatedDetail": "{{added}} talde(ak) gehituta, {{removed}} talde(ak) kendu egin dira",
       "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora.",
       "dialogAddPlayoffs": "Playoffak gehitu",
+      "hideFromVisitors": "Bisitariei ezkutatu",
+      "hiddenFromVisitorsIndicator": "Bisitarientzat ezkutua",
       "deletePlayoffAria": "Playoff hauek ezabatu",
       "playoffDeleted": "Playoffak ezabatu dira",
       "playoffDeletedDetail": "Playoffak ondo ezabatu dira."

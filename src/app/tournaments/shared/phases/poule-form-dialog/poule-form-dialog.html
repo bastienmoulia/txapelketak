@@ -16,6 +16,19 @@
     </p-floatlabel>
   </div>
 
+  <div class="mb-4 flex items-center gap-2">
+    <p-toggleswitch
+      [ngModel]="hiddenFromVisitors()"
+      (ngModelChange)="hiddenFromVisitors.set($event)"
+      inputId="poule-hidden-from-visitors"
+      name="poule-hidden-from-visitors"
+      data-testid="poule-hidden-from-visitors-toggle"
+    />
+    <label for="poule-hidden-from-visitors" class="cursor-pointer">
+      {{ 'admin.poules.hideFromVisitors' | transloco }}
+    </label>
+  </div>
+
   <div class="mb-4">
     <h5 class="text-lg font-semibold mb-2">{{ 'admin.poules.teamsInPoule' | transloco }}</h5>
 

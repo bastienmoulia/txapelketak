@@ -8,6 +8,7 @@ import { Message } from 'primeng/message';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { OrderListModule } from 'primeng/orderlist';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Team } from '../../../models';
@@ -18,11 +19,13 @@ export interface SavePlayoffsEvent {
   name: string;
   orderedTeamRefs: DocumentReference[];
   size: number;
+  hiddenFromVisitors?: boolean;
 }
 
 interface PlayoffsFormDialogData {
   serieRef: DocumentReference;
   teams: Team[];
+  hiddenFromVisitors?: boolean;
 }
 
 export interface BracketPreviewMatch {
@@ -90,6 +93,7 @@ function getFirstRoundPairingIndexes(
     Message,
     TooltipModule,
     OrderListModule,
+    ToggleSwitchModule,
     NgStyle,
   ],
   templateUrl: './playoffs-form-dialog.html',
@@ -109,6 +113,7 @@ export class PlayoffsFormDialog {
 
   currentStep = signal<1 | 2>(1);
   playoffsName = signal('');
+  hiddenFromVisitors = signal(this.data.hiddenFromVisitors ?? false);
 
   selectedTeams = signal<SelectedTeam[]>([]);
   pendingTeamRef = signal<string[]>([]);
@@ -319,6 +324,7 @@ export class PlayoffsFormDialog {
         .map((team) => teamById.get(team.ref))
         .filter((teamRef): teamRef is DocumentReference => teamRef !== undefined),
       size: this.bracketSize(),
+      hiddenFromVisitors: this.hiddenFromVisitors(),
     };
     this.dialogRef.close(result);
   }

@@ -205,6 +205,18 @@ describe('PlayoffsFormDialog', () => {
     expect(result.serieRef).toBeDefined();
     expect(result.orderedTeamRefs).toHaveLength(2);
     expect(result.size).toBe(2);
+    expect(result.hiddenFromVisitors).toBe(false);
+  });
+
+  it('should keep hidden from visitors in save payload', () => {
+    component.playoffsName.set('My Playoffs');
+    component.hiddenFromVisitors.set(true);
+    component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
+
+    component.onSave();
+
+    const result = mockRef.close.mock.calls[0][0];
+    expect(result.hiddenFromVisitors).toBe(true);
   });
 
   it('should keep selected team order in save payload', () => {

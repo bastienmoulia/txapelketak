@@ -73,6 +73,7 @@ describe('PouleFormDialog', () => {
     expect(result.serieRef).toBeDefined();
     expect(result.ref).toBeUndefined();
     expect(result.teamRefs).toEqual([]);
+    expect(result.hiddenFromVisitors).toBe(false);
   });
 
   it('should close with delete action on delete', () => {
@@ -155,6 +156,14 @@ describe('PouleFormDialog (editing)', () => {
 
   it('should initialize selected teams from the edited poule', () => {
     expect(component.selectedTeamRefs()).toEqual([teamARef, teamBRef]);
+  });
+
+  it('should initialize hidden toggle from the edited poule', () => {
+    component.hiddenFromVisitors.set(true);
+    component.onSave();
+
+    const result = mockRef.close.mock.calls[0][0];
+    expect(result.hiddenFromVisitors).toBe(true);
   });
 
   it('should add a selected team', () => {

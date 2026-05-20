@@ -129,4 +129,16 @@ describe('Playoffs', () => {
       expect(component.getTeamName(unknownRef)).toBe('?');
     });
   });
+
+  it('should display a hidden indicator for organizers on hidden playoffs', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', [{ ...mockPlayoff, hiddenFromVisitors: true }]);
+      fixture.detectChanges();
+
+      const hiddenIndicator = fixture.nativeElement.querySelector(
+        '[data-testid="playoff-hidden-indicator"]',
+      );
+      expect(hiddenIndicator).toBeTruthy();
+    });
+  });
 });

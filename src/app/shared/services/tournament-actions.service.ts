@@ -213,7 +213,11 @@ export class TournamentActionsService {
 
   async savePoule(event: SavePouleEvent): Promise<DocumentReference> {
     if (event.ref) {
-      await this.firebaseService.updatePouleInSerie(event.ref, event.name);
+      await this.firebaseService.updatePouleInSerie(
+        event.ref,
+        event.name,
+        event.hiddenFromVisitors ?? false,
+      );
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.pouleEdited'),
@@ -221,7 +225,11 @@ export class TournamentActionsService {
       });
       return event.ref;
     } else {
-      const pouleRef = await this.firebaseService.addPouleToSerie(event.serieRef, event.name);
+      const pouleRef = await this.firebaseService.addPouleToSerie(
+        event.serieRef,
+        event.name,
+        event.hiddenFromVisitors ?? false,
+      );
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.pouleAdded'),
@@ -306,6 +314,7 @@ export class TournamentActionsService {
       event.name,
       event.size,
       event.orderedTeamRefs,
+      event.hiddenFromVisitors ?? false,
     );
 
     this.messageService.add({

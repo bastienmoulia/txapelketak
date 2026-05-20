@@ -24,15 +24,7 @@ import { TournamentYamlData } from '../../admin/types/shared/admin-import-export
 import { Game, Team, TimeSlot } from '../../tournaments/models';
 
 function getRoundLabel(roundSize: number): string {
-  const labels: Record<number, string> = {
-    2: 'finale.rounds.final',
-    4: 'finale.rounds.semiFinal',
-    8: 'finale.rounds.quarterFinal',
-    16: 'finale.rounds.roundOf16',
-    32: 'finale.rounds.roundOf32',
-  };
-
-  return labels[roundSize] ?? `finale.rounds.size.${roundSize}`;
+  return `finale.rounds.${roundSize}`;
 }
 
 @Injectable({

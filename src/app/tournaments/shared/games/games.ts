@@ -36,17 +36,26 @@ import { AuthStore } from '../../../store/auth.store';
 import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 
-export interface SaveGameEvent {
+interface SaveGameEventBase {
   pouleRef: DocumentReference;
-  refTeam1: DocumentReference;
-  refTeam2: DocumentReference;
   scoreTeam1?: number | null;
   scoreTeam2?: number | null;
   date?: Date | null;
   referees?: string[] | null;
   comment?: string | null;
-  gameRef?: DocumentReference;
 }
+
+export type SaveGameEvent =
+  | (SaveGameEventBase & {
+      refTeam1: DocumentReference;
+      refTeam2: DocumentReference;
+      gameRef?: undefined;
+    })
+  | (SaveGameEventBase & {
+      gameRef: DocumentReference;
+      refTeam1?: DocumentReference;
+      refTeam2?: DocumentReference;
+    });
 
 export interface DeleteGameEvent {
   gameRef: DocumentReference;

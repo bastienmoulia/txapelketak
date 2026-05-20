@@ -240,6 +240,7 @@
     "games": {
       "addGame": "Add a game",
       "dialogEditGame": "Edit game",
+      "name": "Name",
       "noGames": "No games in this group",
       "team1": "Team 1",
       "team2": "Team 2",
@@ -465,6 +466,7 @@
     "bye": "Bye",
     "seed": "Seed {{n}}",
     "generated": "Playoffs generated",
-    "generatedDetail": "{{count}} playoff matches have been generated."
+    "generatedDetail": "{{count}} playoff matches have been generated.",
+    "winnerOfPrevious": "Winner of {{round}} {{number}}"
   }
 }

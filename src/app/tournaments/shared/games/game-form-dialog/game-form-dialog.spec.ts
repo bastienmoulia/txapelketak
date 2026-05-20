@@ -150,3 +150,64 @@ describe('GameFormDialog (editing, admin)', () => {
     expect(mockRef.close).toHaveBeenCalledWith({ action: 'delete' });
   });
 });
+
+describe('GameFormDialog (editing playoff slot without teams)', () => {
+  let component: GameFormDialog;
+  let mockRef: { close: ReturnType<typeof vi.fn> };
+  let pouleRef: DocumentReference;
+  let gameRef: DocumentReference;
+
+  beforeEach(async () => {
+    pouleRef = { id: 'playoff-1' } as DocumentReference;
+    gameRef = { id: 'game-1' } as DocumentReference;
+    mockRef = { close: vi.fn() };
+
+    await TestBed.configureTestingModule({
+      imports: [GameFormDialog],
+      providers: [
+        {
+          provide: DynamicDialogConfig,
+          useValue: {
+            data: {
+              teams: [] as Team[],
+              role: 'admin',
+              isEditing: true,
+              currentPoule: {
+                ref: pouleRef,
+                name: 'Playoff',
+                refTeams: [],
+              } as Poule,
+              gameRef,
+            },
+          },
+        },
+        { provide: DynamicDialogRef, useValue: mockRef },
+        ...provideTranslocoTesting(),
+        provideAnimationsAsync(),
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(GameFormDialog);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  it('should allow saving when editing without selected teams', () => {
+    component.gameDate.set(new Date('2026-05-20T10:00:00.000Z'));
+
+    expect(component.isSaveDisabled()).toBe(false);
+
+    component.onSave();
+
+    expect(mockRef.close).toHaveBeenCalledWith({
+      pouleRef,
+      gameRef,
+      scoreTeam1: null,
+      scoreTeam2: null,
+      date: new Date('2026-05-20T10:00:00.000Z'),
+      referees: null,
+      comment: null,
+    });
+  });
+});

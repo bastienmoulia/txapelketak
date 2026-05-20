@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -19,6 +20,7 @@ import {
   PlayoffEditDialog,
   PlayoffEditDialogResult,
 } from '../playoff-edit-dialog/playoff-edit-dialog';
+import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 
 interface RoundGroup {
   roundSize: number;
@@ -55,16 +57,28 @@ interface TeamLike {
 }
 
 const createTeamNameLookup =
-  (teams: () => TeamLike[]) =>
-  (ref: DocumentReference | undefined): string => {
-    if (!ref) return '?';
-    const team = teams().find((currentTeam) => currentTeam.ref?.id === ref.id);
-    return team?.name ?? '?';
+  (teams: () => TeamLike[], transloco: TranslocoService) =>
+  (
+    ref: DocumentReference | undefined,
+    roundIndex: number,
+    matchIndex: number,
+    teamSlot: 0 | 1,
+    totalRounds: number,
+  ): string => {
+    const team = ref ? teams().find((currentTeam) => currentTeam.ref?.id === ref.id) : undefined;
+    if (team?.name && team.name.trim()) return team.name;
+    if (roundIndex > 0) {
+      return transloco.translate('playoffs.winnerOfPrevious', {
+        round: transloco.translate(`finale.rounds.${2 ** (totalRounds - roundIndex + 1)}`),
+        number: matchIndex * 2 + teamSlot + 1,
+      });
+    }
+    return '?';
   };
 
 @Component({
   selector: 'app-phases-playoffs',
-  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule],
+  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule, DatePipe],
   templateUrl: './playoffs.html',
   styleUrl: './playoffs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -76,12 +90,15 @@ export class Playoffs {
   private poulesStore = inject(PoulesStore);
   private authStore = inject(AuthStore);
   private tournamentActions = inject(TournamentActionsService);
+  private datepickerConfig = inject(DatepickerConfigService);
 
   playoffs = input.required<Playoff[]>();
 
   teams = this.poulesStore.teams;
   role = this.authStore.role;
-  getTeamName = createTeamNameLookup(this.teams);
+  dateLocale = this.datepickerConfig.activeLanguage;
+
+  getTeamName = createTeamNameLookup(this.teams, this.translocoService);
 
   sortedPlayoffs = computed((): PlayoffWithRounds[] =>
     [...this.playoffs()].map((playoff) => ({

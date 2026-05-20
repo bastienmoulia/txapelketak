@@ -240,6 +240,7 @@
     "games": {
       "addGame": "Añadir un partido",
       "dialogEditGame": "Editar partido",
+      "name": "Nombre",
       "noGames": "No hay partidos en este grupo",
       "team1": "Equipo 1",
       "team2": "Equipo 2",
@@ -465,6 +466,7 @@
     "bye": "Exento",
     "seed": "Cabeza de serie {{n}}",
     "generated": "Playoffs generados",
-    "generatedDetail": "{{count}} partidas de playoffs han sido generadas."
+    "generatedDetail": "{{count}} partidas de playoffs han sido generadas.",
+    "winnerOfPrevious": "Ganador de {{round}} {{number}}"
   }
 }

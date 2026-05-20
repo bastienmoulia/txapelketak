@@ -71,7 +71,7 @@
       >
         <ng-template #header>
           <tr>
-            <th>{{ 'admin.games.poule' | transloco }}</th>
+            <th>{{ 'admin.games.name' | transloco }}</th>
             <th>{{ 'admin.games.team1' | transloco }}</th>
             <th>{{ 'admin.games.score' | transloco }}</th>
             <th>{{ 'admin.games.team2' | transloco }}</th>
@@ -117,7 +117,7 @@
           } @else {
             @let game = asGameRow(row);
             <tr>
-              <td [attr.data-label]="'admin.games.poule' | transloco">
+              <td [attr.data-label]="'admin.games.name' | transloco">
                 <span class="text-color-secondary">{{ game.name }}</span>
               </td>
               <td [attr.data-label]="'admin.games.team1' | transloco">

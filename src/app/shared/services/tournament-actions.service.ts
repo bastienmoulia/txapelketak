@@ -29,12 +29,7 @@ export class TournamentActionsService {
   private poulesStore = inject(PoulesStore);
 
   async saveGame(event: SaveGameEvent): Promise<void> {
-    const gameData: Omit<Game, 'ref' | 'refTeam1' | 'refTeam2'> & {
-      refTeam1: DocumentReference;
-      refTeam2: DocumentReference;
-    } = {
-      refTeam1: event.refTeam1,
-      refTeam2: event.refTeam2,
+    const gameData: Partial<Omit<Game, 'ref'>> = {
       scoreTeam1: event.scoreTeam1 ?? undefined,
       scoreTeam2: event.scoreTeam2 ?? undefined,
       date: event.date ?? undefined,
@@ -42,6 +37,12 @@ export class TournamentActionsService {
       comment: event.comment ?? undefined,
     };
     if (event.gameRef) {
+      if (event.refTeam1) {
+        gameData.refTeam1 = event.refTeam1;
+      }
+      if (event.refTeam2) {
+        gameData.refTeam2 = event.refTeam2;
+      }
       await this.firebaseService.updateGame(event.gameRef, gameData);
       this.messageService.add({
         severity: 'success',
@@ -49,7 +50,18 @@ export class TournamentActionsService {
         detail: this.translocoService.translate('admin.games.editedDetail'),
       });
     } else {
-      await this.firebaseService.addGameToPoule(event.pouleRef, gameData);
+      if (!event.refTeam1 || !event.refTeam2) {
+        return;
+      }
+      gameData.refTeam1 = event.refTeam1;
+      gameData.refTeam2 = event.refTeam2;
+      await this.firebaseService.addGameToPoule(
+        event.pouleRef,
+        gameData as Omit<Game, 'ref'> & {
+          refTeam1: DocumentReference;
+          refTeam2: DocumentReference;
+        },
+      );
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.games.added'),
@@ -292,12 +304,14 @@ export class TournamentActionsService {
     }
 
     await Promise.all(
-      event.games.map((game) =>
-        this.firebaseService.addGameToPoule(game.pouleRef, {
-          refTeam1: game.refTeam1,
-          refTeam2: game.refTeam2,
-        }),
-      ),
+      event.games
+        .filter((game) => game.refTeam1 && game.refTeam2)
+        .map((game) =>
+          this.firebaseService.addGameToPoule(game.pouleRef, {
+            refTeam1: game.refTeam1!,
+            refTeam2: game.refTeam2!,
+          }),
+        ),
     );
 
     this.messageService.add({

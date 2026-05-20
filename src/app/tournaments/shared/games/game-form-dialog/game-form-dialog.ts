@@ -124,9 +124,17 @@ export class GameFormDialog {
     return !!ref1 && !!ref2 && ref1.id === ref2.id;
   });
 
-  isSaveDisabled = computed(
-    () => !this.selectedTeam1Ref() || !this.selectedTeam2Ref() || this.isSameTeam(),
-  );
+  isSaveDisabled = computed(() => {
+    if (this.isSameTeam()) {
+      return true;
+    }
+
+    if (this.data.isEditing && this.data.gameRef) {
+      return false;
+    }
+
+    return !this.selectedTeam1Ref() || !this.selectedTeam2Ref();
+  });
 
   hasFreeSlot = createHasFreeSlot(this.data.freeSlotDateKeys);
 
@@ -159,14 +167,16 @@ export class GameFormDialog {
     const team2Ref = this.selectedTeam2Ref();
     const pouleRef = this.data.currentPoule?.ref;
 
-    if (!team1Ref || !team2Ref || !pouleRef) {
+    if (!pouleRef) {
       return;
     }
 
-    const event: SaveGameEvent = {
+    if (!this.data.isEditing && (!team1Ref || !team2Ref)) {
+      return;
+    }
+
+    const baseEvent = {
       pouleRef,
-      refTeam1: team1Ref,
-      refTeam2: team2Ref,
       scoreTeam1: this.scoreTeam1(),
       scoreTeam2: this.scoreTeam2(),
       date: this.gameDate(),
@@ -174,10 +184,22 @@ export class GameFormDialog {
       comment: this.gameComment().trim() || null,
     };
 
-    // Include gameRef if editing
     if (this.data.isEditing && this.data.gameRef) {
-      event.gameRef = this.data.gameRef;
+      const event: SaveGameEvent = {
+        ...baseEvent,
+        gameRef: this.data.gameRef,
+        ...(team1Ref ? { refTeam1: team1Ref } : {}),
+        ...(team2Ref ? { refTeam2: team2Ref } : {}),
+      };
+      this.dialogRef.close(event);
+      return;
     }
+
+    const event: SaveGameEvent = {
+      ...baseEvent,
+      refTeam1: team1Ref!,
+      refTeam2: team2Ref!,
+    };
 
     this.dialogRef.close(event);
   }

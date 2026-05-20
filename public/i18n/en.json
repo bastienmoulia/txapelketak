@@ -227,7 +227,13 @@
       "teamsUpdatedDetail": "{{added}} team(s) added, {{removed}} team(s) removed",
       "teamsAddedToPouleDetail": "{{count}} team(s) added to \"{{pouleName}}\".",
       "dialogAddPlayoffs": "Add playoffs",
+      "dialogEditPlayoff": "Edit playoff",
+      "hideFromVisitors": "Hide from visitors",
+      "hiddenFromVisitorsIndicator": "Hidden from visitors",
+      "editPlayoffAria": "Edit this playoff",
       "deletePlayoffAria": "Delete this playoff",
+      "playoffEdited": "Playoff updated",
+      "playoffEditedDetail": "The playoff has been successfully updated.",
       "playoffDeleted": "Playoff deleted",
       "playoffDeletedDetail": "The playoff has been successfully deleted."
     },

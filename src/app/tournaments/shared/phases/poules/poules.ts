@@ -219,6 +219,7 @@ export class Poules {
         serieRef: saveResult.serieRef,
         name: saveResult.name,
         ref: saveResult.ref,
+        hiddenFromVisitors: saveResult.hiddenFromVisitors,
       });
 
       const initialTeamRefs = poule.refTeams ?? [];

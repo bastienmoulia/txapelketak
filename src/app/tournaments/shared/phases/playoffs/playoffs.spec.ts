@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Subject } from 'rxjs';
 import { Playoffs } from './playoffs';
-import { ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ConfirmationService } from 'primeng/api';
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
 import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
@@ -64,6 +65,7 @@ describe('Playoffs', () => {
           provide: TournamentActionsService,
           useValue: {
             saveGame: vi.fn(),
+            savePlayoff: vi.fn(),
             deletePlayoff: vi.fn(),
           },
         },
@@ -73,7 +75,12 @@ describe('Playoffs', () => {
             open: vi.fn(),
           },
         },
-        ConfirmationService,
+        {
+          provide: ConfirmationService,
+          useValue: {
+            confirm: vi.fn(),
+          },
+        },
       ],
     }).compileComponents();
 
@@ -128,5 +135,65 @@ describe('Playoffs', () => {
       } as unknown as DocumentReference;
       expect(component.getTeamName(unknownRef)).toBe('?');
     });
+  });
+
+  it('should display a hidden indicator for organizers on hidden playoffs', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', [{ ...mockPlayoff, hiddenFromVisitors: true }]);
+      fixture.detectChanges();
+
+      const hiddenIndicator = fixture.nativeElement.querySelector(
+        '[data-testid="playoff-hidden-indicator"]',
+      );
+      expect(hiddenIndicator).toBeTruthy();
+    });
+  });
+
+  it('should open edit dialog and save playoff updates', () => {
+    const dialogService = TestBed.inject(DialogService);
+    const tournamentActions = TestBed.inject(TournamentActionsService) as {
+      savePlayoff: ReturnType<typeof vi.fn>;
+    };
+    const close$ = new Subject<{ ref: DocumentReference; name: string; hiddenFromVisitors: boolean }>();
+    vi.spyOn(dialogService, 'open').mockReturnValue({ onClose: close$ } as never);
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', [mockPlayoff]);
+      fixture.detectChanges();
+
+      component.onEditPlayoff(mockPlayoff);
+      close$.next({ ref: mockPlayoffRef, name: 'Updated Playoff', hiddenFromVisitors: true });
+    });
+
+    expect(tournamentActions.savePlayoff).toHaveBeenCalledWith({
+      ref: mockPlayoffRef,
+      name: 'Updated Playoff',
+      hiddenFromVisitors: true,
+    });
+  });
+
+  it('should ask confirmation before deleting playoff from edit dialog', () => {
+    const dialogService = TestBed.inject(DialogService);
+    const confirmationService = TestBed.inject(ConfirmationService) as {
+      confirm: ReturnType<typeof vi.fn>;
+    };
+    const tournamentActions = TestBed.inject(TournamentActionsService) as {
+      deletePlayoff: ReturnType<typeof vi.fn>;
+    };
+    const close$ = new Subject<{ action: 'delete' }>();
+    vi.spyOn(dialogService, 'open').mockReturnValue({ onClose: close$ } as never);
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', [mockPlayoff]);
+      fixture.detectChanges();
+
+      component.onEditPlayoff(mockPlayoff);
+      close$.next({ action: 'delete' });
+    });
+
+    expect(confirmationService.confirm).toHaveBeenCalledOnce();
+    const confirmationConfig = confirmationService.confirm.mock.calls[0]?.[0];
+    confirmationConfig?.accept?.();
+    expect(tournamentActions.deletePlayoff).toHaveBeenCalledWith(mockPlayoff);
   });
 });

@@ -32,6 +32,7 @@ export interface SavePouleEvent {
   name: string;
   ref?: DocumentReference;
   teamRefs?: DocumentReference[];
+  hiddenFromVisitors?: boolean;
 }
 
 export interface DeletePouleEvent {
@@ -186,20 +187,22 @@ export class Phases {
     dialogRef?.onClose.subscribe(
       (
         result:
-          | {
-              serieRef: DocumentReference;
-              name: string;
-              ref?: DocumentReference;
-              teamRefs?: DocumentReference[];
-            }
-          | undefined,
-      ) => {
+           | {
+               serieRef: DocumentReference;
+               name: string;
+               ref?: DocumentReference;
+               teamRefs?: DocumentReference[];
+               hiddenFromVisitors?: boolean;
+             }
+           | undefined,
+       ) => {
         if (result) {
           void (async () => {
             const createdPouleRef = await this.tournamentActions.savePoule({
               serieRef: result.serieRef,
               name: result.name,
               ref: result.ref,
+              hiddenFromVisitors: result.hiddenFromVisitors,
             });
 
             const selectedTeamRefs = result.teamRefs ?? [];
@@ -209,6 +212,7 @@ export class Phases {
               ref: createdPouleRef,
               name: result.name,
               refTeams: [],
+              hiddenFromVisitors: result.hiddenFromVisitors,
             };
 
             for (const teamRef of selectedTeamRefs) {

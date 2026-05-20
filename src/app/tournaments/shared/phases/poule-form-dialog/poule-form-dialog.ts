@@ -8,6 +8,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Message } from 'primeng/message';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TooltipModule } from 'primeng/tooltip';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -39,6 +40,7 @@ interface PouleFormDialogData {
     MultiSelectModule,
     Message,
     ConfirmDialogModule,
+    ToggleSwitchModule,
     TooltipModule,
   ],
   providers: [ConfirmationService],
@@ -62,6 +64,7 @@ export class PouleFormDialog {
   pouleName = signal(this.data.pouleName);
   pendingTeamRef = signal<DocumentReference[]>([]);
   selectedTeamRefs = signal<DocumentReference[]>(this.data.editingPoule?.refTeams ?? []);
+  hiddenFromVisitors = signal(this.data.editingPoule?.hiddenFromVisitors ?? false);
 
   selectedTeams = computed(() => {
     const teamsById = new Map<string, Team>(
@@ -134,6 +137,7 @@ export class PouleFormDialog {
       name,
       ref: this.data.editingPoule?.ref,
       teamRefs: this.selectedTeamRefs(),
+      hiddenFromVisitors: this.hiddenFromVisitors(),
     };
     this.dialogRef.close(result);
   }

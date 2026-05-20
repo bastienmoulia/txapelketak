@@ -385,21 +385,29 @@ export class FirebaseService {
     });
   }
 
-  async addPouleToSerie(serieRef: DocumentReference, name: string): Promise<DocumentReference> {
+  async addPouleToSerie(
+    serieRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<DocumentReference> {
     console.debug(`[Firestore] addPouleToSerie: ${name}`);
     const pouleDocRef = doc(collection(serieRef, 'poules'));
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] setDoc: poule`);
-      await setDoc(pouleDocRef, { name, refTeams: [] });
+      await setDoc(pouleDocRef, { name, refTeams: [], hiddenFromVisitors });
     });
     return pouleDocRef;
   }
 
-  async updatePouleInSerie(pouleRef: DocumentReference, name: string): Promise<void> {
+  async updatePouleInSerie(
+    pouleRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<void> {
     console.debug(`[Firestore] updatePouleInSerie: ${name}`);
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] updateDoc: poule`);
-      await updateDoc(pouleRef, { name });
+      await updateDoc(pouleRef, { name, hiddenFromVisitors });
     });
   }
 
@@ -458,11 +466,24 @@ export class FirebaseService {
     });
   }
 
+  async updatePlayoffInSerie(
+    playoffRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<void> {
+    console.debug(`[Firestore] updatePlayoffInSerie: ${name}`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: playoff`);
+      await updateDoc(playoffRef, { name, hiddenFromVisitors });
+    });
+  }
+
   async generatePlayoffsForSerie(
     serieRef: DocumentReference,
     playoffsName: string,
     bracketSize: number,
     orderedTeamRefs: DocumentReference[],
+    hiddenFromVisitors = false,
   ): Promise<number> {
     console.debug(`[Firestore] generatePlayoffsForSerie: ${playoffsName}`);
 
@@ -472,6 +493,7 @@ export class FirebaseService {
         name: playoffsName,
         orderedTeamRefs,
         size: bracketSize,
+        hiddenFromVisitors,
       });
     });
 
@@ -679,7 +701,11 @@ export class FirebaseService {
         const pouleDocRef = doc(collection(serieDocRef, 'poules'));
         await runInInjectionContext(this.environmentInjector, async () => {
           console.debug(`[Firestore] setDoc: poule (batch import)`);
-          await setDoc(pouleDocRef, { name: yamlPoule.name, refTeams });
+          await setDoc(pouleDocRef, {
+            name: yamlPoule.name,
+            refTeams,
+            hiddenFromVisitors: yamlPoule.hiddenFromVisitors === true,
+          });
         });
 
         for (const yamlGame of yamlPoule.games ?? []) {
@@ -724,6 +750,7 @@ export class FirebaseService {
             name: yamlPlayoff.name,
             size: yamlPlayoff.size,
             orderedTeamRefs,
+            hiddenFromVisitors: yamlPlayoff.hiddenFromVisitors === true,
           });
         });
 

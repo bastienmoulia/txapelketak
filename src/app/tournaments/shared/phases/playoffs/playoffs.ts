@@ -4,9 +4,9 @@ import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { ConfirmationService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ConfirmationService } from 'primeng/api';
 
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
@@ -15,6 +15,10 @@ import { Playoff, Game, Poule } from '../../../models';
 import { GameFormDialog } from '../../games/game-form-dialog/game-form-dialog';
 import type { SaveGameEvent } from '../../games/games';
 import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  PlayoffEditDialog,
+  PlayoffEditDialogResult,
+} from '../playoff-edit-dialog/playoff-edit-dialog';
 
 interface RoundGroup {
   roundSize: number;
@@ -176,7 +180,28 @@ export class Playoffs {
     });
   }
 
-  onDeletePlayoff(playoff: Playoff): void {
+  onEditPlayoff(playoff: Playoff): void {
+    const dialogRef = this.dialogService.open(PlayoffEditDialog, {
+      header: this.translocoService.translate('admin.poules.dialogEditPlayoff'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { playoff },
+    });
+
+    dialogRef?.onClose.subscribe((result: PlayoffEditDialogResult | undefined) => {
+      if (!result) return;
+
+      if ('action' in result) {
+        this.onDeletePlayoff(playoff);
+        return;
+      }
+
+      void this.tournamentActions.savePlayoff(result);
+    });
+  }
+
+  private onDeletePlayoff(playoff: Playoff): void {
     this.confirmationService.confirm({
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
       message: this.translocoService.translate('shared.confirm.deleteMessage', {

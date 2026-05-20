@@ -257,6 +257,24 @@ describe('Poules', () => {
     });
   });
 
+  it('should display a hidden indicator for organizers on hidden poules', async () => {
+    authStore.setUser({ role: 'organizer' } as never);
+    fixture.componentRef.setInput('poules', [
+      {
+        ref: createRef('hidden-poule'),
+        name: 'Poule cachée',
+        refTeams: [],
+        hiddenFromVisitors: true,
+        games: [],
+      },
+    ]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const hiddenIndicator = fixture.nativeElement.querySelector('[data-testid="poule-hidden-indicator"]');
+    expect(hiddenIndicator).toBeTruthy();
+  });
+
   describe('game coverage helpers', () => {
     const teamARef = createRef('teamA');
     const teamBRef = createRef('teamB');

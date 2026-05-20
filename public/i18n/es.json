@@ -227,7 +227,13 @@
       "teamsUpdatedDetail": "{{added}} equipo(s) añadido(s), {{removed}} equipo(s) eliminado(s)",
       "teamsAddedToPouleDetail": "{{count}} equipo(s) añadido(s) a \"{{pouleName}}\".",
       "dialogAddPlayoffs": "Añadir playoffs",
+      "dialogEditPlayoff": "Editar playoffs",
+      "hideFromVisitors": "Ocultar a los visitantes",
+      "hiddenFromVisitorsIndicator": "Oculto a los visitantes",
+      "editPlayoffAria": "Editar estos playoffs",
       "deletePlayoffAria": "Eliminar estos playoffs",
+      "playoffEdited": "Playoffs actualizados",
+      "playoffEditedDetail": "Los playoffs se han actualizado correctamente.",
       "playoffDeleted": "Playoffs eliminados",
       "playoffDeletedDetail": "Los playoffs se han eliminado correctamente."
     },

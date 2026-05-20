@@ -17,6 +17,7 @@ import {
   TeamInPouleEvent,
 } from '../../tournaments/shared/phases/phases';
 import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
+import { SavePlayoffEvent } from '../../tournaments/shared/phases/playoff-edit-dialog/playoff-edit-dialog';
 import { Game, Playoff, Serie, Team } from '../../tournaments/models';
 
 @Injectable()
@@ -213,7 +214,11 @@ export class TournamentActionsService {
 
   async savePoule(event: SavePouleEvent): Promise<DocumentReference> {
     if (event.ref) {
-      await this.firebaseService.updatePouleInSerie(event.ref, event.name);
+      await this.firebaseService.updatePouleInSerie(
+        event.ref,
+        event.name,
+        event.hiddenFromVisitors ?? false,
+      );
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.pouleEdited'),
@@ -221,7 +226,11 @@ export class TournamentActionsService {
       });
       return event.ref;
     } else {
-      const pouleRef = await this.firebaseService.addPouleToSerie(event.serieRef, event.name);
+      const pouleRef = await this.firebaseService.addPouleToSerie(
+        event.serieRef,
+        event.name,
+        event.hiddenFromVisitors ?? false,
+      );
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.poules.pouleAdded'),
@@ -306,6 +315,7 @@ export class TournamentActionsService {
       event.name,
       event.size,
       event.orderedTeamRefs,
+      event.hiddenFromVisitors ?? false,
     );
 
     this.messageService.add({
@@ -314,6 +324,19 @@ export class TournamentActionsService {
       detail: this.translocoService.translate('playoffs.generatedDetail', {
         count: generatedGames,
       }),
+    });
+  }
+
+  async savePlayoff(event: SavePlayoffEvent): Promise<void> {
+    await this.firebaseService.updatePlayoffInSerie(
+      event.ref,
+      event.name,
+      event.hiddenFromVisitors ?? false,
+    );
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.playoffEdited'),
+      detail: this.translocoService.translate('admin.poules.playoffEditedDetail'),
     });
   }
 

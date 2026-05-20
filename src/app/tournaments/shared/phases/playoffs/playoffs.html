@@ -58,23 +58,23 @@
                         @if (!round.isFinalRound || role() === 'admin' || role() === 'organizer') {
                           <div class="finale-match-header">
                             @if (round.isFinalRound) {
-                              <span class="text-xs text-color-secondary">
-                                {{ round.roundLabel }}
+                              <div class="text-xs text-color-secondary">
+                                <span>{{ round.roundLabel }}</span>
                                 @if (match.game.date) {
                                   <div class="finale-match-date text-xs text-color-secondary mt-1">
                                     {{ match.game.date | date: 'short' : undefined : dateLocale() }}
                                   </div>
                                 }
-                              </span>
+                              </div>
                             } @else {
-                              <span class="text-xs text-color-secondary">
-                                {{ round.roundLabel }} {{ match.game.matchNumber }}
+                              <div class="text-xs text-color-secondary">
+                                <span>{{ round.roundLabel }} {{ match.game.matchNumber }}</span>
                                 @if (match.game.date) {
                                   <div class="finale-match-date text-xs text-color-secondary mt-1">
                                     {{ match.game.date | date: 'short' : undefined : dateLocale() }}
                                   </div>
                                 }
-                              </span>
+                              </div>
                             }
                             @if (role() === 'admin' || role() === 'organizer') {
                               <div class="flex gap-1 ml-auto">

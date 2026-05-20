@@ -249,16 +249,28 @@ export class PhasesPage {
       await expect(overlay).toBeVisible();
 
       const filterInput = overlay.locator('input.p-multiselect-filter');
-      if ((await filterInput.count()) > 0) {
+      const hasFilter = (await filterInput.count()) > 0;
+      if (hasFilter) {
         await filterInput.fill(teamName);
       }
 
       // PrimeNG multiselect options may render with different internal markup.
       const roleOption = overlay.getByRole('option', { name: teamName, exact: true });
-      const option =
+      let option =
         (await roleOption.count()) > 0
           ? roleOption.first()
           : overlay.locator('.p-multiselect-option').filter({ hasText: teamName }).first();
+
+      // Fallback: some renders fail to refresh filtered options immediately.
+      if (!(await option.isVisible().catch(() => false)) && hasFilter) {
+        await filterInput.fill('');
+        const fallbackRoleOption = overlay.getByRole('option', { name: teamName, exact: true });
+        option =
+          (await fallbackRoleOption.count()) > 0
+            ? fallbackRoleOption.first()
+            : overlay.locator('.p-multiselect-option').filter({ hasText: teamName }).first();
+      }
+
       await expect(option).toBeVisible();
       await option.click({ force: true });
 
@@ -293,7 +305,6 @@ export class PhasesPage {
     const dialog = this.page.locator('.p-dynamic-dialog, .p-dialog').last();
     await dialog.waitFor({ state: 'visible' });
     await dialog.getByTestId('delete-playoff-button').click();
-    await dialog.waitFor({ state: 'hidden' });
 
     const roleDialog = this.page
       .getByRole('alertdialog')
@@ -332,6 +343,12 @@ export class PhasesPage {
       }
     }
     await confirmDialog.waitFor({ state: 'hidden' });
+
+    // Depending on the UI flow, the edit dialog may close immediately on delete click
+    // or only after confirming deletion.
+    if (await dialog.isVisible().catch(() => false)) {
+      await dialog.waitFor({ state: 'hidden', timeout: 10000 });
+    }
   }
 
   playoffMatchCard(playoffName: string, matchLabel: string): Locator {

@@ -234,7 +234,18 @@ test.describe.serial('Score entry, standings & export', () => {
 
   test('should export tournament data as YAML', async ({ page }) => {
     const adminPage = new AdminPage(page);
+    const gamesPage = new GamesPage(page);
     await adminPage.goto(adminUrl);
+
+    // Keep this test independent from previous test side effects.
+    await adminPage.clickTab('Parties');
+    await gamesPage.editScores(teamBeta, teamGamma, 10, 25);
+    await gamesPage.editScores(teamAlpha, teamBeta, 12, 21);
+
+    await expect(gamesPage.scoreText(teamBeta, teamGamma)).toContainText('10');
+    await expect(gamesPage.scoreText(teamBeta, teamGamma)).toContainText('25');
+    await expect(gamesPage.scoreText(teamAlpha, teamBeta)).toContainText('12');
+    await expect(gamesPage.scoreText(teamAlpha, teamBeta)).toContainText('21');
 
     const yamlContent = await adminPage.exportYaml();
 

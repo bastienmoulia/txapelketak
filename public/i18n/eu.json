@@ -449,6 +449,7 @@
   },
   "playoffs": {
     "name": "Playoff izena (aukerako)",
+    "defaultName": "Playoffak",
     "step1Title": "Taldeak eta ordena",
     "step2Title": "Zuhaitzaren aurrebista",
     "noTeamsSelected": "Ez dago talderik hautatuta",

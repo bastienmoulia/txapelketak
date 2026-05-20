@@ -449,6 +449,7 @@
   },
   "playoffs": {
     "name": "Playoffs name (optional)",
+    "defaultName": "Playoffs",
     "step1Title": "Teams and seeding order",
     "step2Title": "Bracket preview",
     "noTeamsSelected": "No teams selected",

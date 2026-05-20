@@ -449,6 +449,7 @@
   },
   "playoffs": {
     "name": "Nom des playoffs (facultatif)",
+    "defaultName": "Playoffs",
     "step1Title": "Équipes et ordre de jeu",
     "step2Title": "Aperçu de l'arbre",
     "noTeamsSelected": "Aucune équipe sélectionnée",

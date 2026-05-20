@@ -6,6 +6,7 @@ import { CardModule } from 'primeng/card';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ConfirmationService } from 'primeng/api';
 
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
@@ -71,6 +72,7 @@ const createTeamNameLookup =
 export class Playoffs {
   private translocoService = inject(TranslocoService);
   private dialogService = inject(DialogService);
+  private confirmationService = inject(ConfirmationService);
   private poulesStore = inject(PoulesStore);
   private authStore = inject(AuthStore);
   private tournamentActions = inject(TournamentActionsService);
@@ -191,11 +193,28 @@ export class Playoffs {
       if (!result) return;
 
       if ('action' in result) {
-        void this.tournamentActions.deletePlayoff(playoff);
+        this.onDeletePlayoff(playoff);
         return;
       }
 
       void this.tournamentActions.savePlayoff(result);
+    });
+  }
+
+  private onDeletePlayoff(playoff: Playoff): void {
+    this.confirmationService.confirm({
+      header: this.translocoService.translate('shared.confirm.deleteHeader'),
+      message: this.translocoService.translate('shared.confirm.deleteMessage', {
+        name: playoff.name,
+      }),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
+      rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        void this.tournamentActions.deletePlayoff(playoff);
+      },
     });
   }
 }

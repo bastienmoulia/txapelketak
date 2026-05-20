@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Subject } from 'rxjs';
 import { Playoffs } from './playoffs';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ConfirmationService } from 'primeng/api';
 import { AuthStore } from '../../../../store/auth.store';
 import { PoulesStore } from '../../../../store/poules.store';
 import { TournamentActionsService } from '../../../../shared/services/tournament-actions.service';
@@ -72,6 +73,12 @@ describe('Playoffs', () => {
           provide: DialogService,
           useValue: {
             open: vi.fn(),
+          },
+        },
+        {
+          provide: ConfirmationService,
+          useValue: {
+            confirm: vi.fn(),
           },
         },
       ],
@@ -163,5 +170,30 @@ describe('Playoffs', () => {
       name: 'Updated Playoff',
       hiddenFromVisitors: true,
     });
+  });
+
+  it('should ask confirmation before deleting playoff from edit dialog', () => {
+    const dialogService = TestBed.inject(DialogService);
+    const confirmationService = TestBed.inject(ConfirmationService) as {
+      confirm: ReturnType<typeof vi.fn>;
+    };
+    const tournamentActions = TestBed.inject(TournamentActionsService) as {
+      deletePlayoff: ReturnType<typeof vi.fn>;
+    };
+    const close$ = new Subject<{ action: 'delete' }>();
+    vi.spyOn(dialogService, 'open').mockReturnValue({ onClose: close$ } as never);
+
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', [mockPlayoff]);
+      fixture.detectChanges();
+
+      component.onEditPlayoff(mockPlayoff);
+      close$.next({ action: 'delete' });
+    });
+
+    expect(confirmationService.confirm).toHaveBeenCalledOnce();
+    const confirmationConfig = confirmationService.confirm.mock.calls[0]?.[0];
+    confirmationConfig?.accept?.();
+    expect(tournamentActions.deletePlayoff).toHaveBeenCalledWith(mockPlayoff);
   });
 });

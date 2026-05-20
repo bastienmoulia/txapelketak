@@ -76,17 +76,25 @@ test.describe.serial('Admin – playoffs management', () => {
     const tabPanel = await phasesPage.serieTabPanel(serieName);
     const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
     await expect(card).toBeVisible({ timeout: 15000 });
+
+    // Reload once to ensure the generated playoff has been persisted before the next serial test.
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Phases');
+    await phasesPage.ensureSerieExpanded(serieName);
+    const persistedCard = (await phasesPage.serieTabPanel(serieName))
+      .locator('p-card')
+      .filter({ hasText: playoffName });
+    await expect(persistedCard).toBeVisible({ timeout: 15000 });
   });
 
   test('should show playoff games in the Games tab', async ({ page }) => {
     const adminPage = new AdminPage(page);
+    const gamesPage = new GamesPage(page);
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
     // Playoff games should appear in the games list
-    const gameRows = page.locator('.p-datatable-tbody tr').filter({
-      has: page.locator('td[data-label]'),
-    });
+    const gameRows = gamesPage.gameRows();
     await expect(gameRows.first()).toBeVisible({ timeout: 15000 });
     await expect(gameRows).toHaveCount(3, { timeout: 20000 }); // 2 semis + 1 final
   });

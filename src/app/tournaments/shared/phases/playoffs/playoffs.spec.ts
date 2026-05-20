@@ -120,7 +120,7 @@ describe('Playoffs', () => {
       fixture.componentRef.setInput('playoffs', []);
       fixture.detectChanges();
 
-      expect(component.getTeamName(mockTeamRef)).toBe('Team 1');
+      expect(component.getTeamName(mockTeamRef, 0, 0, 0, 3)).toBe('Team 1');
     });
   });
 
@@ -133,7 +133,19 @@ describe('Playoffs', () => {
         id: 'unknown',
         path: 'tournaments/test/teams/unknown',
       } as unknown as DocumentReference;
-      expect(component.getTeamName(unknownRef)).toBe('?');
+      expect(component.getTeamName(unknownRef, 0, 0, 0, 3)).toBe('?');
+    });
+  });
+
+  it('should return sequential winner labels for semifinal slots when teams are not resolved yet', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', []);
+      fixture.detectChanges();
+
+      expect(component.getTeamName(undefined, 1, 0, 0, 3)).toBe('Gagnant Quart de finale 1');
+      expect(component.getTeamName(undefined, 1, 0, 1, 3)).toBe('Gagnant Quart de finale 2');
+      expect(component.getTeamName(undefined, 1, 1, 0, 3)).toBe('Gagnant Quart de finale 3');
+      expect(component.getTeamName(undefined, 1, 1, 1, 3)).toBe('Gagnant Quart de finale 4');
     });
   });
 
@@ -151,10 +163,14 @@ describe('Playoffs', () => {
 
   it('should open edit dialog and save playoff updates', () => {
     const dialogService = TestBed.inject(DialogService);
-    const tournamentActions = TestBed.inject(TournamentActionsService) as {
+    const tournamentActions = TestBed.inject(TournamentActionsService) as unknown as {
       savePlayoff: ReturnType<typeof vi.fn>;
     };
-    const close$ = new Subject<{ ref: DocumentReference; name: string; hiddenFromVisitors: boolean }>();
+    const close$ = new Subject<{
+      ref: DocumentReference;
+      name: string;
+      hiddenFromVisitors: boolean;
+    }>();
     vi.spyOn(dialogService, 'open').mockReturnValue({ onClose: close$ } as never);
 
     TestBed.runInInjectionContext(() => {
@@ -174,10 +190,10 @@ describe('Playoffs', () => {
 
   it('should ask confirmation before deleting playoff from edit dialog', () => {
     const dialogService = TestBed.inject(DialogService);
-    const confirmationService = TestBed.inject(ConfirmationService) as {
+    const confirmationService = TestBed.inject(ConfirmationService) as unknown as {
       confirm: ReturnType<typeof vi.fn>;
     };
-    const tournamentActions = TestBed.inject(TournamentActionsService) as {
+    const tournamentActions = TestBed.inject(TournamentActionsService) as unknown as {
       deletePlayoff: ReturnType<typeof vi.fn>;
     };
     const close$ = new Subject<{ action: 'delete' }>();

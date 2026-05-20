@@ -240,6 +240,7 @@
     "games": {
       "addGame": "Partida gehitu",
       "dialogEditGame": "Partida editatu",
+      "name": "Izena",
       "noGames": "Ez dago partidarik multzo honetan",
       "team1": "1. taldea",
       "team2": "2. taldea",
@@ -465,6 +466,7 @@
     "bye": "Salbuespena",
     "seed": "{{n}}. hazia",
     "generated": "Playoffak sortuta",
-    "generatedDetail": "{{count}} playoff partida sortu dira."
+    "generatedDetail": "{{count}} playoff partida sortu dira.",
+    "winnerOfPrevious": "{{round}} {{number}} irabazlea"
   }
 }

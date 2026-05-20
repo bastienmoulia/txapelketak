@@ -43,11 +43,11 @@
       @if (playoffTree.rounds.length > 0) {
         <div class="playoffs-tree-wrapper">
           <div class="playoffs-tree">
-            @for (round of playoffTree.rounds; track round.roundLabel) {
+            @for (round of playoffTree.rounds; track round.roundLabel; let roundIndex = $index) {
               <div class="playoffs-tree-round">
                 <h4 class="playoffs-tree-round-title">{{ round.roundLabel }}</h4>
                 <div class="playoffs-tree-round-lane">
-                  @for (match of round.matches; track match.game.ref?.id) {
+                  @for (match of round.matches; track match.game.ref?.id; let matchIndex = $index) {
                     <div
                       class="playoffs-tree-match"
                       [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
@@ -57,9 +57,23 @@
                       <div class="finale-match playoff-match-card">
                         @if (!round.isFinalRound || role() === 'admin' || role() === 'organizer') {
                           <div class="finale-match-header">
-                            @if (!round.isFinalRound) {
+                            @if (round.isFinalRound) {
+                              <span class="text-xs text-color-secondary">
+                                {{ round.roundLabel }}
+                                @if (match.game.date) {
+                                  <div class="finale-match-date text-xs text-color-secondary mt-1">
+                                    {{ match.game.date | date: 'short' : undefined : dateLocale() }}
+                                  </div>
+                                }
+                              </span>
+                            } @else {
                               <span class="text-xs text-color-secondary">
                                 {{ round.roundLabel }} {{ match.game.matchNumber }}
+                                @if (match.game.date) {
+                                  <div class="finale-match-date text-xs text-color-secondary mt-1">
+                                    {{ match.game.date | date: 'short' : undefined : dateLocale() }}
+                                  </div>
+                                }
                               </span>
                             }
                             @if (role() === 'admin' || role() === 'organizer') {
@@ -99,9 +113,17 @@
                           </div>
                         }
                         <div class="finale-match-team">
-                          <span class="finale-team-name">{{
-                            getTeamName | apply: match.game.refTeam1
-                          }}</span>
+                          <span class="finale-team-name">
+                            {{
+                              getTeamName
+                                | apply
+                                  : match.game.refTeam1
+                                  : roundIndex
+                                  : matchIndex
+                                  : 0
+                                  : playoffTree.rounds.length
+                            }}
+                          </span>
                           @if (
                             match.game.scoreTeam1 !== null && match.game.scoreTeam1 !== undefined
                           ) {
@@ -109,9 +131,17 @@
                           }
                         </div>
                         <div class="finale-match-team">
-                          <span class="finale-team-name">{{
-                            getTeamName | apply: match.game.refTeam2
-                          }}</span>
+                          <span class="finale-team-name">
+                            {{
+                              getTeamName
+                                | apply
+                                  : match.game.refTeam2
+                                  : roundIndex
+                                  : matchIndex
+                                  : 1
+                                  : playoffTree.rounds.length
+                            }}
+                          </span>
                           @if (
                             match.game.scoreTeam2 !== null && match.game.scoreTeam2 !== undefined
                           ) {

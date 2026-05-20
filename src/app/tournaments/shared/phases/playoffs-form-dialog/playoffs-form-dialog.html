@@ -61,7 +61,7 @@
       } @else {
         <p-orderlist
           [value]="selectedTeams()"
-          dataKey="key"
+          dataKey="ref"
           [dragdrop]="true"
           [listStyle]="{ 'max-height': '16rem' }"
           data-testid="playoffs-dialog-order-list"
@@ -73,7 +73,7 @@
                 class="flex-1"
                 [class.italic]="team.isPlaceholder"
                 [class.text-surface-400]="team.isPlaceholder"
-                >{{ team.value }}</span
+                >{{ team.name }}</span
               >
               <p-button
                 type="button"

@@ -51,6 +51,12 @@ export interface BracketTreeRound {
   isFinalRound: boolean;
 }
 
+interface SelectedTeam {
+  ref: string;
+  name: string;
+  isPlaceholder?: boolean;
+}
+
 function nextPowerOf2(n: number): number {
   if (n <= 0) return 2;
   let power = 1;
@@ -104,20 +110,31 @@ export class PlayoffsFormDialog {
   currentStep = signal<1 | 2>(1);
   playoffsName = signal('');
 
-  selectedTeams = signal<KeyValue<string, string & { isPlaceholder?: boolean }>[]>([]);
+  selectedTeams = signal<SelectedTeam[]>([]);
   pendingTeamRef = signal<string[]>([]);
-  placeholderCount = signal(0);
 
   get placeholderTeamKey() {
     return (n: number) => `placeholder-${n}`;
   }
 
   get placeholderTeamLabel() {
-    return () => this.translocoService.translate('playoffs.placeholder');
+    return this.translocoService.translate('playoffs.placeholder');
+  }
+
+  private getNextPlaceholderIndex(): number {
+    const placeholderPrefix = 'placeholder-';
+    const indexes = this.selectedTeams()
+      .map((team) => team.ref)
+      .filter((key) => key.startsWith(placeholderPrefix))
+      .map((key) => Number.parseInt(key.slice(placeholderPrefix.length), 10))
+      .filter((index) => Number.isFinite(index));
+
+    const maxExistingIndex = indexes.length > 0 ? Math.max(...indexes) : 0;
+    return maxExistingIndex + 1;
   }
 
   availableTeams = computed<KeyValue<string, string>[]>(() => {
-    const selectedIds = new Set(this.selectedTeams().map((t) => t.key));
+    const selectedIds = new Set(this.selectedTeams().map((t) => t.ref));
     const teams = this.data.teams
       .filter((team) => !selectedIds.has(team.ref.id))
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -158,8 +175,8 @@ export class PlayoffsFormDialog {
           const team2Index = pairing.team2Index;
           const team1 = teams[team1Index];
           const team2 = teams[team2Index];
-          const team1Name = team1?.value ?? this.translocoService.translate('playoffs.bye');
-          const team2Name = team2?.value ?? this.translocoService.translate('playoffs.bye');
+          const team1Name = team1?.name ?? this.translocoService.translate('playoffs.bye');
+          const team2Name = team2?.name ?? this.translocoService.translate('playoffs.bye');
           matches.push({
             matchNumber,
             team1Name,
@@ -233,7 +250,7 @@ export class PlayoffsFormDialog {
     if (pendingTeamRefs.length === 0) return;
 
     const teamsById = new Map(this.data.teams.map((team) => [team.ref.id, team.name]));
-    const selectedIds = new Set(this.selectedTeams().map((team) => team.key));
+    const selectedIds = new Set(this.selectedTeams().map((team) => team.ref));
     const teamsToAdd: KeyValue<string, string>[] = [];
 
     for (const teamRef of pendingTeamRefs) {
@@ -251,7 +268,10 @@ export class PlayoffsFormDialog {
     }
 
     if (teamsToAdd.length > 0) {
-      this.selectedTeams.update((teams) => [...teams, ...teamsToAdd]);
+      this.selectedTeams.update((teams) => [
+        ...teams,
+        ...teamsToAdd.map((team) => ({ ref: team.key, name: team.value })),
+      ]);
     }
 
     this.pendingTeamRef.set([]);
@@ -259,19 +279,19 @@ export class PlayoffsFormDialog {
 
   onAddPlaceholderTeam(): void {
     if (!this.canAddPlaceholder()) return;
-    const n = this.placeholderCount() + 1;
+    const n = this.getNextPlaceholderIndex();
     this.selectedTeams.update((teams) => [
       ...teams,
-      { key: this.placeholderTeamKey(n), value: this.placeholderTeamLabel(), isPlaceholder: true },
+      {
+        ref: this.placeholderTeamKey(n),
+        name: this.placeholderTeamLabel,
+        isPlaceholder: true,
+      },
     ]);
-    this.placeholderCount.set(n);
   }
 
-  onRemoveTeam(team: KeyValue<string, string>): void {
-    this.selectedTeams.update((teams) => teams.filter((t) => t.key !== team.key));
-    if (team.key.startsWith('placeholder-')) {
-      this.placeholderCount.set(this.placeholderCount() - 1);
-    }
+  onRemoveTeam(team: SelectedTeam): void {
+    this.selectedTeams.update((teams) => teams.filter((t) => t.ref !== team.ref));
   }
 
   onNext(): void {
@@ -296,7 +316,7 @@ export class PlayoffsFormDialog {
       serieRef: this.data.serieRef,
       name,
       orderedTeamRefs: this.selectedTeams()
-        .map((team) => teamById.get(team.key))
+        .map((team) => teamById.get(team.ref))
         .filter((teamRef): teamRef is DocumentReference => teamRef !== undefined),
       size: this.bracketSize(),
     };

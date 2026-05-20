@@ -7,8 +7,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideTranslocoTesting } from '../../../../testing/transloco-testing.providers';
 
 const asSelectedTeam = (team: { ref: DocumentReference; name: string }) => ({
-  key: team.ref.id,
-  value: team.name,
+  ref: team.ref.id,
+  name: team.name,
 });
 
 describe('PlayoffsFormDialog', () => {
@@ -57,28 +57,26 @@ describe('PlayoffsFormDialog', () => {
     component.onAddPlaceholderTeam();
     expect(component.selectedTeams().length).toBe(1);
     expect(component.selectedTeams()[0].isPlaceholder).toBe(true);
-    expect(component.selectedTeams()[0].value).toBe(component.placeholderTeamLabel());
+    expect(component.selectedTeams()[0].name).toBe(component.placeholderTeamLabel);
   });
 
-  it('should remove a placeholder team and decrement placeholderCount', () => {
+  it('should remove a placeholder team from selectedTeams', () => {
     component.onAddPlaceholderTeam();
-    expect(component.placeholderCount()).toBe(1);
     const placeholder = component.selectedTeams()[0];
     component.onRemoveTeam(placeholder);
     expect(component.selectedTeams().length).toBe(0);
-    expect(component.placeholderCount()).toBe(0);
   });
 
   it('should display placeholder in bracket preview', () => {
     component.onAddPlaceholderTeam();
     component.selectedTeams.set([
-      { key: 'placeholder-1', value: component.placeholderTeamLabel(), isPlaceholder: true },
-      { key: 'team-a', value: 'Team A' },
+      { ref: 'placeholder-1', name: component.placeholderTeamLabel, isPlaceholder: true },
+      { ref: 'team-a', name: 'Team A' },
     ]);
     const preview = component.bracketPreview();
     const firstRound = preview.find((r) => r.roundOrder === 2);
     expect(firstRound).toBeDefined();
-    expect(firstRound!.matches[0].team1Name).toBe(component.placeholderTeamLabel());
+    expect(firstRound!.matches[0].team1Name).toBe(component.placeholderTeamLabel);
     expect(firstRound!.matches[0].team2Name).toBe('Team A');
   });
 
@@ -140,7 +138,7 @@ describe('PlayoffsFormDialog', () => {
     component.pendingTeamRef.set([teamARef.id]);
     component.onAddSelectedTeam();
     expect(component.selectedTeams().length).toBe(1);
-    expect(component.selectedTeams()[0].value).toBe('Team A');
+    expect(component.selectedTeams()[0].name).toBe('Team A');
     expect(component.pendingTeamRef()).toEqual([]);
   });
 
@@ -162,7 +160,7 @@ describe('PlayoffsFormDialog', () => {
     component.selectedTeams.set([asSelectedTeam(teams[0]), asSelectedTeam(teams[1])]);
     component.onRemoveTeam(asSelectedTeam(teams[0]));
     expect(component.selectedTeams().length).toBe(1);
-    expect(component.selectedTeams()[0].value).toBe('Team B');
+    expect(component.selectedTeams()[0].name).toBe('Team B');
   });
 
   it('should compute bracket size as next power of 2', () => {

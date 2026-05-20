@@ -123,10 +123,17 @@ test.describe.serial('Admin – playoffs management', () => {
     let card = tabPanel.locator('p-card').filter({ hasText: playoffName });
 
     // Keep this test independent when run alone (e.g. with --grep).
-    if (!(await card.first().isVisible().catch(() => false))) {
+    if (
+      !(await card
+        .first()
+        .isVisible()
+        .catch(() => false))
+    ) {
       await phasesPage.addPlayoffs(serieName, playoffName, [team1, team2, team3, team4]);
       await phasesPage.ensureSerieExpanded(serieName);
-      card = (await phasesPage.serieTabPanel(serieName)).locator('p-card').filter({ hasText: playoffName });
+      card = (await phasesPage.serieTabPanel(serieName))
+        .locator('p-card')
+        .filter({ hasText: playoffName });
     }
 
     await expect(card).toBeVisible({ timeout: 15000 });

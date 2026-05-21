@@ -155,12 +155,8 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
   let component: GameFormDialog;
   let fixture: ComponentFixture<GameFormDialog>;
   let mockRef: { close: ReturnType<typeof vi.fn> };
-  let pouleRef: DocumentReference;
-  let gameRef: DocumentReference;
 
   beforeEach(async () => {
-    pouleRef = { id: 'playoff-1' } as DocumentReference;
-    gameRef = { id: 'game-1' } as DocumentReference;
     mockRef = { close: vi.fn() };
 
     await TestBed.configureTestingModule({

@@ -179,9 +179,19 @@ export class Games {
         for (const game of phase.games) {
           const sortable = this.toSortableGame(game);
           const dateKey = this.getDateKey(game.date);
+          const playoffRoundKey =
+            phase.isPlayoff && game.roundSize != null ? `finale.rounds.${game.roundSize}` : null;
+          const translatedPlayoffRound = playoffRoundKey
+            ? this.translocoService.translate(playoffRoundKey)
+            : null;
           const playoffGameLabel =
-            phase.isPlayoff && game.roundSize != null && game.matchNumber != null
-              ? `${this.translocoService.translate(`finale.rounds.${game.roundSize}`)} ${game.matchNumber}`
+            phase.isPlayoff &&
+            game.roundSize != null &&
+            game.matchNumber != null &&
+            translatedPlayoffRound != null &&
+            translatedPlayoffRound !== '' &&
+            translatedPlayoffRound !== playoffRoundKey
+              ? `${translatedPlayoffRound} ${game.matchNumber}`
               : game.name;
           const phaseLabel = [phase.name, phase.isPlayoff ? playoffGameLabel : null]
             .filter(Boolean)

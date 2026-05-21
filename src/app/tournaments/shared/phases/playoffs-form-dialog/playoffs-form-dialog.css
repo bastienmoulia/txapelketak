@@ -87,6 +87,15 @@
   width: 100%;
 }
 
+.finale-match-team--bye {
+  opacity: 0.65;
+
+  .finale-team-name {
+    font-style: italic;
+    color: var(--p-text-muted-color);
+  }
+}
+
 @media (max-width: 767px) {
   :host {
     --playoffs-tree-column-width: 14.5rem;

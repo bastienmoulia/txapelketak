@@ -64,9 +64,18 @@ const createTeamNameLookup =
     matchIndex: number,
     teamSlot: 0 | 1,
     totalRounds: number,
+    opponentRef?: DocumentReference,
   ): string => {
     const team = ref ? teams().find((currentTeam) => currentTeam.ref?.id === ref.id) : undefined;
     if (team?.name && team.name.trim()) return team.name;
+
+    if (!ref && roundIndex === 0) {
+      if (!opponentRef) {
+        return transloco.translate('playoffs.placeholder');
+      }
+      return transloco.translate('playoffs.bye');
+    }
+
     if (roundIndex > 0) {
       return transloco.translate('playoffs.winnerOfPrevious', {
         round: transloco.translate(`finale.rounds.${2 ** (totalRounds - roundIndex + 1)}`),

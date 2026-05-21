@@ -150,10 +150,8 @@
             <h4 class="playoffs-tree-round-title">{{ round.roundLabel | transloco }}</h4>
             <div class="playoffs-tree-round-lane">
               @for (match of round.matches; track match.data.matchNumber) {
-                @let isByeTeam1 =
-                  match.data.isBye && match.data.team1Name === ('playoffs.bye' | transloco);
-                @let isByeTeam2 =
-                  match.data.isBye && match.data.team2Name === ('playoffs.bye' | transloco);
+                @let isByeTeam1 = match.data.isByeTeam1;
+                @let isByeTeam2 = match.data.isByeTeam2;
                 <div
                   class="playoffs-tree-match"
                   [class.playoffs-tree-match--with-connector]="!round.isFinalRound"

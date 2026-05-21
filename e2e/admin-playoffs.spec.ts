@@ -114,14 +114,7 @@ test.describe.serial('Admin – playoffs management', () => {
       .locator('p-card')
       .filter({ hasText: playoffName })
       .first();
-    const semifinalRound = playoffCard
-      .locator('.playoffs-tree-round')
-      .filter({
-        has: playoffCard
-          .locator('.playoffs-tree-round-title')
-          .filter({ hasText: /^(Demi-finale|Semifinal|Semifinals)$/i }),
-      })
-      .first();
+    const semifinalRound = playoffCard.locator('.playoffs-tree-round').first();
     const semifinalCards = semifinalRound.locator('.playoff-match-card');
     await expect(semifinalCards).toHaveCount(2);
 

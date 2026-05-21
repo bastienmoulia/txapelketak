@@ -99,7 +99,9 @@ test.describe.serial('Admin – playoffs management', () => {
     await expect(gameRows).toHaveCount(3, { timeout: 20000 }); // 2 semis + 1 final
   });
 
-  test('should set a semifinal as bye and render only one team in playoffs tree', async ({ page }) => {
+  test('should set a semifinal as bye and render only one team in playoffs tree', async ({
+    page,
+  }) => {
     const adminPage = new AdminPage(page);
     const phasesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
@@ -118,7 +120,9 @@ test.describe.serial('Admin – playoffs management', () => {
       .locator('.playoff-match-card');
     await expect(semifinalCards).toHaveCount(2);
 
-    const byeMatchCard = semifinalCards.filter({ hasText: new RegExp(`${team1}|${team4}`) }).first();
+    const byeMatchCard = semifinalCards
+      .filter({ hasText: new RegExp(`${team1}|${team4}`) })
+      .first();
 
     await expect(byeMatchCard).toBeVisible({ timeout: 15000 });
     await expect(byeMatchCard.locator('.finale-match-team')).toHaveCount(1);

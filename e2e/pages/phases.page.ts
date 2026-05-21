@@ -357,7 +357,10 @@ export class PhasesPage {
 
   playoffMatchCardByTeams(playoffName: string, teamA: string, teamB: string): Locator {
     const playoffCard = this.page.locator('p-card').filter({ hasText: playoffName }).first();
-    return playoffCard.locator('.playoff-match-card').filter({ hasText: teamA }).filter({ hasText: teamB });
+    return playoffCard
+      .locator('.playoff-match-card')
+      .filter({ hasText: teamA })
+      .filter({ hasText: teamB });
   }
 
   async editPlayoffMatch(

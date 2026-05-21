@@ -50,8 +50,10 @@
                   @for (match of round.matches; track match.game.ref?.id; let matchIndex = $index) {
                     @let isDoubleEmptyFirstRound =
                       roundIndex === 0 && !match.game.refTeam1 && !match.game.refTeam2;
-                    @let isByeTeam1 = roundIndex === 0 && !match.game.refTeam1 && !isDoubleEmptyFirstRound;
-                    @let isByeTeam2 = roundIndex === 0 && !match.game.refTeam2 && !isDoubleEmptyFirstRound;
+                    @let isByeTeam1 =
+                      roundIndex === 0 && !match.game.refTeam1 && !isDoubleEmptyFirstRound;
+                    @let isByeTeam2 =
+                      roundIndex === 0 && !match.game.refTeam2 && !isDoubleEmptyFirstRound;
                     <div
                       class="playoffs-tree-match"
                       [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
@@ -131,7 +133,8 @@
                           </span>
                           @if (
                             !isByeTeam1 &&
-                            match.game.scoreTeam1 !== null && match.game.scoreTeam1 !== undefined
+                            match.game.scoreTeam1 !== null &&
+                            match.game.scoreTeam1 !== undefined
                           ) {
                             <span class="finale-team-score">{{ match.game.scoreTeam1 }}</span>
                           }
@@ -151,7 +154,8 @@
                           </span>
                           @if (
                             !isByeTeam2 &&
-                            match.game.scoreTeam2 !== null && match.game.scoreTeam2 !== undefined
+                            match.game.scoreTeam2 !== null &&
+                            match.game.scoreTeam2 !== undefined
                           ) {
                             <span class="finale-team-score">{{ match.game.scoreTeam2 }}</span>
                           }

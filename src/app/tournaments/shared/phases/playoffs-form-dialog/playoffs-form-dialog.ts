@@ -183,10 +183,10 @@ export class PlayoffsFormDialog {
           const isDoubleEmpty = !team1 && !team2;
           const team1Name = isDoubleEmpty
             ? this.translocoService.translate('playoffs.placeholder')
-            : team1?.name ?? this.translocoService.translate('playoffs.bye');
+            : (team1?.name ?? this.translocoService.translate('playoffs.bye'));
           const team2Name = isDoubleEmpty
             ? this.translocoService.translate('playoffs.placeholder')
-            : team2?.name ?? this.translocoService.translate('playoffs.bye');
+            : (team2?.name ?? this.translocoService.translate('playoffs.bye'));
           matches.push({
             matchNumber,
             team1Name,

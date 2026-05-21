@@ -45,7 +45,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (entry of crossPouleStandings(); track entry.teamName) {
+          @for (entry of crossPouleStandings(); track entry.teamName + '__' + entry.pouleName) {
             <tr>
               <td class="standings-table__stat">{{ entry.rank }}</td>
               <td class="standings-table__name">{{ entry.teamName }}</td>

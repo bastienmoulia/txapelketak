@@ -122,7 +122,8 @@
               </td>
               <td [attr.data-label]="'admin.games.team1' | transloco">
                 <span
-                  class="font-medium"
+                  [class.font-medium]="game.refTeam1"
+                  [class.italic]="!game.refTeam1"
                   [class.text-green-500]="game | call: isTeam1WinningGame"
                   [class.text-red-500]="game | call: isTeam1LosingGame"
                   >{{ game.team1Name }}</span
@@ -153,7 +154,8 @@
               </td>
               <td [attr.data-label]="'admin.games.team2' | transloco">
                 <span
-                  class="font-medium"
+                  [class.italic]="!game.refTeam2"
+                  [class.font-medium]="game.refTeam2"
                   [class.text-green-500]="game | call: isTeam2WinningGame"
                   [class.text-red-500]="game | call: isTeam2LosingGame"
                   >{{ game.team2Name }}</span

@@ -119,7 +119,10 @@
                           </div>
                         }
                         <div class="finale-match-team" [class.finale-match-team--bye]="isByeTeam1">
-                          <span class="finale-team-name">
+                          <span
+                            class="finale-team-name"
+                            [class.finale-match-team--unknown]="!match.game.refTeam1"
+                          >
                             {{
                               getTeamName
                                 | apply
@@ -140,7 +143,10 @@
                           }
                         </div>
                         <div class="finale-match-team" [class.finale-match-team--bye]="isByeTeam2">
-                          <span class="finale-team-name">
+                          <span
+                            class="finale-team-name"
+                            [class.finale-match-team--unknown]="!match.game.refTeam2"
+                          >
                             {{
                               getTeamName
                                 | apply

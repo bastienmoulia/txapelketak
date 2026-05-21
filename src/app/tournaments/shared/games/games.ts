@@ -177,7 +177,10 @@ export class Games {
     for (const serie of this.series()) {
       for (const phase of this.getSeriePhases(serie)) {
         for (const game of phase.games) {
-          const sortable = this.toSortableGame(game);
+          const sortable = this.toSortableGame(game, {
+            isPlayoff: phase.isPlayoff,
+            phaseGames: phase.games,
+          });
           const dateKey = this.getDateKey(game.date);
           const playoffRoundKey =
             phase.isPlayoff && game.roundSize != null ? `finale.rounds.${game.roundSize}` : null;
@@ -338,9 +341,43 @@ export class Games {
     return map;
   });
 
-  getTeamName(ref: DocumentReference | undefined): string {
-    if (!ref) return '?';
-    return this.teamNameMap().get(ref.id) ?? '?';
+  getTeamName(
+    ref: DocumentReference | undefined,
+    options?: {
+      isPlayoff?: boolean;
+      opponentRef?: DocumentReference;
+      roundIndex?: number;
+      matchIndex?: number;
+      teamSlot?: 0 | 1;
+      totalRounds?: number;
+    },
+  ): string {
+    const teamName = ref ? this.teamNameMap().get(ref.id) : undefined;
+    if (teamName) {
+      return teamName;
+    }
+
+    if (options?.isPlayoff && !ref) {
+      const roundIndex = options.roundIndex ?? 0;
+      const matchIndex = options.matchIndex ?? 0;
+      const teamSlot = options.teamSlot ?? 0;
+      const totalRounds = options.totalRounds ?? 1;
+
+      if (roundIndex > 0) {
+        const previousRoundSize = 2 ** (totalRounds - roundIndex + 1);
+        return this.translocoService.translate('playoffs.winnerOfPrevious', {
+          round: this.translocoService.translate(`finale.rounds.${previousRoundSize}`),
+          number: matchIndex * 2 + teamSlot + 1,
+        });
+      }
+
+      if (!options.opponentRef) {
+        return this.translocoService.translate('playoffs.placeholder');
+      }
+      return this.translocoService.translate('playoffs.bye');
+    }
+
+    return '?';
   }
 
   showScrollToTop = signal(false);
@@ -394,11 +431,38 @@ export class Games {
     return `${year}-${month}-${day}`;
   }
 
-  private toSortableGame(game: Game): SortableGame {
+  private toSortableGame(
+    game: Game,
+    context?: { isPlayoff?: boolean; phaseGames?: Game[] },
+  ): SortableGame {
+    const isPlayoff = context?.isPlayoff ?? false;
+    const playoffRoundSizes = (context?.phaseGames ?? [])
+      .map((phaseGame) => phaseGame.roundSize ?? 0)
+      .filter((roundSize) => roundSize > 0);
+    const maxRoundSize = playoffRoundSizes.length > 0 ? Math.max(...playoffRoundSizes) : 2;
+    const totalRounds = Math.max(1, Math.log2(maxRoundSize));
+    const gameRoundSize = game.roundSize ?? maxRoundSize;
+    const roundIndex = Math.max(0, totalRounds - Math.log2(Math.max(2, gameRoundSize)));
+    const matchIndex = Math.max(0, (game.matchNumber ?? 1) - 1);
+
     return {
       ...game,
-      team1Name: this.getTeamName(game.refTeam1),
-      team2Name: this.getTeamName(game.refTeam2),
+      team1Name: this.getTeamName(game.refTeam1, {
+        isPlayoff,
+        opponentRef: game.refTeam2,
+        roundIndex,
+        matchIndex,
+        teamSlot: 0,
+        totalRounds,
+      }),
+      team2Name: this.getTeamName(game.refTeam2, {
+        isPlayoff,
+        opponentRef: game.refTeam1,
+        roundIndex,
+        matchIndex,
+        teamSlot: 1,
+        totalRounds,
+      }),
       gameDateSortValue: game.date ? new Date(game.date).getTime() : 0,
     };
   }

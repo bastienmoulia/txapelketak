@@ -127,6 +127,10 @@
   }
 }
 
+.finale-match-team--unknown {
+  font-style: italic;
+}
+
 .finale-team-name {
   flex: 1;
   min-width: 0;

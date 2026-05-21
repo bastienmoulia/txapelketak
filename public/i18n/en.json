@@ -235,7 +235,19 @@
       "playoffEdited": "Playoff updated",
       "playoffEditedDetail": "The playoff has been successfully updated.",
       "playoffDeleted": "Playoff deleted",
-      "playoffDeletedDetail": "The playoff has been successfully deleted."
+      "playoffDeletedDetail": "The playoff has been successfully deleted.",
+      "crossStandings": {
+        "title": "Overall standings — all pools",
+        "modeAverage": "Average",
+        "modeAverageTooltip": "Normalises stats by the number of teams in each pool",
+        "modeDropWeakest": "Drop weakest",
+        "modeDropWeakestTooltip": "Removes the lowest-ranked teams from larger pools to equalise sizes",
+        "modePhantom": "Phantom team",
+        "modePhantomTooltip": "Adds phantom wins (30-29) for pools that are too small",
+        "columnRank": "Rank",
+        "columnTeam": "Team",
+        "columnPoule": "Pool"
+      }
     },
     "games": {
       "addGame": "Add a game",

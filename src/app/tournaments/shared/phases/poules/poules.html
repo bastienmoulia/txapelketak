@@ -110,3 +110,6 @@
     </p-card>
   }
 </div>
+@if (role() === 'admin') {
+  <app-phases-cross-standings [poules]="sortedPoules()" />
+}

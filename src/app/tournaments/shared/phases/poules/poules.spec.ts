@@ -271,7 +271,9 @@ describe('Poules', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const hiddenIndicator = fixture.nativeElement.querySelector('[data-testid="poule-hidden-indicator"]');
+    const hiddenIndicator = fixture.nativeElement.querySelector(
+      '[data-testid="poule-hidden-indicator"]',
+    );
     expect(hiddenIndicator).toBeTruthy();
   });
 

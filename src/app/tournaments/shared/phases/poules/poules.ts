@@ -15,6 +15,7 @@ import { TournamentActionsService } from '../../../../shared/services/tournament
 import { Poule } from '../../../models';
 import { PouleFormDialog } from '../poule-form-dialog/poule-form-dialog';
 import type { SavePouleEvent } from '../phases';
+import { CrossStandings } from './cross-standings/cross-standings';
 
 interface TeamStanding {
   ref: DocumentReference;
@@ -31,7 +32,7 @@ interface PouleWithStandings extends Poule {
 
 @Component({
   selector: 'app-phases-poules',
-  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, Message, TooltipModule],
+  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, Message, TooltipModule, CrossStandings],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
 })

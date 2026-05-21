@@ -235,7 +235,19 @@
       "playoffEdited": "Playoffs modifiés",
       "playoffEditedDetail": "Les playoffs ont été modifiés avec succès.",
       "playoffDeleted": "Playoffs supprimés",
-      "playoffDeletedDetail": "Les playoffs ont été supprimés avec succès."
+      "playoffDeletedDetail": "Les playoffs ont été supprimés avec succès.",
+      "crossStandings": {
+        "title": "Classement général — toutes poules",
+        "modeAverage": "Moyenne",
+        "modeAverageTooltip": "Normalise les statistiques par le nombre d'équipes dans chaque poule",
+        "modeDropWeakest": "Suppression",
+        "modeDropWeakestTooltip": "Supprime les équipes les moins bien classées des poules trop grandes pour égaliser les tailles",
+        "modePhantom": "Équipe fantôme",
+        "modePhantomTooltip": "Ajoute des victoires fictives (30-29) aux poules trop petites",
+        "columnRank": "Rang",
+        "columnTeam": "Équipe",
+        "columnPoule": "Poule"
+      }
     },
     "games": {
       "addGame": "Ajouter une partie",

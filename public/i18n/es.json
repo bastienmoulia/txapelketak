@@ -235,7 +235,19 @@
       "playoffEdited": "Playoffs actualizados",
       "playoffEditedDetail": "Los playoffs se han actualizado correctamente.",
       "playoffDeleted": "Playoffs eliminados",
-      "playoffDeletedDetail": "Los playoffs se han eliminado correctamente."
+      "playoffDeletedDetail": "Los playoffs se han eliminado correctamente.",
+      "crossStandings": {
+        "title": "Clasificación general — todos los grupos",
+        "modeAverage": "Media",
+        "modeAverageTooltip": "Normaliza las estadísticas según el número de equipos en cada grupo",
+        "modeDropWeakest": "Eliminar débiles",
+        "modeDropWeakestTooltip": "Elimina los equipos peor clasificados de los grupos más grandes para igualar tamaños",
+        "modePhantom": "Equipo fantasma",
+        "modePhantomTooltip": "Añade victorias ficticias (30-29) para los grupos más pequeños",
+        "columnRank": "Rango",
+        "columnTeam": "Equipo",
+        "columnPoule": "Grupo"
+      }
     },
     "games": {
       "addGame": "Añadir un partido",

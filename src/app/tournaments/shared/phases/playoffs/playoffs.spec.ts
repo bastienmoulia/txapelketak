@@ -147,13 +147,54 @@ describe('Playoffs', () => {
     });
   });
 
-  it('should return bye when only one first-round slot is empty', () => {
+  it('should return placeholder when only one first-round slot is empty and bye is not explicit', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', []);
       fixture.detectChanges();
 
-      expect(component.getTeamName(undefined, 0, 0, 0, 3, mockTeamRef)).toBe('Exempt');
-      expect(component.getTeamName(undefined, 0, 0, 1, 3, mockTeamRef)).toBe('Exempt');
+      expect(component.getTeamName(undefined, 0, 0, 0, 3, false, mockTeamRef)).toBe('À renseigner');
+      expect(component.getTeamName(undefined, 0, 0, 1, 3, false, mockTeamRef)).toBe('À renseigner');
+    });
+  });
+
+  it('should return bye when first-round slot is empty and bye is explicit', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', []);
+      fixture.detectChanges();
+
+      expect(component.getTeamName(undefined, 0, 0, 0, 3, true, mockTeamRef)).toBe('Exempt');
+      expect(component.getTeamName(undefined, 0, 0, 1, 3, true, mockTeamRef)).toBe('Exempt');
+    });
+  });
+
+  it('should render only one team row for explicit bye matches in first round', () => {
+    TestBed.runInInjectionContext(() => {
+      const byeGame: Game = {
+        ref: {
+          id: 'game-bye',
+          path: 'series/test/playoffs/playoff-1/games/game-bye',
+        } as unknown as DocumentReference,
+        refTeam1: mockTeamRef,
+        refTeam2: undefined,
+        isBye: true,
+        roundSize: 2,
+        matchNumber: 1,
+      };
+
+      fixture.componentRef.setInput('playoffs', [
+        {
+          ...mockPlayoff,
+          games: [byeGame],
+        },
+      ]);
+      fixture.detectChanges();
+
+      const matchCard = fixture.nativeElement.querySelector('.playoff-match-card') as HTMLElement;
+      const teamRows = matchCard.querySelectorAll('.finale-match-team');
+
+      expect(teamRows.length).toBe(1);
+      expect(matchCard.textContent).toContain('Team 1');
+      expect(matchCard.textContent).not.toContain('Exempt');
     });
   });
 

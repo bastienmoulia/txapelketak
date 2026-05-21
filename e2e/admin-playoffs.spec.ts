@@ -99,15 +99,55 @@ test.describe.serial('Admin – playoffs management', () => {
     await expect(gameRows).toHaveCount(3, { timeout: 20000 }); // 2 semis + 1 final
   });
 
+  test('should set a semifinal as bye and render only one team in playoffs tree', async ({
+    page,
+  }) => {
+    const adminPage = new AdminPage(page);
+    const phasesPage = new PhasesPage(page);
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Phases');
+    await phasesPage.ensureSerieExpanded(serieName);
+
+    await phasesPage.setPlayoffMatchByeByTeams(playoffName, team1, team4);
+
+    const playoffCard = (await phasesPage.serieTabPanel(serieName))
+      .locator('p-card')
+      .filter({ hasText: playoffName })
+      .first();
+    const semifinalRound = playoffCard.locator('.playoffs-tree-round').first();
+    const semifinalCards = semifinalRound.locator('.playoff-match-card');
+    await expect(semifinalCards).toHaveCount(2);
+
+    const byeMatchCard = semifinalCards
+      .filter({ hasText: new RegExp(`${team1}|${team4}`) })
+      .first();
+
+    await expect(byeMatchCard).toBeVisible({ timeout: 15000 });
+    await expect(byeMatchCard.locator('.finale-match-team')).toHaveCount(1);
+    const teamName = byeMatchCard.locator('.finale-team-name').first();
+    await expect(teamName).not.toContainText('Exempt');
+  });
+
+  test('should hide bye games from Games tab', async ({ page }) => {
+    const adminPage = new AdminPage(page);
+    const gamesPage = new GamesPage(page);
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Parties');
+
+    const gameRows = gamesPage.gameRows();
+    await expect(gameRows.first()).toBeVisible({ timeout: 15000 });
+    await expect(gameRows).toHaveCount(2, { timeout: 20000 }); // 1 semi + 1 final (bye hidden)
+  });
+
   test('should edit a playoff match score', async ({ page }) => {
     const adminPage = new AdminPage(page);
     const gamesPage = new GamesPage(page);
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
 
-    await gamesPage.editScores(team1, team4, 3, 1);
+    await gamesPage.editScores(team2, team3, 3, 1);
 
-    const editedRow = gamesPage.gameRow(team1, team4);
+    const editedRow = gamesPage.gameRow(team2, team3);
     await expect(editedRow).toContainText('3');
     await expect(editedRow).toContainText('1');
   });

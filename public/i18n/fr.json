@@ -271,6 +271,7 @@
       "showOnlyFreeSlots": "Créneaux libres seulement",
       "freeSlot": "Créneau libre",
       "comment": "Commentaire",
+      "isBye": "Exempt de match",
       "commentAria": "Voir le commentaire de cette partie",
       "commentTooltip": "Commentaire"
     },

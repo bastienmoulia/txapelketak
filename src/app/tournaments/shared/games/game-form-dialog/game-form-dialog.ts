@@ -10,10 +10,11 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Select } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
-import { Poule, Team } from '../../../models';
+import { Game, Poule, Team } from '../../../models';
 import { UserRole } from '../../../../home/tournament.interface';
 import type { SaveGameEvent } from '../games';
 import { CallPipe } from 'ngxtension/call-apply';
@@ -31,6 +32,7 @@ interface GameFormDialogData {
   currentPoule: Poule | null;
   initialTeam1Ref?: DocumentReference | null;
   initialTeam2Ref?: DocumentReference | null;
+  initialIsBye?: boolean | null;
   initialScoreTeam1?: number | null;
   initialScoreTeam2?: number | null;
   initialDate?: Date | null;
@@ -55,6 +57,7 @@ interface GameFormDialogData {
     Message,
     CallPipe,
     TextareaModule,
+    ToggleSwitchModule,
   ],
   templateUrl: './game-form-dialog.html',
   styleUrl: './game-form-dialog.css',
@@ -103,6 +106,12 @@ export class GameFormDialog {
 
   selectedTeam1Ref = signal<DocumentReference | null>(this.data.initialTeam1Ref ?? null);
   selectedTeam2Ref = signal<DocumentReference | null>(this.data.initialTeam2Ref ?? null);
+  isBye = signal<boolean>(
+    this.data.initialIsBye ??
+      this.data.currentPoule?.games?.find((game: Game) => game.ref?.id === this.data.gameRef?.id)
+        ?.isBye ??
+      false,
+  );
   scoreTeam1 = signal<number | null>(this.data.initialScoreTeam1 ?? null);
   scoreTeam2 = signal<number | null>(this.data.initialScoreTeam2 ?? null);
   gameDate = signal<Date | null>(this.data.initialDate ?? null);
@@ -146,6 +155,35 @@ export class GameFormDialog {
     return gamePath.includes('/playoffs/') || phasePath.includes('/playoffs/');
   });
 
+  isEditingFirstRoundPlayoffGame = computed(() => {
+    if (!this.isEditingPlayoffGame()) {
+      return false;
+    }
+
+    const gameRef = this.data.gameRef;
+    const games = this.data.currentPoule?.games ?? [];
+    if (!gameRef || games.length === 0) {
+      return false;
+    }
+
+    const currentGame = games.find((game: Game) => game.ref?.id === gameRef.id);
+    const currentRoundSize = currentGame?.roundSize;
+    if (!currentRoundSize) {
+      return false;
+    }
+
+    const maxRoundSize = games.reduce((max: number, game: Game) => {
+      const roundSize = game.roundSize ?? 0;
+      return roundSize > max ? roundSize : max;
+    }, 0);
+
+    return maxRoundSize > 0 && currentRoundSize === maxRoundSize;
+  });
+
+  showByeToggle = computed(
+    () => this.data.role === 'admin' && this.isEditingFirstRoundPlayoffGame(),
+  );
+
   hasFreeSlot = createHasFreeSlot(this.data.freeSlotDateKeys);
 
   constructor() {
@@ -172,6 +210,20 @@ export class GameFormDialog {
     this.dialogRef.close(result);
   }
 
+  onByeToggleChange(value: boolean): void {
+    this.isBye.set(value);
+
+    if (!value) {
+      return;
+    }
+
+    this.selectedTeam2Ref.set(null);
+    this.scoreTeam1.set(null);
+    this.scoreTeam2.set(null);
+    this.clearGameDate();
+    this.gameReferees.set([]);
+  }
+
   onSave(): void {
     const team1Ref = this.selectedTeam1Ref();
     const team2Ref = this.selectedTeam2Ref();
@@ -187,10 +239,11 @@ export class GameFormDialog {
 
     const baseEvent = {
       pouleRef,
-      scoreTeam1: this.scoreTeam1(),
-      scoreTeam2: this.scoreTeam2(),
-      date: this.gameDate(),
-      referees: this.gameReferees().length > 0 ? this.gameReferees() : null,
+      isBye: this.isBye(),
+      scoreTeam1: this.isBye() ? null : this.scoreTeam1(),
+      scoreTeam2: this.isBye() ? null : this.scoreTeam2(),
+      date: this.isBye() ? null : this.gameDate(),
+      referees: this.isBye() ? null : this.gameReferees().length > 0 ? this.gameReferees() : null,
       comment: this.gameComment().trim() || null,
     };
 

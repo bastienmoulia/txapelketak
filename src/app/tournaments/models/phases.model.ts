@@ -40,6 +40,7 @@ export interface Game {
   ref: DocumentReference;
   refTeam1?: DocumentReference;
   refTeam2?: DocumentReference;
+  isBye?: boolean;
   scoreTeam1?: number;
   scoreTeam2?: number;
   date?: Date;

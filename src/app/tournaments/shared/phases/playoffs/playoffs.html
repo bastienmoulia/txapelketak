@@ -48,12 +48,7 @@
                 <h4 class="playoffs-tree-round-title">{{ round.roundLabel }}</h4>
                 <div class="playoffs-tree-round-lane">
                   @for (match of round.matches; track match.game.ref?.id; let matchIndex = $index) {
-                    @let isDoubleEmptyFirstRound =
-                      roundIndex === 0 && !match.game.refTeam1 && !match.game.refTeam2;
-                    @let isByeTeam1 =
-                      roundIndex === 0 && !match.game.refTeam1 && !isDoubleEmptyFirstRound;
-                    @let isByeTeam2 =
-                      roundIndex === 0 && !match.game.refTeam2 && !isDoubleEmptyFirstRound;
+                    @let isBye = roundIndex === 0 && !!match.game.isBye;
                     <div
                       class="playoffs-tree-match"
                       [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
@@ -78,6 +73,10 @@
                                 @if (match.game.date) {
                                   <div class="finale-match-date text-xs text-color-secondary mt-1">
                                     {{ match.game.date | date: 'short' : undefined : dateLocale() }}
+                                  </div>
+                                } @else if (isBye) {
+                                  <div class="finale-match-date text-xs text-color-secondary mt-1">
+                                    {{ 'admin.games.isBye' | transloco }}
                                   </div>
                                 }
                               </div>
@@ -118,48 +117,74 @@
                             }
                           </div>
                         }
-                        <div class="finale-match-team" [class.finale-match-team--bye]="isByeTeam1">
-                          <span class="finale-team-name">
-                            {{
-                              getTeamName
-                                | apply
-                                  : match.game.refTeam1
-                                  : roundIndex
-                                  : matchIndex
-                                  : 0
-                                  : playoffTree.rounds.length
-                                  : match.game.refTeam2
-                            }}
-                          </span>
-                          @if (
-                            !isByeTeam1 &&
-                            match.game.scoreTeam1 !== null &&
-                            match.game.scoreTeam1 !== undefined
-                          ) {
-                            <span class="finale-team-score">{{ match.game.scoreTeam1 }}</span>
-                          }
-                        </div>
-                        <div class="finale-match-team" [class.finale-match-team--bye]="isByeTeam2">
-                          <span class="finale-team-name">
-                            {{
-                              getTeamName
-                                | apply
-                                  : match.game.refTeam2
-                                  : roundIndex
-                                  : matchIndex
-                                  : 1
-                                  : playoffTree.rounds.length
-                                  : match.game.refTeam1
-                            }}
-                          </span>
-                          @if (
-                            !isByeTeam2 &&
-                            match.game.scoreTeam2 !== null &&
-                            match.game.scoreTeam2 !== undefined
-                          ) {
-                            <span class="finale-team-score">{{ match.game.scoreTeam2 }}</span>
-                          }
-                        </div>
+                        @if (isBye) {
+                          @let displayedTeamRef = match.game.refTeam1 ?? match.game.refTeam2;
+                          <div class="finale-match-team">
+                            <span
+                              class="finale-team-name"
+                              [class.finale-match-team--unknown]="!displayedTeamRef"
+                            >
+                              {{
+                                getTeamName
+                                  | apply
+                                    : displayedTeamRef
+                                    : roundIndex
+                                    : matchIndex
+                                    : 0
+                                    : playoffTree.rounds.length
+                                    : false
+                                    : undefined
+                              }}
+                            </span>
+                          </div>
+                        } @else {
+                          <div class="finale-match-team">
+                            <span
+                              class="finale-team-name"
+                              [class.finale-match-team--unknown]="!match.game.refTeam1"
+                            >
+                              {{
+                                getTeamName
+                                  | apply
+                                    : match.game.refTeam1
+                                    : roundIndex
+                                    : matchIndex
+                                    : 0
+                                    : playoffTree.rounds.length
+                                    : false
+                                    : match.game.refTeam2
+                              }}
+                            </span>
+                            @if (
+                              match.game.scoreTeam1 !== null && match.game.scoreTeam1 !== undefined
+                            ) {
+                              <span class="finale-team-score">{{ match.game.scoreTeam1 }}</span>
+                            }
+                          </div>
+                          <div class="finale-match-team">
+                            <span
+                              class="finale-team-name"
+                              [class.finale-match-team--unknown]="!match.game.refTeam2"
+                            >
+                              {{
+                                getTeamName
+                                  | apply
+                                    : match.game.refTeam2
+                                    : roundIndex
+                                    : matchIndex
+                                    : 1
+                                    : playoffTree.rounds.length
+                                    : false
+                                    : match.game.refTeam1
+                              }}
+                            </span>
+                            @if (
+                              match.game.scoreTeam2 !== null && match.game.scoreTeam2 !== undefined
+                            ) {
+                              <span class="finale-team-score">{{ match.game.scoreTeam2 }}</span>
+                            }
+                          </div>
+                        }
                       </div>
                       @if (!round.isFinalRound) {
                         <span class="playoffs-tree-connector" aria-hidden="true"></span>

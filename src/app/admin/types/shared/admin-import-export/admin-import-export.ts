@@ -31,6 +31,7 @@ export interface TournamentYamlGame {
 export interface TournamentYamlPlayoffGame {
   roundSize: number;
   matchNumber: number;
+  isBye?: boolean;
   team1?: string;
   team2?: string;
   score1?: number;
@@ -263,11 +264,11 @@ export class AdminImportExport {
 
     const yamlSeries: TournamentYamlSerie[] = series.map((serie) => ({
       name: serie.name,
-       poules: (serie.poules ?? []).map((poule) => ({
-         name: poule.name,
-         ...(poule.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
-         teams: (poule.refTeams ?? []).map((ref) => ref.id),
-         games: (poule.games ?? [])
+      poules: (serie.poules ?? []).map((poule) => ({
+        name: poule.name,
+        ...(poule.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
+        teams: (poule.refTeams ?? []).map((ref) => ref.id),
+        games: (poule.games ?? [])
           .filter((game: Game) => game.refTeam1 && game.refTeam2)
           .map((game: Game) => {
             const yamlGame: TournamentYamlGame = {
@@ -286,12 +287,12 @@ export class AdminImportExport {
             return yamlGame;
           }),
       })),
-       playoffs: (serie.playoffs ?? []).map((playoff) => ({
-         name: playoff.name,
-         ...(playoff.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
-         size: playoff.size,
-         orderedTeams: (playoff.orderedTeamRefs ?? []).map((ref) => ref.id),
-         games: [...(playoff.games ?? [])]
+      playoffs: (serie.playoffs ?? []).map((playoff) => ({
+        name: playoff.name,
+        ...(playoff.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
+        size: playoff.size,
+        orderedTeams: (playoff.orderedTeamRefs ?? []).map((ref) => ref.id),
+        games: [...(playoff.games ?? [])]
           .sort((a, b) => {
             const roundCompare = (b.roundSize ?? 0) - (a.roundSize ?? 0);
             if (roundCompare !== 0) return roundCompare;
@@ -302,6 +303,7 @@ export class AdminImportExport {
               roundSize: game.roundSize ?? 2,
               matchNumber: game.matchNumber ?? 1,
             };
+            if (game.isBye) yamlGame.isBye = true;
             if (game.refTeam1) yamlGame.team1 = game.refTeam1.id;
             if (game.refTeam2) yamlGame.team2 = game.refTeam2.id;
             if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;

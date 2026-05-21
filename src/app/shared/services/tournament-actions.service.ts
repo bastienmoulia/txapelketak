@@ -30,6 +30,7 @@ export class TournamentActionsService {
 
   async saveGame(event: SaveGameEvent): Promise<void> {
     const gameData: Partial<Omit<Game, 'ref'>> = {
+      isBye: event.isBye ?? undefined,
       scoreTeam1: event.scoreTeam1 ?? undefined,
       scoreTeam2: event.scoreTeam2 ?? undefined,
       date: event.date ?? undefined,
@@ -37,12 +38,8 @@ export class TournamentActionsService {
       comment: event.comment ?? undefined,
     };
     if (event.gameRef) {
-      if (event.refTeam1 !== undefined) {
-        gameData.refTeam1 = event.refTeam1;
-      }
-      if (event.refTeam2 !== undefined) {
-        gameData.refTeam2 = event.refTeam2;
-      }
+      gameData.refTeam1 = event.refTeam1;
+      gameData.refTeam2 = event.refTeam2;
       await this.firebaseService.updateGame(event.gameRef, gameData);
       this.messageService.add({
         severity: 'success',

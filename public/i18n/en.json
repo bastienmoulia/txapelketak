@@ -271,6 +271,7 @@
       "showOnlyFreeSlots": "Free slots only",
       "freeSlot": "Free slot",
       "comment": "Comment",
+      "isBye": "Bye (no match)",
       "commentAria": "View comment for this game",
       "commentTooltip": "Comment"
     },

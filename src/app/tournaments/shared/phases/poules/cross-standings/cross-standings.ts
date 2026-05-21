@@ -57,7 +57,7 @@ export class CrossStandings {
 
     const allTeams: EnrichedTeam[] = [];
     for (const poule of poules) {
-      const pouleSize = poule.refTeams?.length ?? 0;
+      const pouleSize = poule.refTeams?.length ?? poule.standings.length;
       poule.standings.forEach((standing, idx) => {
         allTeams.push({ standing, pouleName: poule.name, pouleSize, standingRank: idx });
       });

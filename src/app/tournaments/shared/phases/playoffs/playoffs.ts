@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ApplyPipe } from 'ngxtension/call-apply';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -6,6 +14,8 @@ import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { TooltipModule } from 'primeng/tooltip';
+import { PopoverModule } from 'primeng/popover';
+import type { Popover } from 'primeng/popover';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
 
@@ -88,7 +98,7 @@ const createTeamNameLookup =
 
 @Component({
   selector: 'app-phases-playoffs',
-  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule, DatePipe],
+  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule, PopoverModule, DatePipe],
   templateUrl: './playoffs.html',
   styleUrl: './playoffs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -107,6 +117,8 @@ export class Playoffs {
   teams = this.poulesStore.teams;
   role = this.authStore.role;
   dateLocale = this.datepickerConfig.activeLanguage;
+  commentPopover = viewChild<Popover>('commentPopover');
+  currentCommentText = signal<string>('');
 
   getTeamName = createTeamNameLookup(this.teams, this.translocoService);
 
@@ -207,6 +219,11 @@ export class Playoffs {
         void this.tournamentActions.saveGame(result);
       }
     });
+  }
+
+  onShowComment(event: MouseEvent, comment: string): void {
+    this.currentCommentText.set(comment);
+    this.commentPopover()?.toggle(event);
   }
 
   onEditPlayoff(playoff: Playoff): void {

@@ -31,6 +31,7 @@ export interface PouleStandingsInput {
   imports: [FormsModule, SelectButton, TranslocoPipe],
   templateUrl: './cross-standings.html',
   styleUrl: './cross-standings.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CrossStandings {
   poules = input.required<PouleStandingsInput[]>();

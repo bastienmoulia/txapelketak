@@ -37,12 +37,8 @@ export class TournamentActionsService {
       comment: event.comment ?? undefined,
     };
     if (event.gameRef) {
-      if (event.refTeam1) {
-        gameData.refTeam1 = event.refTeam1;
-      }
-      if (event.refTeam2) {
-        gameData.refTeam2 = event.refTeam2;
-      }
+      gameData.refTeam1 = event.refTeam1;
+      gameData.refTeam2 = event.refTeam2;
       await this.firebaseService.updateGame(event.gameRef, gameData);
       this.messageService.add({
         severity: 'success',

@@ -198,8 +198,8 @@ export class GameFormDialog {
       const event: SaveGameEvent = {
         ...baseEvent,
         gameRef: this.data.gameRef,
-        ...(team1Ref ? { refTeam1: team1Ref } : {}),
-        ...(team2Ref ? { refTeam2: team2Ref } : {}),
+        refTeam1: team1Ref ?? undefined,
+        refTeam2: team2Ref ?? undefined,
       };
       this.dialogRef.close(event);
       return;

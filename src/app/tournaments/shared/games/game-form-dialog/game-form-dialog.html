@@ -13,6 +13,7 @@
             [style]="{ width: '100%' }"
             appendTo="body"
             [disabled]="data.role !== 'admin'"
+            [showClear]="isEditingPlayoffGame()"
           />
           <label for="team1">{{ 'admin.games.team1' | transloco }}</label>
         </p-floatlabel>
@@ -45,6 +46,7 @@
             [style]="{ width: '100%' }"
             appendTo="body"
             [disabled]="data.role !== 'admin'"
+            [showClear]="isEditingPlayoffGame()"
           />
           <label for="team2">{{ 'admin.games.team2' | transloco }}</label>
         </p-floatlabel>

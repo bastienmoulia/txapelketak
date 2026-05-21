@@ -562,10 +562,10 @@ export class FirebaseService {
     gameRef: DocumentReference,
     gameData: Partial<Omit<Game, 'ref'>>,
   ): Promise<void> {
-    console.debug(`[Firestore] updateGame: updating game`);
+    console.debug(`[Firestore] updateGame: updating game`, gameData);
     const data: Record<string, unknown> = {};
-    if (gameData.refTeam1 !== undefined) data['refTeam1'] = gameData.refTeam1;
-    if (gameData.refTeam2 !== undefined) data['refTeam2'] = gameData.refTeam2;
+    data['refTeam1'] = gameData.refTeam1 ?? null;
+    data['refTeam2'] = gameData.refTeam2 ?? null;
     data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
     data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
     data['date'] = gameData.date ?? null;

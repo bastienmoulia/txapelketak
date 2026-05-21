@@ -137,6 +137,26 @@ describe('Playoffs', () => {
     });
   });
 
+  it('should return placeholder when both first-round slots are empty', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', []);
+      fixture.detectChanges();
+
+      expect(component.getTeamName(undefined, 0, 0, 0, 3)).toBe('À renseigner');
+      expect(component.getTeamName(undefined, 0, 0, 1, 3)).toBe('À renseigner');
+    });
+  });
+
+  it('should return bye when only one first-round slot is empty', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', []);
+      fixture.detectChanges();
+
+      expect(component.getTeamName(undefined, 0, 0, 0, 3, mockTeamRef)).toBe('Exempt');
+      expect(component.getTeamName(undefined, 0, 0, 1, 3, mockTeamRef)).toBe('Exempt');
+    });
+  });
+
   it('should return sequential winner labels for semifinal slots when teams are not resolved yet', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', []);

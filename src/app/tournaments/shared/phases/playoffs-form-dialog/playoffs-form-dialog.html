@@ -150,6 +150,10 @@
             <h4 class="playoffs-tree-round-title">{{ round.roundLabel | transloco }}</h4>
             <div class="playoffs-tree-round-lane">
               @for (match of round.matches; track match.data.matchNumber) {
+                @let isByeTeam1 =
+                  match.data.isBye && match.data.team1Name !== ('playoffs.placeholder' | transloco);
+                @let isByeTeam2 =
+                  match.data.isBye && match.data.team2Name !== ('playoffs.placeholder' | transloco);
                 <div
                   class="playoffs-tree-match"
                   [class.playoffs-tree-match--with-connector]="!round.isFinalRound"
@@ -163,10 +167,7 @@
                         >{{ 'finale.matchLabel' | transloco }} {{ match.data.matchNumber }}</span
                       >
                     </div>
-                    <div
-                      class="finale-match-team"
-                      [class.opacity-50]="match.data.isBye && !match.data.team1Name"
-                    >
+                    <div class="finale-match-team" [class.finale-match-team--bye]="isByeTeam1">
                       <span
                         class="finale-team-name"
                         [class.italic]="
@@ -179,10 +180,7 @@
                         {{ match.data.team1Name }}
                       </span>
                     </div>
-                    <div
-                      class="finale-match-team"
-                      [class.opacity-50]="match.data.isBye && !match.data.team2Name"
-                    >
+                    <div class="finale-match-team" [class.finale-match-team--bye]="isByeTeam2">
                       <span
                         class="finale-team-name"
                         [class.italic]="

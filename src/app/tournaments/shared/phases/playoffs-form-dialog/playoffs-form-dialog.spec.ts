@@ -254,6 +254,31 @@ describe('PlayoffsFormDialog', () => {
     expect(firstRound!.matches[0].isBye).toBe(true);
   });
 
+  it('should show one team and one bye with a single selected team', () => {
+    component.selectedTeams.set([asSelectedTeam(teams[0])]);
+
+    const preview = component.bracketPreview();
+    const firstRound = preview.find((r) => r.roundOrder === 2);
+
+    expect(firstRound).toBeDefined();
+    expect(firstRound!.matches).toHaveLength(1);
+    expect(firstRound!.matches[0].team1Name).toBe('Team A');
+    expect(firstRound!.matches[0].team2Name).toBe('Exempt');
+    expect(firstRound!.matches[0].isBye).toBe(true);
+  });
+
+  it('should show placeholder labels when both slots are empty', () => {
+    component.selectedTeams.set([]);
+
+    const preview = component.bracketPreview();
+    const firstRound = preview.find((r) => r.roundOrder === 2);
+
+    expect(firstRound).toBeDefined();
+    expect(firstRound!.matches).toHaveLength(1);
+    expect(firstRound!.matches[0].team1Name).toBe('À renseigner');
+    expect(firstRound!.matches[0].team2Name).toBe('À renseigner');
+  });
+
   it('should compute first round in bracket preview', () => {
     component.selectedTeams.set(teams.map(asSelectedTeam));
 

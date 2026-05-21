@@ -136,6 +136,16 @@ export class GameFormDialog {
     return !this.selectedTeam1Ref() || !this.selectedTeam2Ref();
   });
 
+  isEditingPlayoffGame = computed(() => {
+    if (!this.data.isEditing) {
+      return false;
+    }
+
+    const gamePath = this.data.gameRef?.path ?? '';
+    const phasePath = this.data.currentPoule?.ref?.path ?? '';
+    return gamePath.includes('/playoffs/') || phasePath.includes('/playoffs/');
+  });
+
   hasFreeSlot = createHasFreeSlot(this.data.freeSlotDateKeys);
 
   constructor() {
@@ -188,8 +198,8 @@ export class GameFormDialog {
       const event: SaveGameEvent = {
         ...baseEvent,
         gameRef: this.data.gameRef,
-        ...(team1Ref ? { refTeam1: team1Ref } : {}),
-        ...(team2Ref ? { refTeam2: team2Ref } : {}),
+        refTeam1: team1Ref ?? undefined,
+        refTeam2: team2Ref ?? undefined,
       };
       this.dialogRef.close(event);
       return;

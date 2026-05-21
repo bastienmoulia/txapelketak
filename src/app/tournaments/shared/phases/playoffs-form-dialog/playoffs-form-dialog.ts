@@ -180,8 +180,13 @@ export class PlayoffsFormDialog {
           const team2Index = pairing.team2Index;
           const team1 = teams[team1Index];
           const team2 = teams[team2Index];
-          const team1Name = team1?.name ?? this.translocoService.translate('playoffs.bye');
-          const team2Name = team2?.name ?? this.translocoService.translate('playoffs.bye');
+          const isDoubleEmpty = !team1 && !team2;
+          const team1Name = isDoubleEmpty
+            ? this.translocoService.translate('playoffs.placeholder')
+            : (team1?.name ?? this.translocoService.translate('playoffs.bye'));
+          const team2Name = isDoubleEmpty
+            ? this.translocoService.translate('playoffs.placeholder')
+            : (team2?.name ?? this.translocoService.translate('playoffs.bye'));
           matches.push({
             matchNumber,
             team1Name,

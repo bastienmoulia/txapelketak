@@ -136,6 +136,16 @@ export class GameFormDialog {
     return !this.selectedTeam1Ref() || !this.selectedTeam2Ref();
   });
 
+  isEditingPlayoffGame = computed(() => {
+    if (!this.data.isEditing) {
+      return false;
+    }
+
+    const gamePath = this.data.gameRef?.path ?? '';
+    const phasePath = this.data.currentPoule?.ref?.path ?? '';
+    return gamePath.includes('/playoffs/') || phasePath.includes('/playoffs/');
+  });
+
   hasFreeSlot = createHasFreeSlot(this.data.freeSlotDateKeys);
 
   constructor() {

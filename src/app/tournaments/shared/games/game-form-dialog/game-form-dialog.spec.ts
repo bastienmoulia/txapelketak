@@ -153,6 +153,7 @@ describe('GameFormDialog (editing, admin)', () => {
 
 describe('GameFormDialog (editing playoff slot without teams)', () => {
   let component: GameFormDialog;
+  let fixture: ComponentFixture<GameFormDialog>;
   let mockRef: { close: ReturnType<typeof vi.fn> };
   let pouleRef: DocumentReference;
   let gameRef: DocumentReference;
@@ -173,11 +174,17 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
               role: 'admin',
               isEditing: true,
               currentPoule: {
-                ref: pouleRef,
+                ref: {
+                  id: 'playoff-1',
+                  path: 'tournaments/t1/series/s1/playoffs/playoff-1',
+                } as DocumentReference,
                 name: 'Playoff',
                 refTeams: [],
               } as Poule,
-              gameRef,
+              gameRef: {
+                id: 'game-1',
+                path: 'tournaments/t1/series/s1/playoffs/playoff-1/games/game-1',
+              } as DocumentReference,
             },
           },
         },
@@ -187,10 +194,16 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
       ],
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(GameFormDialog);
+    fixture = TestBed.createComponent(GameFormDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
     await fixture.whenStable();
+  });
+
+  it('should not show delete button when editing a playoff game', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const deleteBtn = compiled.querySelector('[data-testid="delete-game-button"]');
+    expect(deleteBtn).toBeNull();
   });
 
   it('should allow saving when editing without selected teams', () => {
@@ -200,14 +213,16 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
 
     component.onSave();
 
-    expect(mockRef.close).toHaveBeenCalledWith({
-      pouleRef,
-      gameRef,
-      scoreTeam1: null,
-      scoreTeam2: null,
-      date: new Date('2026-05-20T10:00:00.000Z'),
-      referees: null,
-      comment: null,
-    });
+    expect(mockRef.close).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pouleRef: expect.objectContaining({ id: 'playoff-1' }),
+        gameRef: expect.objectContaining({ id: 'game-1' }),
+        scoreTeam1: null,
+        scoreTeam2: null,
+        date: new Date('2026-05-20T10:00:00.000Z'),
+        referees: null,
+        comment: null,
+      }),
+    );
   });
 });

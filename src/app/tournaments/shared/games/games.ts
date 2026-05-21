@@ -171,6 +171,7 @@ export class Games {
     game.scoreTeam1 != null && game.scoreTeam2 != null && game.scoreTeam2 < game.scoreTeam1;
 
   gamesByDate = computed((): GamesDateGroup[] => {
+    this.activeLanguage();
     const dateMap = new Map<string, GameByDate[]>();
 
     for (const serie of this.series()) {
@@ -178,7 +179,21 @@ export class Games {
         for (const game of phase.games) {
           const sortable = this.toSortableGame(game);
           const dateKey = this.getDateKey(game.date);
-          const phaseLabel = [phase.name, phase.isPlayoff ? game.name : null]
+          const playoffRoundKey =
+            phase.isPlayoff && game.roundSize != null ? `finale.rounds.${game.roundSize}` : null;
+          const translatedPlayoffRound = playoffRoundKey
+            ? this.translocoService.translate(playoffRoundKey)
+            : null;
+          const playoffGameLabel =
+            phase.isPlayoff &&
+            game.roundSize != null &&
+            game.matchNumber != null &&
+            translatedPlayoffRound != null &&
+            translatedPlayoffRound !== '' &&
+            translatedPlayoffRound !== playoffRoundKey
+              ? `${translatedPlayoffRound} ${game.matchNumber}`
+              : game.name;
+          const phaseLabel = [phase.name, phase.isPlayoff ? playoffGameLabel : null]
             .filter(Boolean)
             .join(' - ');
           const displayName = [serie.name, phaseLabel].filter(Boolean).join(' - ');

@@ -167,6 +167,37 @@ describe('Playoffs', () => {
     });
   });
 
+  it('should render only one team row for explicit bye matches in first round', () => {
+    TestBed.runInInjectionContext(() => {
+      const byeGame: Game = {
+        ref: {
+          id: 'game-bye',
+          path: 'series/test/playoffs/playoff-1/games/game-bye',
+        } as unknown as DocumentReference,
+        refTeam1: mockTeamRef,
+        refTeam2: undefined,
+        isBye: true,
+        roundSize: 2,
+        matchNumber: 1,
+      };
+
+      fixture.componentRef.setInput('playoffs', [
+        {
+          ...mockPlayoff,
+          games: [byeGame],
+        },
+      ]);
+      fixture.detectChanges();
+
+      const matchCard = fixture.nativeElement.querySelector('.playoff-match-card') as HTMLElement;
+      const teamRows = matchCard.querySelectorAll('.finale-match-team');
+
+      expect(teamRows.length).toBe(1);
+      expect(matchCard.textContent).toContain('Team 1');
+      expect(matchCard.textContent).not.toContain('Exempt');
+    });
+  });
+
   it('should return sequential winner labels for semifinal slots when teams are not resolved yet', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', []);

@@ -355,6 +355,11 @@ export class PhasesPage {
     return this.page.locator('.playoff-match-card').filter({ hasText: matchLabel });
   }
 
+  playoffMatchCardByTeams(playoffName: string, teamA: string, teamB: string): Locator {
+    const playoffCard = this.page.locator('p-card').filter({ hasText: playoffName }).first();
+    return playoffCard.locator('.playoff-match-card').filter({ hasText: teamA }).filter({ hasText: teamB });
+  }
+
   async editPlayoffMatch(
     playoffName: string,
     matchLabel: string,
@@ -369,6 +374,27 @@ export class PhasesPage {
     await dialog.waitFor({ state: 'visible' });
     await dialog.locator('input[name="scoreTeam1"], #scoreTeam1').fill(String(scoreTeam1));
     await dialog.locator('input[name="scoreTeam2"], #scoreTeam2').fill(String(scoreTeam2));
+    await dialog.locator('button[type="submit"]').click();
+    await dialog.waitFor({ state: 'hidden' });
+  }
+
+  async setPlayoffMatchByeByTeams(
+    playoffName: string,
+    teamA: string,
+    teamB: string,
+  ): Promise<void> {
+    const matchCard = this.playoffMatchCardByTeams(playoffName, teamA, teamB).first();
+    await expect(matchCard).toBeVisible({ timeout: 15000 });
+    await matchCard.scrollIntoViewIfNeeded();
+    await matchCard.getByTestId('playoff-match-edit-button').click();
+
+    const dialog = this.page.locator('.p-dialog').last();
+    await dialog.waitFor({ state: 'visible' });
+
+    const byeToggleLabel = dialog.locator('label[for="gameIsBye"]');
+    await expect(byeToggleLabel).toBeVisible({ timeout: 5000 });
+    await byeToggleLabel.click();
+
     await dialog.locator('button[type="submit"]').click();
     await dialog.waitFor({ state: 'hidden' });
   }

@@ -88,16 +88,13 @@
                                     type="button"
                                     icon="pi pi-question-circle"
                                     [ariaLabel]="'admin.games.commentAria' | transloco"
-                                    [pTooltip]="
-                                      ('admin.games.commentAria' | transloco) +
-                                      ': ' +
-                                      match.game.comment
-                                    "
+                                    [pTooltip]="'admin.games.commentTooltip' | transloco"
                                     tooltipPosition="top"
                                     severity="info"
                                     size="small"
                                     [rounded]="true"
                                     [text]="true"
+                                    (onClick)="onShowComment($event, match.game.comment)"
                                     data-testid="playoff-match-comment-button"
                                   />
                                 }
@@ -200,3 +197,13 @@
     </p-card>
   }
 </div>
+
+<p-popover #commentPopover>
+  <p
+    class="m-0 max-w-64 whitespace-pre-wrap"
+    role="status"
+    [attr.aria-label]="'admin.games.commentAria' | transloco"
+  >
+    {{ currentCommentText() }}
+  </p>
+</p-popover>

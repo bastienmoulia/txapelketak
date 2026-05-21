@@ -64,16 +64,17 @@ const createTeamNameLookup =
     matchIndex: number,
     teamSlot: 0 | 1,
     totalRounds: number,
+    isBye = false,
     opponentRef?: DocumentReference,
   ): string => {
     const team = ref ? teams().find((currentTeam) => currentTeam.ref?.id === ref.id) : undefined;
     if (team?.name && team.name.trim()) return team.name;
 
     if (!ref && roundIndex === 0) {
-      if (!opponentRef) {
-        return transloco.translate('playoffs.placeholder');
+      if (isBye && !!opponentRef) {
+        return transloco.translate('playoffs.bye');
       }
-      return transloco.translate('playoffs.bye');
+      return transloco.translate('playoffs.placeholder');
     }
 
     if (roundIndex > 0) {
@@ -176,6 +177,7 @@ export class Playoffs {
       refTeams: this.teams()
         .map((team) => team.ref)
         .filter((ref): ref is DocumentReference => !!ref),
+      games: playoff.games ?? [],
     };
 
     const dialogRef = this.dialogService.open(GameFormDialog, {
@@ -190,6 +192,7 @@ export class Playoffs {
         currentPoule: pouleAdapter,
         initialTeam1Ref: game.refTeam1 ?? null,
         initialTeam2Ref: game.refTeam2 ?? null,
+        initialIsBye: game.isBye ?? false,
         initialScoreTeam1: game.scoreTeam1 ?? null,
         initialScoreTeam2: game.scoreTeam2 ?? null,
         initialDate: game.date ?? null,

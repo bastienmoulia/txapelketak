@@ -327,6 +327,57 @@ describe('Games', () => {
     expect(game.team2Name).toBe('Bravo');
   });
 
+  it('should exclude bye games from gamesByDate list', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          playoffs: [
+            {
+              ref: createDocumentReference('playoff-1'),
+              name: 'Playoff A',
+              orderedTeamRefs: [team1Ref, team2Ref],
+              size: 2,
+              games: [
+                {
+                  ref: createDocumentReference('game-bye'),
+                  refTeam1: team1Ref,
+                  isBye: true,
+                  roundSize: 2,
+                  matchNumber: 1,
+                },
+                {
+                  ref: createDocumentReference('game-normal'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  roundSize: 2,
+                  matchNumber: 2,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    const groups = component.gamesByDate();
+    const games = groups.flatMap((group) => group.games);
+
+    expect(games.some((game) => game.ref.id === 'game-bye')).toBe(false);
+    expect(games.some((game) => game.ref.id === 'game-normal')).toBe(true);
+  });
+
   it('should filter games by local calendar day (same local date, near midnight)', () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');

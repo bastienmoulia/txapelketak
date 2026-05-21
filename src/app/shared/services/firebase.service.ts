@@ -509,6 +509,7 @@ export class FirebaseService {
           roundSize,
           matchNumber,
           name: `${getRoundLabel(roundSize)} ${matchNumber}`,
+          isBye: false,
         };
 
         if (roundSize === bracketSize) {
@@ -566,6 +567,7 @@ export class FirebaseService {
     const data: Record<string, unknown> = {};
     data['refTeam1'] = gameData.refTeam1 ?? null;
     data['refTeam2'] = gameData.refTeam2 ?? null;
+    data['isBye'] = gameData.isBye ?? false;
     data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
     data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
     data['date'] = gameData.date ?? null;
@@ -760,6 +762,7 @@ export class FirebaseService {
             roundSize: yamlGame.roundSize,
             matchNumber: yamlGame.matchNumber,
             name: `${getRoundLabel(yamlGame.roundSize)} ${yamlGame.matchNumber}`,
+            isBye: yamlGame.isBye === true,
           };
 
           const refTeam1 = yamlGame.team1 ? teamIdMap.get(yamlGame.team1) : undefined;

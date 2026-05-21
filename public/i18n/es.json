@@ -271,6 +271,7 @@
       "showOnlyFreeSlots": "Solo franjas libres",
       "freeSlot": "Franja libre",
       "comment": "Comentario",
+      "isBye": "Exento de partido",
       "commentAria": "Ver el comentario de este partido",
       "commentTooltip": "Comentario"
     },

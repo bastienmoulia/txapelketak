@@ -147,13 +147,23 @@ describe('Playoffs', () => {
     });
   });
 
-  it('should return bye when only one first-round slot is empty', () => {
+  it('should return placeholder when only one first-round slot is empty and bye is not explicit', () => {
     TestBed.runInInjectionContext(() => {
       fixture.componentRef.setInput('playoffs', []);
       fixture.detectChanges();
 
-      expect(component.getTeamName(undefined, 0, 0, 0, 3, mockTeamRef)).toBe('Exempt');
-      expect(component.getTeamName(undefined, 0, 0, 1, 3, mockTeamRef)).toBe('Exempt');
+      expect(component.getTeamName(undefined, 0, 0, 0, 3, false, mockTeamRef)).toBe('À renseigner');
+      expect(component.getTeamName(undefined, 0, 0, 1, 3, false, mockTeamRef)).toBe('À renseigner');
+    });
+  });
+
+  it('should return bye when first-round slot is empty and bye is explicit', () => {
+    TestBed.runInInjectionContext(() => {
+      fixture.componentRef.setInput('playoffs', []);
+      fixture.detectChanges();
+
+      expect(component.getTeamName(undefined, 0, 0, 0, 3, true, mockTeamRef)).toBe('Exempt');
+      expect(component.getTeamName(undefined, 0, 0, 1, 3, true, mockTeamRef)).toBe('Exempt');
     });
   });
 

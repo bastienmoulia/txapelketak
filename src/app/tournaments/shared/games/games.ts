@@ -38,6 +38,7 @@ import { TournamentActionsService } from '../../../shared/services/tournament-ac
 
 interface SaveGameEventBase {
   pouleRef: DocumentReference;
+  isBye?: boolean;
   scoreTeam1?: number | null;
   scoreTeam2?: number | null;
   date?: Date | null;
@@ -177,6 +178,10 @@ export class Games {
     for (const serie of this.series()) {
       for (const phase of this.getSeriePhases(serie)) {
         for (const game of phase.games) {
+          if (game.isBye) {
+            continue;
+          }
+
           const sortable = this.toSortableGame(game, {
             isPlayoff: phase.isPlayoff,
             phaseGames: phase.games,
@@ -524,6 +529,7 @@ export class Games {
         currentPoule: poule,
         initialTeam1Ref: game.refTeam1,
         initialTeam2Ref: game.refTeam2,
+        initialIsBye: game.isBye,
         initialScoreTeam1: game.scoreTeam1,
         initialScoreTeam2: game.scoreTeam2,
         initialDate: game.date,
@@ -564,6 +570,7 @@ export class Games {
     currentPoule: Poule;
     initialTeam1Ref?: DocumentReference | null;
     initialTeam2Ref?: DocumentReference | null;
+    initialIsBye?: boolean | null;
     initialScoreTeam1?: number | null;
     initialScoreTeam2?: number | null;
     initialDate?: Date | null;

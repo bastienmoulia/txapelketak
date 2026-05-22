@@ -235,7 +235,19 @@
       "playoffEdited": "Playoffak eguneratu dira",
       "playoffEditedDetail": "Playoffak ondo eguneratu dira.",
       "playoffDeleted": "Playoffak ezabatu dira",
-      "playoffDeletedDetail": "Playoffak ondo ezabatu dira."
+      "playoffDeletedDetail": "Playoffak ondo ezabatu dira.",
+      "crossStandings": {
+        "title": "Sailkapen orokorra — multzo guztiak",
+        "modeAverage": "Batez bestekoa",
+        "modeAverageTooltip": "Estatistikak multzo bakoitzeko talde-kopuruaren arabera normalizatzen ditu",
+        "modeDropWeakest": "Ahulak kendu",
+        "modeDropWeakestTooltip": "Multzo handienetatik azken sailkatutako taldeak kentzen ditu tamainak berdintzeko",
+        "modePhantom": "Talde fantasma",
+        "modePhantomTooltip": "Garaipen simulatuak gehitzen ditu (30-29) multzo txikientzat",
+        "columnRank": "Sailkapena",
+        "columnTeam": "Taldea",
+        "columnPoule": "Multzoa"
+      }
     },
     "games": {
       "addGame": "Partida gehitu",

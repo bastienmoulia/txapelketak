@@ -1,0 +1,59 @@
+@if (poules().length > 0) {
+  <div class="cross-standings-section" data-testid="cross-standings-section">
+    <h3 class="cross-standings-title">
+      {{ 'admin.poules.crossStandings.title' | transloco }}
+    </h3>
+    <div class="mode-selector">
+      <p-selectbutton
+        [ngModel]="crossPouleMode()"
+        (ngModelChange)="crossPouleMode.set($event)"
+        [options]="modeOptions"
+        optionValue="value"
+        data-testid="cross-standings-mode-selector"
+      >
+        <ng-template #item let-opt>
+          {{ opt.labelKey | transloco }}
+        </ng-template>
+      </p-selectbutton>
+      <p class="mode-description">
+        @switch (crossPouleMode()) {
+          @case ('average') {
+            {{ 'admin.poules.crossStandings.modeAverageTooltip' | transloco }}
+          }
+          @case ('drop-weakest') {
+            {{ 'admin.poules.crossStandings.modeDropWeakestTooltip' | transloco }}
+          }
+          @case ('phantom') {
+            {{ 'admin.poules.crossStandings.modePhantomTooltip' | transloco }}
+          }
+        }
+      </p>
+    </div>
+    @if (crossPouleStandings().length > 0) {
+      <table class="w-full standings-table" data-testid="cross-standings-table">
+        <thead>
+          <tr>
+            <th class="standings-table__stat">
+              {{ 'admin.poules.crossStandings.columnRank' | transloco }}
+            </th>
+            <th class="standings-table__name">
+              {{ 'admin.poules.crossStandings.columnTeam' | transloco }}
+            </th>
+            <th class="standings-table__name">
+              {{ 'admin.poules.crossStandings.columnPoule' | transloco }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of crossPouleStandings(); track entry.teamName + '__' + entry.pouleName) {
+            <tr>
+              <td class="standings-table__stat">{{ entry.rank }}</td>
+              <td class="standings-table__name">{{ entry.teamName }}</td>
+              <td class="standings-table__name">{{ entry.pouleName }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}

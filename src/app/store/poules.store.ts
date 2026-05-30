@@ -3,7 +3,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { distinctUntilChanged, from, map, switchMap, Subscription } from 'rxjs';
 import { DocumentReference } from '@angular/fire/firestore';
 import { FirebaseService } from '../shared/services/firebase.service';
-import { Game, Playoff, Poule, Serie, Team, TimeSlot } from '../tournaments/models';
+import { Game, FreePhase, Playoff, Poule, Serie, Team, TimeSlot } from '../tournaments/models';
 import { AuthStore } from './auth.store';
 
 interface PoulesStoreState {
@@ -52,6 +52,8 @@ export const PoulesStore = signalStore(
     const gameSubscriptionMap = new Map<string, Subscription>(); // key: poule ref ID
     const playoffCollectionSubscriptionMap = new Map<string, Subscription>(); // key: serie ref ID
     const playoffGameSubscriptionMap = new Map<string, Subscription>(); // key: playoff ref ID
+    const freePhaseCollectionSubscriptionMap = new Map<string, Subscription>(); // key: serie ref ID
+    const freePhaseGameSubscriptionMap = new Map<string, Subscription>(); // key: freePhase ref ID
     const pouleSubscriptions: Subscription[] = [];
     let watchedTournamentId: string | null = null;
 
@@ -70,6 +72,16 @@ export const PoulesStore = signalStore(
       playoffGameSubscriptionMap.clear();
     }
 
+    function stopFreePhaseCollectionWatchers(): void {
+      freePhaseCollectionSubscriptionMap.forEach((sub) => sub.unsubscribe());
+      freePhaseCollectionSubscriptionMap.clear();
+    }
+
+    function stopFreePhaseGameWatchers(): void {
+      freePhaseGameSubscriptionMap.forEach((sub) => sub.unsubscribe());
+      freePhaseGameSubscriptionMap.clear();
+    }
+
     function stopPouleWatchers(): void {
       pouleSubscriptions.forEach((s) => s.unsubscribe());
       pouleSubscriptions.length = 0;
@@ -86,6 +98,8 @@ export const PoulesStore = signalStore(
       stopGameWatchers();
       stopPlayoffCollectionWatchers();
       stopPlayoffGameWatchers();
+      stopFreePhaseCollectionWatchers();
+      stopFreePhaseGameWatchers();
       watchedTournamentId = null;
     }
 
@@ -103,6 +117,7 @@ export const PoulesStore = signalStore(
         ...serie,
         poules: (serie.poules ?? []).filter((poule) => !poule.hiddenFromVisitors),
         playoffs: (serie.playoffs ?? []).filter((playoff) => !playoff.hiddenFromVisitors),
+        freePhases: (serie.freePhases ?? []).filter((freePhase) => !freePhase.hiddenFromVisitors),
       }));
     }
 
@@ -216,6 +231,75 @@ export const PoulesStore = signalStore(
       for (const playoff of newPlayoffs) {
         if (!playoffGameSubscriptionMap.has(playoff.ref.id)) {
           startPlayoffGameWatcher(serie.ref, playoff);
+        }
+      }
+    }
+
+    function startFreePhaseGameWatcher(serieRef: DocumentReference, freePhase: FreePhase): void {
+      if (freePhaseGameSubscriptionMap.has(freePhase.ref.id)) {
+        return;
+      }
+
+      const sub = firebaseService.watchCollectionFromDocumentRef(freePhase.ref, 'games').subscribe({
+        next: (items) => {
+          const games: Game[] = items.map((item) => {
+            const data = item.data as Partial<Game>;
+            return {
+              ...data,
+              ref: item.ref,
+              date: firebaseService.parseFirestoreDate(data.date),
+            } as Game;
+          });
+
+          patchState(store, {
+            series: store.series().map((serie) => {
+              if (serie.ref.id !== serieRef.id) {
+                return serie;
+              }
+
+              return {
+                ...serie,
+                freePhases: (serie.freePhases ?? []).map((currentFreePhase) =>
+                  currentFreePhase.ref.id === freePhase.ref.id
+                    ? { ...currentFreePhase, games }
+                    : currentFreePhase,
+                ),
+              };
+            }),
+            error: null,
+          });
+        },
+        error: (err: unknown) => {
+          patchState(store, {
+            error: err instanceof Error ? err.message : 'Unable to watch free phase games',
+          });
+        },
+        complete: () => {
+          freePhaseGameSubscriptionMap.delete(freePhase.ref.id);
+        },
+      });
+
+      freePhaseGameSubscriptionMap.set(freePhase.ref.id, sub);
+    }
+
+    function syncFreePhaseGameWatchers(
+      serie: Serie,
+      oldFreePhases: FreePhase[],
+      newFreePhases: FreePhase[],
+    ): void {
+      const oldIds = new Set(oldFreePhases.map((p) => p.ref.id));
+      const newIds = new Set(newFreePhases.map((p) => p.ref.id));
+
+      for (const id of oldIds) {
+        if (!newIds.has(id)) {
+          freePhaseGameSubscriptionMap.get(id)?.unsubscribe();
+          freePhaseGameSubscriptionMap.delete(id);
+        }
+      }
+
+      for (const freePhase of newFreePhases) {
+        if (!freePhaseGameSubscriptionMap.has(freePhase.ref.id)) {
+          startFreePhaseGameWatcher(serie.ref, freePhase);
         }
       }
     }
@@ -336,6 +420,52 @@ export const PoulesStore = signalStore(
       })) as Poule[];
     }
 
+    function watchFreePhases(series: Serie[]): void {
+      stopFreePhaseCollectionWatchers();
+      stopFreePhaseGameWatchers();
+
+      for (const serie of series) {
+        const sub = firebaseService
+          .watchCollectionFromDocumentRef(serie.ref, 'freePhases')
+          .subscribe({
+            next: (items) => {
+              const currentSeries = store.series();
+              const currentSerie = currentSeries.find((s) => s.ref.id === serie.ref.id);
+              const oldFreePhases = currentSerie?.freePhases ?? [];
+
+              const freePhasesWithGames: FreePhase[] = items.map((item) => {
+                const existingFreePhase = oldFreePhases.find((p) => p.ref.id === item.ref.id);
+                return {
+                  ...(item.data as Partial<FreePhase>),
+                  ref: item.ref,
+                  games: existingFreePhase?.games ?? [],
+                } as FreePhase;
+              });
+
+              const newSeries = currentSeries.map((s) =>
+                s.ref.id === serie.ref.id ? { ...s, freePhases: freePhasesWithGames } : s,
+              );
+
+              const filteredSeries = filterSeriesForCurrentRole(newSeries);
+              const filteredCurrentSerie = filteredSeries.find((s) => s.ref.id === serie.ref.id);
+              const filteredFreePhases = filteredCurrentSerie?.freePhases ?? [];
+              patchState(store, { series: filteredSeries, error: null });
+              syncFreePhaseGameWatchers(serie, oldFreePhases, filteredFreePhases);
+            },
+            error: (err: unknown) => {
+              patchState(store, {
+                error: err instanceof Error ? err.message : 'Unable to watch free phases',
+              });
+            },
+            complete: () => {
+              freePhaseCollectionSubscriptionMap.delete(serie.ref.id);
+            },
+          });
+
+        freePhaseCollectionSubscriptionMap.set(serie.ref.id, sub);
+      }
+    }
+
     return {
       startWatching(tournamentRef: DocumentReference): void {
         const tournamentId = tournamentRef.id;
@@ -409,6 +539,8 @@ export const PoulesStore = signalStore(
               stopPouleWatchers();
               stopPlayoffCollectionWatchers();
               stopPlayoffGameWatchers();
+              stopFreePhaseCollectionWatchers();
+              stopFreePhaseGameWatchers();
               const series = items.map((item) => ({
                 ...(item.data as Partial<Serie>),
                 ref: item.ref,
@@ -430,6 +562,7 @@ export const PoulesStore = signalStore(
               watchGames(filteredSeries);
               watchPoules(series);
               watchPlayoffs(series);
+              watchFreePhases(series);
             },
             error: (err: unknown) => {
               resetWatchingState();
@@ -470,6 +603,8 @@ export const PoulesStore = signalStore(
         stopGameWatchers();
         stopPlayoffCollectionWatchers();
         stopPlayoffGameWatchers();
+        stopFreePhaseCollectionWatchers();
+        stopFreePhaseGameWatchers();
         watchedTournamentId = null;
         patchState(store, initialState);
       },

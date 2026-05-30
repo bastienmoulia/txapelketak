@@ -228,6 +228,8 @@
       "teamsAddedToPouleDetail": "{{count}} talde gehitu dira \"{{pouleName}}\" multzora.",
       "dialogAddPlayoffs": "Playoffak gehitu",
       "dialogEditPlayoff": "Playoffak editatu",
+      "dialogAddFreePhase": "Fase libre bat gehitu",
+      "dialogEditFreePhase": "Fase librea editatu",
       "hideFromVisitors": "Bisitariei ezkutatu",
       "hiddenFromVisitorsIndicator": "Bisitarientzat ezkutua",
       "editPlayoffAria": "Playoff hauek editatu",
@@ -236,6 +238,13 @@
       "playoffEditedDetail": "Playoffak ondo eguneratu dira.",
       "playoffDeleted": "Playoffak ezabatu dira",
       "playoffDeletedDetail": "Playoffak ondo ezabatu dira.",
+      "freePhaseAdded": "Fase librea gehitu da",
+      "freePhaseAddedDetail": "Fase librea ondo gehitu da.",
+      "freePhaseEdited": "Fase librea editatu da",
+      "freePhaseEditedDetail": "Fase librea ondo editatu da.",
+      "freePhaseDeleted": "Fase librea ezabatu da",
+      "freePhaseDeletedDetail": "Fase librea ondo ezabatu da.",
+      "editFreePhaseAria": "Fase libre hau editatu",
       "crossStandings": {
         "title": "Sailkapen orokorra — multzo guztiak",
         "modeAverage": "Batez bestekoa",
@@ -481,5 +490,11 @@
     "generated": "Playoffak sortuta",
     "generatedDetail": "{{count}} playoff partida sortu dira.",
     "winnerOfPrevious": "{{round}} {{number}} irabazlea"
+  },
+  "freePhase": {
+    "defaultName": "Fase librea",
+    "name": "Fase librearen izena (aukerako)",
+    "noGames": "Ez dago partidarik fase libre honetan.",
+    "addGame": "Partida bat gehitu"
   }
 }

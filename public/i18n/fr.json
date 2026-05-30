@@ -228,6 +228,8 @@
       "teamsAddedToPouleDetail": "{{count}} équipe(s) ajoutée(s) à \"{{pouleName}}\".",
       "dialogAddPlayoffs": "Ajouter des playoffs",
       "dialogEditPlayoff": "Modifier les playoffs",
+      "dialogAddFreePhase": "Ajouter une phase libre",
+      "dialogEditFreePhase": "Modifier la phase libre",
       "hideFromVisitors": "Cacher aux visiteurs",
       "hiddenFromVisitorsIndicator": "Caché aux visiteurs",
       "editPlayoffAria": "Modifier ces playoffs",
@@ -236,6 +238,13 @@
       "playoffEditedDetail": "Les playoffs ont été modifiés avec succès.",
       "playoffDeleted": "Playoffs supprimés",
       "playoffDeletedDetail": "Les playoffs ont été supprimés avec succès.",
+      "freePhaseAdded": "Phase libre ajoutée",
+      "freePhaseAddedDetail": "La phase libre a été ajoutée avec succès.",
+      "freePhaseEdited": "Phase libre modifiée",
+      "freePhaseEditedDetail": "La phase libre a été modifiée avec succès.",
+      "freePhaseDeleted": "Phase libre supprimée",
+      "freePhaseDeletedDetail": "La phase libre a été supprimée avec succès.",
+      "editFreePhaseAria": "Modifier cette phase libre",
       "crossStandings": {
         "title": "Classement général — toutes poules",
         "modeAverage": "Moyenne",
@@ -481,5 +490,11 @@
     "generated": "Playoffs générés",
     "generatedDetail": "{{count}} matchs de playoffs ont été générés.",
     "winnerOfPrevious": "Gagnant {{round}} {{number}}"
+  },
+  "freePhase": {
+    "defaultName": "Phase libre",
+    "name": "Nom de la phase libre (facultatif)",
+    "noGames": "Aucune partie dans cette phase libre.",
+    "addGame": "Ajouter une partie"
   }
 }

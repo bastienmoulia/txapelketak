@@ -376,6 +376,11 @@ export class FirebaseService {
     await this.deletePoulesFromSerie(serieRef);
     await this.deletePlayoffsFromSerie(serieRef);
 
+    const freePhaseDocs = await this.getCollectionFromDocumentRef(serieRef, 'freePhases');
+    for (const freePhaseDoc of freePhaseDocs) {
+      await this.deleteFreePhaseFromSerie(freePhaseDoc.ref);
+    }
+
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: serie`);
       await deleteDoc(serieRef);
@@ -502,6 +507,48 @@ export class FirebaseService {
         await batch.commit();
       });
     }
+  }
+
+  async addFreePhaseToSerie(
+    serieRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<DocumentReference> {
+    console.debug(`[Firestore] addFreePhaseToSerie: ${name}`);
+    const freePhaseDocRef = doc(collection(serieRef, 'freePhases'));
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] setDoc: freePhase`);
+      await setDoc(freePhaseDocRef, { name, hiddenFromVisitors });
+    });
+    return freePhaseDocRef;
+  }
+
+  async updateFreePhaseInSerie(
+    freePhaseRef: DocumentReference,
+    name: string,
+    hiddenFromVisitors = false,
+  ): Promise<void> {
+    console.debug(`[Firestore] updateFreePhaseInSerie: ${name}`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: freePhase`);
+      await updateDoc(freePhaseRef, { name, hiddenFromVisitors });
+    });
+  }
+
+  async deleteFreePhaseFromSerie(freePhaseRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deleteFreePhaseFromSerie: deleting freePhase and nested games`);
+    const gameDocs = await this.getCollectionFromDocumentRef(freePhaseRef, 'games');
+    for (const gameDoc of gameDocs) {
+      await runInInjectionContext(this.environmentInjector, async () => {
+        console.debug(`[Firestore] deleteDoc: free phase game`);
+        await deleteDoc(gameDoc.ref);
+      });
+    }
+
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] deleteDoc: freePhase`);
+      await deleteDoc(freePhaseRef);
+    });
   }
 
   async updatePlayoffInSerie(
@@ -839,6 +886,46 @@ export class FirebaseService {
 
           await runInInjectionContext(this.environmentInjector, async () => {
             console.debug(`[Firestore] setDoc: playoff game (batch import)`);
+            await setDoc(gameDocRef, gameData);
+          });
+        }
+      }
+
+      for (const yamlFreePhase of yamlSerie.freePhases ?? []) {
+        const freePhaseDocRef = doc(collection(serieDocRef, 'freePhases'));
+        await runInInjectionContext(this.environmentInjector, async () => {
+          console.debug(`[Firestore] setDoc: freePhase (batch import)`);
+          await setDoc(freePhaseDocRef, {
+            name: yamlFreePhase.name,
+            hiddenFromVisitors: yamlFreePhase.hiddenFromVisitors === true,
+          });
+        });
+
+        for (const yamlGame of yamlFreePhase.games ?? []) {
+          const refTeam1 = teamIdMap.get(yamlGame.team1);
+          const refTeam2 = teamIdMap.get(yamlGame.team2);
+          if (!refTeam1 || !refTeam2) {
+            continue;
+          }
+
+          const gameDocRef = doc(collection(freePhaseDocRef, 'games'));
+          const gameData: Record<string, unknown> = { refTeam1, refTeam2 };
+          if (yamlGame.score1 != null) gameData['scoreTeam1'] = yamlGame.score1;
+          if (yamlGame.score2 != null) gameData['scoreTeam2'] = yamlGame.score2;
+          if (yamlGame.date != null) gameData['date'] = new Date(yamlGame.date);
+          if (Array.isArray(yamlGame.referees) && yamlGame.referees.length > 0) {
+            gameData['referees'] = yamlGame.referees
+              .map((referee) => referee.trim())
+              .filter((referee) => referee.length > 0);
+          }
+          if (yamlGame.comment) {
+            const trimmedComment = yamlGame.comment.trim();
+            if (trimmedComment.length > 0) {
+              gameData['comment'] = trimmedComment;
+            }
+          }
+          await runInInjectionContext(this.environmentInjector, async () => {
+            console.debug(`[Firestore] setDoc: free phase game (batch import)`);
             await setDoc(gameDocRef, gameData);
           });
         }

@@ -9,10 +9,11 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
 import { Tournament } from '../../../../home/tournament.interface';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-admin-general',
-  imports: [
+  imports: [LucideAngularModule, 
     ButtonModule,
     FloatLabel,
     FormsModule,

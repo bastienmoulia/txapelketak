@@ -31,6 +31,7 @@ import {
   PlayoffEditDialogResult,
 } from '../playoff-edit-dialog/playoff-edit-dialog';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 interface RoundGroup {
   roundSize: number;
@@ -98,7 +99,7 @@ const createTeamNameLookup =
 
 @Component({
   selector: 'app-phases-playoffs',
-  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule, PopoverModule, DatePipe],
+  imports: [LucideAngularModule, ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule, PopoverModule, DatePipe],
   templateUrl: './playoffs.html',
   styleUrl: './playoffs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -253,7 +254,6 @@ export class Playoffs {
       message: this.translocoService.translate('shared.confirm.deleteMessage', {
         name: playoff.name,
       }),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

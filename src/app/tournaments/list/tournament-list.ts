@@ -5,10 +5,11 @@ import { ButtonModule } from 'primeng/button';
 import { Tournament } from '../../home/tournament.interface';
 import { TournamentsTable } from '../../shared/tournaments-table/tournaments-table';
 import { TournamentsStore } from '../../store/tournaments.store';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-tournament-list',
-  imports: [ButtonModule, RouterLink, TournamentsTable, TranslocoModule],
+  imports: [LucideAngularModule, ButtonModule, RouterLink, TournamentsTable, TranslocoModule],
   templateUrl: './tournament-list.html',
   styleUrl: './tournament-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

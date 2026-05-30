@@ -1,5 +1,5 @@
 <p-toast />
-<p-confirmdialog />
+<p-confirmdialog><ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template></p-confirmdialog>
 
 @if (sortedSeries().length > 0) {
   <p-tabs [value]="activeSerie()" (valueChange)="onSerieTabChange($event)">
@@ -14,13 +14,15 @@
                 size="small"
                 severity="secondary"
                 [outlined]="true"
-                icon="pi pi-pencil"
+               
                 [ariaLabel]="'admin.poules.editSerieAria' | transloco"
                 [pTooltip]="'admin.poules.editSerieAria' | transloco"
                 tooltipPosition="top"
                 (onClick)="$event.stopPropagation(); onEditSerie(serie)"
                 data-testid="edit-serie-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+              </p-button>
             </div>
           }
         </p-tab>
@@ -30,13 +32,15 @@
           <p-button
             type="button"
             severity="primary"
-            icon="pi pi-plus"
+           
             size="small"
             rounded
             [label]="'admin.poules.addSerie' | transloco"
             (onClick)="onAddSerie()"
             data-testid="add-serie-button"
-          />
+          >
+            <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+          </p-button>
         </div>
       }
     </p-tablist>
@@ -48,27 +52,33 @@
               <p-button
                 type="button"
                 severity="primary"
-                icon="pi pi-plus"
+               
                 [label]="'admin.poules.addPoule' | transloco"
                 (onClick)="onAddPoule(serie.ref)"
                 data-testid="add-poule-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+              </p-button>
               <p-button
                 type="button"
                 severity="primary"
-                icon="pi pi-plus"
+               
                 [label]="'admin.poules.addPlayoffs' | transloco"
                 (onClick)="onAddPlayoffs(serie.ref)"
                 data-testid="add-playoffs-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+              </p-button>
               <p-button
                 type="button"
                 severity="primary"
-                icon="pi pi-plus"
+               
                 [label]="'admin.poules.addFreePhase' | transloco"
                 (onClick)="onAddFreePhase(serie.ref)"
                 data-testid="add-free-phase-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+              </p-button>
             </div>
           }
           <!-- Playoffs Section -->
@@ -92,11 +102,13 @@
       <p-button
         type="button"
         severity="primary"
-        icon="pi pi-plus"
+       
         [label]="'admin.poules.addSerie' | transloco"
         (onClick)="onAddSerie()"
         data-testid="add-serie-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+      </p-button>
     }
   </div>
 }

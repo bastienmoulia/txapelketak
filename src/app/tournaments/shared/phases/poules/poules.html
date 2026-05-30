@@ -6,12 +6,14 @@
           <div class="flex items-center gap-2">
             <span class="font-bold">{{ poule.name }}</span>
             @if ((role() === 'admin' || role() === 'organizer') && poule.hiddenFromVisitors) {
-              <i
-                class="pi pi-eye-slash text-color-secondary"
+              <lucide-icon
+                name="eye-off"
+                [size]="16"
+                class="text-color-secondary"
                 [pTooltip]="'admin.poules.hiddenFromVisitorsIndicator' | transloco"
                 tooltipPosition="top"
                 data-testid="poule-hidden-indicator"
-              ></i>
+              />
             }
           </div>
           @if (role() === 'admin') {
@@ -21,12 +23,14 @@
                 size="small"
                 severity="secondary"
                 [outlined]="true"
-                icon="pi pi-pencil"
+               
                 [label]="'shared.actions.edit' | transloco"
                 [ariaLabel]="'admin.poules.editPouleAria' | transloco"
                 (onClick)="onEditPoule(poule)"
                 data-testid="edit-poule-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+              </p-button>
             </div>
           }
         </div>

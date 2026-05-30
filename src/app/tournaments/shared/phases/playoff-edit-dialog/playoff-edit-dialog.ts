@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 import type { Playoff } from '../../../models';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface SavePlayoffEvent {
   ref: Playoff['ref'];
@@ -27,7 +28,7 @@ interface PlayoffEditDialogData {
 
 @Component({
   selector: 'app-playoff-edit-dialog',
-  imports: [FormsModule, TranslocoPipe, Button, FloatLabel, InputTextModule, ToggleSwitchModule],
+  imports: [LucideAngularModule, FormsModule, TranslocoPipe, Button, FloatLabel, InputTextModule, ToggleSwitchModule],
   templateUrl: './playoff-edit-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

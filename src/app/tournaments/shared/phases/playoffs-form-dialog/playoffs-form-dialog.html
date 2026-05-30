@@ -50,21 +50,25 @@
         <p-button
           type="button"
           severity="primary"
-          icon="pi pi-plus"
+         
           [label]="'admin.poules.addTeam' | transloco"
           [disabled]="pendingTeamRef().length === 0"
           (onClick)="onAddSelectedTeam()"
           data-testid="playoffs-dialog-add-team-button"
-        />
+        >
+          <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+        </p-button>
         <p-button
           type="button"
           severity="secondary"
-          icon="pi pi-user-plus"
+         
           [label]="'playoffs.addPlaceholder' | transloco"
           [disabled]="!canAddPlaceholder()"
           (onClick)="onAddPlaceholderTeam()"
           data-testid="playoffs-dialog-add-placeholder-button"
-        />
+        >
+          <ng-template #icon><lucide-icon name="user-plus" [size]="16" /></ng-template>
+        </p-button>
       </div>
 
       @if (selectedTeams().length === 0) {
@@ -93,13 +97,15 @@
                 size="small"
                 severity="danger"
                 [outlined]="true"
-                icon="pi pi-times"
+               
                 [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
                 [pTooltip]="'admin.poules.removeTeamAria' | transloco"
                 tooltipPosition="top"
                 (onClick)="onRemoveTeam(team)"
                 data-testid="playoffs-dialog-remove-team-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="x" [size]="16" /></ng-template>
+              </p-button>
             </div>
           </ng-template>
         </p-orderlist>
@@ -121,12 +127,14 @@
       <p-button
         type="button"
         [label]="'shared.actions.next' | transloco"
-        icon="pi pi-arrow-right"
+       
         iconPos="right"
         [disabled]="!canGoNext()"
         (onClick)="onNext()"
         data-testid="playoffs-dialog-next-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="arrow-right" [size]="16" /></ng-template>
+      </p-button>
     </div>
   </div>
 }
@@ -220,18 +228,22 @@
       <p-button
         type="button"
         [label]="'shared.actions.previous' | transloco"
-        icon="pi pi-arrow-left"
+       
         severity="secondary"
         (onClick)="onBack()"
         data-testid="playoffs-dialog-back-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="arrow-left" [size]="16" /></ng-template>
+      </p-button>
       <p-button
         type="button"
         [label]="'shared.actions.save' | transloco"
-        icon="pi pi-check"
+       
         (onClick)="onSave()"
         data-testid="playoffs-dialog-save-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="check" [size]="16" /></ng-template>
+      </p-button>
     </div>
   </div>
 }

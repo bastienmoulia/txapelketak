@@ -9,10 +9,11 @@ import { AdminTimeSlots } from '../admin-time-slots/admin-time-slots';
 import { AdminUsers } from '../admin-users/admin-users';
 import { AdminImportExport } from '../admin-import-export/admin-import-export';
 import { AdminDeleteTournament } from '../admin-delete-tournament/admin-delete-tournament';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-settings',
-  imports: [
+  imports: [LucideAngularModule, 
     TranslocoModule,
     MessageModule,
     AdminGeneral,

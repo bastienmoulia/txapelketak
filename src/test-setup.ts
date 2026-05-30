@@ -6,10 +6,11 @@ import localeEu from '@angular/common/locales/eu';
 import localeFr from '@angular/common/locales/fr';
 import '@analogjs/vitest-angular/setup-snapshots';
 import { setupTestBed } from '@analogjs/vitest-angular/setup-testbed';
+import { LUCIDE_ICON_PROVIDERS } from './app/shared/icons/lucide.providers';
 
 registerLocaleData(localeFr, 'fr');
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 registerLocaleData(localeEu, 'eu');
 
-setupTestBed({ browserMode: true });
+setupTestBed({ browserMode: true, providers: [...LUCIDE_ICON_PROVIDERS] });

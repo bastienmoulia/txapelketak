@@ -32,7 +32,8 @@
     </section>
   </div>
 } @else {
-  <p-message severity="error" icon="pi pi-lock" class="mx-3">
+  <p-message severity="error" class="mx-3">
+    <ng-template #icon><lucide-icon name="lock" [size]="16" /></ng-template>
     {{ 'admin.denied' | transloco }}
   </p-message>
 }

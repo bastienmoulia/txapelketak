@@ -41,20 +41,24 @@
       />
       <p-button
         type="submit"
-        icon="pi pi-save"
+       
         [label]="'shared.actions.save' | transloco"
         [loading]="isSaving()"
         [disabled]="!name()"
-      />
+      >
+        <ng-template #icon><lucide-icon name="save" [size]="16" /></ng-template>
+      </p-button>
     } @else {
       <p-button
         type="button"
         severity="secondary"
         [outlined]="true"
-        icon="pi pi-pencil"
+       
         [label]="'shared.actions.edit' | transloco"
         (onClick)="onEdit()"
-      />
+      >
+        <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+      </p-button>
     }
   </div>
 </form>

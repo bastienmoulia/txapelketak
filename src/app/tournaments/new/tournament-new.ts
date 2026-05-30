@@ -12,10 +12,11 @@ import { MessageModule } from 'primeng/message';
 import { startWith } from 'rxjs';
 import { Tournament, User } from '../../home/tournament.interface';
 import { FirebaseService } from '../../shared/services/firebase.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-tournament-new',
-  imports: [
+  imports: [LucideAngularModule, 
     ReactiveFormsModule,
     RouterLink,
     Steps,

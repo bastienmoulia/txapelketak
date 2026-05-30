@@ -1,4 +1,4 @@
-<p-confirmdialog></p-confirmdialog>
+<p-confirmdialog><ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template></p-confirmdialog>
 
 <p-toast key="admin-users" position="top-right">
   <ng-template let-message #message>
@@ -23,10 +23,12 @@
   <p-button
     data-testid="add-user-button"
     type="button"
-    icon="pi pi-plus"
+   
     [label]="'admin.users.add' | transloco"
     (onClick)="onAddUser()"
-  />
+  >
+    <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+  </p-button>
 </div>
 
 @if (users().length > 0) {
@@ -54,17 +56,19 @@
               size="small"
               severity="secondary"
               [outlined]="true"
-              icon="pi pi-pencil"
+             
               [label]="'shared.actions.edit' | transloco"
               [ariaLabel]="'admin.users.editAria' | transloco"
               (onClick)="onEditUser(user)"
-            />
+            >
+              <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+            </p-button>
             <p-button
               type="button"
               size="small"
               severity="danger"
               [outlined]="true"
-              icon="pi pi-trash"
+             
               [label]="'shared.actions.delete' | transloco"
               [ariaLabel]="'admin.users.deleteAria' | transloco"
               [disabled]="user.ref.id === currentUser()?.ref?.id"
@@ -75,7 +79,9 @@
               "
               tooltipPosition="top"
               (onClick)="onDeleteUser(user)"
-            />
+            >
+              <ng-template #icon><lucide-icon name="trash-2" [size]="16" /></ng-template>
+            </p-button>
           </div>
         </td>
       </tr>

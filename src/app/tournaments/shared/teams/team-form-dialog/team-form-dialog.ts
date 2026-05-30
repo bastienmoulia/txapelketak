@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface DeleteTeamAction {
   action: 'delete';
@@ -19,7 +20,7 @@ interface TeamFormDialogData {
 
 @Component({
   selector: 'app-team-form-dialog',
-  imports: [TranslocoPipe, FloatLabel, InputTextModule, TextareaModule, FormsModule, Button],
+  imports: [LucideAngularModule, TranslocoPipe, FloatLabel, InputTextModule, TextareaModule, FormsModule, Button],
   templateUrl: './team-form-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

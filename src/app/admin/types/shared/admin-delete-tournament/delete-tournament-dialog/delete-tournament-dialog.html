@@ -1,6 +1,7 @@
 <form (ngSubmit)="onConfirm()">
   <div class="flex flex-col gap-4 pt-2">
-    <p-message severity="warn" icon="pi pi-exclamation-triangle">
+    <p-message severity="warn">
+      <ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template>
       {{ 'admin.deleteTournament.dialogWarning' | transloco }}
     </p-message>
 

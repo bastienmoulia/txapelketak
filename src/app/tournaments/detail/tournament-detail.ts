@@ -20,10 +20,11 @@ import { TournamentDetailStore } from '../../store/tournament-detail.store';
 import { PoulesStore } from '../../store/poules.store';
 import { TournamentActionsService } from '../../shared/services/tournament-actions.service';
 import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-tournament-detail',
-  imports: [
+  imports: [LucideAngularModule, 
     RouterLink,
     ReactiveFormsModule,
     ButtonModule,

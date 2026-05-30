@@ -626,7 +626,7 @@ describe('Games', () => {
     );
 
     expect(commentButton).not.toBeNull();
-    expect(commentButton.querySelector('.pi-comment')).not.toBeNull();
+    expect(commentButton.querySelector('lucide-icon[name="message-square"]')).not.toBeNull();
   });
 
   it('should detect only future free slots that are not already scheduled', () => {

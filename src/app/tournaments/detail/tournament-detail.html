@@ -3,7 +3,7 @@
     class="flex flex-col items-center justify-center gap-4 py-16 px-8 text-center"
     data-testid="loading-state"
   >
-    <i class="pi pi-spin pi-spinner text-[2rem] text-[var(--p-primary-color)]"></i>
+    <lucide-icon name="loader-circle" [size]="32" class="text-[var(--p-primary-color)] animate-spin" />
     <p>{{ 'tournaments.detail.loading' | transloco }}</p>
   </div>
 } @else if (notFound()) {
@@ -11,17 +11,19 @@
     class="flex flex-col items-center justify-center gap-4 py-16 px-8 text-center"
     data-testid="not-found-state"
   >
-    <i class="pi pi-exclamation-triangle text-[4rem]! text-[var(--p-yellow-500)]"></i>
+    <lucide-icon name="triangle-alert" [size]="64" class="text-[var(--p-yellow-500)]" />
     <h2>{{ 'tournaments.detail.notFound.title' | transloco }}</h2>
     <p>{{ 'tournaments.detail.notFound.message' | transloco }}</p>
     <p-button
       [label]="'tournaments.detail.notFound.backHome' | transloco"
-      icon="pi pi-home"
+     
       severity="secondary"
       [outlined]="true"
       routerLink="/"
       data-testid="btn-home"
-    />
+    >
+      <ng-template #icon><lucide-icon name="house" [size]="16" /></ng-template>
+    </p-button>
   </div>
 } @else if (tournament(); as t) {
   <app-tournament-header [tournament]="t" />
@@ -29,12 +31,8 @@
     <!-- Waiting validation message -->
     @if (t.status === 'waitingValidation') {
       <div class="flex flex-col gap-4" data-testid="validation-section">
-        <p-message
-          severity="warn"
-          icon="pi pi-clock"
-          class="validation-message"
-          data-testid="validation-message"
-        >
+        <p-message severity="warn" class="validation-message" data-testid="validation-message">
+          <ng-template #icon><lucide-icon name="clock-3" [size]="16" /></ng-template>
           {{ 'tournaments.detail.waitingValidation' | transloco }}
         </p-message>
       </div>

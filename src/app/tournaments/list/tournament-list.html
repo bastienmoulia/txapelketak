@@ -3,11 +3,13 @@
     <h1 class="text-[1.75rem] font-semibold m-0">{{ 'tournaments.list.title' | transloco }}</h1>
     <p-button
       [label]="'tournaments.list.create' | transloco"
-      icon="pi pi-plus"
+     
       severity="secondary"
       [outlined]="true"
       routerLink="/tournaments/new"
-    />
+    >
+      <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+    </p-button>
   </div>
   <app-tournaments-table
     [tournaments]="tournaments()"

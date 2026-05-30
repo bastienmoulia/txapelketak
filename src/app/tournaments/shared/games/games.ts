@@ -35,6 +35,7 @@ import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 interface SaveGameEventBase {
   pouleRef: DocumentReference;
@@ -101,7 +102,7 @@ export type ScheduleRow = GameByDate | FreeSlotRow;
 
 @Component({
   selector: 'app-games',
-  imports: [
+  imports: [LucideAngularModule, 
     Message,
     TranslocoPipe,
     DatePipe,
@@ -612,7 +613,6 @@ export class Games {
     this.confirmationService.confirm({
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
       message: this.translocoService.translate('admin.games.deleteConfirm'),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

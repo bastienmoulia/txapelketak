@@ -13,6 +13,7 @@ import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './shared/services/transloco-loader.service';
 import { AppTitleStrategy } from './shared/router/app-title.strategy';
+import { LUCIDE_ICON_PROVIDERS } from './shared/icons/lucide.providers';
 
 const TxapelketaTheme = definePreset(Aura, {
   semantic: {
@@ -34,6 +35,7 @@ const TxapelketaTheme = definePreset(Aura, {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    ...LUCIDE_ICON_PROVIDERS,
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     {

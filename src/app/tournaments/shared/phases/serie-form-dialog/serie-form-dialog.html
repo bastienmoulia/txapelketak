@@ -22,11 +22,13 @@
         [label]="'shared.actions.delete' | transloco"
         severity="danger"
         [outlined]="true"
-        icon="pi pi-trash"
+       
         [disabled]="!(data.canDelete ?? true)"
         (onClick)="onDelete()"
         data-testid="delete-serie-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="trash-2" [size]="16" /></ng-template>
+      </p-button>
     }
     <p-button
       type="button"

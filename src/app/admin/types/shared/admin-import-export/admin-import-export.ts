@@ -11,6 +11,7 @@ import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
 import { Game, Serie, Team, TimeSlot } from '../../../../tournaments/models';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface TournamentYamlTeam {
   id: string;
@@ -76,7 +77,7 @@ export interface TournamentYamlData {
 
 @Component({
   selector: 'app-admin-import-export',
-  imports: [
+  imports: [LucideAngularModule, 
     ButtonModule,
     ConfirmDialogModule,
     DividerModule,
@@ -191,7 +192,6 @@ export class AdminImportExport {
     this.confirmationService.confirm({
       header: this.translocoService.translate('admin.importExport.importConfirmTitle'),
       message: this.translocoService.translate('admin.importExport.importConfirmMessage'),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('admin.importExport.importConfirm'),
       rejectLabel: this.translocoService.translate('shared.actions.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

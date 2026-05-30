@@ -1,7 +1,7 @@
 @if (loading()) {
   <p-card class="dashboard-card dashboard-card--main">
     <div class="py-8 text-center text-[var(--p-text-muted-color)]">
-      <i class="pi pi-spinner pi-spin mr-2"></i>
+      <lucide-icon name="loader-circle" [size]="16" class="mr-2 animate-spin inline-block align-text-bottom" />
       {{ 'tournaments.detail.loading' | transloco }}
     </div>
   </p-card>
@@ -27,12 +27,19 @@
                   ? ('tournaments.dashboard.showLess' | transloco)
                   : ('tournaments.dashboard.showMore' | transloco)
               "
-              [icon]="descriptionExpanded() ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
               iconPos="right"
               size="small"
               (onClick)="toggleDescription()"
               data-testid="dashboard-description-toggle"
-            />
+            >
+              <ng-template #icon>
+                @if (descriptionExpanded()) {
+                  <lucide-icon name="chevron-up" [size]="16" />
+                } @else {
+                  <lucide-icon name="chevron-down" [size]="16" />
+                }
+              </ng-template>
+            </p-button>
           }
         } @else {
           <p
@@ -93,7 +100,7 @@
       <!-- Teams count -->
       <p-card class="dashboard-card dashboard-card--stat">
         <div class="stat-content">
-          <i class="pi pi-users stat-icon"></i>
+          <lucide-icon name="users" class="stat-icon" [size]="24" />
           <div class="stat-text">
             <span class="stat-value" data-testid="dashboard-teams-count">{{ teamsCount() }}</span>
             <span class="stat-label">{{ 'tournaments.dashboard.teams' | transloco }}</span>
@@ -104,7 +111,7 @@
       <!-- Series count -->
       <p-card class="dashboard-card dashboard-card--stat">
         <div class="stat-content">
-          <i class="pi pi-list stat-icon"></i>
+          <lucide-icon name="list" class="stat-icon" [size]="24" />
           <div class="stat-text">
             <span class="stat-value" data-testid="dashboard-series-count">{{ seriesCount() }}</span>
             <span class="stat-label">{{ 'tournaments.dashboard.series' | transloco }}</span>
@@ -112,21 +119,12 @@
         </div>
       </p-card>
 
-      <!-- Poules count -->
-      <!--<p-card class="dashboard-card dashboard-card--stat">
-        <div class="stat-content">
-          <i class="pi pi-th-large stat-icon"></i>
-          <div class="stat-text">
-            <span class="stat-value" data-testid="dashboard-poules-count">{{ poulesCount() }}</span>
-            <span class="stat-label">{{ 'tournaments.dashboard.poules' | transloco }}</span>
-          </div>
-        </div>
-      </p-card>-->
+      <!-- Poules count intentionally hidden until needed -->
 
       <!-- Games count -->
       <p-card class="dashboard-card dashboard-card--stat">
         <div class="stat-content">
-          <i class="pi pi-flag stat-icon"></i>
+          <lucide-icon name="flag" class="stat-icon" [size]="24" />
           <div class="stat-text">
             <span class="stat-value" data-testid="dashboard-games-count">{{ gamesCount() }}</span>
             <span class="stat-label">{{ 'tournaments.dashboard.games' | transloco }}</span>
@@ -137,7 +135,7 @@
       <!-- Played games count -->
       <p-card class="dashboard-card dashboard-card--stat">
         <div class="stat-content">
-          <i class="pi pi-check-circle stat-icon"></i>
+          <lucide-icon name="circle-check" class="stat-icon" [size]="24" />
           <div class="stat-text">
             <span class="stat-value" data-testid="dashboard-played-count">{{
               playedGamesCount()
@@ -150,7 +148,7 @@
       <!-- Total scored points -->
       <p-card class="dashboard-card dashboard-card--stat">
         <div class="stat-content">
-          <i class="pi pi-sparkles stat-icon"></i>
+          <lucide-icon name="sparkles" class="stat-icon" [size]="24" />
           <div class="stat-text">
             <span class="stat-value" data-testid="dashboard-total-scored-points">{{
               totalScoredPoints()
@@ -168,7 +166,7 @@
       <p-card class="dashboard-card dashboard-card--overdue">
         <ng-template pTemplate="header">
           <div class="dashboard-card-header">
-            <i class="pi pi-play-circle"></i>
+            <lucide-icon name="circle-play" [size]="18" />
             <span>{{ 'tournaments.dashboard.overdueGames' | transloco }}</span>
           </div>
         </ng-template>
@@ -198,7 +196,7 @@
                   <span class="font-semibold">{{ game.team2Name }}</span>
                 </div>
                 <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
-                  <i class="pi pi-clock text-xs mr-1"></i>
+                  <lucide-icon name="clock-3" [size]="14" class="text-xs mr-1 inline-block align-text-bottom" />
                   {{ game.date | date: 'short' : undefined : dateLocale() }}
                   <span class="mx-1">·</span>
                   {{ game.serieName }} – {{ game.pouleName }}
@@ -209,10 +207,7 @@
                     data-testid="dashboard-overdue-game-referees"
                   >
                     @if (game.referees.length > 0) {
-                      <i
-                        class="pi pi-user text-xs mr-1 text-[var(--p-text-muted-color)]"
-                        aria-hidden="true"
-                      ></i>
+                      <lucide-icon name="user" [size]="14" class="text-xs mr-1 text-[var(--p-text-muted-color)] inline-block align-text-bottom" aria-hidden="true" />
                       <span class="text-[var(--p-text-muted-color)]">{{
                         game.referees.join(', ')
                       }}</span>
@@ -229,25 +224,29 @@
                         size="small"
                         class="ml-auto"
                         severity="info"
-                        icon="pi pi-comment"
+                       
                         [pTooltip]="'admin.games.commentTooltip' | transloco"
                         tooltipPosition="top"
                         [ariaLabel]="'admin.games.commentAria' | transloco"
                         (onClick)="onShowComment($event, game.comment)"
-                      />
+                      >
+              <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+            </p-button>
                     }
                     <p-button
                       type="button"
                       size="small"
                       severity="secondary"
                       [outlined]="true"
-                      icon="pi pi-pencil"
+                     
                       [pTooltip]="'shared.actions.edit' | transloco"
                       tooltipPosition="top"
                       [ariaLabel]="'shared.actions.edit' | transloco"
                       (onClick)="onEditOverdueGame(game)"
                       data-testid="dashboard-overdue-game-edit-button"
-                    />
+                    >
+                      <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+                    </p-button>
                   </div>
                 </div>
               }
@@ -262,7 +261,7 @@
       <p-card class="dashboard-card">
         <ng-template pTemplate="header">
           <div class="dashboard-card-header">
-            <i class="pi pi-calendar"></i>
+            <lucide-icon name="calendar" [size]="18" />
             <span>{{ 'tournaments.dashboard.upcomingGames' | transloco }}</span>
           </div>
         </ng-template>
@@ -288,7 +287,7 @@
                   <span class="font-semibold">{{ game.team2Name }}</span>
                 </div>
                 <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
-                  <i class="pi pi-clock text-xs mr-1"></i>
+                  <lucide-icon name="clock-3" [size]="14" class="text-xs mr-1 inline-block align-text-bottom" />
                   {{ game.date | date: 'short' : undefined : dateLocale() }}
                   <span class="mx-1">·</span>
                   {{ game.serieName }} – {{ game.pouleName }}
@@ -299,18 +298,12 @@
                     data-testid="dashboard-upcoming-game-referees"
                   >
                     @if (game.referees.length > 0) {
-                      <i
-                        class="pi pi-user text-xs mr-1 text-[var(--p-text-muted-color)]"
-                        aria-hidden="true"
-                      ></i>
+                      <lucide-icon name="user" [size]="14" class="text-xs mr-1 text-[var(--p-text-muted-color)] inline-block align-text-bottom" aria-hidden="true" />
                       <span class="text-[var(--p-text-muted-color)]">{{
                         game.referees.join(', ')
                       }}</span>
                     } @else {
-                      <i
-                        class="pi pi-exclamation-triangle text-xs mr-1 text-yellow-500"
-                        aria-hidden="true"
-                      ></i>
+                      <lucide-icon name="triangle-alert" [size]="14" class="text-xs mr-1 text-yellow-500 inline-block align-text-bottom" aria-hidden="true" />
                       <span class="text-yellow-500">{{
                         'tournaments.dashboard.noReferees' | transloco
                       }}</span>
@@ -321,12 +314,14 @@
                         size="small"
                         class="ml-auto"
                         severity="info"
-                        icon="pi pi-comment"
+                       
                         [pTooltip]="'admin.games.commentTooltip' | transloco"
                         tooltipPosition="top"
                         [ariaLabel]="'admin.games.commentAria' | transloco"
                         (onClick)="onShowComment($event, game.comment)"
-                      />
+                      >
+                        <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+                      </p-button>
                     }
                   </div>
                 }
@@ -349,7 +344,7 @@
       <p-card class="dashboard-card">
         <ng-template pTemplate="header">
           <div class="dashboard-card-header">
-            <i class="pi pi-history"></i>
+            <lucide-icon name="history" [size]="18" />
             <span>{{ 'tournaments.dashboard.recentGames' | transloco }}</span>
           </div>
         </ng-template>
@@ -398,7 +393,7 @@
                 </div>
                 <div class="upcoming-game-meta text-[var(--p-text-muted-color)] text-sm">
                   @if (game.date) {
-                    <i class="pi pi-clock text-xs mr-1"></i>
+                    <lucide-icon name="clock-3" [size]="14" class="text-xs mr-1 inline-block align-text-bottom" />
                     {{ game.date | date: 'short' : undefined : dateLocale() }}
                     <span class="mx-1">·</span>
                   }
@@ -413,7 +408,7 @@
                     data-testid="dashboard-recent-game-referees"
                   >
                     @if (game.referees.length > 0) {
-                      <i class="pi pi-user text-xs mr-1" aria-hidden="true"></i>
+                      <lucide-icon name="user" [size]="14" class="text-xs mr-1 inline-block align-text-bottom" aria-hidden="true" />
                       <span>{{ game.referees.join(', ') }}</span>
                     }
                     @if (game.comment) {
@@ -422,12 +417,14 @@
                         size="small"
                         class="ml-auto"
                         severity="info"
-                        icon="pi pi-comment"
+                       
                         [pTooltip]="'admin.games.commentTooltip' | transloco"
                         tooltipPosition="top"
                         [ariaLabel]="'admin.games.commentAria' | transloco"
                         (onClick)="onShowComment($event, game.comment)"
-                      />
+                      >
+                        <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+                      </p-button>
                     }
                   </div>
                 }

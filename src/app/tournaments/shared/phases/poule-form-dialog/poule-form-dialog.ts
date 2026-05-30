@@ -14,6 +14,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Poule, Team } from '../../../models';
 import type { SavePouleEvent } from '../phases';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface DeletePouleAction {
   action: 'delete';
@@ -31,7 +32,7 @@ interface PouleFormDialogData {
 
 @Component({
   selector: 'app-poule-form-dialog',
-  imports: [
+  imports: [LucideAngularModule, 
     FormsModule,
     FloatLabel,
     InputTextModule,
@@ -120,7 +121,6 @@ export class PouleFormDialog {
       message: this.translocoService.translate('shared.confirm.deleteMessage', {
         name: teamName ?? this.translocoService.translate('admin.poules.unknownTeam'),
       }),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

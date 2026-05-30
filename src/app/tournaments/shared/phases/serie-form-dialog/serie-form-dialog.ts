@@ -7,6 +7,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { SaveSerieEvent } from '../phases';
 import { Serie } from '../../../models';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface DeleteSerieAction {
   action: 'delete';
@@ -23,7 +24,7 @@ interface SerieFormDialogData {
 
 @Component({
   selector: 'app-serie-form-dialog',
-  imports: [FormsModule, FloatLabel, InputTextModule, Button, TranslocoPipe],
+  imports: [LucideAngularModule, FormsModule, FloatLabel, InputTextModule, Button, TranslocoPipe],
   templateUrl: './serie-form-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

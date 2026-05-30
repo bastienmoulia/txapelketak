@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSave()">
-  <p-confirmdialog></p-confirmdialog>
+  <p-confirmdialog><ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template></p-confirmdialog>
 
   <div class="mb-4">
     <p-floatlabel variant="on">
@@ -50,12 +50,14 @@
       <p-button
         type="button"
         severity="primary"
-        icon="pi pi-plus"
+       
         [label]="'admin.poules.addTeam' | transloco"
         [disabled]="pendingTeamRef().length === 0"
         (onClick)="onAddSelectedTeam()"
         data-testid="dialog-add-team-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+      </p-button>
     </div>
 
     @if (selectedTeams().length === 0) {
@@ -74,13 +76,15 @@
               size="small"
               severity="danger"
               [outlined]="true"
-              icon="pi pi-times"
+             
               [ariaLabel]="'admin.poules.removeTeamAria' | transloco"
               [pTooltip]="'admin.poules.removeTeamAria' | transloco"
               tooltipPosition="top"
               (onClick)="onRequestRemoveTeam(team.ref)"
               data-testid="dialog-remove-team-button"
-            />
+            >
+              <ng-template #icon><lucide-icon name="x" [size]="16" /></ng-template>
+            </p-button>
           </div>
         }
       </div>
@@ -95,10 +99,12 @@
         [label]="'shared.actions.delete' | transloco"
         severity="danger"
         [outlined]="true"
-        icon="pi pi-trash"
+       
         (onClick)="onDelete()"
         data-testid="delete-poule-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="trash-2" [size]="16" /></ng-template>
+      </p-button>
     }
     <p-button
       type="button"

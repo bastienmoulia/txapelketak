@@ -11,23 +11,27 @@
   </div>
 } @else if (accessDenied()) {
   <div class="flex flex-col gap-4" data-testid="admin-denied">
-    <p-message severity="error" icon="pi pi-lock">
+    <p-message severity="error">
+      <ng-template #icon><lucide-icon name="lock" [size]="16" /></ng-template>
       {{ 'admin.denied' | transloco }}
     </p-message>
     <p-button
       [label]="'admin.backHome' | transloco"
-      icon="pi pi-home"
+     
       severity="secondary"
       [outlined]="true"
       routerLink="/"
-    />
+    >
+      <ng-template #icon><lucide-icon name="house" [size]="16" /></ng-template>
+    </p-button>
   </div>
 } @else if (tournament() && user()) {
   <app-tournament-header [tournament]="tournament()!" [role]="user()!.role" />
   <app-tournament-tabs [tournament]="tournament()!" [role]="user()!.role" />
   <router-outlet />
 } @else {
-  <p-message severity="warn" icon="pi pi-exclamation-triangle">
+  <p-message severity="warn">
+    <ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template>
     {{ 'admin.notFound' | transloco }}
   </p-message>
 }

@@ -9,8 +9,10 @@
   <p-button
     [label]="'admin.deleteTournament.button' | transloco"
     severity="danger"
-    icon="pi pi-trash"
+   
     [loading]="isDeleting()"
     (onClick)="onDelete()"
-  />
+  >
+    <ng-template #icon><lucide-icon name="trash-2" [size]="16" /></ng-template>
+  </p-button>
 </section>

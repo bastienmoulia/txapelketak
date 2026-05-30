@@ -13,6 +13,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import type { Team } from '../../../models';
 import { KeyValue, NgStyle } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface SavePlayoffsEvent {
   serieRef: DocumentReference;
@@ -83,7 +84,7 @@ function getFirstRoundPairingIndexes(
 
 @Component({
   selector: 'app-playoffs-form-dialog',
-  imports: [
+  imports: [LucideAngularModule, 
     FormsModule,
     FloatLabel,
     InputTextModule,

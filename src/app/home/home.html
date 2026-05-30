@@ -2,14 +2,16 @@
   <!-- Hero Section -->
   <div class="text-center py-12 px-4">
     <h1 class="text-5xl font-bold mb-4 text-[var(--p-primary-color)]">
-      <i class="pi pi-trophy mr-3"></i>Txapelketak
+      <lucide-icon name="trophy" [size]="36" class="mr-3 inline-block align-middle" />Txapelketak
     </h1>
     <p class="text-xl mb-8 opacity-80">{{ 'home.hero.subtitle' | transloco }}</p>
     <p-button
       [label]="'home.hero.createButton' | transloco"
-      icon="pi pi-plus"
+     
       routerLink="/tournaments/new"
-    />
+    >
+      <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+    </p-button>
   </div>
 
   <app-header-actions class="absolute top-[1em] left-[1em]" />
@@ -56,10 +58,11 @@
       @for (feature of features(); track feature.titleKey) {
         <p-card class="feature-card">
           <div class="text-center p-2">
-            <i
-              [class]="feature.icon"
-              class="text-[2.5rem]! text-[var(--p-primary-color)] block mb-4"
-            ></i>
+            <lucide-icon
+              [name]="feature.icon"
+              [size]="40"
+              class="text-[var(--p-primary-color)] block mb-4 mx-auto"
+            />
             <h3 class="text-[1.1rem] font-semibold mb-2">{{ feature.titleKey | transloco }}</h3>
             <p class="opacity-80 m-0">{{ feature.descriptionKey | transloco }}</p>
           </div>
@@ -74,11 +77,13 @@
       <h2 class="text-[1.75rem] font-semibold m-0">{{ 'home.tournaments.title' | transloco }}</h2>
       <p-button
         [label]="'tournaments.list.create' | transloco"
-        icon="pi pi-plus"
+       
         severity="secondary"
         [outlined]="true"
         routerLink="/tournaments/new"
-      />
+      >
+        <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+      </p-button>
     </div>
     <app-tournaments-table
       [tournaments]="recentTournaments()"
@@ -91,11 +96,13 @@
       <div class="flex justify-center mt-4 px-4">
         <p-button
           [label]="'home.tournaments.seeAll' | transloco"
-          icon="pi pi-list"
+         
           severity="secondary"
           [outlined]="true"
           routerLink="/tournaments"
-        />
+        >
+          <ng-template #icon><lucide-icon name="list" [size]="16" /></ng-template>
+        </p-button>
       </div>
     }
   </section>

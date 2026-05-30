@@ -7,6 +7,7 @@ import { Tournament } from './tournament.interface';
 import { TournamentsTable } from '../shared/tournaments-table/tournaments-table';
 import { HeaderActions } from '../shared/header-actions/header-actions';
 import { TournamentsStore } from '../store/tournaments.store';
+import { LucideAngularModule } from 'lucide-angular';
 
 interface Feature {
   icon: string;
@@ -16,7 +17,7 @@ interface Feature {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule],
+  imports: [LucideAngularModule, RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,32 +45,32 @@ export class Home {
 
   features = signal<Feature[]>([
     {
-      icon: 'pi pi-trophy',
+      icon: 'trophy',
       titleKey: 'home.features.createTournament.title',
       descriptionKey: 'home.features.createTournament.description',
     },
     {
-      icon: 'pi pi-users',
+      icon: 'users',
       titleKey: 'home.features.managePlayers.title',
       descriptionKey: 'home.features.managePlayers.description',
     },
     {
-      icon: 'pi pi-chart-bar',
+      icon: 'chart-bar',
       titleKey: 'home.features.followScores.title',
       descriptionKey: 'home.features.followScores.description',
     },
     {
-      icon: 'pi pi-link',
+      icon: 'link',
       titleKey: 'home.features.urlAccess.title',
       descriptionKey: 'home.features.urlAccess.description',
     },
     {
-      icon: 'pi pi-euro',
+      icon: 'badge-euro',
       titleKey: 'home.features.free.title',
       descriptionKey: 'home.features.free.description',
     },
     {
-      icon: 'pi pi-code',
+      icon: 'code-xml',
       titleKey: 'home.features.openSource.title',
       descriptionKey: 'home.features.openSource.description',
     },

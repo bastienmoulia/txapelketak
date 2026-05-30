@@ -16,6 +16,7 @@ import { Poule } from '../../../models';
 import { PouleFormDialog } from '../poule-form-dialog/poule-form-dialog';
 import type { SavePouleEvent } from '../phases';
 import { CrossStandings } from './cross-standings/cross-standings';
+import { LucideAngularModule } from 'lucide-angular';
 
 interface TeamStanding {
   ref: DocumentReference;
@@ -32,7 +33,7 @@ interface PouleWithStandings extends Poule {
 
 @Component({
   selector: 'app-phases-poules',
-  imports: [ApplyPipe, Button, CardModule, TranslocoPipe, Message, TooltipModule, CrossStandings],
+  imports: [LucideAngularModule, ApplyPipe, Button, CardModule, TranslocoPipe, Message, TooltipModule, CrossStandings],
   templateUrl: './poules.html',
   styleUrl: './poules.css',
 })
@@ -274,7 +275,6 @@ export class Poules {
       message: this.translocoService.translate('shared.confirm.deleteMessage', {
         name: poule.name,
       }),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

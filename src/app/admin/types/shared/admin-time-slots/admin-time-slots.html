@@ -16,13 +16,15 @@
       data-testid="time-slot-datepicker"
     />
     <p-button
-      icon="pi pi-plus"
+     
       [label]="'admin.timeSlots.add' | transloco"
       [disabled]="!newSlotDate()"
       [loading]="isSaving()"
       (onClick)="onAddTimeSlot()"
       data-testid="add-time-slot-button"
-    />
+    >
+      <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+    </p-button>
   </div>
 
   @if (sortedTimeSlots().length === 0) {
@@ -37,7 +39,7 @@
             slot.date | date: 'short' : undefined : dateLocale()
           }}</span>
           <p-button
-            icon="pi pi-trash"
+           
             [ariaLabel]="'admin.timeSlots.deleteAria' | transloco"
             [pTooltip]="'admin.timeSlots.deleteAria' | transloco"
             tooltipPosition="top"
@@ -47,7 +49,9 @@
             [text]="true"
             (onClick)="onDeleteTimeSlot(slot.ref)"
             data-testid="delete-time-slot-button"
-          />
+          >
+            <ng-template #icon><lucide-icon name="trash-2" [size]="16" /></ng-template>
+          </p-button>
         </li>
       }
     </ul>

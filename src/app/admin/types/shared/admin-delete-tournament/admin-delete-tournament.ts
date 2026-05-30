@@ -8,10 +8,11 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
 import { DeleteTournamentDialog } from './delete-tournament-dialog/delete-tournament-dialog';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-admin-delete-tournament',
-  imports: [ButtonModule, ToastModule, TranslocoModule],
+  imports: [LucideAngularModule, ButtonModule, ToastModule, TranslocoModule],
   providers: [DialogService, MessageService],
   templateUrl: './admin-delete-tournament.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

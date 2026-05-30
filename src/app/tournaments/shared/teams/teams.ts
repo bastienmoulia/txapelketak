@@ -19,10 +19,11 @@ import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 import { Team } from '../../models';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-teams',
-  imports: [
+  imports: [LucideAngularModule, 
     TableModule,
     TranslocoModule,
     MessageModule,
@@ -114,7 +115,6 @@ export class Teams {
     this.confirmationService.confirm({
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
       message: this.translocoService.translate('shared.confirm.deleteMessage', { name: team.name }),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

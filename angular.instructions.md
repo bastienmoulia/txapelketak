@@ -59,6 +59,78 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
 
+## Icons (Lucide)
+
+This project uses [lucide-angular](https://lucide.dev/guide/packages/lucide-angular) for all icons. **Never use PrimeNG icon classes (`pi pi-*`).**
+
+### Adding new icons
+
+1. Find the icon name at [lucide.dev/icons](https://lucide.dev/icons/) — names are kebab-case (e.g. `triangle-alert`).
+2. Import the PascalCase export and add it to `src/app/shared/icons/lucide.providers.ts`:
+   ```typescript
+   import { TriangleAlert, ... } from 'lucide-angular';
+   // Add to the LucideIconProvider({ ... }) object
+   ```
+3. Import `LucideAngularModule` in the component `imports` array (no `.pick()` needed — icons are provided globally).
+
+### Using icons in templates
+
+**Standalone icon:**
+```html
+<lucide-icon name="triangle-alert" />
+<!-- small inline icon: -->
+<lucide-icon name="clock" [size]="14" class="mr-1 inline-block align-text-bottom" />
+<!-- spinning loader: -->
+<lucide-icon name="loader-circle" class="animate-spin" />
+```
+
+**Inside a PrimeNG button** (never use `icon="pi pi-..."` — use `iconTemplate`):
+```html
+<p-button label="Save">
+  <ng-template #icon><lucide-icon name="save" [size]="16" /></ng-template>
+</p-button>
+```
+
+**Inside a PrimeNG message** (never use `icon="pi pi-..."` — use `iconTemplate`):
+```html
+<p-message severity="warn">
+  <ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template>
+  Message text
+</p-message>
+```
+
+**Dynamic icon (e.g., toggle):**
+```html
+<p-button>
+  <ng-template #icon>
+    @if (expanded()) {
+      <lucide-icon name="chevron-up" [size]="16" />
+    } @else {
+      <lucide-icon name="chevron-down" [size]="16" />
+    }
+  </ng-template>
+</p-button>
+```
+
+**Inside a PrimeNG menu (`p-menu`):** Store the icon name in `data.icon` on the `MenuItem`, then use `itemTemplate`:
+```typescript
+items = computed<MenuItem[]>(() => [
+  { label: 'Sun', data: { icon: 'sun' }, command: () => {} },
+]);
+```
+```html
+<p-menu [model]="items()">
+  <ng-template #item let-item>
+    <div class="flex items-center gap-2">
+      <lucide-icon [name]="item.data.icon" [size]="16" />
+      <span>{{ item.label }}</span>
+    </div>
+  </ng-template>
+</p-menu>
+```
+
+**Icon-only buttons** must include `[ariaLabel]` and `[pTooltip]` for accessibility.
+
 ## UX Best Practices
 
 - Always show a confirmation modal (`p-dialog`) before any deletion operation. The modal must:

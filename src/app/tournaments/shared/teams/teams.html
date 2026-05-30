@@ -1,9 +1,9 @@
-<p-confirmdialog></p-confirmdialog>
+<p-confirmdialog><ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template></p-confirmdialog>
 
 @if (teams().length > 0) {
   <div class="flex flex-wrap items-center gap-2 m-3">
     <p-iconfield>
-      <p-inputicon class="pi pi-search" />
+      <p-inputicon><lucide-icon name="search" [size]="16" /></p-inputicon>
       <input
         pInputText
         type="text"
@@ -17,7 +17,7 @@
       <div class="ml-auto flex gap-2">
         <p-button
           type="button"
-          icon="pi pi-plus"
+         
           [ariaLabel]="'admin.teams.add' | transloco"
           [pTooltip]="'admin.teams.add' | transloco"
           tooltipPosition="left"
@@ -25,10 +25,12 @@
           size="small"
           (onClick)="onAddTeam()"
           data-testid="add-team-button"
-        />
+        >
+          <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+        </p-button>
         <p-button
           type="button"
-          icon="pi pi-plus-circle"
+         
           severity="secondary"
           [ariaLabel]="'admin.teams.addBulkAria' | transloco"
           [pTooltip]="'admin.teams.addBulk' | transloco"
@@ -37,7 +39,9 @@
           size="small"
           (onClick)="onAddTeams()"
           data-testid="add-teams-bulk-button"
-        />
+        >
+          <ng-template #icon><lucide-icon name="circle-plus" [size]="16" /></ng-template>
+        </p-button>
       </div>
     }
   </div>
@@ -79,39 +83,45 @@
                 size="small"
                 severity="info"
                 [rounded]="true"
-                icon="pi pi-comment"
+               
                 [ariaLabel]="'admin.teams.commentAria' | transloco"
                 [pTooltip]="'admin.teams.commentTooltip' | transloco"
                 tooltipPosition="top"
                 (onClick)="onShowComment($event, team.comment)"
                 data-testid="team-comment-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+              </p-button>
             }
             <p-button
               type="button"
               size="small"
               severity="secondary"
               [outlined]="true"
-              icon="pi pi-list"
+             
               [label]="'shared.actions.viewGames' | transloco"
               [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
               [routerLink]="['..', 'games']"
               [queryParams]="{ teamId: team.ref.id }"
               queryParamsHandling="merge"
               data-testid="view-team-games-button"
-            />
+            >
+              <ng-template #icon><lucide-icon name="list" [size]="16" /></ng-template>
+            </p-button>
             @if (role() === 'admin') {
               <p-button
                 type="button"
                 size="small"
                 severity="secondary"
                 [outlined]="true"
-                icon="pi pi-pencil"
+               
                 [label]="'shared.actions.edit' | transloco"
                 [ariaLabel]="'admin.teams.editAria' | transloco"
                 (onClick)="onEditTeam(team)"
                 data-testid="edit-team-button"
-              />
+              >
+                <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+              </p-button>
             }
           </div>
           <!-- Boutons icône + tooltip : petit écran -->
@@ -122,12 +132,14 @@
                 size="small"
                 severity="info"
                 [rounded]="true"
-                icon="pi pi-comment"
+               
                 [ariaLabel]="'admin.teams.commentAria' | transloco"
                 [pTooltip]="'admin.teams.commentTooltip' | transloco"
                 tooltipPosition="top"
                 (onClick)="onShowComment($event, team.comment)"
-              />
+              >
+                <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+              </p-button>
             }
             <p-button
               type="button"
@@ -135,14 +147,16 @@
               severity="secondary"
               [rounded]="true"
               [text]="true"
-              icon="pi pi-list"
+             
               [ariaLabel]="'admin.teams.viewGamesAria' | transloco"
               [pTooltip]="'shared.actions.viewGames' | transloco"
               tooltipPosition="top"
               [routerLink]="['..', 'games']"
               [queryParams]="{ teamId: team.ref.id }"
               queryParamsHandling="merge"
-            />
+            >
+              <ng-template #icon><lucide-icon name="list" [size]="16" /></ng-template>
+            </p-button>
             @if (role() === 'admin') {
               <p-button
                 type="button"
@@ -150,12 +164,14 @@
                 severity="secondary"
                 [rounded]="true"
                 [text]="true"
-                icon="pi pi-pencil"
+               
                 [ariaLabel]="'admin.teams.editAria' | transloco"
                 [pTooltip]="'shared.actions.edit' | transloco"
                 tooltipPosition="top"
                 (onClick)="onEditTeam(team)"
-              />
+              >
+                <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+              </p-button>
             }
           </div>
         </td>
@@ -167,7 +183,7 @@
     <div class="flex justify-end gap-1 mx-3 mb-3">
       <p-button
         type="button"
-        icon="pi pi-plus"
+       
         [ariaLabel]="'admin.teams.add' | transloco"
         [pTooltip]="'admin.teams.add' | transloco"
         tooltipPosition="top"
@@ -175,10 +191,12 @@
         size="small"
         (onClick)="onAddTeam()"
         data-testid="add-team-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+      </p-button>
       <p-button
         type="button"
-        icon="pi pi-plus-circle"
+       
         severity="secondary"
         [ariaLabel]="'admin.teams.addBulkAria' | transloco"
         [pTooltip]="'admin.teams.addBulk' | transloco"
@@ -187,7 +205,9 @@
         size="small"
         (onClick)="onAddTeams()"
         data-testid="add-teams-bulk-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="circle-plus" [size]="16" /></ng-template>
+      </p-button>
     </div>
   }
   <p-message severity="warn" class="mt-4 mx-3">

@@ -1,4 +1,4 @@
-<p-confirmdialog></p-confirmdialog>
+<p-confirmdialog><ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template></p-confirmdialog>
 
 @if (hasPoules()) {
   <div class="flex flex-wrap items-center gap-2 m-3">
@@ -50,14 +50,16 @@
     @if (role() === 'admin') {
       <p-button
         class="ml-auto w-full flex justify-end sm:w-auto"
-        icon="pi pi-plus"
+       
         [ariaLabel]="'admin.games.addGame' | transloco"
         [pTooltip]="'admin.games.addGame' | transloco"
         [rounded]="true"
         size="small"
         (onClick)="onOpenAddGame()"
         data-testid="add-game-button"
-      />
+      >
+        <ng-template #icon><lucide-icon name="plus" [size]="16" /></ng-template>
+      </p-button>
     }
   </div>
 
@@ -96,7 +98,7 @@
                 {{ row.date | date: 'EEEE' : undefined : activeLanguage() }}
                 {{ row.date | date: 'longDate' : undefined : activeLanguage() }}
               } @else {
-                <i class="pi pi-exclamation-triangle mr-1"></i
+                <lucide-icon name="triangle-alert" [size]="16" class="mr-1 inline-block align-text-bottom"></lucide-icon
                 >{{ 'admin.games.noDate' | transloco }}
               }
             </td>
@@ -108,7 +110,7 @@
             <tr class="free-slot-row">
               <td [attr.colspan]="byDateColumnCount()" class="py-1 px-3">
                 <span class="free-slot-label text-sm text-green-600 dark:text-green-400">
-                  <i class="pi pi-calendar-plus mr-1"></i>
+                  <lucide-icon name="calendar-plus" [size]="16" class="mr-1 inline-block align-text-bottom" />
                   {{ 'admin.games.freeSlot' | transloco }}
                   {{ asFreeSlotRow(row).date | date: 'shortTime' : undefined : activeLanguage() }}
                 </span>
@@ -182,7 +184,7 @@
                   <div class="flex justify-end gap-1">
                     @if (game.comment) {
                       <p-button
-                        icon="pi pi-comment"
+                       
                         [ariaLabel]="'admin.games.commentAria' | transloco"
                         [pTooltip]="'admin.games.commentTooltip' | transloco"
                         tooltipPosition="top"
@@ -190,10 +192,12 @@
                         size="small"
                         [rounded]="true"
                         (onClick)="onShowComment($event, game.comment)"
-                      />
+                      >
+                        <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+                      </p-button>
                     }
                     <p-button
-                      icon="pi pi-pencil"
+                     
                       [ariaLabel]="'admin.games.editAria' | transloco"
                       [pTooltip]="'shared.actions.edit' | transloco"
                       tooltipPosition="top"
@@ -202,7 +206,9 @@
                       [rounded]="true"
                       [text]="true"
                       (onClick)="onEditGameFromDate(game)"
-                    />
+                    >
+                      <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+                    </p-button>
                   </div>
                 </td>
               }
@@ -223,7 +229,7 @@
 }
 @if (showScrollToTop()) {
   <p-button
-    icon="pi pi-arrow-up"
+   
     [ariaLabel]="'admin.games.scrollToTopTooltip' | transloco"
     [pTooltip]="'admin.games.scrollToTopTooltip' | transloco"
     class="scroll-btn"
@@ -231,10 +237,12 @@
     [text]="true"
     [raised]="true"
     (onClick)="scrollToTop()"
-  />
+  >
+    <ng-template #icon><lucide-icon name="arrow-up" [size]="16" /></ng-template>
+  </p-button>
 } @else if (showScrollToToday()) {
   <p-button
-    icon="pi pi-calendar-clock"
+   
     [ariaLabel]="'admin.games.scrollToTodayTooltip' | transloco"
     [pTooltip]="'admin.games.scrollToTodayTooltip' | transloco"
     class="scroll-btn"
@@ -242,7 +250,9 @@
     [text]="true"
     [raised]="true"
     (onClick)="scrollToToday()"
-  />
+  >
+    <ng-template #icon><lucide-icon name="calendar-clock" [size]="16" /></ng-template>
+  </p-button>
 }
 
 <p-popover #commentPopover>

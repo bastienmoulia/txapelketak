@@ -21,6 +21,7 @@ import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 import { Poule, Serie } from '../../models';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface SaveSerieEvent {
   name: string;
@@ -47,7 +48,7 @@ export interface TeamInPouleEvent {
 
 @Component({
   selector: 'app-phases',
-  imports: [
+  imports: [LucideAngularModule, 
     TabsModule,
     AccordionModule,
     Button,
@@ -165,7 +166,6 @@ export class Phases {
       message: this.translocoService.translate('shared.confirm.deleteMessage', {
         name: serie.name,
       }),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

@@ -241,7 +241,7 @@ describe('Teams', () => {
       '[data-testid="team-comment-button"]',
     );
     expect(commentButton).not.toBeNull();
-    expect(commentButton.querySelector('.pi-comment')).not.toBeNull();
+    expect(commentButton.querySelector('lucide-icon[name="message-square"]')).not.toBeNull();
   });
 
   it('should show comment button for organizer when team has comment', async () => {

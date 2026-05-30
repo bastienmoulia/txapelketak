@@ -28,6 +28,7 @@ import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -62,7 +63,7 @@ export interface RecentGame {
 
 @Component({
   selector: 'app-tournament-dashboard',
-  imports: [
+  imports: [LucideAngularModule, 
     CardModule,
     ButtonModule,
     TranslocoPipe,

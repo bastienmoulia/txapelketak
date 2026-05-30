@@ -6,6 +6,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { LucideAngularModule } from 'lucide-angular';
 
 interface DeleteTournamentDialogData {
   tournamentName: string;
@@ -13,7 +14,7 @@ interface DeleteTournamentDialogData {
 
 @Component({
   selector: 'app-delete-tournament-dialog',
-  imports: [FormsModule, FloatLabel, InputTextModule, MessageModule, Button, TranslocoPipe],
+  imports: [LucideAngularModule, FormsModule, FloatLabel, InputTextModule, MessageModule, Button, TranslocoPipe],
   templateUrl: './delete-tournament-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

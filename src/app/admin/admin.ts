@@ -27,10 +27,11 @@ import { AuthStore } from '../store/auth.store';
 import { PoulesStore } from '../store/poules.store';
 import { TournamentTabs } from '../shared/tournament-tabs/tournament-tabs';
 import { TournamentActionsService } from '../shared/services/tournament-actions.service';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-admin',
-  imports: [
+  imports: [LucideAngularModule, 
     RouterLink,
     ButtonModule,
     MessageModule,

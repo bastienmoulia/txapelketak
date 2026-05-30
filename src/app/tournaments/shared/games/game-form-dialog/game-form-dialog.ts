@@ -18,6 +18,7 @@ import { Game, Poule, Team } from '../../../models';
 import { UserRole } from '../../../../home/tournament.interface';
 import type { SaveGameEvent } from '../games';
 import { CallPipe } from 'ngxtension/call-apply';
+import { LucideAngularModule } from 'lucide-angular';
 
 export interface DeleteGameAction {
   action: 'delete';
@@ -44,7 +45,7 @@ interface GameFormDialogData {
 
 @Component({
   selector: 'app-game-form-dialog',
-  imports: [
+  imports: [LucideAngularModule, 
     TranslocoPipe,
     FormsModule,
     FloatLabel,

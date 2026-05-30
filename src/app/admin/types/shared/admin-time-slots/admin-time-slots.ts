@@ -11,10 +11,11 @@ import { TimeSlot } from '../../../../tournaments/models';
 import { Tournament } from '../../../../home/tournament.interface';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { DocumentReference } from '@angular/fire/firestore';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-admin-time-slots',
-  imports: [ButtonModule, DatePicker, DatePipe, FormsModule, TooltipModule, TranslocoModule],
+  imports: [LucideAngularModule, ButtonModule, DatePicker, DatePipe, FormsModule, TooltipModule, TranslocoModule],
   templateUrl: './admin-time-slots.html',
   styleUrl: './admin-time-slots.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

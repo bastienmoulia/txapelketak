@@ -1,29 +1,57 @@
 <div class="header-actions flex items-center justify-end gap-3 flex-wrap">
-  <p-menu #themeMenu [model]="themeItems()" [popup]="true" appendTo="body" />
+  <p-menu #themeMenu [model]="themeItems()" [popup]="true" appendTo="body">
+    <ng-template #item let-item>
+      <div class="flex items-center gap-2">
+        <lucide-icon [name]="item.data?.icon" [size]="16" />
+        <span>{{ item.label }}</span>
+      </div>
+    </ng-template>
+  </p-menu>
   <p-button
     data-testid="theme-button"
     type="button"
     severity="secondary"
     [outlined]="true"
-    [icon]="themeIcon()"
     [label]="isMobile() ? undefined : themeLabel()"
     [ariaLabel]="themeLabel()"
     [pTooltip]="isMobile() ? themeLabel() : undefined"
     tooltipPosition="left"
     (onClick)="toggleMenu(themeMenu, $event)"
-  />
+  >
+    <ng-template #icon>
+      @switch (themeMode()) {
+        @case ('light') {
+          <lucide-icon name="sun" [size]="16" />
+        }
+        @case ('dark') {
+          <lucide-icon name="moon" [size]="16" />
+        }
+        @default {
+          <lucide-icon name="monitor" [size]="16" />
+        }
+      }
+    </ng-template>
+  </p-button>
 
-  <p-menu #languageMenu [model]="languageItems()" [popup]="true" appendTo="body" />
+  <p-menu #languageMenu [model]="languageItems()" [popup]="true" appendTo="body">
+    <ng-template #item let-item>
+      <div class="flex items-center gap-2">
+        <lucide-icon [name]="item.data?.icon" [size]="16" />
+        <span>{{ item.label }}</span>
+      </div>
+    </ng-template>
+  </p-menu>
   <p-button
     data-testid="language-button"
     type="button"
     severity="secondary"
     [outlined]="true"
-    icon="pi pi-language"
     [label]="isMobile() ? languageCode() : languageLabel()"
     [ariaLabel]="languageLabel()"
     [pTooltip]="languageLabel()"
     tooltipPosition="left"
     (onClick)="toggleMenu(languageMenu, $event)"
-  />
+  >
+    <ng-template #icon><lucide-icon name="languages" [size]="16" /></ng-template>
+  </p-button>
 </div>

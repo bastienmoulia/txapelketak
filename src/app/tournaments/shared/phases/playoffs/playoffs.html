@@ -14,12 +14,14 @@
                 (role() === 'admin' || role() === 'organizer') &&
                 playoffTree.playoff.hiddenFromVisitors
               ) {
-                <i
-                  class="pi pi-eye-slash text-color-secondary"
+                <lucide-icon
+                  name="eye-off"
+                  [size]="16"
+                  class="text-color-secondary"
                   [pTooltip]="'admin.poules.hiddenFromVisitorsIndicator' | transloco"
                   tooltipPosition="top"
                   data-testid="playoff-hidden-indicator"
-                ></i>
+                />
               }
             </div>
           </div>
@@ -29,13 +31,15 @@
               size="small"
               severity="secondary"
               [outlined]="true"
-              icon="pi pi-pencil"
+             
               [ariaLabel]="'admin.poules.editPlayoffAria' | transloco"
               [pTooltip]="'admin.poules.editPlayoffAria' | transloco"
               tooltipPosition="top"
               (onClick)="onEditPlayoff(playoffTree.playoff)"
               data-testid="edit-playoff-button"
-            />
+            >
+              <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+            </p-button>
           }
         </div>
       </ng-template>
@@ -86,7 +90,7 @@
                                 @if (match.game.comment) {
                                   <p-button
                                     type="button"
-                                    icon="pi pi-comment"
+                                   
                                     [ariaLabel]="'admin.games.commentAria' | transloco"
                                     [pTooltip]="'admin.games.commentTooltip' | transloco"
                                     tooltipPosition="top"
@@ -96,11 +100,13 @@
                                     [text]="true"
                                     (onClick)="onShowComment($event, match.game.comment)"
                                     data-testid="playoff-match-comment-button"
-                                  />
+                                  >
+                                    <ng-template #icon><lucide-icon name="message-square" [size]="16" /></ng-template>
+                                  </p-button>
                                 }
                                 <p-button
                                   type="button"
-                                  icon="pi pi-pencil"
+                                 
                                   [ariaLabel]="'shared.actions.edit' | transloco"
                                   [pTooltip]="'shared.actions.edit' | transloco"
                                   severity="secondary"
@@ -109,7 +115,9 @@
                                   [text]="true"
                                   (onClick)="onEditMatch(match.game, playoffTree.playoff)"
                                   data-testid="playoff-match-edit-button"
-                                />
+                                >
+                                  <ng-template #icon><lucide-icon name="pencil" [size]="16" /></ng-template>
+                                </p-button>
                               </div>
                             }
                           </div>

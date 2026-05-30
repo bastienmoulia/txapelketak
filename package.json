@@ -39,6 +39,7 @@
     "@ngrx/signals": "^21.1.0",
     "@primeuix/themes": "^2.0.3",
     "js-yaml": "^4.1.1",
+    "lucide-angular": "^1.0.0",
     "marked": "^18.0.4",
     "ngxtension": "^7.2.0",
     "primeicons": "^7.0.0",

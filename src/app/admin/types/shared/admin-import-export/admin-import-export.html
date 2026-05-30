@@ -1,4 +1,5 @@
 <p-confirmdialog>
+  <ng-template #icon><lucide-icon name="triangle-alert" [size]="16" /></ng-template>
   <ng-template #message let-message>
     <p>
       {{ message.message }}
@@ -54,10 +55,12 @@
     <div>
       <p-button
         type="button"
-        icon="pi pi-download"
+       
         [label]="'admin.importExport.exportButton' | transloco"
         (onClick)="onExport()"
-      />
+      >
+        <ng-template #icon><lucide-icon name="download" [size]="16" /></ng-template>
+      </p-button>
     </div>
   </div>
 
@@ -77,12 +80,14 @@
       />
       <p-button
         type="button"
-        icon="pi pi-upload"
+       
         severity="secondary"
         [label]="'admin.importExport.importButton' | transloco"
         [disabled]="isPreparingImport() || isImporting()"
         (onClick)="fileInput.click()"
-      />
+      >
+        <ng-template #icon><lucide-icon name="upload" [size]="16" /></ng-template>
+      </p-button>
     </div>
     @if (importError()) {
       <p-message severity="error">{{ importError() }}</p-message>

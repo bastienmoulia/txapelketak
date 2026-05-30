@@ -12,10 +12,11 @@ import { Tournament, User } from '../../../../home/tournament.interface';
 import { TooltipModule } from 'primeng/tooltip';
 import { RoleBadge } from '../../../../shared/role-badge/role-badge';
 import { UserFormDialog, UserFormResult } from './user-form-dialog/user-form-dialog';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-admin-users',
-  imports: [
+  imports: [LucideAngularModule, 
     ButtonModule,
     ConfirmDialogModule,
     MessageModule,
@@ -163,7 +164,6 @@ export class AdminUsers {
     this.confirmationService.confirm({
       header: this.translocoService.translate('shared.confirm.deleteHeader'),
       message: this.translocoService.translate('admin.users.deleteConfirm'),
-      icon: 'pi pi-exclamation-triangle',
       acceptLabel: this.translocoService.translate('shared.confirm.confirm'),
       rejectLabel: this.translocoService.translate('shared.confirm.cancel'),
       acceptButtonStyleClass: 'p-button-danger',

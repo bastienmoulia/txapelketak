@@ -16,6 +16,7 @@ import {
   setDoc,
   updateDoc,
   addDoc,
+  writeBatch,
   where,
 } from '@angular/fire/firestore';
 import { map, Observable, of, throwError } from 'rxjs';
@@ -369,20 +370,39 @@ export class FirebaseService {
 
   async deleteSerieFromTournament(serieRef: DocumentReference): Promise<void> {
     console.debug(`[Firestore] deleteSerieFromTournament: deleting serie and nested poules`);
-    const pouleDocs = await this.getCollectionFromDocumentRef(serieRef, 'poules');
-    for (const pouleDoc of pouleDocs) {
-      await this.deletePouleFromSerie(pouleDoc.ref);
-    }
-
-    const playoffDocs = await this.getCollectionFromDocumentRef(serieRef, 'playoffs');
-    for (const playoffDoc of playoffDocs) {
-      await this.deletePlayoffFromSerie(playoffDoc.ref);
-    }
+    await this.deletePoulesFromSerie(serieRef);
+    await this.deletePlayoffsFromSerie(serieRef);
 
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: serie`);
       await deleteDoc(serieRef);
     });
+  }
+
+  async deletePoulesFromSerie(serieRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deletePoulesFromSerie: deleting all poules and nested games`);
+    const pouleDocs = await this.getCollectionFromDocumentRef(serieRef, 'poules');
+    const pouleRefs = pouleDocs.map((pouleDoc) => pouleDoc.ref);
+
+    for (const pouleRef of pouleRefs) {
+      await this.deletePouleGames(pouleRef);
+    }
+
+    await this.deleteDocumentRefsInBatches(pouleRefs, 'poule');
+  }
+
+  async deletePlayoffsFromSerie(serieRef: DocumentReference): Promise<void> {
+    console.debug(`[Firestore] deletePlayoffsFromSerie: deleting all playoffs and nested games`);
+    const playoffDocs = await this.getCollectionFromDocumentRef(serieRef, 'playoffs');
+    const playoffRefs = playoffDocs.map((playoffDoc) => playoffDoc.ref);
+
+    for (const playoffRef of playoffRefs) {
+      const gameDocs = await this.getCollectionFromDocumentRef(playoffRef, 'games');
+      const gameRefs = gameDocs.map((gameDoc) => gameDoc.ref);
+      await this.deleteDocumentRefsInBatches(gameRefs, 'playoff game');
+    }
+
+    await this.deleteDocumentRefsInBatches(playoffRefs, 'playoff');
   }
 
   async addPouleToSerie(
@@ -442,28 +462,43 @@ export class FirebaseService {
   async deletePouleGames(pouleRef: DocumentReference): Promise<void> {
     console.debug(`[Firestore] deletePouleGames: deleting all games from poule`);
     const gameDocs = await this.getCollectionFromDocumentRef(pouleRef, 'games');
-    for (const gameDoc of gameDocs) {
-      await runInInjectionContext(this.environmentInjector, async () => {
-        console.debug(`[Firestore] deleteDoc: game`);
-        await deleteDoc(gameDoc.ref);
-      });
-    }
+    const gameRefs = gameDocs.map((gameDoc) => gameDoc.ref);
+    await this.deleteDocumentRefsInBatches(gameRefs, 'game');
   }
 
   async deletePlayoffFromSerie(playoffRef: DocumentReference): Promise<void> {
     console.debug(`[Firestore] deletePlayoffFromSerie: deleting playoff and nested games`);
     const gameDocs = await this.getCollectionFromDocumentRef(playoffRef, 'games');
-    for (const gameDoc of gameDocs) {
-      await runInInjectionContext(this.environmentInjector, async () => {
-        console.debug(`[Firestore] deleteDoc: playoff game`);
-        await deleteDoc(gameDoc.ref);
-      });
-    }
+    const gameRefs = gameDocs.map((gameDoc) => gameDoc.ref);
+    await this.deleteDocumentRefsInBatches(gameRefs, 'playoff game');
 
     await runInInjectionContext(this.environmentInjector, async () => {
       console.debug(`[Firestore] deleteDoc: playoff`);
       await deleteDoc(playoffRef);
     });
+  }
+
+  private async deleteDocumentRefsInBatches(
+    refs: DocumentReference[],
+    label: string,
+  ): Promise<void> {
+    if (!this.firestore || refs.length === 0) {
+      return;
+    }
+
+    // Firestore batched writes are limited to 500 operations per commit.
+    const batchSize = 450;
+    for (let i = 0; i < refs.length; i += batchSize) {
+      const chunk = refs.slice(i, i + batchSize);
+      await runInInjectionContext(this.environmentInjector, async () => {
+        const batch = writeBatch(this.firestore!);
+        for (const ref of chunk) {
+          console.debug(`[Firestore] batch deleteDoc: ${label}`);
+          batch.delete(ref);
+        }
+        await batch.commit();
+      });
+    }
   }
 
   async updatePlayoffInSerie(

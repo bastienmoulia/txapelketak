@@ -15,6 +15,10 @@ export interface SaveFreePhaseEvent {
   ref?: DocumentReference;
 }
 
+export interface DeleteFreePhaseAction {
+  action: 'delete';
+}
+
 interface FreePhaseFormDialogData {
   serieRef: DocumentReference;
   name?: string;
@@ -51,6 +55,11 @@ export class FreePhaseFormDialog {
       hiddenFromVisitors: this.hiddenFromVisitors(),
       ref: this.data.ref,
     };
+    this.dialogRef.close(result);
+  }
+
+  onDelete(): void {
+    const result: DeleteFreePhaseAction = { action: 'delete' };
     this.dialogRef.close(result);
   }
 }

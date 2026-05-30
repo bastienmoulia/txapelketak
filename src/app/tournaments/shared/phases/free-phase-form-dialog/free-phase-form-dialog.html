@@ -28,7 +28,19 @@
     </label>
   </div>
 
-  <div class="p-dialog-footer px-0! mt-5 flex justify-end gap-2">
+  <div class="p-dialog-footer px-0! mt-5 flex items-center gap-2">
+    @if (data.ref) {
+      <p-button
+        type="button"
+        class="mr-auto"
+        [label]="'shared.actions.delete' | transloco"
+        severity="danger"
+        [outlined]="true"
+        icon="pi pi-trash"
+        (onClick)="onDelete()"
+        data-testid="delete-free-phase-button"
+      />
+    }
     <p-button
       type="button"
       [label]="'shared.actions.cancel' | transloco"

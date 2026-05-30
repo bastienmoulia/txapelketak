@@ -285,7 +285,6 @@ describe('FreePhases', () => {
 });
 
 describe('FreePhases (organizer)', () => {
-  let component: FreePhases;
   let fixture: ComponentFixture<FreePhases>;
 
   const mockSerieRef = { id: 'serie-1' } as unknown as DocumentReference;
@@ -330,7 +329,6 @@ describe('FreePhases (organizer)', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FreePhases);
-    component = fixture.componentInstance;
   });
 
   it('should show add-game button but not edit button for organizer', () => {
@@ -350,7 +348,6 @@ describe('FreePhases (organizer)', () => {
 });
 
 describe('FreePhases (visitor)', () => {
-  let component: FreePhases;
   let fixture: ComponentFixture<FreePhases>;
 
   const mockSerieRef = { id: 'serie-1' } as unknown as DocumentReference;
@@ -395,7 +392,6 @@ describe('FreePhases (visitor)', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FreePhases);
-    component = fixture.componentInstance;
   });
 
   it('should not show add-game or edit buttons for visitor', () => {

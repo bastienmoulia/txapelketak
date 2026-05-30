@@ -103,6 +103,11 @@ describe('FreePhaseFormDialog (create mode)', () => {
     );
     expect(toggle).toBeTruthy();
   });
+
+  it('should not show delete button in create mode', () => {
+    const deleteButton = fixture.nativeElement.querySelector('[data-testid="delete-free-phase-button"]');
+    expect(deleteButton).toBeNull();
+  });
 });
 
 describe('FreePhaseFormDialog (edit mode)', () => {
@@ -159,5 +164,15 @@ describe('FreePhaseFormDialog (edit mode)', () => {
       hiddenFromVisitors: false,
       ref: freePhaseRef,
     });
+  });
+
+  it('should close with delete action on delete', () => {
+    component.onDelete();
+    expect(mockRef.close).toHaveBeenCalledWith({ action: 'delete' });
+  });
+
+  it('should show delete button in edit mode', () => {
+    const deleteButton = fixture.nativeElement.querySelector('[data-testid="delete-free-phase-button"]');
+    expect(deleteButton).toBeTruthy();
   });
 });

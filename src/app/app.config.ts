@@ -9,6 +9,7 @@ import { definePreset } from '@primeuix/themes';
 import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAnalytics, provideAnalytics } from '@angular/fire/analytics';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
 import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './shared/services/transloco-loader.service';
@@ -59,6 +60,19 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideAnalytics(() => getAnalytics()),
+    provideFunctions(() => {
+      const functions = getFunctions(getApp(), 'europe-west1');
+
+      if (environment.useFunctionsEmulator) {
+        try {
+          connectFunctionsEmulator(functions, '127.0.0.1', 5001);
+        } catch (error) {
+          console.warn('Could not connect to Functions emulator', error);
+        }
+      }
+
+      return functions;
+    }),
     provideFirestore(() => {
       const firestore = getFirestore(getApp(), environment.firestoreDatabase);
 

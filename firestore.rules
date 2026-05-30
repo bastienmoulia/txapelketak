@@ -27,7 +27,8 @@ service cloud.firestore {
         && isValidTournamentStatus(request.resource.data.status)
         && request.resource.data.createdAt is string;
 
-      allow delete: if true;
+      // Deletion handled by Cloud Function (deleteTournament) with admin token verification
+      allow delete: if false;
 
       match /teams/{teamId} {
         allow get, list: if true;

@@ -19,10 +19,12 @@ import {
   writeBatch,
   where,
 } from '@angular/fire/firestore';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 import { Game, Team, TimeSlot } from '../../tournaments/models';
+import { environment } from '../../../environments/environment';
 
 function getRoundLabel(roundSize: number): string {
   return `finale.rounds.${roundSize}`;
@@ -33,6 +35,7 @@ function getRoundLabel(roundSize: number): string {
 })
 export class FirebaseService {
   private firestore = inject(Firestore, { optional: true });
+  private functions = inject(Functions, { optional: true });
   private environmentInjector = inject(EnvironmentInjector);
 
   isAvailable(): boolean {
@@ -622,6 +625,21 @@ export class FirebaseService {
     });
   }
 
+  async deleteTournamentViaFunction(tournamentId: string, token: string): Promise<void> {
+    if (!this.functions) {
+      throw new Error('Functions unavailable');
+    }
+    const callable = httpsCallable<
+      { tournamentId: string; token: string; databaseId?: string },
+      { success: boolean }
+    >(this.functions, 'deleteTournament');
+    const databaseId = environment.firestoreDatabase;
+    await callable({ tournamentId, token, ...(databaseId !== '(default)' ? { databaseId } : {}) });
+  }
+
+  /**
+   * @deprecated This method is not used anymore since the tournament deletion is now handled by a Firebase Function to ensure all security rules are respected. It can be removed once we are sure the function works correctly and there are no more calls to this method.
+   */
   async deleteTournament(tournamentRef: DocumentReference): Promise<void> {
     console.debug(`[Firestore] deleteTournament: deleting all tournament data`);
     if (!this.firestore) {

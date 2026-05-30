@@ -9,6 +9,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { patchState } from '@ngrx/signals';
 import { vi } from 'vitest';
 import { PoulesStore } from '../../../store/poules.store';
+import { AuthStore } from '../../../store/auth.store';
 import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 
@@ -16,6 +17,7 @@ describe('Games', () => {
   let component: Games;
   let fixture: ComponentFixture<Games>;
   let poulesStore: InstanceType<typeof PoulesStore>;
+  let authStore: InstanceType<typeof AuthStore>;
   let mockTournamentActions: Record<string, ReturnType<typeof vi.fn>>;
 
   beforeEach(async () => {
@@ -35,6 +37,7 @@ describe('Games', () => {
     }).compileComponents();
 
     poulesStore = TestBed.inject(PoulesStore);
+    authStore = TestBed.inject(AuthStore);
     const tournamentDetailStore = TestBed.inject(TournamentDetailStore);
     patchState(tournamentDetailStore, {
       tournament: {
@@ -581,6 +584,49 @@ describe('Games', () => {
     expect(rootElement.textContent).toContain(
       'Aucune partie ne correspond aux filtres sélectionnés.',
     );
+  });
+
+  it('should use a message icon for game comment buttons', async () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    authStore.setUser({ role: 'admin' } as never);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  comment: 'Commentaire de partie',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const commentButton = fixture.nativeElement.querySelector(
+      '[aria-label="Voir le commentaire de cette partie"]',
+    );
+
+    expect(commentButton).not.toBeNull();
+    expect(commentButton.querySelector('.pi-comment')).not.toBeNull();
   });
 
   it('should detect only future free slots that are not already scheduled', () => {

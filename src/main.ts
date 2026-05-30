@@ -6,11 +6,16 @@ import localeEu from '@angular/common/locales/eu';
 import localeFr from '@angular/common/locales/fr';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
+import { environment } from './environments/environment';
 
 registerLocaleData(localeFr, 'fr');
 registerLocaleData(localeEn, 'en');
 registerLocaleData(localeEs, 'es');
 registerLocaleData(localeEu, 'eu');
+
+if (environment.production || localStorage.getItem('debug') !== 'true') {
+  console.debug = () => undefined;
+}
 
 async function cleanupLegacyServiceWorkers(): Promise<void> {
   if (!('serviceWorker' in navigator)) {

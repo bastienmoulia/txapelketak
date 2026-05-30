@@ -494,7 +494,6 @@ export class Games {
   }
 
   clearDateFilter(): void {
-    console.log('Clearing date filter');
     this.selectedDateFilter.set(null);
   }
 

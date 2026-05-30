@@ -7,16 +7,17 @@ import { Tournament } from './tournament.interface';
 import { TournamentsTable } from '../shared/tournaments-table/tournaments-table';
 import { HeaderActions } from '../shared/header-actions/header-actions';
 import { TournamentsStore } from '../store/tournaments.store';
+import { SvgIcon, SvgIconName } from '../shared/svg-icon/svg-icon';
 
 interface Feature {
-  icon: string;
+  icon: SvgIconName;
   titleKey: string;
   descriptionKey: string;
 }
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule],
+  imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule, SvgIcon],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,32 +45,32 @@ export class Home {
 
   features = signal<Feature[]>([
     {
-      icon: 'pi pi-trophy',
+      icon: 'trophy',
       titleKey: 'home.features.createTournament.title',
       descriptionKey: 'home.features.createTournament.description',
     },
     {
-      icon: 'pi pi-users',
+      icon: 'users',
       titleKey: 'home.features.managePlayers.title',
       descriptionKey: 'home.features.managePlayers.description',
     },
     {
-      icon: 'pi pi-chart-bar',
+      icon: 'chart-bar',
       titleKey: 'home.features.followScores.title',
       descriptionKey: 'home.features.followScores.description',
     },
     {
-      icon: 'pi pi-link',
+      icon: 'link',
       titleKey: 'home.features.urlAccess.title',
       descriptionKey: 'home.features.urlAccess.description',
     },
     {
-      icon: 'pi pi-euro',
+      icon: 'euro',
       titleKey: 'home.features.free.title',
       descriptionKey: 'home.features.free.description',
     },
     {
-      icon: 'pi pi-code',
+      icon: 'code',
       titleKey: 'home.features.openSource.title',
       descriptionKey: 'home.features.openSource.description',
     },

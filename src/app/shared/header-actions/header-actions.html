@@ -5,13 +5,16 @@
     type="button"
     severity="secondary"
     [outlined]="true"
-    [icon]="themeIcon()"
     [label]="isMobile() ? undefined : themeLabel()"
     [ariaLabel]="themeLabel()"
     [pTooltip]="isMobile() ? themeLabel() : undefined"
     tooltipPosition="left"
     (onClick)="toggleMenu(themeMenu, $event)"
-  />
+  >
+    <ng-template pTemplate="icon" let-class="class">
+      <app-svg-icon [name]="themeIcon()" [class]="class" />
+    </ng-template>
+  </p-button>
 
   <p-menu #languageMenu [model]="languageItems()" [popup]="true" appendTo="body" />
   <p-button
@@ -19,11 +22,14 @@
     type="button"
     severity="secondary"
     [outlined]="true"
-    icon="pi pi-language"
     [label]="isMobile() ? languageCode() : languageLabel()"
     [ariaLabel]="languageLabel()"
     [pTooltip]="languageLabel()"
     tooltipPosition="left"
     (onClick)="toggleMenu(languageMenu, $event)"
-  />
+  >
+    <ng-template pTemplate="icon" let-class="class">
+      <app-svg-icon name="language" [class]="class" />
+    </ng-template>
+  </p-button>
 </div>

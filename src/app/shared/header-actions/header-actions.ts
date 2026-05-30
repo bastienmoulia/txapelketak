@@ -12,13 +12,14 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { TooltipModule } from 'primeng/tooltip';
+import { SvgIcon, SvgIconName } from '../svg-icon/svg-icon';
 
 type ThemeMode = 'light' | 'dark' | 'auto';
 type LanguageCode = 'fr' | 'eu' | 'en' | 'es';
 
 @Component({
   selector: 'app-header-actions',
-  imports: [ButtonModule, MenuModule, TooltipModule],
+  imports: [ButtonModule, MenuModule, TooltipModule, SvgIcon],
   templateUrl: './header-actions.html',
   styleUrl: './header-actions.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,14 +57,14 @@ export class HeaderActions {
     }
   });
 
-  themeIcon = computed(() => {
+  themeIcon = computed<SvgIconName>(() => {
     switch (this.themeMode()) {
       case 'light':
-        return 'pi pi-sun';
+        return 'sun';
       case 'dark':
-        return 'pi pi-moon';
+        return 'moon';
       default:
-        return 'pi pi-desktop';
+        return 'desktop';
     }
   });
 
@@ -86,17 +87,14 @@ export class HeaderActions {
     return [
       {
         label: this.themeLabels()[0],
-        icon: 'pi pi-sun',
         command: () => this.setThemeMode('light'),
       },
       {
         label: this.themeLabels()[1],
-        icon: 'pi pi-moon',
         command: () => this.setThemeMode('dark'),
       },
       {
         label: this.themeLabels()[2],
-        icon: 'pi pi-desktop',
         command: () => this.setThemeMode('auto'),
       },
     ];
@@ -106,22 +104,18 @@ export class HeaderActions {
     return [
       {
         label: this.languageLabels()[0],
-        icon: 'pi pi-language',
         command: () => this.setLanguage('fr'),
       },
       {
         label: this.languageLabels()[1],
-        icon: 'pi pi-language',
         command: () => this.setLanguage('eu'),
       },
       {
         label: this.languageLabels()[2],
-        icon: 'pi pi-language',
         command: () => this.setLanguage('en'),
       },
       {
         label: this.languageLabels()[3],
-        icon: 'pi pi-language',
         command: () => this.setLanguage('es'),
       },
     ];

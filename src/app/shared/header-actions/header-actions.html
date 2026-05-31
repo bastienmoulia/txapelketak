@@ -24,7 +24,7 @@
     [outlined]="true"
     [label]="isMobile() ? languageCode() : languageLabel()"
     [ariaLabel]="languageLabel()"
-    [pTooltip]="languageLabel()"
+    [pTooltip]="isMobile() ? languageLabel() : undefined"
     tooltipPosition="left"
     (onClick)="toggleMenu(languageMenu, $event)"
   >

@@ -28,6 +28,7 @@ import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
+import { getPlayoffGameLabel } from '../../../shared/utils/playoff-label';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -191,11 +192,11 @@ export class TournamentDashboard {
         for (const game of phase.games) {
           if (game.date && new Date(game.date) > now) {
             upcoming.push({
-              team1Name: this.getTeamName(game.refTeam1, teamNameMap),
-              team2Name: this.getTeamName(game.refTeam2, teamNameMap),
+              team1Name: this.getTeamName(game.refTeam1, teamNameMap, game),
+              team2Name: this.getTeamName(game.refTeam2, teamNameMap, game),
               date: new Date(game.date),
               serieName: serie.name,
-              pouleName: phase.name,
+              pouleName: this.getPhaseLabel(phase.name, game),
               referees: game.referees ?? [],
               comment: game.comment,
               gameRef: game.ref,
@@ -229,11 +230,11 @@ export class TournamentDashboard {
             (game.scoreTeam1 == null || game.scoreTeam2 == null)
           ) {
             overdue.push({
-              team1Name: this.getTeamName(game.refTeam1, teamNameMap),
-              team2Name: this.getTeamName(game.refTeam2, teamNameMap),
+              team1Name: this.getTeamName(game.refTeam1, teamNameMap, game),
+              team2Name: this.getTeamName(game.refTeam2, teamNameMap, game),
               date: new Date(game.date),
               serieName: serie.name,
-              pouleName: phase.name,
+              pouleName: this.getPhaseLabel(phase.name, game),
               referees: game.referees ?? [],
               comment: game.comment,
               gameRef: game.ref,
@@ -355,13 +356,13 @@ export class TournamentDashboard {
         for (const game of phase.games) {
           if (game.scoreTeam1 != null && game.scoreTeam2 != null) {
             recent.push({
-              team1Name: this.getTeamName(game.refTeam1, teamNameMap),
-              team2Name: this.getTeamName(game.refTeam2, teamNameMap),
+              team1Name: this.getTeamName(game.refTeam1, teamNameMap, game),
+              team2Name: this.getTeamName(game.refTeam2, teamNameMap, game),
               scoreTeam1: game.scoreTeam1,
               scoreTeam2: game.scoreTeam2,
               date: game.date ? new Date(game.date) : undefined,
               serieName: serie.name,
-              pouleName: phase.name,
+              pouleName: this.getPhaseLabel(phase.name, game),
               referees: game.referees ?? [],
               comment: game.comment,
             });
@@ -474,11 +475,25 @@ export class TournamentDashboard {
     return map;
   }
 
+  private getPhaseLabel(phaseName: string, game: Game): string {
+    const playoffLabel = getPlayoffGameLabel(game, this.translocoService);
+    if (playoffLabel) {
+      return [phaseName, playoffLabel].filter(Boolean).join(' - ');
+    }
+    return phaseName;
+  }
+
   private getTeamName(
     ref: Game['refTeam1'] | Game['refTeam2'] | undefined,
     map: Map<string, string>,
+    game: Game,
   ): string {
-    if (!ref?.id) return '?';
-    return map.get(ref.id) ?? '?';
+    if (!ref?.id) {
+      return game.roundSize != null ? this.translocoService.translate('playoffs.placeholder') : '?';
+    }
+    return (
+      map.get(ref.id) ??
+      (game.roundSize != null ? this.translocoService.translate('playoffs.placeholder') : '?')
+    );
   }
 }

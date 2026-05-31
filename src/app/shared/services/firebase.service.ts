@@ -25,10 +25,7 @@ import { Tournament, TournamentStatus, User } from '../../home/tournament.interf
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
 import { Game, Team, TimeSlot } from '../../tournaments/models';
 import { environment } from '../../../environments/environment';
-
-function getRoundLabel(roundSize: number): string {
-  return `finale.rounds.${roundSize}`;
-}
+import { getPlayoffRoundKey } from '../utils/playoff-label';
 
 @Injectable({
   providedIn: 'root',
@@ -546,7 +543,7 @@ export class FirebaseService {
         const gameData: Record<string, unknown> = {
           roundSize,
           matchNumber,
-          name: `${getRoundLabel(roundSize)} ${matchNumber}`,
+          name: `${getPlayoffRoundKey(roundSize)} ${matchNumber}`,
           isBye: false,
         };
 
@@ -814,7 +811,7 @@ export class FirebaseService {
           const gameData: Record<string, unknown> = {
             roundSize: yamlGame.roundSize,
             matchNumber: yamlGame.matchNumber,
-            name: `${getRoundLabel(yamlGame.roundSize)} ${yamlGame.matchNumber}`,
+            name: `${getPlayoffRoundKey(yamlGame.roundSize)} ${yamlGame.matchNumber}`,
             isBye: yamlGame.isBye === true,
           };
 

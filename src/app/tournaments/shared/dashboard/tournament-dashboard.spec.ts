@@ -937,6 +937,119 @@ describe('TournamentDashboard', () => {
       expect(result[0].team1Name).toBe('Alpha');
       expect(result[0].team2Name).toBe('Beta');
     });
+
+    it('should show "À renseigner" for playoff games without team refs', () => {
+      const series: Serie[] = [
+        {
+          ref: makeRef('serie-1'),
+          name: 'S1',
+          playoffs: [
+            {
+              ref: makeRef('playoff-1'),
+              name: 'Phase finale',
+              orderedTeamRefs: [],
+              size: 4,
+              games: [
+                {
+                  ref: makeRef('game-playoff-no-teams'),
+                  roundSize: 4,
+                  matchNumber: 1,
+                  date: pastDate1,
+                } as Game,
+              ],
+            },
+          ],
+        },
+      ];
+
+      setInputs({ teams: [], series });
+
+      const result = component.overdueGames();
+      expect(result.length).toBe(1);
+      expect(result[0].team1Name).toBe('À renseigner');
+      expect(result[0].team2Name).toBe('À renseigner');
+    });
+
+    it('should show "?" for poule games with unknown team refs', () => {
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [makeGame({ refTeam1Id: 'unknown1', refTeam2Id: 'unknown2', date: pastDate1 })],
+          },
+        ]),
+      ];
+      setInputs({ teams: [], series });
+      const result = component.overdueGames();
+      expect(result[0].team1Name).toBe('?');
+      expect(result[0].team2Name).toBe('?');
+    });
+
+    it('should compute playoff phase label with round name', () => {
+      const series: Serie[] = [
+        {
+          ref: makeRef('serie-1'),
+          name: 'S1',
+          playoffs: [
+            {
+              ref: makeRef('playoff-1'),
+              name: 'Phase finale',
+              orderedTeamRefs: [],
+              size: 4,
+              games: [
+                {
+                  ref: makeRef('game-semi'),
+                  refTeam1: makeRef('a'),
+                  refTeam2: makeRef('b'),
+                  roundSize: 4,
+                  matchNumber: 2,
+                  date: pastDate1,
+                } as Game,
+              ],
+            },
+          ],
+        },
+      ];
+
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+
+      const result = component.overdueGames();
+      expect(result[0].pouleName).toBe('Phase finale - Demi-finale 2');
+    });
+
+    it('should compute playoff phase label without number for finale', () => {
+      const series: Serie[] = [
+        {
+          ref: makeRef('serie-1'),
+          name: 'S1',
+          playoffs: [
+            {
+              ref: makeRef('playoff-1'),
+              name: 'Phase finale',
+              orderedTeamRefs: [],
+              size: 2,
+              games: [
+                {
+                  ref: makeRef('game-final'),
+                  refTeam1: makeRef('a'),
+                  refTeam2: makeRef('b'),
+                  roundSize: 2,
+                  matchNumber: 1,
+                  date: pastDate1,
+                } as Game,
+              ],
+            },
+          ],
+        },
+      ];
+
+      setInputs({ teams: [makeTeam('a', 'A'), makeTeam('b', 'B')], series });
+
+      const result = component.overdueGames();
+      expect(result[0].pouleName).toBe('Phase finale - Finale');
+    });
   });
 
   describe('warnings', () => {

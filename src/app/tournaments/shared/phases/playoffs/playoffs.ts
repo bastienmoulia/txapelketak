@@ -31,6 +31,7 @@ import {
   PlayoffEditDialogResult,
 } from '../playoff-edit-dialog/playoff-edit-dialog';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
+import { getPlayoffRoundKey } from '../../../../shared/utils/playoff-label';
 
 interface RoundGroup {
   roundSize: number;
@@ -175,7 +176,7 @@ export class Playoffs {
   });
 
   private getRoundLabel(roundSize: number): string {
-    const key = `finale.rounds.${roundSize}`;
+    const key = getPlayoffRoundKey(roundSize);
     this.activeLanguage();
     return this.translocoService.translate(key);
   }

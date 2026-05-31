@@ -12,17 +12,30 @@ interface DeleteTournamentData {
   databaseId?: string;
 }
 
+const BATCH_SIZE = 450;
+
+async function deleteDocsInBatches(
+  db: FirebaseFirestore.Firestore,
+  docs: FirebaseFirestore.QueryDocumentSnapshot[],
+): Promise<void> {
+  for (let i = 0; i < docs.length; i += BATCH_SIZE) {
+    const chunk = docs.slice(i, i + BATCH_SIZE);
+    const batch = db.batch();
+    chunk.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  }
+}
+
 async function deleteCollection(
   db: FirebaseFirestore.Firestore,
   ref: FirebaseFirestore.DocumentReference,
   collectionName: string,
 ): Promise<void> {
   const snapshot = await ref.collection(collectionName).get();
-  const batch = db.batch();
-  snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-  if (snapshot.docs.length > 0) {
-    await batch.commit();
+  if (snapshot.docs.length === 0) {
+    return;
   }
+  await deleteDocsInBatches(db, snapshot.docs);
 }
 
 export const deleteTournament = onCall<DeleteTournamentData>(
@@ -74,9 +87,7 @@ export const deleteTournament = onCall<DeleteTournamentData>(
       .get();
 
     if (allUsersSnapshot.docs.length > 0) {
-      const usersBatch = db.batch();
-      allUsersSnapshot.docs.forEach((doc) => usersBatch.delete(doc.ref));
-      await usersBatch.commit();
+      await deleteDocsInBatches(db, allUsersSnapshot.docs);
     }
 
     // 2. Delete all teams

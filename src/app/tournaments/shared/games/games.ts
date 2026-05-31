@@ -35,6 +35,7 @@ import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentDetailStore } from '../../../store/tournament-detail.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
+import { getPlayoffGameLabel } from '../../../shared/utils/playoff-label';
 
 interface SaveGameEventBase {
   pouleRef: DocumentReference;
@@ -187,23 +188,10 @@ export class Games {
             phaseGames: phase.games,
           });
           const dateKey = this.getDateKey(game.date);
-          const playoffRoundKey =
-            phase.isPlayoff && game.roundSize != null ? `finale.rounds.${game.roundSize}` : null;
-          const translatedPlayoffRound = playoffRoundKey
-            ? this.translocoService.translate(playoffRoundKey)
+          const playoffGameLabel = phase.isPlayoff
+            ? (getPlayoffGameLabel(game, this.translocoService) ?? game.name)
             : null;
-          const playoffGameLabel =
-            phase.isPlayoff &&
-            game.roundSize != null &&
-            game.matchNumber != null &&
-            translatedPlayoffRound != null &&
-            translatedPlayoffRound !== '' &&
-            translatedPlayoffRound !== playoffRoundKey
-              ? `${translatedPlayoffRound} ${game.matchNumber}`
-              : game.name;
-          const phaseLabel = [phase.name, phase.isPlayoff ? playoffGameLabel : null]
-            .filter(Boolean)
-            .join(' - ');
+          const phaseLabel = [phase.name, playoffGameLabel].filter(Boolean).join(' - ');
           const displayName = [serie.name, phaseLabel].filter(Boolean).join(' - ');
           const gameWithContext: GameByDate = {
             ...sortable,

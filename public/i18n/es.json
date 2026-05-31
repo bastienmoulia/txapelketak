@@ -280,6 +280,7 @@
       "sameTeamError": "Los dos equipos no pueden ser iguales.",
       "scrollToTopTooltip": "Ir arriba",
       "scrollToTodayTooltip": "Ir a hoy",
+      "showPastGames": "Mostrar los {{count}} partidos anteriores",
       "showOnlyFreeSlots": "Solo franjas libres",
       "freeSlot": "Franja libre",
       "comment": "Comentario",

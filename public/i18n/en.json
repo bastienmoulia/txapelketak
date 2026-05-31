@@ -280,6 +280,7 @@
       "sameTeamError": "Both teams cannot be the same.",
       "scrollToTopTooltip": "Scroll to top",
       "scrollToTodayTooltip": "Go to today",
+      "showPastGames": "Show {{count}} previous games",
       "showOnlyFreeSlots": "Free slots only",
       "freeSlot": "Free slot",
       "comment": "Comment",

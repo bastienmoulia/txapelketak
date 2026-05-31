@@ -63,6 +63,17 @@
 
   <div class="mx-3 mb-3">
     @if (scheduleRows().length > 0 || !hasActiveFilters()) {
+      @if (pastGamesCount() > 0 && !showPastGames()) {
+        <p-button
+          [text]="true"
+          icon="pi pi-history"
+          [label]="'admin.games.showPastGames' | transloco: { count: pastGamesCount() }"
+          size="small"
+          class="mb-2"
+          (onClick)="onShowPastGames()"
+          data-testid="show-past-games-button"
+        />
+      }
       <p-table
         [value]="scheduleRows()"
         class="games-table"

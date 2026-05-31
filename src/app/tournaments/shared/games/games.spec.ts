@@ -782,6 +782,7 @@ describe('Games', () => {
     const team3Ref = createDocumentReference('team-3');
 
     try {
+      component.showPastGames.set(true);
       patchState(poulesStore, {
         teams: [
           { ref: team1Ref, name: 'Alpha' },

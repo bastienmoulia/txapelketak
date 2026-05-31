@@ -381,6 +381,94 @@ describe('Games', () => {
     expect(games.some((game) => game.ref.id === 'game-normal')).toBe(true);
   });
 
+  it('should compute playoff game display name with translated round label', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          playoffs: [
+            {
+              ref: createDocumentReference('playoff-1'),
+              name: 'Phase finale',
+              orderedTeamRefs: [team1Ref, team2Ref],
+              size: 4,
+              games: [
+                {
+                  ref: createDocumentReference('game-semi-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  roundSize: 4,
+                  matchNumber: 1,
+                  date: new Date('2026-03-22T10:00:00Z'),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    const groups = component.gamesByDate();
+    const game = groups[0].games[0];
+
+    expect(game.name).toBe('Serie A - Phase finale - Demi-finale 1');
+  });
+
+  it('should compute finale display name without match number', () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+    });
+    patchState(poulesStore, {
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          playoffs: [
+            {
+              ref: createDocumentReference('playoff-1'),
+              name: 'Phase finale',
+              orderedTeamRefs: [team1Ref, team2Ref],
+              size: 2,
+              games: [
+                {
+                  ref: createDocumentReference('game-final'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  roundSize: 2,
+                  matchNumber: 1,
+                  date: new Date('2026-03-22T10:00:00Z'),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    const groups = component.gamesByDate();
+    const game = groups[0].games[0];
+
+    expect(game.name).toBe('Serie A - Phase finale - Finale');
+  });
+
   it('should filter games by local calendar day (same local date, near midnight)', () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');

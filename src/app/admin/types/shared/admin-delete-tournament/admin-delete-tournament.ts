@@ -8,6 +8,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
 import { DeleteTournamentDialog } from './delete-tournament-dialog/delete-tournament-dialog';
+import { AuthStore } from '../../../../store/auth.store';
 
 @Component({
   selector: 'app-admin-delete-tournament',
@@ -22,6 +23,7 @@ export class AdminDeleteTournament {
   private readonly translocoService = inject(TranslocoService);
   private readonly dialogService = inject(DialogService);
   private readonly router = inject(Router);
+  private readonly authStore = inject(AuthStore);
 
   tournament = input.required<Tournament>();
 
@@ -51,9 +53,14 @@ export class AdminDeleteTournament {
       return;
     }
 
+    const token = this.authStore.currentUser()?.token;
+    if (!token) {
+      return;
+    }
+
     this.isDeleting.set(true);
     try {
-      await this.firebaseService.deleteTournament(tournamentRef);
+      await this.firebaseService.deleteTournamentViaFunction(tournamentRef.id, token);
       await this.router.navigate(['/']);
     } catch (error) {
       console.error('Failed to delete tournament', error);

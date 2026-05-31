@@ -144,6 +144,7 @@ export class Games {
   currentCommentText = signal<string>('');
 
   showOnlyFreeSlots = signal(false);
+  showPastGames = signal(false);
 
   private teamIdFromUrl = toSignal(
     this.activatedRoute.queryParamMap.pipe(
@@ -249,6 +250,16 @@ export class Games {
     () => Boolean(this.selectedTeamId() || this.selectedDateFilter()) || this.showOnlyFreeSlots(),
   );
 
+  pastGamesCount = computed(() => {
+    const todayKey = this.getDateKey(new Date());
+    const teamId = this.selectedTeamId();
+    return this.flatGamesByDate().filter((game) => {
+      const isPast = game.dateKey !== '' && game.dateKey < todayKey;
+      const matchesTeam = !teamId || game.refTeam1?.id === teamId || game.refTeam2?.id === teamId;
+      return isPast && matchesTeam;
+    }).length;
+  });
+
   hasTimeSlots = computed(() => this.timeSlots().length > 0);
 
   freeSlotDateKeys = computed((): Set<string> => {
@@ -290,11 +301,15 @@ export class Games {
     const showOnlyFree = this.showOnlyFreeSlots();
     const teamId = this.selectedTeamId();
     const selectedDate = this.selectedDateFilter();
+    const showPast = this.showPastGames();
+    const todayKey = this.getDateKey(new Date());
 
     const gameRows: GameByDate[] = this.flatGamesByDate().filter((game) => {
       const matchesTeam = !teamId || game.refTeam1?.id === teamId || game.refTeam2?.id === teamId;
       const matchesDate = !selectedDate || game.dateKey === this.getDateKey(selectedDate);
-      return matchesTeam && matchesDate;
+      const matchesPast =
+        showPast || selectedDate || game.dateKey === '' || game.dateKey >= todayKey;
+      return matchesTeam && matchesDate && matchesPast;
     });
 
     const freeSlotRows: FreeSlotRow[] = this.freeSlots().filter((slot) => {
@@ -487,6 +502,10 @@ export class Games {
 
   onToggleFreeSlots(value: boolean): void {
     this.showOnlyFreeSlots.set(value);
+  }
+
+  onShowPastGames(): void {
+    this.showPastGames.set(true);
   }
 
   onOpenAddGame(): void {

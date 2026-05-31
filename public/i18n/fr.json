@@ -280,6 +280,7 @@
       "sameTeamError": "Les deux équipes ne peuvent pas être identiques.",
       "scrollToTopTooltip": "Aller en haut",
       "scrollToTodayTooltip": "Aller à aujourd'hui",
+      "showPastGames": "Afficher les {{count}} parties précédentes",
       "showOnlyFreeSlots": "Créneaux libres seulement",
       "freeSlot": "Créneau libre",
       "comment": "Commentaire",

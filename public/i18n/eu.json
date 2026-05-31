@@ -280,6 +280,7 @@
       "sameTeamError": "Bi taldeak ezin dira berdinak izan.",
       "scrollToTopTooltip": "Gora joan",
       "scrollToTodayTooltip": "Gaurko egunera joan",
+      "showPastGames": "Aurreko {{count}} partidak erakutsi",
       "showOnlyFreeSlots": "Tarte libreak soilik",
       "freeSlot": "Tarte librea",
       "comment": "Iruzkina",

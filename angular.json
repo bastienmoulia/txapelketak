@@ -26,7 +26,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["node_modules/primeicons/primeicons.css", "src/styles.css"]
+            "styles": ["src/styles.css"]
           },
           "configurations": {
             "production": {

@@ -41,6 +41,7 @@ test.describe.serial('Admin – games management', () => {
 
       const gamesPage = new GamesPage(page);
       await adminPage.clickTab('Parties');
+      await gamesPage.waitForGameRows();
       await expect(gamesPage.gameRow(gameDeleteSeedTeam1, gameDeleteSeedTeam2)).toBeVisible();
     } finally {
       await context.close();
@@ -67,6 +68,7 @@ test.describe.serial('Admin – games management', () => {
     const gamesPage = new GamesPage(page);
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
+    await gamesPage.waitForGameRows();
 
     await expect(gamesPage.gameRow(gameAddSeedTeam1, gameAddSeedTeam2)).not.toBeVisible();
     await gamesPage.addGame(gameAddSeedTeam1, gameAddSeedTeam2, {
@@ -81,6 +83,7 @@ test.describe.serial('Admin – games management', () => {
     const gamesPage = new GamesPage(page);
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Parties');
+    await gamesPage.waitForGameRows();
 
     await gamesPage.deleteGame(gameDeleteSeedTeam1, gameDeleteSeedTeam2);
     await expect(gamesPage.gameRow(gameDeleteSeedTeam1, gameDeleteSeedTeam2)).not.toBeVisible();

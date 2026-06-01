@@ -40,6 +40,10 @@ export class GamesPage {
     );
   }
 
+  async waitForGameRows(timeout = 20000): Promise<void> {
+    await this.gameRows().first().waitFor({ state: 'visible', timeout });
+  }
+
   // --- Filters ---
 
   async filterByTeam(teamName: string): Promise<void> {
@@ -131,7 +135,7 @@ export class GamesPage {
 
     await expect
       .poll(async () => await this.gameRow(team1Name, team2Name).count(), {
-        timeout: 15000,
+        timeout: 30000,
       })
       .toBeGreaterThan(0);
   }

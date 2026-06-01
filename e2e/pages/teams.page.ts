@@ -88,6 +88,10 @@ export class TeamsPage {
     return this.teamRow(name).getByTestId('team-comment-button');
   }
 
+  async waitForTeamRow(name: string, timeout = 20000): Promise<void> {
+    await this.teamRow(name).waitFor({ state: 'visible', timeout });
+  }
+
   async editTeamComment(name: string, newComment: string): Promise<void> {
     await this.ensureTeamsTab();
     const row = this.page.locator('.p-datatable-tbody tr').filter({ hasText: name });

@@ -59,6 +59,7 @@ test.describe('Visitor – games', () => {
     await basePage.waitForLoad();
 
     await basePage.clickTab('Parties');
+    await gamesPage.waitForGameRows();
     await expect(gamesPage.gameRow(team1, team2)).toBeVisible();
     await expect(gamesPage.gameRow(team1, team3)).toBeVisible();
     await expect(gamesPage.gameRow(team2, team3)).toBeVisible();
@@ -80,6 +81,7 @@ test.describe('Visitor – games', () => {
     await basePage.waitForLoad();
 
     await basePage.clickTab('Parties');
+    await gamesPage.waitForGameRows();
     await gamesPage.filterByTeam(team1);
 
     await expect(gamesPage.gameRow(team1, team2)).toBeVisible();
@@ -94,6 +96,7 @@ test.describe('Visitor – games', () => {
     await basePage.waitForLoad();
 
     await basePage.clickTab('Parties');
+    await gamesPage.waitForGameRows();
     await gamesPage.filterByDate(firstGamesDate);
 
     await expect(gamesPage.gameRow(team1, team2)).toBeVisible();
@@ -112,6 +115,7 @@ test.describe('Visitor – games', () => {
     await basePage.waitForLoad();
 
     await basePage.clickTab('Parties');
+    await gamesPage.waitForGameRows();
     await gamesPage.filterByTeam(team2);
     await gamesPage.filterByDate(thirdGameDate);
 

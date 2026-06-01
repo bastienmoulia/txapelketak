@@ -277,6 +277,9 @@ export class PhasesPage {
       await dialog.getByTestId('playoffs-dialog-add-team-button').click();
       await expect(orderList.getByText(teamName, { exact: true })).toBeVisible({ timeout: 5000 });
       await this.page.keyboard.press('Escape');
+      // Wait for the multiselect overlay to fully close and Angular to finish re-rendering
+      // before the next iteration to avoid clicking a detached element.
+      await this.page.locator('.p-multiselect-overlay').waitFor({ state: 'hidden', timeout: 5000 });
     }
 
     // Go to step 2

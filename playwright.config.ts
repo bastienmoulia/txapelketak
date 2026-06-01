@@ -34,7 +34,7 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter,
   /* Global timeout for each test */
-  timeout: 20000,
+  timeout: 30000,
   /* Increased assertion timeout to handle slow Firebase emulator and Angular operations on CI. */
   expect: {
     timeout: 10000,

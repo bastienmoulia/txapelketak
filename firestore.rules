@@ -70,7 +70,7 @@ service cloud.firestore {
 
       match /timeSlots/{timeSlotId} {
         allow get, list: if true;
-        allow create, update: if request.resource.data.name is string;
+        allow create, update: if request.resource.data.date is timestamp;
         allow delete: if true;
       }
     }

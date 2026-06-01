@@ -24,9 +24,7 @@ export class GamesPage {
   }
 
   gameRows(): Locator {
-    return this.page
-      .locator('.p-datatable-tbody tr')
-      .filter({ has: this.page.locator('td[data-label]') });
+    return this.page.locator('.p-datatable-tbody tr:not(.p-datatable-empty-message)');
   }
 
   async hasGame(team1Name: string, team2Name: string): Promise<boolean> {

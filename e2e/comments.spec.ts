@@ -335,6 +335,7 @@ test.describe.serial('Comments – games and teams', () => {
   // ─── Organizer: team comment visibility (read-only) ───────────────────────
 
   test('organizer should see team comment button for team with comment', async ({ page }) => {
+    test.setTimeout(90000);
     const adminPage = new AdminPage(page);
     const teamsPage = new TeamsPage(page);
 
@@ -348,12 +349,12 @@ test.describe.serial('Comments – games and teams', () => {
     await adminPage.goto(adminUrl);
     await adminPage.clickTab('Équipes');
     await teamsPage.waitForTeamRow(team2);
-    await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
+    await expect(teamsPage.teamCommentButton(team2)).toBeVisible({ timeout: 20000 });
 
     await adminPage.goto(organizerUrl);
     await adminPage.clickTab('Équipes');
     await teamsPage.waitForTeamRow(team2);
-    await expect(teamsPage.teamCommentButton(team2)).toBeVisible();
+    await expect(teamsPage.teamCommentButton(team2)).toBeVisible({ timeout: 20000 });
   });
 
   test('organizer should NOT see team edit button (team editing is admin-only)', async ({

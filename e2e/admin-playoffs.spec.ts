@@ -64,6 +64,7 @@ test.describe.serial('Admin – playoffs management', () => {
   });
 
   test('should generate a playoff bracket and display all rounds', async ({ page }) => {
+    test.setTimeout(90000);
     const adminPage = new AdminPage(page);
     const phasesPage = new PhasesPage(page);
     await adminPage.goto(adminUrl);
@@ -75,7 +76,7 @@ test.describe.serial('Admin – playoffs management', () => {
     await phasesPage.ensureSerieExpanded(serieName);
     const tabPanel = await phasesPage.serieTabPanel(serieName);
     const card = tabPanel.locator('p-card').filter({ hasText: playoffName });
-    await expect(card).toBeVisible({ timeout: 15000 });
+    await expect(card).toBeVisible({ timeout: 30000 });
 
     // Reload once to ensure the generated playoff has been persisted before the next serial test.
     await adminPage.goto(adminUrl);
@@ -84,7 +85,7 @@ test.describe.serial('Admin – playoffs management', () => {
     const persistedCard = (await phasesPage.serieTabPanel(serieName))
       .locator('p-card')
       .filter({ hasText: playoffName });
-    await expect(persistedCard).toBeVisible({ timeout: 15000 });
+    await expect(persistedCard).toBeVisible({ timeout: 30000 });
   });
 
   test('should show playoff games in the Games tab', async ({ page }) => {

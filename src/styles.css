@@ -7,8 +7,8 @@
   font-family: 'primeicons';
   font-display: swap;
   src:
-    url('../node_modules/primeicons/fonts/primeicons.woff2') format('woff2'),
-    url('../node_modules/primeicons/fonts/primeicons.woff') format('woff');
+    url('https://cdn.jsdelivr.net/npm/primeicons@7.0.0/fonts/primeicons.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/npm/primeicons@7.0.0/fonts/primeicons.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

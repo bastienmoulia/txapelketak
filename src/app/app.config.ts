@@ -1,6 +1,6 @@
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, TitleStrategy } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
@@ -86,7 +86,7 @@ export const appConfig: ApplicationConfig = {
 
       return firestore;
     }),
-    provideHttpClient(),
+    provideHttpClient(withXhr()),
     provideTransloco({
       config: {
         availableLangs: ['fr', 'eu', 'en', 'es'],

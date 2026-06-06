@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoService } from '@jsverse/transloco';
@@ -164,7 +164,6 @@ const PRIMENG_LOCALES: Record<string, object> = {
   imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   private readonly primeNG = inject(PrimeNG);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -88,7 +88,6 @@ export interface TournamentYamlData {
   providers: [ConfirmationService],
   templateUrl: './admin-import-export.html',
   styleUrl: './admin-import-export.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminImportExport {
   private firebaseService = inject(FirebaseService);

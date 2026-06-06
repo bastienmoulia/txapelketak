@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 import { MessageModule } from 'primeng/message';
 import { TournamentDetailStore } from '../../../../store/tournament-detail.store';
@@ -23,7 +23,6 @@ import { AdminDeleteTournament } from '../admin-delete-tournament/admin-delete-t
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings {
   private tournamentDetailStore = inject(TournamentDetailStore);

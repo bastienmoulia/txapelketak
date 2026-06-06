@@ -1,6 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
+import { Component,
   DestroyRef,
   effect,
   inject,
@@ -38,7 +36,6 @@ import { TournamentTabs } from '../../shared/tournament-tabs/tournament-tabs';
   providers: [MessageService, TournamentActionsService],
   templateUrl: './tournament-detail.html',
   styleUrl: './tournament-detail.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDetail {
   private tournamentDetailStore = inject(TournamentDetailStore);

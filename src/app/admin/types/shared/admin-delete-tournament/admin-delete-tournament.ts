@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
@@ -15,7 +15,6 @@ import { AuthStore } from '../../../../store/auth.store';
   imports: [ButtonModule, ToastModule, TranslocoModule],
   providers: [DialogService, MessageService],
   templateUrl: './admin-delete-tournament.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDeleteTournament {
   private readonly firebaseService = inject(FirebaseService);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -45,7 +45,6 @@ interface PouleFormDialogData {
   ],
   providers: [ConfirmationService],
   templateUrl: './poule-form-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PouleFormDialog {
   private readonly config = inject(DynamicDialogConfig<PouleFormDialogData>);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService } from 'primeng/api';
@@ -38,7 +38,6 @@ import { Team } from '../../models';
   providers: [DialogService, ConfirmationService],
   templateUrl: './teams.html',
   styleUrl: './teams.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Teams {
   private readonly dialogService = inject(DialogService);

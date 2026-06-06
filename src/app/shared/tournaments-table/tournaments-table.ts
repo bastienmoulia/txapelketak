@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +10,6 @@ import { Tournament } from '../../home/tournament.interface';
   imports: [RouterLink, ButtonModule, TableModule, TranslocoModule],
   templateUrl: './tournaments-table.html',
   styleUrl: './tournaments-table.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentsTable {
   tournaments = input.required<Tournament[]>();

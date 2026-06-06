@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Tournament, UserRole } from '../../home/tournament.interface';
 import { TabsModule } from 'primeng/tabs';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -9,7 +9,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [TabsModule, TranslocoPipe, RouterLink, RouterLinkActive],
   templateUrl: './tournament-tabs.html',
   styleUrl: './tournament-tabs.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentTabs {
   tournament = input.required<Tournament>();

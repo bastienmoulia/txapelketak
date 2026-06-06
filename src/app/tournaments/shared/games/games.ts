@@ -1,6 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
+import { Component,
   computed,
   HostListener,
   inject,
@@ -120,7 +118,6 @@ export type ScheduleRow = GameByDate | FreeSlotRow;
   providers: [DialogService, ConfirmationService],
   templateUrl: './games.html',
   styleUrl: './games.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Games {
   private readonly translocoService = inject(TranslocoService);

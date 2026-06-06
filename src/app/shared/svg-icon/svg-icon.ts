@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 export type SvgIconName =
   | 'trophy'
@@ -22,7 +22,6 @@ export type SvgIconName =
       line-height: 0;
     }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'aria-hidden': 'true' },
   template: `
     @switch (name()) {

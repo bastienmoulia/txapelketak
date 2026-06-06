@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -21,7 +21,6 @@ interface TeamFormDialogData {
   selector: 'app-team-form-dialog',
   imports: [TranslocoPipe, FloatLabel, InputTextModule, TextareaModule, FormsModule, Button],
   templateUrl: './team-form-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamFormDialog {
   private readonly config = inject(DynamicDialogConfig<TeamFormDialogData>);

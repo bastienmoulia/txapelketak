@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -95,7 +95,6 @@ function getFirstRoundPairingIndexes(
   ],
   templateUrl: './playoffs-form-dialog.html',
   styleUrl: './playoffs-form-dialog.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayoffsFormDialog {
   private readonly config =

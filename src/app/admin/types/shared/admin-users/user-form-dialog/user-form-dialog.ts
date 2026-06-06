@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
@@ -30,7 +30,6 @@ interface UserFormDialogData {
   selector: 'app-user-form-dialog',
   imports: [FormsModule, FloatLabel, InputTextModule, Select, Button, TranslocoPipe],
   templateUrl: './user-form-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserFormDialog {
   private readonly translocoService = inject(TranslocoService);

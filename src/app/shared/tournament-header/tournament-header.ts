@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { Tournament, UserRole } from '../../home/tournament.interface';
 import { TranslocoService } from '@jsverse/transloco';
@@ -12,7 +12,6 @@ import { RoleBadge } from '../role-badge/role-badge';
   providers: [MessageService],
   templateUrl: './tournament-header.html',
   styleUrl: './tournament-header.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentHeader {
   #messageService = inject(MessageService);

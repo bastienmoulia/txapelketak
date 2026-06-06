@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
@@ -23,7 +23,6 @@ import { FirebaseService } from '../../../../shared/services/firebase.service';
   ],
   templateUrl: './admin-general.html',
   styleUrl: './admin-general.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminGeneral {
   private firebaseService = inject(FirebaseService);

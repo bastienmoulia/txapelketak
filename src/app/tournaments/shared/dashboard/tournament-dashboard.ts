@@ -1,6 +1,5 @@
 import {
   afterRenderEffect,
-  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -75,7 +74,6 @@ export interface RecentGame {
   providers: [DialogService],
   templateUrl: './tournament-dashboard.html',
   styleUrl: './tournament-dashboard.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentDashboard {
   private markdownService = inject(MarkdownService);

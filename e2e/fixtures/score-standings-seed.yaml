@@ -23,9 +23,12 @@ series:
             team2: score-team-beta
             score1: 21
             score2: 15
+            date: '2026-06-08T10:00:00.000Z'
           - team1: score-team-alpha
             team2: score-team-gamma
             score1: 18
             score2: 21
+            date: '2026-06-08T14:00:00.000Z'
           - team1: score-team-beta
             team2: score-team-gamma
+            date: '2026-06-09T10:00:00.000Z'

@@ -187,15 +187,15 @@ export class Phases {
     dialogRef?.onClose.subscribe(
       (
         result:
-           | {
-               serieRef: DocumentReference;
-               name: string;
-               ref?: DocumentReference;
-               teamRefs?: DocumentReference[];
-               hiddenFromVisitors?: boolean;
-             }
-           | undefined,
-       ) => {
+          | {
+              serieRef: DocumentReference;
+              name: string;
+              ref?: DocumentReference;
+              teamRefs?: DocumentReference[];
+              hiddenFromVisitors?: boolean;
+            }
+          | undefined,
+      ) => {
         if (result) {
           void (async () => {
             const createdPouleRef = await this.tournamentActions.savePoule({

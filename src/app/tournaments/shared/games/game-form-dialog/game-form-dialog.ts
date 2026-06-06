@@ -122,9 +122,14 @@ export class GameFormDialog {
     const poule = this.data.currentPoule;
     if (!poule) return [];
     const refTeams = poule.refTeams ?? [];
-    return this.data.teams
-      .filter((team: Team) => refTeams.some((ref: DocumentReference) => ref.id === team.ref?.id))
-      .sort((a: Team, b: Team) => a.name.localeCompare(b.name));
+    const teams =
+      refTeams.length === 0 && this.isEditingPlayoffGame()
+        ? this.data.teams
+        : this.data.teams.filter((team: Team) =>
+            refTeams.some((ref: DocumentReference) => ref.id === team.ref?.id),
+          );
+
+    return [...teams].sort((a: Team, b: Team) => a.name.localeCompare(b.name));
   });
 
   isSameTeam = computed(() => {

@@ -224,6 +224,59 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
   });
 });
 
+describe('GameFormDialog (editing playoff game with missing team refs)', () => {
+  let component: GameFormDialog;
+  let fixture: ComponentFixture<GameFormDialog>;
+
+  beforeEach(async () => {
+    const team1Ref = { id: 'team-1' } as DocumentReference;
+    const team2Ref = { id: 'team-2' } as DocumentReference;
+
+    await TestBed.configureTestingModule({
+      imports: [GameFormDialog],
+      providers: [
+        {
+          provide: DynamicDialogConfig,
+          useValue: {
+            data: {
+              teams: [
+                { ref: team2Ref, name: 'Team 2' },
+                { ref: team1Ref, name: 'Team 1' },
+              ] as Team[],
+              role: 'admin',
+              isEditing: true,
+              currentPoule: {
+                ref: {
+                  id: 'playoff-1',
+                  path: 'tournaments/t1/series/s1/playoffs/playoff-1',
+                } as DocumentReference,
+                name: 'Playoff',
+                refTeams: [],
+              } as Poule,
+              gameRef: {
+                id: 'game-1',
+                path: 'tournaments/t1/series/s1/playoffs/playoff-1/games/game-1',
+              } as DocumentReference,
+            },
+          },
+        },
+        { provide: DynamicDialogRef, useValue: { close: vi.fn() } },
+        ...provideTranslocoTesting(),
+        provideAnimationsAsync(),
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(GameFormDialog);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+  });
+
+  it('should fall back to all teams when editing a playoff game without stored playoff team refs', () => {
+    expect(component.dialogTeams().map((team) => team.name)).toEqual(['Team 1', 'Team 2']);
+  });
+});
+
 describe('GameFormDialog (first-round playoff bye)', () => {
   let component: GameFormDialog;
   let fixture: ComponentFixture<GameFormDialog>;

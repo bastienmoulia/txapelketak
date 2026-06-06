@@ -15,6 +15,11 @@ import { PouleFormDialog } from './poule-form-dialog/poule-form-dialog';
 import { PlayoffsFormDialog, SavePlayoffsEvent } from './playoffs-form-dialog/playoffs-form-dialog';
 import { Poules } from './poules/poules';
 import { Playoffs } from './playoffs/playoffs';
+import { FreePhases } from './free-phases/free-phases';
+import {
+  FreePhaseFormDialog,
+  SaveFreePhaseEvent,
+} from './free-phase-form-dialog/free-phase-form-dialog';
 
 export type { SavePlayoffsEvent };
 import { PoulesStore } from '../../../store/poules.store';
@@ -58,6 +63,7 @@ export interface TeamInPouleEvent {
     TooltipModule,
     Poules,
     Playoffs,
+    FreePhases,
   ],
   providers: [DialogService, ConfirmationService, MessageService],
   templateUrl: './phases.html',
@@ -83,6 +89,7 @@ export class Phases {
         ...serie,
         poules: [...(serie.poules ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
         playoffs: [...(serie.playoffs ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
+        freePhases: [...(serie.freePhases ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
       })),
   );
 
@@ -252,11 +259,17 @@ export class Phases {
   }
 
   onAddFreePhase(serieRef: DocumentReference): void {
-    console.log('Add free phase for serie', serieRef);
-    this.messageService.add({
-      severity: 'info',
-      summary: this.translocoService.translate('admin.poules.comingSoon'),
-      detail: this.translocoService.translate('admin.poules.addPlayoffsComingSoon'),
+    const dialogRef = this.dialogService.open(FreePhaseFormDialog, {
+      header: this.translocoService.translate('admin.poules.dialogAddFreePhase'),
+      modal: true,
+      closable: true,
+      width: 'min(30rem, 100%)',
+      data: { serieRef },
+    });
+    dialogRef?.onClose.subscribe((result: SaveFreePhaseEvent | undefined) => {
+      if (result) {
+        void this.tournamentActions.saveFreePhase(result);
+      }
     });
   }
 }

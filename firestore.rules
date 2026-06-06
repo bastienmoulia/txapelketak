@@ -66,6 +66,18 @@ service cloud.firestore {
             allow update: if true;
           }
         }
+
+        match /freePhases/{freePhaseId} {
+          allow get, list: if true;
+          allow create, update: if request.resource.data.name is string;
+          allow delete: if true;
+
+          match /games/{gameId} {
+            allow get, list: if true;
+            allow create, delete: if true;
+            allow update: if true;
+          }
+        }
       }
 
       match /timeSlots/{timeSlotId} {

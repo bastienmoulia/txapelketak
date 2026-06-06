@@ -25,6 +25,7 @@ export interface Playoff {
 export interface FreePhase {
   ref: DocumentReference;
   name: string;
+  hiddenFromVisitors?: boolean;
   games?: Game[];
 }
 

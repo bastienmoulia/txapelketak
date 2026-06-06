@@ -18,7 +18,8 @@ import {
 } from '../../tournaments/shared/phases/phases';
 import { SavePlayoffsEvent } from '../../tournaments/shared/phases/playoffs-form-dialog/playoffs-form-dialog';
 import { SavePlayoffEvent } from '../../tournaments/shared/phases/playoff-edit-dialog/playoff-edit-dialog';
-import { Game, Playoff, Serie, Team } from '../../tournaments/models';
+import { SaveFreePhaseEvent } from '../../tournaments/shared/phases/free-phase-form-dialog/free-phase-form-dialog';
+import { FreePhase, Game, Playoff, Serie, Team } from '../../tournaments/models';
 
 @Injectable()
 export class TournamentActionsService {
@@ -357,6 +358,43 @@ export class TournamentActionsService {
       severity: 'success',
       summary: this.translocoService.translate('admin.poules.playoffDeleted'),
       detail: this.translocoService.translate('admin.poules.playoffDeletedDetail'),
+    });
+  }
+
+  async saveFreePhase(event: SaveFreePhaseEvent): Promise<DocumentReference> {
+    if (event.ref) {
+      await this.firebaseService.updateFreePhaseInSerie(
+        event.ref,
+        event.name,
+        event.hiddenFromVisitors ?? false,
+      );
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.freePhaseEdited'),
+        detail: this.translocoService.translate('admin.poules.freePhaseEditedDetail'),
+      });
+      return event.ref;
+    } else {
+      const freePhaseRef = await this.firebaseService.addFreePhaseToSerie(
+        event.serieRef,
+        event.name,
+        event.hiddenFromVisitors ?? false,
+      );
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.poules.freePhaseAdded'),
+        detail: this.translocoService.translate('admin.poules.freePhaseAddedDetail'),
+      });
+      return freePhaseRef;
+    }
+  }
+
+  async deleteFreePhase(freePhase: FreePhase): Promise<void> {
+    await this.firebaseService.deleteFreePhaseFromSerie(freePhase.ref);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('admin.poules.freePhaseDeleted'),
+      detail: this.translocoService.translate('admin.poules.freePhaseDeletedDetail'),
     });
   }
 }

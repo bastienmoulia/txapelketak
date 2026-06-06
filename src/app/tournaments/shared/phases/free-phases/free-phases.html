@@ -1,0 +1,136 @@
+<div class="free-phases-list">
+  @for (freePhase of freePhases(); track freePhase.ref.id) {
+    @let displayName =
+      freePhase.name.trim() ? freePhase.name : ('freePhase.defaultName' | transloco);
+    <p-card>
+      <ng-template #header>
+        <div class="flex align-items-center justify-between px-3 pt-3">
+          <div class="flex items-center gap-2">
+            <span class="font-bold">{{ displayName }}</span>
+            @if ((role() === 'admin' || role() === 'organizer') && freePhase.hiddenFromVisitors) {
+              <i
+                class="pi pi-eye-slash text-color-secondary"
+                [pTooltip]="'admin.poules.hiddenFromVisitorsIndicator' | transloco"
+                tooltipPosition="top"
+                data-testid="free-phase-hidden-indicator"
+              ></i>
+            }
+          </div>
+          <div class="flex gap-2">
+            @if (role() === 'admin' || role() === 'organizer') {
+              <p-button
+                type="button"
+                size="small"
+                severity="primary"
+                icon="pi pi-plus"
+                [ariaLabel]="'freePhase.addGame' | transloco"
+                [pTooltip]="'freePhase.addGame' | transloco"
+                tooltipPosition="top"
+                (onClick)="onAddGame(freePhase)"
+                data-testid="add-free-phase-game-button"
+              />
+            }
+            @if (role() === 'admin') {
+              <p-button
+                type="button"
+                size="small"
+                severity="secondary"
+                [outlined]="true"
+                icon="pi pi-pencil"
+                [ariaLabel]="'admin.poules.editFreePhaseAria' | transloco"
+                [pTooltip]="'admin.poules.editFreePhaseAria' | transloco"
+                tooltipPosition="top"
+                (onClick)="onEditFreePhase(freePhase)"
+                data-testid="edit-free-phase-button"
+              />
+            }
+          </div>
+        </div>
+      </ng-template>
+
+      @if ((freePhase.games ?? []).length === 0) {
+        <p-message severity="info" class="block" data-testid="free-phase-no-games-message">
+          {{ 'freePhase.noGames' | transloco }}
+        </p-message>
+      } @else {
+        <div class="free-phase-games">
+          @for (game of freePhase.games; track game.ref?.id) {
+            <div class="free-phase-game-card" data-testid="free-phase-game-card">
+              <div class="free-phase-game-header">
+                @if (game.date) {
+                  <span class="text-xs text-color-secondary">
+                    {{ game.date | date: 'short' : undefined : dateLocale() }}
+                  </span>
+                }
+                @if (role() === 'admin' || role() === 'organizer') {
+                  <div class="flex gap-1 ml-auto">
+                    @if (game.comment) {
+                      <p-popover #commentPopover>
+                        <p
+                          class="m-0 max-w-64 whitespace-pre-wrap"
+                          role="status"
+                          [attr.aria-label]="'admin.games.commentAria' | transloco"
+                        >
+                          {{ currentCommentText() }}
+                        </p>
+                      </p-popover>
+                      <p-button
+                        type="button"
+                        icon="pi pi-question-circle"
+                        [ariaLabel]="'admin.games.commentAria' | transloco"
+                        [pTooltip]="'admin.games.commentTooltip' | transloco"
+                        tooltipPosition="top"
+                        severity="info"
+                        size="small"
+                        [rounded]="true"
+                        [text]="true"
+                        (onClick)="onShowComment($event, game.comment, commentPopover)"
+                        data-testid="free-phase-game-comment-button"
+                      />
+                    }
+                    <p-button
+                      type="button"
+                      icon="pi pi-pencil"
+                      [ariaLabel]="'shared.actions.edit' | transloco"
+                      [pTooltip]="'shared.actions.edit' | transloco"
+                      severity="secondary"
+                      size="small"
+                      [rounded]="true"
+                      [text]="true"
+                      (onClick)="onEditGame(game, freePhase)"
+                      data-testid="free-phase-game-edit-button"
+                    />
+                  </div>
+                }
+              </div>
+              <div class="free-phase-game-teams">
+                <div class="free-phase-game-team">
+                  <span
+                    class="free-phase-team-name"
+                    [class.free-phase-game-team--unknown]="!game.refTeam1"
+                  >
+                    {{ getTeamName(game.refTeam1) }}
+                  </span>
+                  @if (game.scoreTeam1 !== null && game.scoreTeam1 !== undefined) {
+                    <span class="free-phase-team-score">{{ game.scoreTeam1 }}</span>
+                  }
+                </div>
+                <div class="free-phase-game-team">
+                  <span
+                    class="free-phase-team-name"
+                    [class.free-phase-game-team--unknown]="!game.refTeam2"
+                  >
+                    {{ getTeamName(game.refTeam2) }}
+                  </span>
+                  @if (game.scoreTeam2 !== null && game.scoreTeam2 !== undefined) {
+                    <span class="free-phase-team-score">{{ game.scoreTeam2 }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </p-card>
+  }
+</div>

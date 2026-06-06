@@ -23,6 +23,7 @@ describe('Phases', () => {
     deleteSerie: ReturnType<typeof vi.fn>;
     savePoule: ReturnType<typeof vi.fn>;
     addTeamToPouleSilent: ReturnType<typeof vi.fn>;
+    saveFreePhase: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -31,6 +32,7 @@ describe('Phases', () => {
       deleteSerie: vi.fn(),
       savePoule: vi.fn(),
       addTeamToPouleSilent: vi.fn(),
+      saveFreePhase: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -115,5 +117,26 @@ describe('Phases', () => {
 
     const addButton = fixture.nativeElement.querySelector('[data-testid="add-serie-button"]');
     expect(addButton).toBeTruthy();
+  });
+
+  it('should open free phase form dialog and call saveFreePhase on close', async () => {
+    const serieRef = createRef('serie-1');
+    const close$ = new Subject<{ serieRef: DocumentReference; name: string; hiddenFromVisitors: boolean } | undefined>();
+
+    const openSpy = vi
+      .spyOn(component['dialogService'], 'open')
+      .mockReturnValue({ onClose: close$ } as never);
+
+    component.onAddFreePhase(serieRef);
+    close$.next({ serieRef, name: 'Phase libre', hiddenFromVisitors: false });
+
+    await Promise.resolve();
+
+    expect(openSpy).toHaveBeenCalledTimes(1);
+    expect(mockTournamentActions.saveFreePhase).toHaveBeenCalledWith({
+      serieRef,
+      name: 'Phase libre',
+      hiddenFromVisitors: false,
+    });
   });
 });

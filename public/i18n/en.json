@@ -228,6 +228,8 @@
       "teamsAddedToPouleDetail": "{{count}} team(s) added to \"{{pouleName}}\".",
       "dialogAddPlayoffs": "Add playoffs",
       "dialogEditPlayoff": "Edit playoff",
+      "dialogAddFreePhase": "Add a free phase",
+      "dialogEditFreePhase": "Edit free phase",
       "hideFromVisitors": "Hide from visitors",
       "hiddenFromVisitorsIndicator": "Hidden from visitors",
       "editPlayoffAria": "Edit this playoff",
@@ -236,6 +238,13 @@
       "playoffEditedDetail": "The playoff has been successfully updated.",
       "playoffDeleted": "Playoff deleted",
       "playoffDeletedDetail": "The playoff has been successfully deleted.",
+      "freePhaseAdded": "Free phase added",
+      "freePhaseAddedDetail": "The free phase has been successfully added.",
+      "freePhaseEdited": "Free phase updated",
+      "freePhaseEditedDetail": "The free phase has been successfully updated.",
+      "freePhaseDeleted": "Free phase deleted",
+      "freePhaseDeletedDetail": "The free phase has been successfully deleted.",
+      "editFreePhaseAria": "Edit this free phase",
       "crossStandings": {
         "title": "Overall standings — all pools",
         "modeAverage": "Average",
@@ -482,5 +491,11 @@
     "generated": "Playoffs generated",
     "generatedDetail": "{{count}} playoff matches have been generated.",
     "winnerOfPrevious": "Winner of {{round}} {{number}}"
+  },
+  "freePhase": {
+    "defaultName": "Free phase",
+    "name": "Free phase name (optional)",
+    "noGames": "No games in this free phase.",
+    "addGame": "Add a game"
   }
 }

@@ -1,0 +1,57 @@
+<form (ngSubmit)="onSave()">
+  <div class="mb-4">
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        id="free-phase-name"
+        class="w-full"
+        autocomplete="off"
+        [ngModel]="freePhaseName()"
+        (ngModelChange)="freePhaseName.set($event)"
+        name="free-phase-name"
+        data-testid="free-phase-name-input"
+      />
+      <label for="free-phase-name">{{ 'freePhase.name' | transloco }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="mb-4 flex items-center gap-2">
+    <p-toggleswitch
+      [ngModel]="hiddenFromVisitors()"
+      (ngModelChange)="hiddenFromVisitors.set($event)"
+      inputId="free-phase-hidden-from-visitors"
+      name="free-phase-hidden-from-visitors"
+      data-testid="free-phase-hidden-from-visitors-toggle"
+    />
+    <label for="free-phase-hidden-from-visitors" class="cursor-pointer">
+      {{ 'admin.poules.hideFromVisitors' | transloco }}
+    </label>
+  </div>
+
+  <div class="p-dialog-footer px-0! mt-5 flex items-center gap-2">
+    @if (data.ref) {
+      <p-button
+        type="button"
+        class="mr-auto"
+        [label]="'shared.actions.delete' | transloco"
+        severity="danger"
+        [outlined]="true"
+        icon="pi pi-trash"
+        (onClick)="onDelete()"
+        data-testid="delete-free-phase-button"
+      />
+    }
+    <p-button
+      type="button"
+      [label]="'shared.actions.cancel' | transloco"
+      severity="secondary"
+      (onClick)="onCancel()"
+      data-testid="free-phase-cancel-button"
+    />
+    <p-button
+      type="submit"
+      [label]="'shared.actions.save' | transloco"
+      data-testid="free-phase-save-button"
+    />
+  </div>
+</form>

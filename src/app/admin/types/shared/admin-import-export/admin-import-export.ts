@@ -56,10 +56,27 @@ export interface TournamentYamlPoule {
   games: TournamentYamlGame[];
 }
 
+export interface TournamentYamlFreePhaseGame {
+  team1: string;
+  team2: string;
+  score1?: number;
+  score2?: number;
+  date?: string;
+  referees?: string[];
+  comment?: string;
+}
+
+export interface TournamentYamlFreePhase {
+  name: string;
+  hiddenFromVisitors?: boolean;
+  games: TournamentYamlFreePhaseGame[];
+}
+
 export interface TournamentYamlSerie {
   name: string;
   poules: TournamentYamlPoule[];
   playoffs?: TournamentYamlPlayoff[];
+  freePhases?: TournamentYamlFreePhase[];
 }
 
 export interface TournamentYamlData {
@@ -175,6 +192,10 @@ export class AdminImportExport {
         serie.poules.reduce((pSum, poule) => pSum + poule.games.length, 0) +
         (serie.playoffs ?? []).reduce(
           (playoffSum, playoff) => playoffSum + playoff.games.length,
+          0,
+        ) +
+        (serie.freePhases ?? []).reduce(
+          (fpSum, freePhase) => fpSum + freePhase.games.length,
           0,
         ),
       0,
@@ -318,6 +339,32 @@ export class AdminImportExport {
             return yamlGame;
           }),
       })),
+      ...(serie.freePhases && serie.freePhases.length > 0
+        ? {
+            freePhases: serie.freePhases.map((freePhase) => ({
+              name: freePhase.name,
+              ...(freePhase.hiddenFromVisitors ? { hiddenFromVisitors: true } : {}),
+              games: (freePhase.games ?? [])
+                .filter((game: Game) => game.refTeam1 && game.refTeam2)
+                .map((game: Game) => {
+                  const yamlGame: TournamentYamlFreePhaseGame = {
+                    team1: game.refTeam1!.id,
+                    team2: game.refTeam2!.id,
+                  };
+                  if (game.scoreTeam1 != null) yamlGame.score1 = game.scoreTeam1;
+                  if (game.scoreTeam2 != null) yamlGame.score2 = game.scoreTeam2;
+                  if (game.date != null) yamlGame.date = game.date.toISOString();
+                  if (game.referees && game.referees.length > 0) {
+                    yamlGame.referees = game.referees;
+                  }
+                  if (game.comment) {
+                    yamlGame.comment = game.comment;
+                  }
+                  return yamlGame;
+                }),
+            })),
+          }
+        : {}),
     }));
 
     const result: TournamentYamlData = {

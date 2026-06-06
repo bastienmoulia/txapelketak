@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { BadgeModule } from 'primeng/badge';
 import { UserRole } from '../../home/tournament.interface';
@@ -8,7 +8,6 @@ import { UserRole } from '../../home/tournament.interface';
   imports: [BadgeModule, TranslocoPipe],
   templateUrl: './role-badge.html',
   styleUrl: './role-badge.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleBadge {
   role = input<UserRole | ''>('');

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -25,7 +25,6 @@ interface SerieFormDialogData {
   selector: 'app-serie-form-dialog',
   imports: [FormsModule, FloatLabel, InputTextModule, Button, TranslocoPipe],
   templateUrl: './serie-form-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SerieFormDialog {
   private readonly config = inject(DynamicDialogConfig<SerieFormDialogData>);

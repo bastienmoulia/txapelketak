@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Button } from 'primeng/button';
@@ -29,7 +29,6 @@ interface PlayoffEditDialogData {
   selector: 'app-playoff-edit-dialog',
   imports: [FormsModule, TranslocoPipe, Button, FloatLabel, InputTextModule, ToggleSwitchModule],
   templateUrl: './playoff-edit-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayoffEditDialog {
   private readonly config = inject(DynamicDialogConfig<PlayoffEditDialogData>);

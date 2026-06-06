@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -17,7 +17,6 @@ import { DocumentReference } from '@angular/fire/firestore';
   imports: [ButtonModule, DatePicker, DatePipe, FormsModule, TooltipModule, TranslocoModule],
   templateUrl: './admin-time-slots.html',
   styleUrl: './admin-time-slots.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminTimeSlots {
   private firebaseService = inject(FirebaseService);

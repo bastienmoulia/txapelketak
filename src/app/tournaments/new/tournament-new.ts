@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -28,7 +28,6 @@ import { FirebaseService } from '../../shared/services/firebase.service';
   ],
   templateUrl: './tournament-new.html',
   styleUrl: './tournament-new.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentNew {
   firebaseService = inject(FirebaseService);

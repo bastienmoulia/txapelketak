@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -16,7 +16,6 @@ interface GamePoulePickerDialogData {
   imports: [TranslocoPipe, FormsModule, FloatLabel, Select, Button],
   templateUrl: './game-poule-picker-dialog.html',
   styleUrl: './game-poule-picker-dialog.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GamePoulePickerDialog {
   private readonly config = inject(DynamicDialogConfig<GamePoulePickerDialogData>);

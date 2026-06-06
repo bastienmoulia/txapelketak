@@ -1,6 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
+import { Component,
   computed,
   inject,
   input,
@@ -102,7 +100,6 @@ const createTeamNameLookup =
   imports: [ApplyPipe, Button, CardModule, TranslocoPipe, TooltipModule, PopoverModule, DatePipe],
   templateUrl: './playoffs.html',
   styleUrl: './playoffs.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Playoffs {
   private translocoService = inject(TranslocoService);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Button } from 'primeng/button';
@@ -15,7 +15,6 @@ interface DeleteTournamentDialogData {
   selector: 'app-delete-tournament-dialog',
   imports: [FormsModule, FloatLabel, InputTextModule, MessageModule, Button, TranslocoPipe],
   templateUrl: './delete-tournament-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteTournamentDialog {
   private readonly config = inject(DynamicDialogConfig<DeleteTournamentDialogData>);

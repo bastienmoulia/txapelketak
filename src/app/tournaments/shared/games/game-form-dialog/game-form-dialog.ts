@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -61,7 +61,6 @@ interface GameFormDialogData {
   ],
   templateUrl: './game-form-dialog.html',
   styleUrl: './game-form-dialog.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameFormDialog {
   private readonly translocoService = inject(TranslocoService);

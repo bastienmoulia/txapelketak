@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
 import { Button } from 'primeng/button';
@@ -11,7 +11,6 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
   selector: 'app-team-bulk-dialog',
   imports: [FormsModule, FloatLabel, Textarea, Button, TranslocoPipe],
   templateUrl: './team-bulk-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamBulkDialog {
   private readonly dialogRef = inject(DynamicDialogRef);

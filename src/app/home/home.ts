@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +20,6 @@ interface Feature {
   imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule, SvgIcon],
   templateUrl: './home.html',
   styleUrl: './home.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
   tournamentsStore = inject(TournamentsStore);

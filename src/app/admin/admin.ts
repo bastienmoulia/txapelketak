@@ -1,6 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
+import { Component,
   computed,
   DestroyRef,
   effect,
@@ -45,7 +43,6 @@ import { TournamentActionsService } from '../shared/services/tournament-actions.
   providers: [MessageService, TournamentActionsService],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Admin {
   firebaseService = inject(FirebaseService);

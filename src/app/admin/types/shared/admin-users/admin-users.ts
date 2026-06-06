@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -28,7 +28,6 @@ import { UserFormDialog, UserFormResult } from './user-form-dialog/user-form-dia
   providers: [DialogService, ConfirmationService],
   templateUrl: './admin-users.html',
   styleUrl: './admin-users.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminUsers {
   private readonly toastKey = 'admin-users';

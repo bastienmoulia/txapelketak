@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -11,7 +11,6 @@ import { TournamentsStore } from '../../store/tournaments.store';
   imports: [ButtonModule, RouterLink, TournamentsTable, TranslocoModule],
   templateUrl: './tournament-list.html',
   styleUrl: './tournament-list.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TournamentList {
   tournamentsStore = inject(TournamentsStore);

@@ -1,7 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
+import { Component,
   DestroyRef,
   computed,
   inject,
@@ -22,7 +20,6 @@ type LanguageCode = 'fr' | 'eu' | 'en' | 'es';
   imports: [ButtonModule, MenuModule, TooltipModule, SvgIcon],
   templateUrl: './header-actions.html',
   styleUrl: './header-actions.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderActions {
   private readonly document = inject(DOCUMENT);

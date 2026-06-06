@@ -1,5 +1,5 @@
 tournament:
-  name: Visitor Seed Tournament
+  name: Tournoi visiteur
   description: Seed data for visitor E2E tests
   type: poules
   status: ongoing
@@ -21,10 +21,10 @@ series:
         games:
           - team1: visitor-team-1
             team2: visitor-team-2
-            date: '2027-05-20T10:00:00.000Z'
+            date: '2026-06-10T10:00:00.000Z'
           - team1: visitor-team-1
             team2: visitor-team-3
-            date: '2027-05-20T14:00:00.000Z'
+            date: '2026-06-10T14:00:00.000Z'
           - team1: visitor-team-2
             team2: visitor-team-3
-            date: '2027-05-21T16:30:00.000Z'
+            date: '2026-06-11T16:30:00.000Z'

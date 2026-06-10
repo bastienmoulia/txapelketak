@@ -98,6 +98,21 @@
                                     data-testid="playoff-match-comment-button"
                                   />
                                 }
+                                @if (canAdvanceWinner | apply: match.game : playoffTree.playoff) {
+                                  <p-button
+                                    type="button"
+                                    icon="pi pi-arrow-right"
+                                    [ariaLabel]="'playoffs.advanceWinnerAria' | transloco"
+                                    [pTooltip]="'playoffs.advanceWinnerTooltip' | transloco"
+                                    tooltipPosition="top"
+                                    severity="success"
+                                    size="small"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    (onClick)="onAdvanceWinner(match.game, playoffTree.playoff)"
+                                    data-testid="playoff-advance-winner-button"
+                                  />
+                                }
                                 <p-button
                                   type="button"
                                   icon="pi pi-pencil"

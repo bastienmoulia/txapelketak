@@ -65,6 +65,32 @@ interface TeamLike {
   name: string;
 }
 
+const getWinnerRef = (game: Game): DocumentReference | undefined => {
+  if (game.isBye) {
+    return game.refTeam1 ?? game.refTeam2;
+  }
+  if (game.scoreTeam1 == null || game.scoreTeam2 == null) return undefined;
+  if (game.scoreTeam1 > game.scoreTeam2) return game.refTeam1;
+  if (game.scoreTeam2 > game.scoreTeam1) return game.refTeam2;
+  return undefined;
+};
+
+const getNextGameSlot = (
+  game: Game,
+  playoff: Playoff,
+): { game: Game; slot: 'refTeam1' | 'refTeam2' } | undefined => {
+  if (!game.roundSize || game.roundSize <= 2) return undefined;
+  const nextRoundSize = game.roundSize / 2;
+  const nextMatchNumber = Math.ceil((game.matchNumber ?? 1) / 2);
+  const nextGame = playoff.games?.find(
+    (g) => g.roundSize === nextRoundSize && g.matchNumber === nextMatchNumber,
+  );
+  if (!nextGame) return undefined;
+  const slot: 'refTeam1' | 'refTeam2' =
+    (game.matchNumber ?? 1) % 2 !== 0 ? 'refTeam1' : 'refTeam2';
+  return { game: nextGame, slot };
+};
+
 const createTeamNameLookup =
   (teams: () => TeamLike[], transloco: TranslocoService) =>
   (
@@ -119,6 +145,14 @@ export class Playoffs {
   currentCommentText = signal<string>('');
 
   getTeamName = createTeamNameLookup(this.teams, this.translocoService);
+
+  canAdvanceWinner = (game: Game, playoff: Playoff): boolean => {
+    const winner = getWinnerRef(game);
+    if (!winner) return false;
+    const nextGameSlot = getNextGameSlot(game, playoff);
+    if (!nextGameSlot) return false;
+    return !nextGameSlot.game[nextGameSlot.slot];
+  };
 
   sortedPlayoffs = computed((): PlayoffWithRounds[] =>
     [...this.playoffs()].map((playoff) => ({
@@ -222,6 +256,18 @@ export class Playoffs {
   onShowComment(event: MouseEvent, comment: string): void {
     this.currentCommentText.set(comment);
     this.commentPopover()?.toggle(event);
+  }
+
+  onAdvanceWinner(game: Game, playoff: Playoff): void {
+    const winner = getWinnerRef(game);
+    if (!winner) return;
+    const nextGameSlot = getNextGameSlot(game, playoff);
+    if (!nextGameSlot?.game.ref) return;
+    void this.tournamentActions.advancePlayoffWinner(
+      nextGameSlot.game.ref,
+      winner,
+      nextGameSlot.slot,
+    );
   }
 
   onEditPlayoff(playoff: Playoff): void {

@@ -481,6 +481,10 @@
     "seed": "Seed {{n}}",
     "generated": "Playoffs generated",
     "generatedDetail": "{{count}} playoff matches have been generated.",
-    "winnerOfPrevious": "Winner of {{round}} {{number}}"
+    "winnerOfPrevious": "Winner of {{round}} {{number}}",
+    "advanceWinnerAria": "Advance winner to next round",
+    "advanceWinnerTooltip": "Advance winner to next round",
+    "winnerAdvanced": "Winner advanced",
+    "winnerAdvancedDetail": "The winner has been advanced to the next round."
   }
 }

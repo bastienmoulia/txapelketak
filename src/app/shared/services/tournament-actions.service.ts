@@ -338,6 +338,19 @@ export class TournamentActionsService {
     });
   }
 
+  async advancePlayoffWinner(
+    nextGameRef: DocumentReference,
+    winnerRef: DocumentReference,
+    slot: 'refTeam1' | 'refTeam2',
+  ): Promise<void> {
+    await this.firebaseService.setGameTeamSlot(nextGameRef, slot, winnerRef);
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translocoService.translate('playoffs.winnerAdvanced'),
+      detail: this.translocoService.translate('playoffs.winnerAdvancedDetail'),
+    });
+  }
+
   async savePlayoff(event: SavePlayoffEvent): Promise<void> {
     await this.firebaseService.updatePlayoffInSerie(
       event.ref,

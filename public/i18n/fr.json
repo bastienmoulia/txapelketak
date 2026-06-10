@@ -481,6 +481,10 @@
     "seed": "Tête de série {{n}}",
     "generated": "Playoffs générés",
     "generatedDetail": "{{count}} matchs de playoffs ont été générés.",
-    "winnerOfPrevious": "Gagnant {{round}} {{number}}"
+    "winnerOfPrevious": "Gagnant {{round}} {{number}}",
+    "advanceWinnerAria": "Avancer le gagnant au tour suivant",
+    "advanceWinnerTooltip": "Avancer le gagnant au tour suivant",
+    "winnerAdvanced": "Gagnant avancé",
+    "winnerAdvancedDetail": "Le gagnant a été avancé au tour suivant."
   }
 }

@@ -614,6 +614,18 @@ export class FirebaseService {
     });
   }
 
+  async setGameTeamSlot(
+    gameRef: DocumentReference,
+    slot: 'refTeam1' | 'refTeam2',
+    teamRef: DocumentReference,
+  ): Promise<void> {
+    console.debug(`[Firestore] setGameTeamSlot: updating ${slot}`);
+    await runInInjectionContext(this.environmentInjector, async () => {
+      console.debug(`[Firestore] updateDoc: game team slot`);
+      await updateDoc(gameRef, { [slot]: teamRef });
+    });
+  }
+
   async deleteGameFromPoule(gameRef: DocumentReference): Promise<void> {
     console.debug(`[Firestore] deleteGameFromPoule: deleting game`);
     await runInInjectionContext(this.environmentInjector, async () => {

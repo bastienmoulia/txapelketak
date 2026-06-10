@@ -67,6 +67,7 @@ describe('Playoffs', () => {
             saveGame: vi.fn(),
             savePlayoff: vi.fn(),
             deletePlayoff: vi.fn(),
+            advancePlayoffWinner: vi.fn(),
           },
         },
         {
@@ -272,5 +273,263 @@ describe('Playoffs', () => {
     const confirmationConfig = confirmationService.confirm.mock.calls[0]?.[0];
     confirmationConfig?.accept?.();
     expect(tournamentActions.deletePlayoff).toHaveBeenCalledWith(mockPlayoff);
+  });
+
+  describe('canAdvanceWinner', () => {
+    const semifinalRef1 = {
+      id: 'semi-1',
+      path: 'series/test/playoffs/playoff-1/games/semi-1',
+    } as unknown as DocumentReference;
+    const semifinalRef2 = {
+      id: 'semi-2',
+      path: 'series/test/playoffs/playoff-1/games/semi-2',
+    } as unknown as DocumentReference;
+    const finalRef = {
+      id: 'final-1',
+      path: 'series/test/playoffs/playoff-1/games/final-1',
+    } as unknown as DocumentReference;
+    const team1Ref = {
+      id: 'team-a',
+      path: 'tournaments/test/teams/team-a',
+    } as unknown as DocumentReference;
+    const team2Ref = {
+      id: 'team-b',
+      path: 'tournaments/test/teams/team-b',
+    } as unknown as DocumentReference;
+
+    const semifinal1: Game = {
+      ref: semifinalRef1,
+      refTeam1: team1Ref,
+      refTeam2: team2Ref,
+      scoreTeam1: 3,
+      scoreTeam2: 1,
+      roundSize: 4,
+      matchNumber: 1,
+    };
+    const semifinal2: Game = {
+      ref: semifinalRef2,
+      refTeam1: team1Ref,
+      refTeam2: team2Ref,
+      scoreTeam1: 2,
+      scoreTeam2: 4,
+      roundSize: 4,
+      matchNumber: 2,
+    };
+    const finalGame: Game = {
+      ref: finalRef,
+      roundSize: 2,
+      matchNumber: 1,
+    };
+    const playoffWith4Teams: Playoff = {
+      ref: mockPlayoffRef,
+      name: '4-team playoff',
+      orderedTeamRefs: [],
+      size: 4,
+      games: [semifinal1, semifinal2, finalGame],
+    };
+
+    it('should return true for semifinal match 1 with winner when final team1 is empty', () => {
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoffWith4Teams]);
+        fixture.detectChanges();
+
+        expect(component.canAdvanceWinner(semifinal1, playoffWith4Teams)).toBe(true);
+      });
+    });
+
+    it('should return true for semifinal match 2 with winner when final team2 is empty', () => {
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoffWith4Teams]);
+        fixture.detectChanges();
+
+        expect(component.canAdvanceWinner(semifinal2, playoffWith4Teams)).toBe(true);
+      });
+    });
+
+    it('should return false for final round game (roundSize === 2)', () => {
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoffWith4Teams]);
+        fixture.detectChanges();
+
+        const finalWithScores: Game = { ...finalGame, scoreTeam1: 3, scoreTeam2: 1 };
+        expect(component.canAdvanceWinner(finalWithScores, playoffWith4Teams)).toBe(false);
+      });
+    });
+
+    it('should return false when scores are tied (no clear winner)', () => {
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoffWith4Teams]);
+        fixture.detectChanges();
+
+        const tiedSemifinal: Game = { ...semifinal1, scoreTeam1: 2, scoreTeam2: 2 };
+        expect(component.canAdvanceWinner(tiedSemifinal, playoffWith4Teams)).toBe(false);
+      });
+    });
+
+    it('should return false when scores are not yet set', () => {
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoffWith4Teams]);
+        fixture.detectChanges();
+
+        const noScoreSemifinal: Game = {
+          ...semifinal1,
+          scoreTeam1: undefined,
+          scoreTeam2: undefined,
+        };
+        expect(component.canAdvanceWinner(noScoreSemifinal, playoffWith4Teams)).toBe(false);
+      });
+    });
+
+    it('should return false when next game slot is already filled', () => {
+      TestBed.runInInjectionContext(() => {
+        const filledFinal: Game = { ...finalGame, refTeam1: team1Ref };
+        const playoff = { ...playoffWith4Teams, games: [semifinal1, semifinal2, filledFinal] };
+        fixture.componentRef.setInput('playoffs', [playoff]);
+        fixture.detectChanges();
+
+        expect(component.canAdvanceWinner(semifinal1, playoff)).toBe(false);
+      });
+    });
+
+    it('should return true for bye game advancing single team', () => {
+      TestBed.runInInjectionContext(() => {
+        const byeSemifinal: Game = {
+          ref: semifinalRef1,
+          refTeam1: team1Ref,
+          isBye: true,
+          roundSize: 4,
+          matchNumber: 1,
+        };
+        const playoff = { ...playoffWith4Teams, games: [byeSemifinal, semifinal2, finalGame] };
+        fixture.componentRef.setInput('playoffs', [playoff]);
+        fixture.detectChanges();
+
+        expect(component.canAdvanceWinner(byeSemifinal, playoff)).toBe(true);
+      });
+    });
+  });
+
+  describe('onAdvanceWinner', () => {
+    const semifinalRef = {
+      id: 'semi-1',
+      path: 'series/test/playoffs/playoff-1/games/semi-1',
+    } as unknown as DocumentReference;
+    const finalRef = {
+      id: 'final-1',
+      path: 'series/test/playoffs/playoff-1/games/final-1',
+    } as unknown as DocumentReference;
+    const team1Ref = {
+      id: 'team-a',
+      path: 'tournaments/test/teams/team-a',
+    } as unknown as DocumentReference;
+    const team2Ref = {
+      id: 'team-b',
+      path: 'tournaments/test/teams/team-b',
+    } as unknown as DocumentReference;
+
+    it('should call advancePlayoffWinner with correct args for odd matchNumber (team1 slot)', () => {
+      const tournamentActions = TestBed.inject(TournamentActionsService) as unknown as {
+        advancePlayoffWinner: ReturnType<typeof vi.fn>;
+      };
+      const semifinal: Game = {
+        ref: semifinalRef,
+        refTeam1: team1Ref,
+        refTeam2: team2Ref,
+        scoreTeam1: 3,
+        scoreTeam2: 1,
+        roundSize: 4,
+        matchNumber: 1,
+      };
+      const finalGame: Game = { ref: finalRef, roundSize: 2, matchNumber: 1 };
+      const playoff: Playoff = {
+        ref: mockPlayoffRef,
+        name: 'Test',
+        orderedTeamRefs: [],
+        size: 4,
+        games: [semifinal, finalGame],
+      };
+
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoff]);
+        fixture.detectChanges();
+        component.onAdvanceWinner(semifinal, playoff);
+      });
+
+      expect(tournamentActions.advancePlayoffWinner).toHaveBeenCalledWith(
+        finalRef,
+        team1Ref,
+        'refTeam1',
+      );
+    });
+
+    it('should call advancePlayoffWinner with refTeam2 slot for even matchNumber', () => {
+      const tournamentActions = TestBed.inject(TournamentActionsService) as unknown as {
+        advancePlayoffWinner: ReturnType<typeof vi.fn>;
+      };
+      const semifinal2Ref = {
+        id: 'semi-2',
+        path: 'series/test/playoffs/playoff-1/games/semi-2',
+      } as unknown as DocumentReference;
+      const semifinal: Game = {
+        ref: semifinal2Ref,
+        refTeam1: team1Ref,
+        refTeam2: team2Ref,
+        scoreTeam1: 1,
+        scoreTeam2: 4,
+        roundSize: 4,
+        matchNumber: 2,
+      };
+      const finalGame: Game = { ref: finalRef, roundSize: 2, matchNumber: 1 };
+      const playoff: Playoff = {
+        ref: mockPlayoffRef,
+        name: 'Test',
+        orderedTeamRefs: [],
+        size: 4,
+        games: [semifinal, finalGame],
+      };
+
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoff]);
+        fixture.detectChanges();
+        component.onAdvanceWinner(semifinal, playoff);
+      });
+
+      expect(tournamentActions.advancePlayoffWinner).toHaveBeenCalledWith(
+        finalRef,
+        team2Ref,
+        'refTeam2',
+      );
+    });
+
+    it('should not call advancePlayoffWinner when no winner (tied scores)', () => {
+      const tournamentActions = TestBed.inject(TournamentActionsService) as unknown as {
+        advancePlayoffWinner: ReturnType<typeof vi.fn>;
+      };
+      const tiedGame: Game = {
+        ref: semifinalRef,
+        refTeam1: team1Ref,
+        refTeam2: team2Ref,
+        scoreTeam1: 2,
+        scoreTeam2: 2,
+        roundSize: 4,
+        matchNumber: 1,
+      };
+      const finalGame: Game = { ref: finalRef, roundSize: 2, matchNumber: 1 };
+      const playoff: Playoff = {
+        ref: mockPlayoffRef,
+        name: 'Test',
+        orderedTeamRefs: [],
+        size: 4,
+        games: [tiedGame, finalGame],
+      };
+
+      TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('playoffs', [playoff]);
+        fixture.detectChanges();
+        component.onAdvanceWinner(tiedGame, playoff);
+      });
+
+      expect(tournamentActions.advancePlayoffWinner).not.toHaveBeenCalled();
+    });
   });
 });

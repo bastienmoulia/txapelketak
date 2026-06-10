@@ -481,6 +481,10 @@
     "seed": "{{n}}. hazia",
     "generated": "Playoffak sortuta",
     "generatedDetail": "{{count}} playoff partida sortu dira.",
-    "winnerOfPrevious": "{{round}} {{number}} irabazlea"
+    "winnerOfPrevious": "{{round}} {{number}} irabazlea",
+    "advanceWinnerAria": "Irabazlea hurrengo txandara aurreratu",
+    "advanceWinnerTooltip": "Irabazlea hurrengo txandara aurreratu",
+    "winnerAdvanced": "Irabazlea aurreratuta",
+    "winnerAdvancedDetail": "Irabazlea hurrengo txandara aurreratu da."
   }
 }

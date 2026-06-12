@@ -220,6 +220,8 @@ export const exportCalendar = onRequest(
       'METHOD:PUBLISH',
       foldIcalLine(`X-WR-CALNAME:${escapeIcalText(calendarName)}`),
       'X-WR-TIMEZONE:UTC',
+      'REFRESH-INTERVAL;VALUE=DURATION:PT1H',
+      'X-PUBLISHED-TTL:PT1H',
     ];
 
     for (const entry of gameEntries) {

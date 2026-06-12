@@ -168,7 +168,9 @@
       "name": "Tournament name",
       "description": "Description",
       "saved": "Tournament updated",
-      "savedDetail": "Tournament information has been saved successfully."
+      "savedDetail": "Tournament information has been saved successfully.",
+      "matchDurationMinutes": "Match duration (minutes)",
+      "matchDurationMinutesHelp": "Duration used for the calendar export (1 hour by default)."
     },
     "poules": {
       "addSerie": "Add a series",

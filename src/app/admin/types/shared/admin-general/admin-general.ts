@@ -4,6 +4,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ToastModule } from 'primeng/toast';
@@ -16,6 +17,7 @@ import { FirebaseService } from '../../../../shared/services/firebase.service';
     ButtonModule,
     FloatLabel,
     FormsModule,
+    InputNumberModule,
     InputTextModule,
     TextareaModule,
     ToastModule,
@@ -33,6 +35,7 @@ export class AdminGeneral {
 
   name = signal('');
   description = signal('');
+  matchDurationMinutes = signal(60);
   isEditing = signal(false);
   isSaving = signal(false);
 
@@ -51,6 +54,7 @@ export class AdminGeneral {
       this.loadedTournamentId.set(t.ref.id);
       this.name.set(t.name);
       this.description.set(t.description ?? '');
+      this.matchDurationMinutes.set(t.matchDurationMinutes ?? 60);
       this.isEditing.set(false);
     });
   }
@@ -63,6 +67,7 @@ export class AdminGeneral {
     });
     this.name.set(tournament.name);
     this.description.set(tournament.description ?? '');
+    this.matchDurationMinutes.set(tournament.matchDurationMinutes ?? 60);
     this.isEditing.set(true);
   }
 
@@ -81,6 +86,7 @@ export class AdminGeneral {
       await this.firebaseService.updateTournamentInfo(tournament.ref, {
         name: this.name(),
         description: this.description(),
+        matchDurationMinutes: this.matchDurationMinutes(),
       });
       this.isEditing.set(false);
       this.messageService.add({

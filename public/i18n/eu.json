@@ -168,7 +168,9 @@
       "name": "Txapelketaren izena",
       "description": "Deskribapena",
       "saved": "Txapelketa eguneratua",
-      "savedDetail": "Txapelketaren informazioa arrakastaz gorde da."
+      "savedDetail": "Txapelketaren informazioa arrakastaz gorde da.",
+      "matchDurationMinutes": "Partidaren iraupena (minutuak)",
+      "matchDurationMinutesHelp": "Egutegiaren esportaziorako erabilitako iraupena (1 orduz berez)."
     },
     "poules": {
       "addSerie": "Serie bat gehitu",

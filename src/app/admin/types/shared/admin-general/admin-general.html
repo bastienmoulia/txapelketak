@@ -30,6 +30,23 @@
     {{ 'tournaments.new.step1.descriptionHelp' | transloco }}
   </small>
 
+  <p-floatlabel variant="on">
+    <p-inputnumber
+      inputId="match-duration"
+      name="matchDurationMinutes"
+      [(ngModel)]="matchDurationMinutes"
+      [min]="1"
+      [max]="480"
+      [showButtons]="true"
+      [style]="{ width: '100%' }"
+      [disabled]="!isEditing()"
+    />
+    <label for="match-duration">{{ 'admin.general.matchDurationMinutes' | transloco }}</label>
+  </p-floatlabel>
+  <small class="text-[var(--p-text-muted-color)]">
+    {{ 'admin.general.matchDurationMinutesHelp' | transloco }}
+  </small>
+
   <div class="flex gap-2">
     @if (isEditing()) {
       <p-button

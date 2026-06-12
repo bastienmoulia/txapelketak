@@ -168,7 +168,9 @@
       "name": "Nombre del torneo",
       "description": "Descripción",
       "saved": "Torneo actualizado",
-      "savedDetail": "La información del torneo se ha guardado correctamente."
+      "savedDetail": "La información del torneo se ha guardado correctamente.",
+      "matchDurationMinutes": "Duración de una partida (minutos)",
+      "matchDurationMinutesHelp": "Duración utilizada para la exportación del calendario (1 hora por defecto)."
     },
     "poules": {
       "addSerie": "Añadir una serie",

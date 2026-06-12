@@ -175,6 +175,10 @@ Cela lance :
 
 - **`firebase-hosting-merge.yml`** : lint + tests unitaires + E2E (multi-navigateurs) + build + déploiement live Firebase
 
+### Déploiement manuel des Firebase Functions
+
+- **`firebase-functions-deploy.yml`** : build + déploiement des Firebase Functions depuis `main` (déclenchement manuel via GitHub Actions)
+
 ## Internationalisation
 
 Les textes UI sont traduits via Transloco et les fichiers JSON dans `public/i18n` :

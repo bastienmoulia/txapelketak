@@ -143,7 +143,13 @@
       "warningSimultaneousGames": "{{count}} franja(s) horaria(s) con varios partidos a la misma hora",
       "noReferees": "Sin árbitros",
       "downloadCalendar": "Descargar calendario",
-      "downloadCalendarTooltip": "Abrir el calendario de partidas en tu aplicación de agenda (.ics)"
+      "downloadCalendarTooltip": "Abrir el calendario de partidas en tu aplicación de agenda (.ics)",
+      "calendarExportDialog": {
+        "title": "Exportar calendario",
+        "allTeams": "Todos los equipos",
+        "selectTeam": "Equipo",
+        "export": "Exportar"
+      }
     }
   },
   "admin": {

@@ -43,6 +43,7 @@ export const exportCalendar = onRequest(
   async (req, res) => {
     const tournamentId = req.query['tournamentId'] as string | undefined;
     const databaseId = req.query['databaseId'] as string | undefined;
+    const teamId = req.query['teamId'] as string | undefined;
 
     if (!tournamentId || typeof tournamentId !== 'string') {
       res.status(400).json({ error: 'tournamentId query parameter is required' });
@@ -77,6 +78,12 @@ export const exportCalendar = onRequest(
       teamNames.set(teamDoc.ref.path, data.name ?? teamDoc.id);
     }
 
+    // Resolve the filtered team's full ref path if teamId is provided
+    const filteredTeamPath = teamId
+      ? tournamentRef.collection('teams').doc(teamId).path
+      : null;
+    const filteredTeamName = filteredTeamPath ? (teamNames.get(filteredTeamPath) ?? teamId) : null;
+
     // Collect all games with dates
     interface GameEntry {
       uid: string;
@@ -105,6 +112,13 @@ export const exportCalendar = onRequest(
             name?: string;
           };
           if (!game.date || game.isBye) {
+            continue;
+          }
+          if (
+            filteredTeamPath &&
+            game.refTeam1?.path !== filteredTeamPath &&
+            game.refTeam2?.path !== filteredTeamPath
+          ) {
             continue;
           }
           const gameDate = game.date.toDate();
@@ -136,6 +150,13 @@ export const exportCalendar = onRequest(
           if (!game.date || game.isBye) {
             continue;
           }
+          if (
+            filteredTeamPath &&
+            game.refTeam1?.path !== filteredTeamPath &&
+            game.refTeam2?.path !== filteredTeamPath
+          ) {
+            continue;
+          }
           const gameDate = game.date.toDate();
           const team1Name = game.refTeam1 ? (teamNames.get(game.refTeam1.path) ?? '?') : '?';
           const team2Name = game.refTeam2 ? (teamNames.get(game.refTeam2.path) ?? '?') : '?';
@@ -165,6 +186,13 @@ export const exportCalendar = onRequest(
           if (!game.date || game.isBye) {
             continue;
           }
+          if (
+            filteredTeamPath &&
+            game.refTeam1?.path !== filteredTeamPath &&
+            game.refTeam2?.path !== filteredTeamPath
+          ) {
+            continue;
+          }
           const gameDate = game.date.toDate();
           const team1Name = game.refTeam1 ? (teamNames.get(game.refTeam1.path) ?? '?') : '?';
           const team2Name = game.refTeam2 ? (teamNames.get(game.refTeam2.path) ?? '?') : '?';
@@ -180,6 +208,9 @@ export const exportCalendar = onRequest(
     }
 
     // Build iCal content
+    const calendarName = filteredTeamName
+      ? `${tournamentName} - ${filteredTeamName}`
+      : tournamentName;
     const now = formatIcalDate(new Date());
     const lines: string[] = [
       'BEGIN:VCALENDAR',
@@ -187,7 +218,7 @@ export const exportCalendar = onRequest(
       'PRODID:-//Txapelketak//Calendar Export//EN',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
-      foldIcalLine(`X-WR-CALNAME:${escapeIcalText(tournamentName)}`),
+      foldIcalLine(`X-WR-CALNAME:${escapeIcalText(calendarName)}`),
       'X-WR-TIMEZONE:UTC',
     ];
 
@@ -208,7 +239,7 @@ export const exportCalendar = onRequest(
 
     const icalContent = lines.join('\r\n') + '\r\n';
 
-    const safeFilename = tournamentName
+    const safeFilename = calendarName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '') || 'tournament';

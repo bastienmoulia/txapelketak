@@ -143,7 +143,13 @@
       "warningSimultaneousGames": "{{count}} créneau(x) avec plusieurs parties à la même heure",
       "noReferees": "Aucun arbitre",
       "downloadCalendar": "Télécharger le calendrier",
-      "downloadCalendarTooltip": "Ouvrir le calendrier des parties dans votre application agenda (.ics)"
+      "downloadCalendarTooltip": "Ouvrir le calendrier des parties dans votre application agenda (.ics)",
+      "calendarExportDialog": {
+        "title": "Exporter le calendrier",
+        "allTeams": "Toutes les équipes",
+        "selectTeam": "Équipe",
+        "export": "Exporter"
+      }
     }
   },
   "admin": {

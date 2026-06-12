@@ -29,6 +29,10 @@ import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 import { getPlayoffGameLabel } from '../../../shared/utils/playoff-label';
 import { FirebaseService } from '../../../shared/services/firebase.service';
+import {
+  CalendarExportDialog,
+  CalendarExportDialogResult,
+} from './calendar-export-dialog/calendar-export-dialog';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -407,10 +411,26 @@ export class TournamentDashboard {
   }
 
   onDownloadCalendar(): void {
-    const url = this.calendarUrl();
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
+    const tournamentId = this.tournament()?.ref?.id;
+    if (!tournamentId) return;
+
+    const dialogRef = this.dialogService.open(CalendarExportDialog, {
+      header: this.translocoService.translate(
+        'tournaments.dashboard.calendarExportDialog.title',
+      ),
+      modal: true,
+      closable: true,
+      width: 'min(24rem, 100%)',
+      data: {
+        teams: this.teams(),
+      },
+    });
+    dialogRef?.onClose.subscribe((result: CalendarExportDialogResult | undefined) => {
+      if (result !== undefined) {
+        const url = this.firebaseService.getCalendarUrl(tournamentId, result.teamId);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    });
   }
 
   onEditOverdueGame(game: UpcomingGame): void {

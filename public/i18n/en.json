@@ -143,7 +143,13 @@
       "warningSimultaneousGames": "{{count}} time slot(s) with multiple games at the same time",
       "noReferees": "No referees",
       "downloadCalendar": "Download calendar",
-      "downloadCalendarTooltip": "Open the match schedule in your calendar app (.ics)"
+      "downloadCalendarTooltip": "Open the match schedule in your calendar app (.ics)",
+      "calendarExportDialog": {
+        "title": "Export calendar",
+        "allTeams": "All teams",
+        "selectTeam": "Team",
+        "export": "Export"
+      }
     }
   },
   "admin": {

@@ -650,12 +650,15 @@ export class FirebaseService {
     await callable({ tournamentId, token, ...(databaseId !== '(default)' ? { databaseId } : {}) });
   }
 
-  getCalendarUrl(tournamentId: string): string {
+  getCalendarUrl(tournamentId: string, teamId?: string | null): string {
     const base = environment.functionsBaseUrl;
     const databaseId = environment.firestoreDatabase;
     let url = `${base}/exportCalendar?tournamentId=${encodeURIComponent(tournamentId)}`;
     if (databaseId && databaseId !== '(default)') {
       url += `&databaseId=${encodeURIComponent(databaseId)}`;
+    }
+    if (teamId) {
+      url += `&teamId=${encodeURIComponent(teamId)}`;
     }
     return url;
   }

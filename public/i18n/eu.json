@@ -143,7 +143,13 @@
       "warningSimultaneousGames": "{{count}} denbora-tarte(an) aldi berean hainbat partida",
       "noReferees": "Arbitrorik ez",
       "downloadCalendar": "Egutegian deskargatu",
-      "downloadCalendarTooltip": "Ireki partiduen egutegia zure agenda aplikazioan (.ics)"
+      "downloadCalendarTooltip": "Ireki partiduen egutegia zure agenda aplikazioan (.ics)",
+      "calendarExportDialog": {
+        "title": "Egutegia exportatu",
+        "allTeams": "Talde guztiak",
+        "selectTeam": "Taldea",
+        "export": "Exportatu"
+      }
     }
   },
   "admin": {

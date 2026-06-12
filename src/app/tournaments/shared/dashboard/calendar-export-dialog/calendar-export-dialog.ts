@@ -31,7 +31,7 @@ export class CalendarExportDialog {
   private readonly config = inject(DynamicDialogConfig<CalendarExportDialogData>);
   private readonly dialogRef = inject(DynamicDialogRef);
 
-  data = this.config.data ?? { teams: [] };
+  data: { teams: Team[] } = this.config.data ?? { teams: [] };
 
   private activeLanguage = toSignal(this.translocoService.langChanges$, {
     initialValue: this.translocoService.getActiveLang(),

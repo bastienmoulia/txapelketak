@@ -6,6 +6,27 @@ if (getApps().length === 0) {
   initializeApp();
 }
 
+type SupportedLang = 'fr' | 'eu' | 'en' | 'es';
+
+const PLAYOFF_ROUND_TRANSLATIONS: Record<SupportedLang, Record<number, string>> = {
+  fr: { 2: 'Finale', 4: 'Demi-finale', 8: 'Quart de finale', 16: 'Huitième de finale', 32: 'Seizième de finale' },
+  eu: { 2: 'Finala', 4: 'Erdi-finala', 8: 'Laurden-finala', 16: '16ko txanda', 32: '32ko txanda' },
+  en: { 2: 'Final', 4: 'Semi-final', 8: 'Quarter-final', 16: 'Round of 16', 32: 'Round of 32' },
+  es: { 2: 'Final', 4: 'Semifinal', 8: 'Cuartos de final', 16: 'Octavos de final', 32: 'Dieciseisavos de final' },
+};
+
+function getPlayoffLabel(roundSize: number, matchNumber: number | undefined, lang: SupportedLang): string {
+  const translations = PLAYOFF_ROUND_TRANSLATIONS[lang];
+  const roundLabel = translations[roundSize];
+  if (!roundLabel) {
+    return matchNumber != null ? `finale.rounds.${roundSize} ${matchNumber}` : `finale.rounds.${roundSize}`;
+  }
+  if (roundSize === 2) {
+    return roundLabel;
+  }
+  return matchNumber != null ? `${roundLabel} ${matchNumber}` : roundLabel;
+}
+
 const DEFAULT_MATCH_DURATION_MINUTES = 60;
 
 function formatIcalDate(date: Date): string {
@@ -44,6 +65,10 @@ export const exportCalendar = onRequest(
     const tournamentId = req.query['tournamentId'] as string | undefined;
     const databaseId = req.query['databaseId'] as string | undefined;
     const teamId = req.query['teamId'] as string | undefined;
+    const langParam = req.query['lang'] as string | undefined;
+    const lang: SupportedLang = (['fr', 'eu', 'en', 'es'] as SupportedLang[]).includes(langParam as SupportedLang)
+      ? (langParam as SupportedLang)
+      : 'fr';
 
     if (!tournamentId || typeof tournamentId !== 'string') {
       res.status(400).json({ error: 'tournamentId query parameter is required' });
@@ -137,7 +162,8 @@ export const exportCalendar = onRequest(
       // Playoffs
       const playoffsSnap = await serieDoc.ref.collection('playoffs').get();
       for (const playoffDoc of playoffsSnap.docs) {
-        const playoffName = (playoffDoc.data() as { name?: string }).name ?? playoffDoc.id;
+        const playoffName = (playoffDoc.data() as { name?: string }).name ?? '';
+        const phaseContext = playoffName || serieName;
         const gamesSnap = await playoffDoc.ref.collection('games').get();
         for (const gameDoc of gamesSnap.docs) {
           const game = gameDoc.data() as {
@@ -146,6 +172,8 @@ export const exportCalendar = onRequest(
             refTeam2?: FirebaseFirestore.DocumentReference;
             isBye?: boolean;
             name?: string;
+            roundSize?: number;
+            matchNumber?: number;
           };
           if (!game.date || game.isBye) {
             continue;
@@ -160,12 +188,14 @@ export const exportCalendar = onRequest(
           const gameDate = game.date.toDate();
           const team1Name = game.refTeam1 ? (teamNames.get(game.refTeam1.path) ?? '?') : '?';
           const team2Name = game.refTeam2 ? (teamNames.get(game.refTeam2.path) ?? '?') : '?';
-          const gameName = game.name ?? `${team1Name} - ${team2Name}`;
+          const gameName = game.roundSize != null
+            ? getPlayoffLabel(game.roundSize, game.matchNumber, lang)
+            : (game.name ?? `${team1Name} - ${team2Name}`);
           gameEntries.push({
             uid: `${tournamentId}-playoff-${gameDoc.id}@txapelketak`,
             date: gameDate,
-            summary: `${gameName} (${playoffName})`,
-            description: `${serieName} — ${playoffName}: ${team1Name} vs ${team2Name}`,
+            summary: `${gameName} (${phaseContext})`,
+            description: `${serieName} — ${phaseContext}: ${team1Name} vs ${team2Name}`,
           });
         }
       }

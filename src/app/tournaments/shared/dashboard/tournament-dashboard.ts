@@ -356,7 +356,8 @@ export class TournamentDashboard {
   calendarUrl = computed(() => {
     const tournamentId = this.tournament()?.ref?.id;
     if (!tournamentId) return null;
-    return this.firebaseService.getCalendarUrl(tournamentId);
+    const lang = this.datepickerConfig.activeLanguage();
+    return this.firebaseService.getCalendarUrl(tournamentId, null, lang);
   });
 
   showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');
@@ -427,7 +428,8 @@ export class TournamentDashboard {
     });
     dialogRef?.onClose.subscribe((result: CalendarExportDialogResult | undefined) => {
       if (result !== undefined) {
-        const url = this.firebaseService.getCalendarUrl(tournamentId, result.teamId);
+        const lang = this.datepickerConfig.activeLanguage();
+        const url = this.firebaseService.getCalendarUrl(tournamentId, result.teamId, lang);
         window.open(url, '_blank', 'noopener,noreferrer');
       }
     });

@@ -1179,6 +1179,7 @@ describe('TournamentDashboard', () => {
     });
 
     it('should count time slots with simultaneous games', () => {
+      const baseNow = new Date('2025-12-31T00:00:00').getTime();
       const sameTime = new Date('2026-01-01T10:00:00');
       const otherTime = new Date('2026-01-01T12:00:00');
       const series: Serie[] = [
@@ -1197,11 +1198,13 @@ describe('TournamentDashboard', () => {
       ];
 
       setInputs({ series });
+      component.nowMs.set(baseNow);
 
       expect(component.simultaneousGamesCount()).toBe(1);
     });
 
     it('should return 0 when no simultaneous games', () => {
+      const baseNow = new Date('2025-12-31T00:00:00').getTime();
       const time1 = new Date('2026-01-01T10:00:00');
       const time2 = new Date('2026-01-01T11:00:00');
       const time3 = new Date('2026-01-01T12:00:00');
@@ -1221,11 +1224,13 @@ describe('TournamentDashboard', () => {
       ];
 
       setInputs({ series });
+      component.nowMs.set(baseNow);
 
       expect(component.simultaneousGamesCount()).toBe(0);
     });
 
     it('should count multiple conflicting time slots', () => {
+      const baseNow = new Date('2025-12-31T00:00:00').getTime();
       const time1 = new Date('2026-01-01T10:00:00');
       const time2 = new Date('2026-01-01T14:00:00');
       const series: Serie[] = [
@@ -1245,11 +1250,13 @@ describe('TournamentDashboard', () => {
       ];
 
       setInputs({ series });
+      component.nowMs.set(baseNow);
 
       expect(component.simultaneousGamesCount()).toBe(2);
     });
 
     it('should ignore games without a date when counting simultaneous games', () => {
+      const baseNow = new Date('2025-12-31T00:00:00').getTime();
       const sameTime = new Date('2026-01-01T10:00:00');
       const series: Serie[] = [
         makeSerie('S1', [
@@ -1266,8 +1273,35 @@ describe('TournamentDashboard', () => {
       ];
 
       setInputs({ series });
+      component.nowMs.set(baseNow);
 
       expect(component.simultaneousGamesCount()).toBe(0);
+    });
+
+    it('should not count simultaneous games in the past', () => {
+      const now = new Date('2026-01-02T00:00:00').getTime();
+      const pastTime = new Date('2026-01-01T10:00:00');
+      const futureTime = new Date('2026-01-03T10:00:00');
+      const series: Serie[] = [
+        makeSerie('S1', [
+          {
+            ref: makeRef('p1'),
+            name: 'P1',
+            refTeams: [],
+            games: [
+              makeGame({ refTeam1Id: 'a', refTeam2Id: 'b', date: pastTime }),
+              makeGame({ refTeam1Id: 'c', refTeam2Id: 'd', date: pastTime }),
+              makeGame({ refTeam1Id: 'e', refTeam2Id: 'f', date: futureTime }),
+              makeGame({ refTeam1Id: 'g', refTeam2Id: 'h', date: futureTime }),
+            ],
+          },
+        ]),
+      ];
+
+      setInputs({ series });
+      component.nowMs.set(now);
+
+      expect(component.simultaneousGamesCount()).toBe(1);
     });
   });
 

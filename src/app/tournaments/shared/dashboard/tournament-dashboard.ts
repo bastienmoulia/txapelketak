@@ -316,13 +316,16 @@ export class TournamentDashboard {
   simultaneousGamesByMinute = computed(() => {
     const matchDurationMinutes = this.tournament()?.matchDurationMinutes ?? 60;
     const slotMs = matchDurationMinutes * 60 * 1000;
+    const now = this.nowMs();
     const gamesBySlot = new Map<number, number>();
 
     for (const serie of this.series()) {
       for (const phase of this.getSeriePhases(serie)) {
         for (const game of phase.games) {
           if (!game.date) continue;
-          const slotKey = Math.floor(new Date(game.date).getTime() / slotMs);
+          const gameTimeMs = new Date(game.date).getTime();
+          if (gameTimeMs < now) continue;
+          const slotKey = Math.floor(gameTimeMs / slotMs);
           gamesBySlot.set(slotKey, (gamesBySlot.get(slotKey) ?? 0) + 1);
         }
       }

@@ -3,4 +3,5 @@ export const environment = {
   useFirestoreEmulator: false,
   useFunctionsEmulator: false,
   firestoreDatabase: '(default)',
+  functionsBaseUrl: 'https://europe-west1-txapelketak-ac529.cloudfunctions.net',
 };

@@ -141,7 +141,9 @@
       "warningStaleUnscoredGames": "{{count}} game(s) started more than one hour ago without a score",
       "warningGamesWithoutReferees": "{{count}} game(s) in the coming week without referees",
       "warningSimultaneousGames": "{{count}} time slot(s) with multiple games at the same time",
-      "noReferees": "No referees"
+      "noReferees": "No referees",
+      "downloadCalendar": "Download calendar",
+      "downloadCalendarTooltip": "Open the match schedule in your calendar app (.ics)"
     }
   },
   "admin": {

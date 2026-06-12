@@ -441,6 +441,21 @@
         }
       </p-card>
     }
+    <!-- Calendar export button -->
+    @if (series().length > 0 && calendarUrl()) {
+      <div class="flex justify-center mt-2">
+        <p-button
+          icon="pi pi-calendar"
+          [label]="'tournaments.dashboard.downloadCalendar' | transloco"
+          severity="secondary"
+          [outlined]="true"
+          [pTooltip]="'tournaments.dashboard.downloadCalendarTooltip' | transloco"
+          tooltipPosition="top"
+          [ariaLabel]="'tournaments.dashboard.downloadCalendar' | transloco"
+          (onClick)="onDownloadCalendar()"
+        />
+      </div>
+    }
   </div>
 }
 

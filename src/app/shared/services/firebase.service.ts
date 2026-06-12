@@ -650,6 +650,16 @@ export class FirebaseService {
     await callable({ tournamentId, token, ...(databaseId !== '(default)' ? { databaseId } : {}) });
   }
 
+  getCalendarUrl(tournamentId: string): string {
+    const base = environment.functionsBaseUrl;
+    const databaseId = environment.firestoreDatabase;
+    let url = `${base}/exportCalendar?tournamentId=${encodeURIComponent(tournamentId)}`;
+    if (databaseId && databaseId !== '(default)') {
+      url += `&databaseId=${encodeURIComponent(databaseId)}`;
+    }
+    return url;
+  }
+
   /**
    * @deprecated This method is not used anymore since the tournament deletion is now handled by a Firebase Function to ensure all security rules are respected. It can be removed once we are sure the function works correctly and there are no more calls to this method.
    */
@@ -703,6 +713,16 @@ export class FirebaseService {
     console.debug(`[Firestore] importTournamentData: starting bulk import`);
     if (!this.firestore) {
       return;
+    }
+
+    // Update tournament-level settings from YAML
+    if (data.tournament.matchDurationMinutes != null) {
+      await runInInjectionContext(this.environmentInjector, async () => {
+        console.debug(`[Firestore] updateDoc: tournament matchDurationMinutes (batch import)`);
+        await updateDoc(tournamentRef, {
+          matchDurationMinutes: data.tournament.matchDurationMinutes,
+        });
+      });
     }
 
     // Delete existing teams

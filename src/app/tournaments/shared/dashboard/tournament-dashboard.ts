@@ -28,6 +28,11 @@ import { PoulesStore } from '../../../store/poules.store';
 import { AuthStore } from '../../../store/auth.store';
 import { TournamentActionsService } from '../../../shared/services/tournament-actions.service';
 import { getPlayoffGameLabel } from '../../../shared/utils/playoff-label';
+import { FirebaseService } from '../../../shared/services/firebase.service';
+import {
+  CalendarExportDialog,
+  CalendarExportDialogResult,
+} from './calendar-export-dialog/calendar-export-dialog';
 
 const MAX_UPCOMING_GAMES = 5;
 const MAX_RECENT_GAMES = 5;
@@ -85,6 +90,7 @@ export class TournamentDashboard {
   private poulesStore = inject(PoulesStore);
   private authStore = inject(AuthStore);
   private tournamentActions = inject(TournamentActionsService);
+  private firebaseService = inject(FirebaseService);
 
   tournament = this.tournamentDetailStore.tournament;
   teams = this.poulesStore.teams;
@@ -308,19 +314,21 @@ export class TournamentDashboard {
   });
 
   simultaneousGamesByMinute = computed(() => {
-    const gamesByMinute = new Map<number, number>();
+    const matchDurationMinutes = this.tournament()?.matchDurationMinutes ?? 60;
+    const slotMs = matchDurationMinutes * 60 * 1000;
+    const gamesBySlot = new Map<number, number>();
 
     for (const serie of this.series()) {
       for (const phase of this.getSeriePhases(serie)) {
         for (const game of phase.games) {
           if (!game.date) continue;
-          const minuteKey = Math.floor(new Date(game.date).getTime() / (60 * 1000));
-          gamesByMinute.set(minuteKey, (gamesByMinute.get(minuteKey) ?? 0) + 1);
+          const slotKey = Math.floor(new Date(game.date).getTime() / slotMs);
+          gamesBySlot.set(slotKey, (gamesBySlot.get(slotKey) ?? 0) + 1);
         }
       }
     }
 
-    return gamesByMinute;
+    return gamesBySlot;
   });
 
   simultaneousGamesCount = computed(() => {
@@ -332,15 +340,23 @@ export class TournamentDashboard {
   });
 
   simultaneousGamesTooltip = computed(() => {
+    const matchDurationMinutes = this.tournament()?.matchDurationMinutes ?? 60;
+    const slotMs = matchDurationMinutes * 60 * 1000;
     const locale = this.dateLocale();
     const dates: string[] = [];
-    for (const [minuteKey, count] of this.simultaneousGamesByMinute().entries()) {
+    for (const [slotKey, count] of this.simultaneousGamesByMinute().entries()) {
       if (count > 1) {
-        const timestamp = minuteKey * 60 * 1000;
+        const timestamp = slotKey * slotMs;
         dates.push(formatDate(new Date(timestamp), 'short', locale));
       }
     }
     return dates.join('<br>');
+  });
+
+  calendarUrl = computed(() => {
+    const tournamentId = this.tournament()?.ref?.id;
+    if (!tournamentId) return null;
+    return this.firebaseService.getCalendarUrl(tournamentId);
   });
 
   showWarnings = computed(() => this.role() === 'admin' || this.role() === 'organizer');
@@ -392,6 +408,29 @@ export class TournamentDashboard {
   onShowComment(event: MouseEvent, comment: string): void {
     this.currentCommentText.set(comment);
     this.commentPopover()?.toggle(event);
+  }
+
+  onDownloadCalendar(): void {
+    const tournamentId = this.tournament()?.ref?.id;
+    if (!tournamentId) return;
+
+    const dialogRef = this.dialogService.open(CalendarExportDialog, {
+      header: this.translocoService.translate(
+        'tournaments.dashboard.calendarExportDialog.title',
+      ),
+      modal: true,
+      closable: true,
+      width: 'min(24rem, 100%)',
+      data: {
+        teams: this.teams(),
+      },
+    });
+    dialogRef?.onClose.subscribe((result: CalendarExportDialogResult | undefined) => {
+      if (result !== undefined) {
+        const url = this.firebaseService.getCalendarUrl(tournamentId, result.teamId);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    });
   }
 
   onEditOverdueGame(game: UpcomingGame): void {

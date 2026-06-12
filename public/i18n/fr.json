@@ -141,7 +141,15 @@
       "warningStaleUnscoredGames": "{{count}} partie(s) commencée(s) depuis plus d'une heure sans score",
       "warningGamesWithoutReferees": "{{count}} partie(s) de la semaine à venir sans arbitres",
       "warningSimultaneousGames": "{{count}} créneau(x) avec plusieurs parties à la même heure",
-      "noReferees": "Aucun arbitre"
+      "noReferees": "Aucun arbitre",
+      "downloadCalendar": "Télécharger le calendrier",
+      "downloadCalendarTooltip": "Ouvrir le calendrier des parties dans votre application agenda (.ics)",
+      "calendarExportDialog": {
+        "title": "Exporter le calendrier",
+        "allTeams": "Toutes les équipes",
+        "selectTeam": "Équipe",
+        "export": "Exporter"
+      }
     }
   },
   "admin": {
@@ -168,7 +176,9 @@
       "name": "Nom du tournoi",
       "description": "Description",
       "saved": "Tournoi mis à jour",
-      "savedDetail": "Les informations du tournoi ont été enregistrées avec succès."
+      "savedDetail": "Les informations du tournoi ont été enregistrées avec succès.",
+      "matchDurationMinutes": "Durée d'une partie (minutes)",
+      "matchDurationMinutesHelp": "Durée utilisée pour l'export du calendrier (1 heure par défaut)."
     },
     "poules": {
       "addSerie": "Ajouter une série",

@@ -6,6 +6,7 @@ export interface Tournament {
   description: string;
   status: TournamentStatus;
   createdAt: string;
+  matchDurationMinutes?: number;
 }
 
 export interface User {

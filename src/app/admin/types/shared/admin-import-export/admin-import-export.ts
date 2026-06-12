@@ -68,6 +68,7 @@ export interface TournamentYamlData {
     description: string;
     type?: string;
     status: string;
+    matchDurationMinutes?: number;
   };
   teams: TournamentYamlTeam[];
   series: TournamentYamlSerie[];
@@ -324,6 +325,9 @@ export class AdminImportExport {
         name: tournament.name,
         description: tournament.description ?? '',
         status: tournament.status,
+        ...(tournament.matchDurationMinutes != null
+          ? { matchDurationMinutes: tournament.matchDurationMinutes }
+          : {}),
       },
       teams: yamlTeams,
       series: yamlSeries,

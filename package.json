@@ -18,6 +18,7 @@
     "emulators": "npx firebase emulators:start --only firestore,functions --import=.firebase/emulator-data --export-on-exit",
     "emulators:stop": "pkill -f \"firebase emulators:start\" || true; pkill -f \"cloud-firestore-emulator.*txapelketak-ac529\" || true; pkill -f \"/emulators/ui-v.*server.mjs\" || true",
     "emulators:reset": "npm run emulators:stop && npm run emulators",
+    "functions:install": "cd functions && npm install",
     "functions:build": "cd functions && npm run build",
     "functions:deploy": "npm run functions:build && npx firebase deploy --only functions",
     "ncu": "npx npm-check-updates -i"

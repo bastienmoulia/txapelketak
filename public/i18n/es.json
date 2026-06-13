@@ -148,7 +148,11 @@
         "title": "Exportar calendario",
         "allTeams": "Todos los equipos",
         "selectTeam": "Equipo",
-        "export": "Exportar"
+        "export": "Exportar",
+        "subscribe": "Suscribirse",
+        "subscribeTooltip": "Suscribirse al calendario para recibir actualizaciones automáticas (webcal)",
+        "download": "Descargar",
+        "downloadTooltip": "Descargar el archivo .ics para una importación única"
       }
     }
   },

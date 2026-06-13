@@ -148,7 +148,11 @@
         "title": "Egutegia exportatu",
         "allTeams": "Talde guztiak",
         "selectTeam": "Taldea",
-        "export": "Exportatu"
+        "export": "Exportatu",
+        "subscribe": "Harpidetu",
+        "subscribeTooltip": "Egutegira harpidetu eguneratzeak automatikoki jasotzeko (webcal)",
+        "download": "Deskargatu",
+        "downloadTooltip": "Deskargatu .ics fitxategia behin betiko inportaziorako"
       }
     }
   },

@@ -1,4 +1,4 @@
-<form (ngSubmit)="onExport()">
+<form>
   <div class="flex flex-col gap-4 pt-2">
     <p-floatlabel variant="on">
       <p-select
@@ -25,9 +25,22 @@
         (onClick)="onCancel()"
       />
       <p-button
-        type="submit"
-        icon="pi pi-calendar"
-        [label]="'tournaments.dashboard.calendarExportDialog.export' | transloco"
+        type="button"
+        icon="pi pi-download"
+        severity="secondary"
+        [outlined]="true"
+        [label]="'tournaments.dashboard.calendarExportDialog.download' | transloco"
+        [pTooltip]="'tournaments.dashboard.calendarExportDialog.downloadTooltip' | transloco"
+        tooltipPosition="top"
+        (onClick)="onExport()"
+      />
+      <p-button
+        type="button"
+        icon="pi pi-calendar-plus"
+        [label]="'tournaments.dashboard.calendarExportDialog.subscribe' | transloco"
+        [pTooltip]="'tournaments.dashboard.calendarExportDialog.subscribeTooltip' | transloco"
+        tooltipPosition="top"
+        (onClick)="onSubscribe()"
       />
     </div>
   </div>

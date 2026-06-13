@@ -15,7 +15,7 @@ export interface CalendarExportDialogData {
 
 export interface CalendarExportDialogResult {
   teamId: string | null;
-  action: 'subscribe' | 'download';
+  action: 'subscribe';
 }
 
 interface TeamOption {
@@ -65,14 +65,6 @@ export class CalendarExportDialog {
     const result: CalendarExportDialogResult = {
       teamId: this.selectedTeamId(),
       action: 'subscribe',
-    };
-    this.dialogRef.close(result);
-  }
-
-  onExport(): void {
-    const result: CalendarExportDialogResult = {
-      teamId: this.selectedTeamId(),
-      action: 'download',
     };
     this.dialogRef.close(result);
   }

@@ -432,13 +432,8 @@ export class TournamentDashboard {
     dialogRef?.onClose.subscribe((result: CalendarExportDialogResult | undefined) => {
       if (result !== undefined) {
         const lang = this.datepickerConfig.activeLanguage();
-        if (result.action === 'subscribe') {
-          const url = this.firebaseService.getCalendarSubscribeUrl(tournamentId, result.teamId, lang);
-          window.open(url, '_blank', 'noopener,noreferrer');
-        } else {
-          const url = this.firebaseService.getCalendarUrl(tournamentId, result.teamId, lang);
-          window.open(url, '_blank', 'noopener,noreferrer');
-        }
+        const url = this.firebaseService.getCalendarSubscribeUrl(tournamentId, result.teamId, lang);
+        window.open(url, '_blank', 'noopener,noreferrer');
       }
     });
   }

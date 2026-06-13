@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
+import { TooltipModule } from 'primeng/tooltip';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Team } from '../../../models';
@@ -14,6 +15,7 @@ export interface CalendarExportDialogData {
 
 export interface CalendarExportDialogResult {
   teamId: string | null;
+  action: 'subscribe' | 'download';
 }
 
 interface TeamOption {
@@ -23,7 +25,7 @@ interface TeamOption {
 
 @Component({
   selector: 'app-calendar-export-dialog',
-  imports: [FormsModule, FloatLabel, Select, Button, TranslocoPipe],
+  imports: [FormsModule, FloatLabel, Select, Button, TooltipModule, TranslocoPipe],
   templateUrl: './calendar-export-dialog.html',
 })
 export class CalendarExportDialog {
@@ -59,9 +61,18 @@ export class CalendarExportDialog {
     this.dialogRef.close(undefined);
   }
 
+  onSubscribe(): void {
+    const result: CalendarExportDialogResult = {
+      teamId: this.selectedTeamId(),
+      action: 'subscribe',
+    };
+    this.dialogRef.close(result);
+  }
+
   onExport(): void {
     const result: CalendarExportDialogResult = {
       teamId: this.selectedTeamId(),
+      action: 'download',
     };
     this.dialogRef.close(result);
   }

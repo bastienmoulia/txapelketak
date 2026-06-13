@@ -277,8 +277,10 @@ export const exportCalendar = onRequest(
       .replace(/^-+|-+$/g, '') || 'tournament';
 
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.ics"`);
-    res.setHeader('Cache-Control', 'no-cache, no-store');
+    res.setHeader('Content-Disposition', `inline; filename="${safeFilename}.ics"`);
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.status(200).send(icalContent);
   },
 );

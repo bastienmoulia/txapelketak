@@ -666,6 +666,10 @@ export class FirebaseService {
     return url;
   }
 
+  getCalendarSubscribeUrl(tournamentId: string, teamId?: string | null, lang?: string): string {
+    return this.getCalendarUrl(tournamentId, teamId, lang).replace(/^https?:\/\//, 'webcal://');
+  }
+
   /**
    * @deprecated This method is not used anymore since the tournament deletion is now handled by a Firebase Function to ensure all security rules are respected. It can be removed once we are sure the function works correctly and there are no more calls to this method.
    */

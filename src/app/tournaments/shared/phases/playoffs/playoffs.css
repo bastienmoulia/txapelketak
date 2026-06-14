@@ -86,6 +86,15 @@
   .playoffs-tree-connector {
     top: 25%;
   }
+
+  .playoffs-tree-connector::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--playoffs-tree-round-gap);
+    border-top: 1px solid var(--playoffs-tree-connector-color);
+  }
 }
 
 .finale-match {
@@ -148,7 +157,7 @@
 
 @media (max-width: 767px) {
   :host {
-    --playoffs-tree-round-gap: 1.5rem;
+    --playoffs-tree-round-gap: 1rem;
     --playoffs-tree-slot-height: 6.5rem;
   }
 }

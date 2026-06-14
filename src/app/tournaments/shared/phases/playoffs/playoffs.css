@@ -1,5 +1,4 @@
 :host {
-  --playoffs-tree-column-width: 16rem;
   --playoffs-tree-slot-height: 7rem;
   --playoffs-tree-row-gap: 0.875rem;
   --playoffs-tree-round-gap: 2rem;
@@ -20,15 +19,15 @@
 .playoffs-tree {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: var(--playoffs-tree-column-width);
-  gap: calc(var(--playoffs-tree-round-gap) + 0.5 * var(--playoffs-tree-round-gap));
+  grid-auto-columns: max-content;
+  gap: calc(2 * var(--playoffs-tree-round-gap));
   min-width: max-content;
 }
 
 .playoffs-tree-round {
   display: flex;
   flex-direction: column;
-  min-width: var(--playoffs-tree-column-width);
+  width: max-content;
 }
 
 .playoffs-tree-round-title {
@@ -86,6 +85,15 @@
 .playoffs-tree-match--with-connector:nth-child(even) {
   .playoffs-tree-connector {
     top: 25%;
+  }
+
+  .playoffs-tree-connector::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--playoffs-tree-round-gap);
+    border-top: 1px solid var(--playoffs-tree-connector-color);
   }
 }
 
@@ -149,8 +157,7 @@
 
 @media (max-width: 767px) {
   :host {
-    --playoffs-tree-column-width: 14.5rem;
-    --playoffs-tree-round-gap: 1.5rem;
+    --playoffs-tree-round-gap: 1rem;
     --playoffs-tree-slot-height: 6.5rem;
   }
 }

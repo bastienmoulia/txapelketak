@@ -25,7 +25,15 @@ export interface AiTimeSlotsDialogResult {
 
 @Component({
   selector: 'app-ai-time-slots-dialog',
-  imports: [FormsModule, FloatLabel, TextareaModule, Button, MessageModule, DatePipe, TranslocoPipe],
+  imports: [
+    FormsModule,
+    FloatLabel,
+    TextareaModule,
+    Button,
+    MessageModule,
+    DatePipe,
+    TranslocoPipe,
+  ],
   templateUrl: './ai-time-slots-dialog.html',
 })
 export class AiTimeSlotsDialog {
@@ -62,9 +70,7 @@ export class AiTimeSlotsDialog {
     return this.data.currentTimeSlots.filter((s) => !proposedIso.has(s.date.toISOString()));
   });
 
-  hasChanges = computed(
-    () => this.slotsToAdd().length > 0 || this.slotsToDelete().length > 0,
-  );
+  hasChanges = computed(() => this.slotsToAdd().length > 0 || this.slotsToDelete().length > 0);
 
   isPreviewReady = computed(() => this.proposedDates() !== null);
 
@@ -78,11 +84,13 @@ export class AiTimeSlotsDialog {
 
     try {
       const currentIso = this.data.currentTimeSlots.map((s) => s.date.toISOString());
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const proposed = await this.firebaseService.getAiTimeSlotsProposal(
         this.data.tournamentId,
         this.data.token,
         promptText,
         currentIso,
+        userTimezone,
       );
       const uniqueSortedIso = Array.from(new Set(proposed)).sort(
         (a, b) => Date.parse(a) - Date.parse(b),

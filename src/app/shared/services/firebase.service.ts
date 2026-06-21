@@ -655,12 +655,20 @@ export class FirebaseService {
     token: string,
     prompt: string,
     currentTimeSlots: string[],
+    userTimezone?: string,
   ): Promise<string[]> {
     if (!this.functions) {
       throw new Error('Functions unavailable');
     }
     const callable = httpsCallable<
-      { tournamentId: string; token: string; prompt: string; currentTimeSlots: string[]; databaseId?: string },
+      {
+        tournamentId: string;
+        token: string;
+        prompt: string;
+        currentTimeSlots: string[];
+        databaseId?: string;
+        userTimezone?: string;
+      },
       { proposedTimeSlots: string[] }
     >(this.functions, 'aiTimeSlots');
     const databaseId = environment.firestoreDatabase;
@@ -669,6 +677,7 @@ export class FirebaseService {
       token,
       prompt,
       currentTimeSlots,
+      userTimezone,
       ...(databaseId !== '(default)' ? { databaseId } : {}),
     });
     return result.data.proposedTimeSlots;

@@ -28,10 +28,11 @@ interface AiTimeSlotsData {
   prompt: string;
   currentTimeSlots: string[];
   databaseId?: string;
+  userTimezone?: string;
 }
 
 export const aiTimeSlots = onCall({ region: 'europe-west1' }, async (request) => {
-  const { tournamentId, token, prompt, currentTimeSlots, databaseId } =
+  const { tournamentId, token, prompt, currentTimeSlots, databaseId, userTimezone } =
     request.data as AiTimeSlotsData;
 
   if (!tournamentId || typeof tournamentId !== 'string') {
@@ -79,9 +80,20 @@ export const aiTimeSlots = onCall({ region: 'europe-west1' }, async (request) =>
   const currentSlotsText =
     currentTimeSlots.length > 0 ? currentTimeSlots.map((d) => `  - ${d}`).join('\n') : '  (none)';
 
+  const now = new Date();
+  const timezone = userTimezone ?? 'UTC';
+  const localDateStr = now.toLocaleDateString('en-CA', { timeZone: timezone }); // YYYY-MM-DD
+  const localTimeStr = now.toLocaleTimeString('en-GB', {
+    timeZone: timezone,
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   const systemPrompt = `You are a time slot management assistant for a tournament application.
 Your task is to modify a list of time slots based on a user request.
 Time slots represent scheduled game times for a tournament.
+
+Current date and time: ${localDateStr} ${localTimeStr} (timezone: ${timezone})
 
 Current time slots (ISO 8601 UTC format):
 ${currentSlotsText}
@@ -89,14 +101,14 @@ ${currentSlotsText}
 User request: "${prompt}"
 
 Instructions:
-- Return ONLY a valid JSON array of ISO 8601 date strings (e.g. "2024-06-21T09:00:00.000Z")
+- Return ONLY a valid JSON array of ISO 8601 date strings (e.g. "2024-06-21T07:00:00.000Z")
 - The array must represent the COMPLETE new list of time slots after applying the requested changes
 - Preserve existing time slots that should not be modified
 - Add new time slots as requested
 - Remove time slots as requested
 - Round minutes to the nearest 5-minute interval
 - Set seconds and milliseconds to 0
-- If the user does not specify a timezone, use UTC
+- All times given by the user are in the timezone: ${timezone}. Convert them to UTC for the output.
 - Do not include any explanation, just the JSON array
 - If no changes are needed, return the current list unchanged`;
 

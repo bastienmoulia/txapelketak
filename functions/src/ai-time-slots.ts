@@ -104,8 +104,24 @@ Instructions:
       if (!Array.isArray(parsed)) {
         throw new Error('Response is not an array');
       }
-      proposedTimeSlots = parsed.filter(
-        (item): item is string => typeof item === 'string' && !isNaN(Date.parse(item)),
+
+      const normalized = parsed.map((item) => {
+        if (typeof item !== 'string') {
+          throw new Error('Response contains a non-string item');
+        }
+        const date = new Date(item);
+        if (isNaN(date.getTime())) {
+          throw new Error('Response contains an invalid date');
+        }
+        // Normalize to 5-minute grid, with seconds/millis set to 0 (UTC)
+        const minutes = date.getUTCMinutes();
+        const roundedMinutes = Math.round(minutes / 5) * 5;
+        date.setUTCMinutes(roundedMinutes, 0, 0);
+        return date.toISOString();
+      });
+
+      proposedTimeSlots = Array.from(new Set(normalized)).sort(
+        (a, b) => Date.parse(a) - Date.parse(b),
       );
     } catch {
       throw new HttpsError('internal', 'Failed to parse AI response as a list of dates');

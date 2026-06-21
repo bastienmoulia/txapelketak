@@ -1,14 +1,26 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
-import { defineSecret } from 'firebase-functions/params';
 import { initializeApp, getApps } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { initializeApp as initClientApp, getApps as getClientApps } from 'firebase/app';
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 
 if (getApps().length === 0) {
   initializeApp();
 }
 
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
+const FIREBASE_CLIENT_CONFIG = {
+  apiKey: 'AIzaSyAml_FZRsRZjrClzGdbqyWkWTEQ3SKmTlA',
+  projectId: 'txapelketak-ac529',
+  appId: '1:210687482712:web:22ae72552902c05891e32d',
+};
+const AI_CLIENT_APP_NAME = 'ai-logic-client';
+
+function getAiModel() {
+  const existing = getClientApps().find((a) => a.name === AI_CLIENT_APP_NAME);
+  const clientApp = existing ?? initClientApp(FIREBASE_CLIENT_CONFIG, AI_CLIENT_APP_NAME);
+  const ai = getAI(clientApp, { backend: new GoogleAIBackend() });
+  return getGenerativeModel(ai, { model: 'gemini-2.0-flash' });
+}
 
 interface AiTimeSlotsData {
   tournamentId: string;
@@ -19,7 +31,7 @@ interface AiTimeSlotsData {
 }
 
 export const aiTimeSlots = onCall(
-  { region: 'europe-west1', secrets: [geminiApiKey] },
+  { region: 'europe-west1' },
   async (request) => {
     const { tournamentId, token, prompt, currentTimeSlots, databaseId } =
       request.data as AiTimeSlotsData;
@@ -64,13 +76,7 @@ export const aiTimeSlots = onCall(
       throw new HttpsError('permission-denied', 'You do not have permission to perform this action');
     }
 
-    const apiKey = geminiApiKey.value();
-    if (!apiKey) {
-      throw new HttpsError('failed-precondition', 'Gemini API key is not configured');
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = getAiModel();
 
     const currentSlotsText =
       currentTimeSlots.length > 0

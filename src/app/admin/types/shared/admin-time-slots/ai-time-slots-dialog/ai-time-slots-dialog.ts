@@ -84,7 +84,10 @@ export class AiTimeSlotsDialog {
         promptText,
         currentIso,
       );
-      this.proposedDates.set(proposed.map((iso) => new Date(iso)));
+      const uniqueSortedIso = Array.from(new Set(proposed)).sort(
+        (a, b) => Date.parse(a) - Date.parse(b),
+      );
+      this.proposedDates.set(uniqueSortedIso.map((iso) => new Date(iso)));
     } catch {
       this.errorMessage.set(this.translocoService.translate('admin.timeSlots.ai.errorGenerate'));
     } finally {

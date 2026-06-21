@@ -81,7 +81,12 @@ export const aiTimeSlots = onCall({ region: 'europe-west1' }, async (request) =>
     currentTimeSlots.length > 0 ? currentTimeSlots.map((d) => `  - ${d}`).join('\n') : '  (none)';
 
   const now = new Date();
-  const timezone = userTimezone ?? 'UTC';
+  let timezone = userTimezone ?? 'UTC';
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: timezone });
+  } catch {
+    timezone = 'UTC';
+  }
   const localDateStr = now.toLocaleDateString('en-CA', { timeZone: timezone }); // YYYY-MM-DD
   const localTimeStr = now.toLocaleTimeString('en-GB', {
     timeZone: timezone,

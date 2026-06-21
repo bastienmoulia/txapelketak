@@ -6,15 +6,22 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { TooltipModule } from 'primeng/tooltip';
+import { DialogService } from 'primeng/dynamicdialog';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
 import { TimeSlot } from '../../../../tournaments/models';
 import { Tournament } from '../../../../home/tournament.interface';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
+import { AuthStore } from '../../../../store/auth.store';
 import { DocumentReference } from '@angular/fire/firestore';
+import {
+  AiTimeSlotsDialog,
+  AiTimeSlotsDialogResult,
+} from './ai-time-slots-dialog/ai-time-slots-dialog';
 
 @Component({
   selector: 'app-admin-time-slots',
   imports: [ButtonModule, DatePicker, DatePipe, FormsModule, TooltipModule, TranslocoModule],
+  providers: [DialogService],
   templateUrl: './admin-time-slots.html',
   styleUrl: './admin-time-slots.css',
 })
@@ -23,6 +30,8 @@ export class AdminTimeSlots {
   private messageService = inject(MessageService);
   private translocoService = inject(TranslocoService);
   private datepickerConfig = inject(DatepickerConfigService);
+  private dialogService = inject(DialogService);
+  private authStore = inject(AuthStore);
 
   tournament = input.required<Tournament>();
   timeSlots = input<TimeSlot[]>([]);
@@ -85,5 +94,53 @@ export class AdminTimeSlots {
       summary: this.translocoService.translate('admin.timeSlots.deleted'),
       detail: this.translocoService.translate('admin.timeSlots.deletedDetail'),
     });
+  }
+
+  onOpenAiDialog(): void {
+    const token = this.authStore.currentUser()?.token;
+    const tournamentId = this.tournament().ref?.id;
+    if (!token || !tournamentId) return;
+
+    const dialogRef = this.dialogService.open(AiTimeSlotsDialog, {
+      header: this.translocoService.translate('admin.timeSlots.ai.dialogTitle'),
+      modal: true,
+      closable: true,
+      width: 'min(36rem, 100%)',
+      data: {
+        tournamentId,
+        token,
+        currentTimeSlots: this.timeSlots(),
+      },
+    });
+
+    dialogRef?.onClose.subscribe((result: AiTimeSlotsDialogResult | undefined) => {
+      if (result) {
+        void this.applyAiChanges(result);
+      }
+    });
+  }
+
+  private async applyAiChanges(result: AiTimeSlotsDialogResult): Promise<void> {
+    const ref = this.tournament().ref;
+    if (!ref) return;
+
+    this.isSaving.set(true);
+    try {
+      await Promise.all([
+        ...result.toAdd.map((date) => this.firebaseService.addTimeSlot(ref, date)),
+        ...result.toDelete.map((slotRef) => this.firebaseService.deleteTimeSlot(slotRef)),
+      ]);
+
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translocoService.translate('admin.timeSlots.ai.applied'),
+        detail: this.translocoService.translate('admin.timeSlots.ai.appliedDetail', {
+          added: result.toAdd.length,
+          deleted: result.toDelete.length,
+        }),
+      });
+    } finally {
+      this.isSaving.set(false);
+    }
   }
 }

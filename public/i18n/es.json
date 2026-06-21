@@ -393,7 +393,22 @@
       "addedDetail": "La franja horaria se ha añadido con éxito.",
       "deleted": "Franja eliminada",
       "deletedDetail": "La franja horaria se ha eliminado con éxito.",
-      "deleteAria": "Eliminar esta franja"
+      "deleteAria": "Eliminar esta franja",
+      "ai": {
+        "openButton": "Asistente IA",
+        "dialogTitle": "Editar franjas horarias con IA",
+        "promptLabel": "Tu solicitud",
+        "promptHelp": "Describe las franjas horarias a añadir, modificar o eliminar. Ejemplo: «Añadir franjas el 21 de junio a las 9h, 10h y 11h» o «Eliminar todas las franjas anteriores al 20 de junio».",
+        "generate": "Generar vista previa",
+        "previewTitle": "Vista previa de cambios",
+        "noChanges": "No se detectaron cambios.",
+        "toAdd": "{{ count }} franja(s) a añadir",
+        "toDelete": "{{ count }} franja(s) a eliminar",
+        "apply": "Aplicar",
+        "applied": "Franjas horarias actualizadas",
+        "appliedDetail": "{{ added }} franja(s) añadida(s), {{ deleted }} franja(s) eliminada(s).",
+        "errorGenerate": "No se puede generar la vista previa. Comprueba tu solicitud e inténtalo de nuevo."
+      }
     }
   },
   "shared": {

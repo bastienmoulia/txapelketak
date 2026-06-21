@@ -650,6 +650,30 @@ export class FirebaseService {
     await callable({ tournamentId, token, ...(databaseId !== '(default)' ? { databaseId } : {}) });
   }
 
+  async getAiTimeSlotsProposal(
+    tournamentId: string,
+    token: string,
+    prompt: string,
+    currentTimeSlots: string[],
+  ): Promise<string[]> {
+    if (!this.functions) {
+      throw new Error('Functions unavailable');
+    }
+    const callable = httpsCallable<
+      { tournamentId: string; token: string; prompt: string; currentTimeSlots: string[]; databaseId?: string },
+      { proposedTimeSlots: string[] }
+    >(this.functions, 'aiTimeSlots');
+    const databaseId = environment.firestoreDatabase;
+    const result = await callable({
+      tournamentId,
+      token,
+      prompt,
+      currentTimeSlots,
+      ...(databaseId !== '(default)' ? { databaseId } : {}),
+    });
+    return result.data.proposedTimeSlots;
+  }
+
   getCalendarUrl(tournamentId: string, teamId?: string | null, lang?: string): string {
     const base = environment.functionsBaseUrl;
     const databaseId = environment.firestoreDatabase;

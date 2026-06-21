@@ -33,8 +33,14 @@ export const aiTimeSlots = onCall(
     if (!prompt || typeof prompt !== 'string') {
       throw new HttpsError('invalid-argument', 'prompt is required and must be a string');
     }
-    if (!Array.isArray(currentTimeSlots)) {
-      throw new HttpsError('invalid-argument', 'currentTimeSlots must be an array');
+    if (
+      !Array.isArray(currentTimeSlots) ||
+      !currentTimeSlots.every((d) => typeof d === 'string' && !isNaN(Date.parse(d)))
+    ) {
+      throw new HttpsError(
+        'invalid-argument',
+        'currentTimeSlots must be an array of ISO 8601 date strings',
+      );
     }
 
     const db = databaseId ? getFirestore(databaseId) : getFirestore();

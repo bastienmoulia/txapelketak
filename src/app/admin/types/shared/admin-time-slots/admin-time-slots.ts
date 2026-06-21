@@ -115,7 +115,9 @@ export class AdminTimeSlots {
 
     dialogRef?.onClose.subscribe((result: AiTimeSlotsDialogResult | undefined) => {
       if (result) {
-        void this.applyAiChanges(result);
+        this.applyAiChanges(result).catch((err) =>
+          console.error('[AdminTimeSlots] Failed to apply AI time slot changes', err),
+        );
       }
     });
   }

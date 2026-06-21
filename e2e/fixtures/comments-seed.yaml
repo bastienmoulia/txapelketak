@@ -19,5 +19,5 @@ series:
         games:
           - team1: comment-team-1
             team2: comment-team-2
-            date: '2026-06-15T10:00:00.000Z'
+            date: '2026-12-15T10:00:00.000Z'
             comment: 'Seeded game comment'

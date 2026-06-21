@@ -1,0 +1,97 @@
+<form (ngSubmit)="onGeneratePreview()">
+  <div class="flex flex-col gap-4">
+    <p-floatlabel variant="on">
+      <textarea
+        pTextarea
+        id="ai-prompt"
+        name="ai-prompt"
+        class="w-full"
+        rows="4"
+        [ngModel]="prompt()"
+        (ngModelChange)="prompt.set($event)"
+        [attr.aria-label]="'admin.timeSlots.ai.promptLabel' | transloco"
+        data-testid="ai-prompt-textarea"
+      ></textarea>
+      <label for="ai-prompt">{{ 'admin.timeSlots.ai.promptLabel' | transloco }}</label>
+    </p-floatlabel>
+
+    <p class="text-sm text-[var(--p-text-muted-color)]">
+      {{ 'admin.timeSlots.ai.promptHelp' | transloco }}
+    </p>
+
+    @if (errorMessage()) {
+      <p-message severity="error" [text]="errorMessage()!" />
+    }
+
+    @if (isPreviewReady()) {
+      <div class="flex flex-col gap-2">
+        <h3 class="font-semibold">{{ 'admin.timeSlots.ai.previewTitle' | transloco }}</h3>
+
+        @if (!hasChanges()) {
+          <p-message
+            severity="info"
+            [text]="'admin.timeSlots.ai.noChanges' | transloco"
+          />
+        } @else {
+          @if (slotsToAdd().length > 0) {
+            <div>
+              <p class="text-sm font-medium text-[var(--p-green-600)] mb-1">
+                {{ 'admin.timeSlots.ai.toAdd' | transloco : { count: slotsToAdd().length } }}
+              </p>
+              <ul class="flex flex-col gap-1">
+                @for (date of slotsToAdd(); track date.toISOString()) {
+                  <li class="text-sm pl-3 border-l-2 border-[var(--p-green-400)]">
+                    {{ date | date: 'short' : undefined : dateLocale() }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          @if (slotsToDelete().length > 0) {
+            <div>
+              <p class="text-sm font-medium text-[var(--p-red-600)] mb-1">
+                {{ 'admin.timeSlots.ai.toDelete' | transloco : { count: slotsToDelete().length } }}
+              </p>
+              <ul class="flex flex-col gap-1">
+                @for (slot of slotsToDelete(); track slot.ref.id) {
+                  <li class="text-sm pl-3 border-l-2 border-[var(--p-red-400)]">
+                    {{ slot.date | date: 'short' : undefined : dateLocale() }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <div class="p-dialog-footer px-0! mt-5 flex items-center gap-2">
+    <p-button
+      type="submit"
+      [label]="'admin.timeSlots.ai.generate' | transloco"
+      icon="pi pi-sparkles"
+      [loading]="isLoading()"
+      [disabled]="!prompt().trim()"
+      severity="secondary"
+      data-testid="ai-generate-button"
+    />
+    <div class="ml-auto flex gap-2">
+      <p-button
+        type="button"
+        [label]="'shared.actions.cancel' | transloco"
+        severity="secondary"
+        (onClick)="onCancel()"
+      />
+      @if (isPreviewReady() && hasChanges()) {
+        <p-button
+          type="button"
+          [label]="'admin.timeSlots.ai.apply' | transloco"
+          (onClick)="onApply()"
+          data-testid="ai-apply-button"
+        />
+      }
+    </div>
+  </div>
+</form>

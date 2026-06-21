@@ -23,6 +23,14 @@
       (onClick)="onAddTimeSlot()"
       data-testid="add-time-slot-button"
     />
+    <p-button
+      icon="pi pi-sparkles"
+      [label]="'admin.timeSlots.ai.openButton' | transloco"
+      [ariaLabel]="'admin.timeSlots.ai.openButton' | transloco"
+      severity="secondary"
+      (onClick)="onOpenAiDialog()"
+      data-testid="ai-time-slots-button"
+    />
   </div>
 
   @if (sortedTimeSlots().length === 0) {

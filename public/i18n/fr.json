@@ -393,7 +393,22 @@
       "addedDetail": "Le créneau horaire a été ajouté avec succès.",
       "deleted": "Créneau supprimé",
       "deletedDetail": "Le créneau horaire a été supprimé avec succès.",
-      "deleteAria": "Supprimer ce créneau"
+      "deleteAria": "Supprimer ce créneau",
+      "ai": {
+        "openButton": "Assistant IA",
+        "dialogTitle": "Modifier les créneaux avec l'IA",
+        "promptLabel": "Votre demande",
+        "promptHelp": "Décrivez les créneaux à ajouter, modifier ou supprimer. Exemple : « Ajouter des créneaux le 21 juin à 9h, 10h et 11h » ou « Supprimer tous les créneaux avant le 20 juin ».",
+        "generate": "Générer un aperçu",
+        "previewTitle": "Aperçu des modifications",
+        "noChanges": "Aucune modification détectée.",
+        "toAdd": "{{ count }} créneau(x) à ajouter",
+        "toDelete": "{{ count }} créneau(x) à supprimer",
+        "apply": "Appliquer",
+        "applied": "Créneaux mis à jour",
+        "appliedDetail": "{{ added }} créneau(x) ajouté(s), {{ deleted }} créneau(x) supprimé(s).",
+        "errorGenerate": "Impossible de générer l'aperçu. Vérifiez votre demande et réessayez."
+      }
     }
   },
   "shared": {

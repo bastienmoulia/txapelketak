@@ -393,7 +393,22 @@
       "addedDetail": "Denbora-tartea arrakastaz gehitu da.",
       "deleted": "Tartea ezabatu da",
       "deletedDetail": "Denbora-tartea arrakastaz ezabatu da.",
-      "deleteAria": "Tarte hau ezabatu"
+      "deleteAria": "Tarte hau ezabatu",
+      "ai": {
+        "openButton": "AI laguntzailea",
+        "dialogTitle": "Denbora-tarteak aldatu IArekin",
+        "promptLabel": "Zure eskaera",
+        "promptHelp": "Deskribatu gehitu, aldatu edo ezabatu nahi dituzun denbora-tarteak. Adibidea: «Gehitu tarteak ekainaren 21ean 9:00, 10:00 eta 11:00etan» edo «Ezabatu ekainaren 20 baino lehenagoko tarte guztiak».",
+        "generate": "Aurrebista sortu",
+        "previewTitle": "Aldaketen aurrebista",
+        "noChanges": "Ez da aldaketarik hauteman.",
+        "toAdd": "{{ count }} tarte gehitzeko",
+        "toDelete": "{{ count }} tarte ezabatzeko",
+        "apply": "Aplikatu",
+        "applied": "Denbora-tarteak eguneratu dira",
+        "appliedDetail": "{{ added }} tarte gehitu, {{ deleted }} tarte ezabatu.",
+        "errorGenerate": "Ezin da aurrebista sortu. Egiaztatu zure eskaera eta saiatu berriro."
+      }
     }
   },
   "shared": {

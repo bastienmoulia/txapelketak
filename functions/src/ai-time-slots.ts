@@ -46,6 +46,10 @@ export const aiTimeSlots = onCall(
     const db = databaseId ? getFirestore(databaseId) : getFirestore();
 
     const tournamentRef = db.collection('tournaments').doc(tournamentId);
+    const tournamentSnap = await tournamentRef.get();
+    if (!tournamentSnap.exists) {
+      throw new HttpsError('not-found', 'Tournament not found');
+    }
 
     // Verify admin token
     const usersSnapshot = await db

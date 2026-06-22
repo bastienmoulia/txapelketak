@@ -408,7 +408,9 @@
         "applied": "Créneaux mis à jour",
         "appliedDetail": "{{ added }} créneau(x) ajouté(s), {{ deleted }} créneau(x) supprimé(s).",
         "errorGenerate": "Impossible de générer l'aperçu. Vérifiez votre demande et réessayez."
-      }
+      },
+      "duplicateWarning": "Créneau déjà existant",
+      "duplicateWarningDetail": "Ce créneau horaire existe déjà."
     }
   },
   "shared": {

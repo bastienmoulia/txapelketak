@@ -408,7 +408,9 @@
         "applied": "Franjas horarias actualizadas",
         "appliedDetail": "{{ added }} franja(s) añadida(s), {{ deleted }} franja(s) eliminada(s).",
         "errorGenerate": "No se puede generar la vista previa. Comprueba tu solicitud e inténtalo de nuevo."
-      }
+      },
+      "duplicateWarning": "Franja ya existente",
+      "duplicateWarningDetail": "Esta franja horaria ya existe."
     }
   },
   "shared": {

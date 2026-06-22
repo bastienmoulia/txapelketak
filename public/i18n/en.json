@@ -408,7 +408,9 @@
         "applied": "Time slots updated",
         "appliedDetail": "{{ added }} slot(s) added, {{ deleted }} slot(s) deleted.",
         "errorGenerate": "Unable to generate preview. Check your request and try again."
-      }
+      },
+      "duplicateWarning": "Slot already exists",
+      "duplicateWarningDetail": "This time slot already exists."
     }
   },
   "shared": {

@@ -408,7 +408,9 @@
         "applied": "Denbora-tarteak eguneratu dira",
         "appliedDetail": "{{ added }} tarte gehitu, {{ deleted }} tarte ezabatu.",
         "errorGenerate": "Ezin da aurrebista sortu. Egiaztatu zure eskaera eta saiatu berriro."
-      }
+      },
+      "duplicateWarning": "Tartea dagoeneko existitzen da",
+      "duplicateWarningDetail": "Denbora-tarte hau dagoeneko existitzen da."
     }
   },
   "shared": {

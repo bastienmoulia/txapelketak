@@ -62,6 +62,18 @@ export class AdminTimeSlots {
 
     this.roundMinutesUp(date);
 
+    const isDuplicate = this.timeSlots().some(
+      (slot) => slot.date.getTime() === date.getTime(),
+    );
+    if (isDuplicate) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: this.translocoService.translate('admin.timeSlots.duplicateWarning'),
+        detail: this.translocoService.translate('admin.timeSlots.duplicateWarningDetail'),
+      });
+      return;
+    }
+
     const ref = this.tournament().ref;
     if (!ref) return;
 

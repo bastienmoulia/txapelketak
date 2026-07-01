@@ -1,0 +1,173 @@
+<app-header />
+
+<main class="max-w-[960px] mx-auto px-4 py-8 flex flex-col gap-8">
+  <section
+    class="rounded-[var(--p-border-radius-xl)] bg-[var(--p-surface-card)] p-6 shadow-[var(--p-card-shadow)]"
+  >
+    <div class="flex flex-col gap-4">
+      <p class="m-0 text-sm font-semibold uppercase tracking-[0.12em] text-[var(--p-primary-color)]">
+        {{ 'contact.eyebrow' | transloco }}
+      </p>
+      <h1 class="m-0 text-[2rem] font-bold">{{ 'contact.title' | transloco }}</h1>
+      <p class="m-0 text-[var(--p-text-muted-color)] text-lg">
+        {{ 'contact.intro' | transloco }}
+      </p>
+    </div>
+  </section>
+
+  <section class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+    <div
+      class="rounded-[var(--p-border-radius-xl)] bg-[var(--p-surface-card)] p-6 shadow-[var(--p-card-shadow)]"
+    >
+      <div class="flex flex-col gap-5">
+        <p-message severity="warn">
+          {{ 'contact.publicNotice' | transloco }}
+        </p-message>
+
+        @if (createdIssue(); as issue) {
+          <p-message severity="success">
+            {{ 'contact.success' | transloco: { issueNumber: issue.issueNumber } }}
+          </p-message>
+        }
+
+        @if (submitError()) {
+          <p-message severity="error">{{ submitError() }}</p-message>
+        }
+
+        <form [formRoot]="contactForm" (submit)="onSubmit()" class="flex flex-col gap-5">
+          <div class="flex flex-col gap-2">
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="contact-name"
+                class="w-full"
+                [formField]="contactForm.name"
+                data-testid="contact-name"
+              />
+              <label for="contact-name">{{ 'contact.form.name' | transloco }}</label>
+            </p-floatlabel>
+            @if (showFieldError(contactForm.name)) {
+              <p-message severity="error" class="field-error">
+                {{ fieldErrorMessage(contactForm.name) }}
+              </p-message>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="contact-github-username"
+                class="w-full"
+                [formField]="contactForm.githubUsername"
+                data-testid="contact-github-username"
+              />
+              <label for="contact-github-username">{{
+                'contact.form.githubUsername' | transloco
+              }}</label>
+            </p-floatlabel>
+            <small class="text-[var(--p-text-muted-color)]">
+              {{ 'contact.form.githubUsernameHelp' | transloco }}
+            </small>
+            @if (showFieldError(contactForm.githubUsername)) {
+              <p-message severity="error" class="field-error">
+                {{ fieldErrorMessage(contactForm.githubUsername) }}
+              </p-message>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p-floatlabel variant="on">
+              <input
+                pInputText
+                id="contact-subject"
+                class="w-full"
+                [formField]="contactForm.subject"
+                data-testid="contact-subject"
+              />
+              <label for="contact-subject">{{ 'contact.form.subject' | transloco }}</label>
+            </p-floatlabel>
+            @if (showFieldError(contactForm.subject)) {
+              <p-message severity="error" class="field-error">
+                {{ fieldErrorMessage(contactForm.subject) }}
+              </p-message>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p-floatlabel variant="on">
+              <textarea
+                id="contact-message"
+                rows="10"
+                class="w-full p-3 rounded-[var(--p-border-radius-md)] border border-[var(--p-surface-border)] bg-[var(--p-surface-card)] text-[var(--p-text-color)]"
+                [formField]="contactForm.message"
+                data-testid="contact-message"
+              ></textarea>
+              <label for="contact-message">{{ 'contact.form.message' | transloco }}</label>
+            </p-floatlabel>
+            @if (showFieldError(contactForm.message)) {
+              <p-message severity="error" class="field-error">
+                {{ fieldErrorMessage(contactForm.message) }}
+              </p-message>
+            }
+          </div>
+
+          <div class="contact-honeypot" aria-hidden="true">
+            <label for="contact-website">{{ 'contact.form.website' | transloco }}</label>
+            <input
+              id="contact-website"
+              type="text"
+              tabindex="-1"
+              autocomplete="off"
+              [formField]="contactForm.website"
+            />
+          </div>
+
+          <div class="flex flex-wrap gap-3 justify-end">
+            <p-button
+              type="button"
+              [label]="'contact.form.reset' | transloco"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onReset()"
+            />
+            <p-button
+              type="submit"
+              [label]="'contact.form.submit' | transloco"
+              [loading]="isSubmitting()"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <aside
+      class="rounded-[var(--p-border-radius-xl)] bg-[var(--p-surface-card)] p-6 shadow-[var(--p-card-shadow)] h-fit"
+    >
+      <div class="flex flex-col gap-4">
+        <h2 class="m-0 text-xl font-semibold">{{ 'contact.sidebar.title' | transloco }}</h2>
+        <p class="m-0 text-[var(--p-text-muted-color)]">
+          {{ 'contact.sidebar.description' | transloco }}
+        </p>
+        <div class="flex flex-col gap-3">
+          <p-button
+            [label]="'contact.sidebar.faq' | transloco"
+            severity="secondary"
+            [outlined]="true"
+            routerLink="/faq"
+          />
+          @if (createdIssue(); as issue) {
+            <a
+              class="text-[var(--p-primary-color)] font-medium no-underline hover:underline focus:underline"
+              [href]="issue.issueUrl"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {{ 'contact.sidebar.viewIssue' | transloco }}
+            </a>
+          }
+        </div>
+      </div>
+    </aside>
+  </section>
+</main>

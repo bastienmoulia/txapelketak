@@ -30,6 +30,16 @@ export const routes: Routes = [
     loadComponent: () => import('./home/home').then((m) => m.Home),
   },
   {
+    path: 'faq',
+    title: 'routes.faq',
+    loadComponent: () => import('./faq/faq').then((m) => m.Faq),
+  },
+  {
+    path: 'contact',
+    title: 'routes.contact',
+    loadComponent: () => import('./contact/contact').then((m) => m.Contact),
+  },
+  {
     path: 'tournaments',
     loadComponent: () => import('./main/main').then((m) => m.Main),
     children: [

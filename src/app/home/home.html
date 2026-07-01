@@ -85,6 +85,40 @@
     </div>
   </section>
 
+  <section class="mt-12 px-4">
+    <div
+      class="rounded-[var(--p-border-radius-xl)] border border-[var(--p-surface-border)] bg-[var(--p-surface-card)] p-6"
+    >
+      <div class="flex flex-col gap-2 mb-6">
+        <h2 class="text-[1.75rem] font-semibold m-0">{{ 'home.help.title' | transloco }}</h2>
+        <p class="m-0 opacity-80">{{ 'home.help.description' | transloco }}</p>
+      </div>
+
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
+        @for (link of helpLinks(); track link.route) {
+          <p-card class="feature-card">
+            <div class="flex flex-col items-start gap-4 p-2 h-full">
+              <app-svg-icon
+                [name]="link.icon"
+                class="text-[2rem] text-[var(--p-primary-color)] block"
+              />
+              <div class="flex flex-col gap-2">
+                <h3 class="text-[1.1rem] font-semibold m-0">{{ link.titleKey | transloco }}</h3>
+                <p class="opacity-80 m-0">{{ link.descriptionKey | transloco }}</p>
+              </div>
+              <p-button
+                [label]="link.actionLabelKey | transloco"
+                severity="secondary"
+                [outlined]="true"
+                [routerLink]="link.route"
+              />
+            </div>
+          </p-card>
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- Tournament List -->
   <section class="mt-12">
     <div class="flex justify-between items-center mb-4 px-4">

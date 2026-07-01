@@ -699,7 +699,9 @@ export class FirebaseService {
 
   async createContactIssue(payload: ContactIssueRequest): Promise<ContactIssueResponse> {
     if (!this.functions) {
-      throw new Error('Functions unavailable');
+      const error = new Error('Functions unavailable') as Error & { code: string };
+      error.code = 'functions/unavailable';
+      throw error;
     }
 
     const callable = httpsCallable<ContactIssueRequest, ContactIssueResponse>(

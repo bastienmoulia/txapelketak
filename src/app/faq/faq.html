@@ -1,0 +1,39 @@
+<app-header />
+
+<main class="max-w-[960px] mx-auto px-4 py-8 flex flex-col gap-8">
+  <section
+    class="rounded-[var(--p-border-radius-xl)] bg-[var(--p-surface-card)] p-6 shadow-[var(--p-card-shadow)]"
+  >
+    <div class="flex flex-col gap-4">
+      <p class="m-0 text-sm font-semibold uppercase tracking-[0.12em] text-[var(--p-primary-color)]">
+        {{ 'faq.eyebrow' | transloco }}
+      </p>
+      <h1 class="m-0 text-[2rem] font-bold">{{ 'faq.title' | transloco }}</h1>
+      <p class="m-0 text-[var(--p-text-muted-color)] text-lg">
+        {{ 'faq.intro' | transloco }}
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <p-button [label]="'faq.actions.contact' | transloco" routerLink="/contact" />
+        <p-button
+          [label]="'faq.actions.home' | transloco"
+          severity="secondary"
+          [outlined]="true"
+          routerLink="/"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p-accordion value="overview">
+      @for (item of items(); track item) {
+        <p-accordion-panel [value]="item">
+          <p-accordion-header>{{ ('faq.items.' + item + '.question') | transloco }}</p-accordion-header>
+          <p-accordion-content>
+            <p class="m-0 faq-answer">{{ ('faq.items.' + item + '.answer') | transloco }}</p>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  </section>
+</main>

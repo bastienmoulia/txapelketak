@@ -4,6 +4,8 @@
   },
   "routes": {
     "home": "Home",
+    "faq": "FAQ",
+    "contact": "Contact",
     "tournaments": "Tournaments",
     "tournamentNew": "Create a tournament",
     "tournamentDetail": "Tournament details",
@@ -54,9 +56,94 @@
         "description": "Open source code, no ads, no limitations. Play away."
       }
     },
+    "help": {
+      "title": "Need help?",
+      "description": "Browse the frequently asked questions or open a public GitHub ticket from the contact page.",
+      "faq": {
+        "title": "Read the FAQ",
+        "description": "Learn how tournament formats, live scores, exports, and link-based access work.",
+        "action": "Open the FAQ"
+      },
+      "contact": {
+        "title": "Contact the project",
+        "description": "Send a request, report a bug, or share an idea with a form that creates a GitHub ticket.",
+        "action": "Open contact"
+      }
+    },
     "tournaments": {
       "title": "Tournaments",
       "seeAll": "See all tournaments"
+    }
+  },
+  "faq": {
+    "eyebrow": "Help",
+    "title": "FAQ",
+    "intro": "The answers below are based on the features already available in Txapelketak for organizers and visitors.",
+    "actions": {
+      "contact": "Contact the project",
+      "home": "Back to home"
+    },
+    "items": {
+      "overview": {
+        "question": "What is Txapelketak for?",
+        "answer": "Txapelketak helps you create a tournament, manage players or teams, schedule matches, and publish live scores and rankings."
+      },
+      "formats": {
+        "question": "Which tournament formats are supported?",
+        "answer": "The app supports round-robin groups, knockout brackets, and mixed formats combining groups with a final phase."
+      },
+      "live": {
+        "question": "Are scores and rankings updated live?",
+        "answer": "Yes. Results entered in the admin interface immediately update matches, statistics, and the public rankings."
+      },
+      "roles": {
+        "question": "How does organizer access work?",
+        "answer": "Administration uses token-based links. Admin and organizer roles can manage a tournament without a traditional user account."
+      },
+      "calendar": {
+        "question": "Can I export the match calendar?",
+        "answer": "Yes. The app can generate an .ics calendar to download or subscribe to tournament or team matches."
+      },
+      "yaml": {
+        "question": "Can I back up or restore a tournament?",
+        "answer": "Yes. Tournament data can be exported and imported as YAML to simplify backups and migrations."
+      },
+      "languages": {
+        "question": "Is the app multilingual and open source?",
+        "answer": "Yes. The interface is designed for French, Basque, English, and Spanish, and the project is open source."
+      }
+    }
+  },
+  "contact": {
+    "eyebrow": "Support",
+    "title": "Contact",
+    "intro": "Use this form to report a bug, ask a question, or suggest an improvement.",
+    "publicNotice": "This form creates a public GitHub issue. Do not share private or sensitive information here.",
+    "success": "GitHub ticket #{{issueNumber}} was created successfully.",
+    "form": {
+      "name": "Name or nickname *",
+      "githubUsername": "GitHub username (optional)",
+      "githubUsernameHelp": "Add your GitHub username if you want a public follow-up directly on the ticket.",
+      "subject": "Subject *",
+      "message": "Message *",
+      "website": "Website",
+      "reset": "Reset",
+      "submit": "Create ticket",
+      "submitError": "The ticket could not be created right now.",
+      "submitUnavailable": "The contact service is unavailable. Check that the Functions emulator or Firebase backend is running.",
+      "errors": {
+        "required": "This field is required.",
+        "minLength": "This field must contain at least {{count}} characters.",
+        "maxLength": "This field must contain at most {{count}} characters.",
+        "githubUsername": "The GitHub username is invalid.",
+        "invalid": "The entered value is invalid."
+      }
+    },
+    "sidebar": {
+      "title": "Before sending",
+      "description": "Check the FAQ first: your answer may already be there.",
+      "faq": "View FAQ",
+      "viewIssue": "View created ticket"
     }
   },
   "tournaments": {

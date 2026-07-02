@@ -27,6 +27,20 @@ import { Game, Team, TimeSlot } from '../../tournaments/models';
 import { environment } from '../../../environments/environment';
 import { getPlayoffRoundKey } from '../utils/playoff-label';
 
+export interface ContactIssueRequest {
+  name: string;
+  githubUsername?: string;
+  subject: string;
+  message: string;
+  locale: string;
+  website?: string;
+}
+
+export interface ContactIssueResponse {
+  issueNumber: number;
+  issueUrl: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -681,6 +695,22 @@ export class FirebaseService {
       ...(databaseId !== '(default)' ? { databaseId } : {}),
     });
     return result.data.proposedTimeSlots;
+  }
+
+  async createContactIssue(payload: ContactIssueRequest): Promise<ContactIssueResponse> {
+    if (!this.functions) {
+      const error = new Error('Functions unavailable') as Error & { code: string };
+      error.code = 'functions/unavailable';
+      throw error;
+    }
+
+    const callable = httpsCallable<ContactIssueRequest, ContactIssueResponse>(
+      this.functions,
+      'createContactIssue',
+    );
+    const result = await callable(payload);
+
+    return result.data;
   }
 
   getCalendarUrl(tournamentId: string, teamId?: string | null, lang?: string): string {

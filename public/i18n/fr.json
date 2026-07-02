@@ -4,6 +4,8 @@
   },
   "routes": {
     "home": "Accueil",
+    "faq": "FAQ",
+    "contact": "Contact",
     "tournaments": "Tournois",
     "tournamentNew": "Créer un tournoi",
     "tournamentDetail": "Détail du tournoi",
@@ -54,9 +56,94 @@
         "description": "Code source ouvert, aucune publicité, aucune limitation. À vous de jouer."
       }
     },
+    "help": {
+      "title": "Besoin d'aide ?",
+      "description": "Retrouvez les réponses aux questions fréquentes ou ouvrez un ticket GitHub public depuis la page de contact.",
+      "faq": {
+        "title": "Consulter la FAQ",
+        "description": "Découvrez comment fonctionnent les formats de tournoi, les scores en direct, les exports et l'accès par lien.",
+        "action": "Ouvrir la FAQ"
+      },
+      "contact": {
+        "title": "Contacter le projet",
+        "description": "Envoyez une demande, un bug ou une idée d'amélioration avec un formulaire qui crée un ticket GitHub.",
+        "action": "Ouvrir le contact"
+      }
+    },
     "tournaments": {
       "title": "Tournois",
       "seeAll": "Voir tous les tournois"
+    }
+  },
+  "faq": {
+    "eyebrow": "Aide",
+    "title": "FAQ",
+    "intro": "Les réponses ci-dessous reprennent les fonctionnalités déjà disponibles dans Txapelketak pour aider les organisateurs et les visiteurs.",
+    "actions": {
+      "contact": "Contacter le projet",
+      "home": "Retour à l'accueil"
+    },
+    "items": {
+      "overview": {
+        "question": "À quoi sert Txapelketak ?",
+        "answer": "Txapelketak permet de créer un tournoi, gérer les joueurs ou équipes, planifier les parties et publier les scores et classements en temps réel."
+      },
+      "formats": {
+        "question": "Quels formats de tournoi sont gérés ?",
+        "answer": "L'application gère les tournois en poules, les phases finales à élimination directe, ainsi que les formats mixtes poules + phase finale."
+      },
+      "live": {
+        "question": "Les scores et classements sont-ils mis à jour en direct ?",
+        "answer": "Oui. Les résultats saisis dans l'interface d'administration mettent à jour les parties, les statistiques et les classements visibles publiquement."
+      },
+      "roles": {
+        "question": "Comment fonctionne l'accès organisateur ?",
+        "answer": "L'administration passe par des liens à jeton. Les rôles admin et organisateur peuvent gérer le tournoi sans compte utilisateur classique."
+      },
+      "calendar": {
+        "question": "Peut-on exporter le calendrier des parties ?",
+        "answer": "Oui. L'application peut générer un calendrier .ics pour télécharger ou s'abonner aux parties d'un tournoi ou d'une équipe."
+      },
+      "yaml": {
+        "question": "Peut-on sauvegarder ou restaurer un tournoi ?",
+        "answer": "Oui. Les données de tournoi peuvent être exportées et réimportées au format YAML pour faciliter les sauvegardes et migrations."
+      },
+      "languages": {
+        "question": "L'application est-elle multilingue et open source ?",
+        "answer": "Oui. L'interface est prévue pour le français, le basque, l'anglais et l'espagnol, et le projet est open source."
+      }
+    }
+  },
+  "contact": {
+    "eyebrow": "Support",
+    "title": "Contact",
+    "intro": "Utilisez ce formulaire pour signaler un bug, poser une question ou proposer une amélioration.",
+    "publicNotice": "Ce formulaire crée une issue GitHub publique. N'y partagez pas d'information privée ou sensible.",
+    "success": "Le ticket GitHub #{{issueNumber}} a bien été créé.",
+    "form": {
+      "name": "Nom ou pseudo *",
+      "githubUsername": "Nom d'utilisateur GitHub (optionnel)",
+      "githubUsernameHelp": "Ajoutez votre nom d'utilisateur GitHub si vous souhaitez être recontacté publiquement sur le ticket.",
+      "subject": "Sujet *",
+      "message": "Message *",
+      "website": "Site web",
+      "reset": "Réinitialiser",
+      "submit": "Créer le ticket",
+      "submitError": "Le ticket n'a pas pu être créé pour le moment.",
+      "submitUnavailable": "Le service de contact est indisponible. Vérifiez que l'émulateur Functions ou le backend Firebase est bien démarré.",
+      "errors": {
+        "required": "Ce champ est obligatoire.",
+        "minLength": "Ce champ doit contenir au moins {{count}} caractères.",
+        "maxLength": "Ce champ doit contenir au plus {{count}} caractères.",
+        "githubUsername": "Le nom d'utilisateur GitHub n'est pas valide.",
+        "invalid": "La valeur saisie n'est pas valide."
+      }
+    },
+    "sidebar": {
+      "title": "Avant d'envoyer",
+      "description": "Consultez d'abord la FAQ : la réponse à votre question s'y trouve peut-être déjà.",
+      "faq": "Voir la FAQ",
+      "viewIssue": "Voir le ticket créé"
     }
   },
   "tournaments": {

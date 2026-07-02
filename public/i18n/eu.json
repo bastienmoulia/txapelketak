@@ -4,9 +4,11 @@
   },
   "routes": {
     "home": "Hasiera",
+    "faq": "FAQ",
+    "contact": "Kontaktua",
     "tournaments": "Txapelketak",
     "tournamentNew": "Txapelketa sortu",
-    "tournamentDetail": "Txapelketaren xehetasunak",
+    "tournamentDetail": "Txapelketaren xehetasuna",
     "admin": "Administrazioa"
   },
   "header": {
@@ -54,9 +56,94 @@
         "description": "Kode irekia, iragarkiik gabe, mugarik gabe. Jolastu!"
       }
     },
+    "help": {
+      "title": "Laguntza behar duzu?",
+      "description": "Ikusi ohiko galderak edo ireki GitHub ticket publiko bat kontaktu orritik.",
+      "faq": {
+        "title": "FAQ kontsultatu",
+        "description": "Ikasi nola funtzionatzen duten txapelketa formatuek, zuzeneko markagailuek, esportazioek eta esteka bidezko sarbideak.",
+        "action": "FAQ ireki"
+      },
+      "contact": {
+        "title": "Proiektuarekin harremanetan jarri",
+        "description": "Bidali eskaera bat, akats bat edo hobekuntza ideia bat GitHub ticket bat sortzen duen formulario baten bidez.",
+        "action": "Kontaktua ireki"
+      }
+    },
     "tournaments": {
       "title": "Txapelketak",
       "seeAll": "Ikusi txapelketa guztiak"
+    }
+  },
+  "faq": {
+    "eyebrow": "Laguntza",
+    "title": "FAQ",
+    "intro": "Beheko erantzunek Txapelketak aplikazioan dagoeneko erabilgarri dauden funtzioak azaltzen dituzte antolatzaile eta bisitarientzat.",
+    "actions": {
+      "contact": "Proiektuarekin harremanetan jarri",
+      "home": "Hasierara itzuli"
+    },
+    "items": {
+      "overview": {
+        "question": "Zertarako da Txapelketak?",
+        "answer": "Txapelketak txapelketa bat sortzeko, jokalariak edo taldeak kudeatzeko, partidak antolatzeko eta markagailuak eta sailkapenak zuzenean argitaratzeko erabiltzen da."
+      },
+      "formats": {
+        "question": "Zein txapelketa formatu onartzen dira?",
+        "answer": "Aplikazioak multzoak, kanporaketa zuzeneko final faseak eta multzoak + final fasea uztartzen dituzten formatu mistoak kudeatzen ditu."
+      },
+      "live": {
+        "question": "Markagailuak eta sailkapenak zuzenean eguneratzen al dira?",
+        "answer": "Bai. Administrazio interfazean sartzen diren emaitzek berehala eguneratzen dituzte partidak, estatistikak eta ikusgai dagoen sailkapena."
+      },
+      "roles": {
+        "question": "Nola dabil antolatzailearen sarbidea?",
+        "answer": "Administrazioa token bidezko estekekin egiten da. Admin eta antolatzaile rolek txapelketa kudea dezakete ohiko erabiltzaile konturik gabe."
+      },
+      "calendar": {
+        "question": "Partiden egutegia esporta daiteke?",
+        "answer": "Bai. Aplikazioak .ics egutegi bat sor dezake txapelketa edo talde baten partidak deskargatzeko edo harpidetzeko."
+      },
+      "yaml": {
+        "question": "Txapelketa bat gorde edo leheneratu daiteke?",
+        "answer": "Bai. Txapelketako datuak YAML formatuan esportatu eta inportatu daitezke babeskopiak eta migrazioak errazteko."
+      },
+      "languages": {
+        "question": "Aplikazioa eleanitza eta open source al da?",
+        "answer": "Bai. Interfazea frantsesez, euskaraz, ingelesez eta gaztelaniaz prestatuta dago, eta proiektua open source da."
+      }
+    }
+  },
+  "contact": {
+    "eyebrow": "Laguntza",
+    "title": "Kontaktua",
+    "intro": "Erabili formulario hau akats bat jakinarazteko, galdera bat egiteko edo hobekuntza bat proposatzeko.",
+    "publicNotice": "Formulario honek GitHub issue publiko bat sortzen du. Ez partekatu informazio pribatu edo sentikorrik hemen.",
+    "success": "GitHub-eko #{{issueNumber}} ticketa ondo sortu da.",
+    "form": {
+      "name": "Izena edo ezizena *",
+      "githubUsername": "GitHub erabiltzaile izena (aukerakoa)",
+      "githubUsernameHelp": "Gehitu zure GitHub erabiltzaile izena ticket-ean erantzun publiko bat jaso nahi baduzu.",
+      "subject": "Gaia *",
+      "message": "Mezua *",
+      "website": "Webgunea",
+      "reset": "Berrezarri",
+      "submit": "Ticketa sortu",
+      "submitError": "Ezin izan da ticketa une honetan sortu.",
+      "submitUnavailable": "Kontakturako zerbitzua ez dago erabilgarri. Egiaztatu Functions emuladorea edo Firebase backend-a martxan dagoela.",
+      "errors": {
+        "required": "Eremu hau derrigorrezkoa da.",
+        "minLength": "Eremu honek gutxienez {{count}} karaktere izan behar ditu.",
+        "maxLength": "Eremu honek gehienez {{count}} karaktere izan behar ditu.",
+        "githubUsername": "GitHub erabiltzaile izena ez da baliozkoa.",
+        "invalid": "Sartutako balioa ez da baliozkoa."
+      }
+    },
+    "sidebar": {
+      "title": "Bidali aurretik",
+      "description": "Begiratu lehenik FAQ-a: agian zure erantzuna bertan dago jada.",
+      "faq": "FAQ ikusi",
+      "viewIssue": "Sortutako issue-a ikusi"
     }
   },
   "tournaments": {

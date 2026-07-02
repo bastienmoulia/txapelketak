@@ -15,6 +15,14 @@ interface Feature {
   descriptionKey: string;
 }
 
+interface HelpLink {
+  icon: SvgIconName;
+  titleKey: string;
+  descriptionKey: string;
+  actionLabelKey: string;
+  route: string;
+}
+
 @Component({
   selector: 'app-home',
   imports: [RouterLink, ButtonModule, CardModule, TournamentsTable, HeaderActions, TranslocoModule, SvgIcon],
@@ -72,6 +80,23 @@ export class Home {
       icon: 'code',
       titleKey: 'home.features.openSource.title',
       descriptionKey: 'home.features.openSource.description',
+    },
+  ]);
+
+  helpLinks = signal<HelpLink[]>([
+    {
+      icon: 'list',
+      titleKey: 'home.help.faq.title',
+      descriptionKey: 'home.help.faq.description',
+      actionLabelKey: 'home.help.faq.action',
+      route: '/faq',
+    },
+    {
+      icon: 'users',
+      titleKey: 'home.help.contact.title',
+      descriptionKey: 'home.help.contact.description',
+      actionLabelKey: 'home.help.contact.action',
+      route: '/contact',
     },
   ]);
 

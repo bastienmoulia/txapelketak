@@ -387,7 +387,23 @@
       "comment": "Commentaire",
       "isBye": "Exempt de match",
       "commentAria": "Voir le commentaire de cette partie",
-      "commentTooltip": "Commentaire"
+      "commentTooltip": "Commentaire",
+      "historyAria": "Voir l'historique des modifications de cette partie",
+      "historyTooltip": "Historique",
+      "historyEmpty": "Aucune modification enregistrée.",
+      "historyValueTrue": "Oui",
+      "historyValueFalse": "Non",
+      "historyFields": {
+        "refTeam1": "Équipe 1",
+        "refTeam2": "Équipe 2",
+        "scoreTeam1": "Score équipe 1",
+        "scoreTeam2": "Score équipe 2",
+        "date": "Date",
+        "comment": "Commentaire",
+        "isBye": "Exempt de match",
+        "referees": "Arbitres",
+        "other": "Autre"
+      }
     },
     "teams": {
       "empty": "Aucune équipe",

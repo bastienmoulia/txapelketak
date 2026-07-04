@@ -76,6 +76,34 @@ test.describe.serial('Admin – games management', () => {
     await expect(gamesPage.gameRow(gameAddSeedTeam1, gameAddSeedTeam2)).toBeVisible();
   });
 
+  test('should show score history in edit dialog after score update', async ({ page }) => {
+    const adminPage = new AdminPage(page);
+    const gamesPage = new GamesPage(page);
+    await adminPage.goto(adminUrl);
+    await adminPage.clickTab('Parties');
+
+    await gamesPage.editScores(gameDeleteSeedTeam1, gameDeleteSeedTeam2, 11, 9);
+
+    const row = gamesPage.gameRow(gameDeleteSeedTeam1, gameDeleteSeedTeam2);
+    await row.locator('[aria-label="Modifier cette partie"]').click();
+
+    const dialog = page.locator('.p-dialog').filter({ hasText: 'Modifier la partie' });
+    await dialog.waitFor({ state: 'visible' });
+
+    const historyButton = dialog.getByTestId('game-history-button');
+    await expect(historyButton).toBeVisible();
+    await historyButton.click();
+
+    const historyPopover = page.locator('.p-popover');
+    await historyPopover.waitFor({ state: 'visible' });
+    await expect(historyPopover).toContainText('Score équipe 1');
+    await expect(historyPopover).toContainText('11');
+    await expect(historyPopover).toContainText('9');
+
+    await dialog.locator('button').filter({ hasText: 'Annuler' }).click();
+    await dialog.waitFor({ state: 'hidden' });
+  });
+
   test('should delete a game', async ({ page }) => {
     const adminPage = new AdminPage(page);
     const gamesPage = new GamesPage(page);

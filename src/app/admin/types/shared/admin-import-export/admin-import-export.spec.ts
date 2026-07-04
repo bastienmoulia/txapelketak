@@ -224,6 +224,52 @@ describe('AdminImportExport', () => {
     expect(exportData.series[0].playoffs?.[0].hiddenFromVisitors).toBe(true);
   });
 
+  it('should include score history in exported yaml games', () => {
+    const team1Ref = { id: 'team-1' } as DocumentReference;
+    const team2Ref = { id: 'team-2' } as DocumentReference;
+
+    fixture.componentRef.setInput('series', [
+      {
+        ref: { id: 'serie-1' } as DocumentReference,
+        name: 'Serie A',
+        poules: [
+          {
+            ref: { id: 'poule-1' } as DocumentReference,
+            name: 'Poule A',
+            refTeams: [team1Ref, team2Ref],
+            games: [
+              {
+                ref: { id: 'game-1' } as DocumentReference,
+                refTeam1: team1Ref,
+                refTeam2: team2Ref,
+                scoreHistory: [
+                  {
+                    changedAt: new Date('2026-01-01T10:00:00.000Z'),
+                    changedBy: { username: 'admin' },
+                    changes: [{ field: 'scoreTeam1', before: 7, after: 10 }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as never,
+    ]);
+    fixture.detectChanges();
+
+    const exportData = (
+      component as unknown as { buildExportData: () => unknown }
+    ).buildExportData() as {
+      series: { poules: { games: { scoreHistory?: { changedAt: string }[] }[] }[] }[];
+    };
+
+    expect(exportData.series[0].poules[0].games[0].scoreHistory).toEqual([
+      expect.objectContaining({
+        changedAt: '2026-01-01T10:00:00.000Z',
+      }),
+    ]);
+  });
+
   it('should import hiddenFromVisitors from parsed yaml data', async () => {
     const parsedData = {
       tournament: { name: 'Tournament test', description: '', status: 'ongoing' },

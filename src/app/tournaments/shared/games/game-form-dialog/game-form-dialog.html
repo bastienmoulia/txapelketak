@@ -160,10 +160,26 @@
   </div>
 
   <div class="p-dialog-footer px-0! mt-5 flex items-center">
-    @if (data.isEditing && data.role === 'admin' && !isEditingPlayoffGame()) {
+    @if (canShowHistory()) {
       <p-button
         type="button"
         class="mr-auto"
+        icon="pi pi-history"
+        [ariaLabel]="'admin.games.historyAria' | transloco"
+        [pTooltip]="'admin.games.historyTooltip' | transloco"
+        tooltipPosition="top"
+        severity="contrast"
+        [rounded]="true"
+        size="small"
+        [text]="true"
+        (onClick)="onShowHistory($event)"
+        data-testid="game-history-button"
+      />
+    }
+    @if (data.isEditing && data.role === 'admin' && !isEditingPlayoffGame()) {
+      <p-button
+        type="button"
+        [class.mr-auto]="!canShowHistory()"
         [label]="'shared.actions.delete' | transloco"
         severity="danger"
         [outlined]="true"
@@ -185,3 +201,36 @@
     />
   </div>
 </form>
+
+<p-popover #historyPopover>
+  <div
+    class="max-w-96 max-h-80 overflow-auto space-y-3"
+    role="status"
+    [attr.aria-label]="'admin.games.historyAria' | transloco"
+  >
+    @for (entry of orderedScoreHistory(); track entry.changedAt.getTime()) {
+      <div class="border border-surface-200 dark:border-surface-700 rounded-md p-2">
+        <div class="text-xs text-color-secondary mb-1">
+          <span>{{ entry.changedAt | date: 'short' }}</span>
+          @if (entry.changedBy?.username || entry.changedBy?.email) {
+            <span> · {{ entry.changedBy?.username || entry.changedBy?.email }}</span>
+          }
+        </div>
+        <ul class="m-0 pl-4 list-disc text-sm space-y-1">
+          @for (change of entry.changes; track $index) {
+            <li>
+              <strong>{{ getHistoryChangeLabel(change) }}:</strong>
+              {{ formatHistoryValue(change.before) }}
+              <span aria-hidden="true">→</span>
+              {{ formatHistoryValue(change.after) }}
+            </li>
+          }
+        </ul>
+      </div>
+    } @empty {
+      <p class="m-0 text-sm text-color-secondary">
+        {{ 'admin.games.historyEmpty' | transloco }}
+      </p>
+    }
+  </div>
+</p-popover>

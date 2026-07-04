@@ -181,6 +181,12 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
                 id: 'game-1',
                 path: 'tournaments/t1/series/s1/playoffs/playoff-1/games/game-1',
               } as DocumentReference,
+              initialScoreHistory: [
+                {
+                  changedAt: new Date('2026-06-20T10:00:00.000Z'),
+                  changes: [{ field: 'scoreTeam1', before: 1, after: 3 }],
+                },
+              ],
             },
           },
         },
@@ -200,6 +206,22 @@ describe('GameFormDialog (editing playoff slot without teams)', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const deleteBtn = compiled.querySelector('[data-testid="delete-game-button"]');
     expect(deleteBtn).toBeNull();
+  });
+
+  it('should show history button when editing playoff game with history', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const historyBtn = compiled.querySelector('[data-testid="game-history-button"]');
+    expect(historyBtn).toBeTruthy();
+  });
+
+  it('should expose translated history labels and values', () => {
+    const [entry] = component.orderedScoreHistory();
+    expect(entry).toBeTruthy();
+
+    const [change] = entry.changes;
+    expect(component.getHistoryChangeLabel(change)).toBe('Score équipe 1');
+    expect(component.formatHistoryValue(change.before)).toBe('1');
+    expect(component.formatHistoryValue(change.after)).toBe('3');
   });
 
   it('should allow saving when editing without selected teams', () => {

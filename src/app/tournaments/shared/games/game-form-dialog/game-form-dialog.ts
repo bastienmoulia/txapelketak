@@ -1,6 +1,7 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DocumentReference } from '@angular/fire/firestore';
+import { DatePipe } from '@angular/common';
 import { Button } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Message } from 'primeng/message';
@@ -14,10 +15,13 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DatepickerConfigService } from '../../../../shared/services/datepicker-config.service';
-import { Game, Poule, Team } from '../../../models';
+import { Game, GameScoreHistoryChange, GameScoreHistoryEntry, Poule, Team } from '../../../models';
 import { UserRole } from '../../../../home/tournament.interface';
 import type { SaveGameEvent } from '../games';
 import { CallPipe } from 'ngxtension/call-apply';
+import { PopoverModule } from 'primeng/popover';
+import type { Popover } from 'primeng/popover';
+import { TooltipModule } from 'primeng/tooltip';
 
 export interface DeleteGameAction {
   action: 'delete';
@@ -38,6 +42,7 @@ interface GameFormDialogData {
   initialDate?: Date | null;
   initialReferees?: string[] | null;
   initialComment?: string | null;
+  initialScoreHistory?: GameScoreHistoryEntry[] | null;
   gameRef?: DocumentReference | null;
   freeSlotDateKeys?: Set<string>;
 }
@@ -46,6 +51,7 @@ interface GameFormDialogData {
   selector: 'app-game-form-dialog',
   imports: [
     TranslocoPipe,
+    DatePipe,
     FormsModule,
     FloatLabel,
     Select,
@@ -58,6 +64,8 @@ interface GameFormDialogData {
     CallPipe,
     TextareaModule,
     ToggleSwitchModule,
+    PopoverModule,
+    TooltipModule,
   ],
   templateUrl: './game-form-dialog.html',
   styleUrl: './game-form-dialog.css',
@@ -116,6 +124,17 @@ export class GameFormDialog {
   gameDate = signal<Date | null>(this.data.initialDate ?? null);
   gameReferees = signal<string[]>(this.data.initialReferees ? [...this.data.initialReferees] : []);
   gameComment = signal<string>(this.data.initialComment ?? '');
+  historyPopover = viewChild<Popover>('historyPopover');
+  scoreHistory = signal<GameScoreHistoryEntry[]>(
+    this.data.initialScoreHistory
+      ? [...this.data.initialScoreHistory]
+      : [
+          ...(
+            this.data.currentPoule?.games?.find((game: Game) => game.ref?.id === this.data.gameRef?.id)
+              ?.scoreHistory ?? []
+          ),
+        ],
+  );
 
   dialogTeams = computed(() => {
     const poule = this.data.currentPoule;
@@ -187,6 +206,9 @@ export class GameFormDialog {
   showByeToggle = computed(
     () => this.data.role === 'admin' && this.isEditingFirstRoundPlayoffGame(),
   );
+  canShowHistory = computed(
+    () => this.data.role === 'admin' && this.data.isEditing && this.scoreHistory().length > 0,
+  );
 
   hasFreeSlot = createHasFreeSlot(this.data.freeSlotDateKeys);
 
@@ -212,6 +234,28 @@ export class GameFormDialog {
   onDelete(): void {
     const result: DeleteGameAction = { action: 'delete' };
     this.dialogRef.close(result);
+  }
+
+  onShowHistory(event: MouseEvent): void {
+    this.historyPopover()?.toggle(event);
+  }
+
+  orderedScoreHistory = computed(() => [...this.scoreHistory()].reverse());
+
+  formatHistoryValue(value: string | number | boolean | null): string {
+    if (value == null || value === '') {
+      return '-';
+    }
+    if (typeof value === 'boolean') {
+      return value
+        ? this.translocoService.translate('admin.games.historyValueTrue')
+        : this.translocoService.translate('admin.games.historyValueFalse');
+    }
+    return String(value);
+  }
+
+  getHistoryChangeLabel(change: GameScoreHistoryChange): string {
+    return this.translocoService.translate(`admin.games.historyFields.${change.field}`);
   }
 
   onByeToggleChange(value: boolean): void {

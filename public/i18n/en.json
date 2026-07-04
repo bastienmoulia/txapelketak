@@ -387,7 +387,23 @@
       "comment": "Comment",
       "isBye": "Bye (no match)",
       "commentAria": "View comment for this game",
-      "commentTooltip": "Comment"
+      "commentTooltip": "Comment",
+      "historyAria": "View this game's change history",
+      "historyTooltip": "History",
+      "historyEmpty": "No changes recorded.",
+      "historyValueTrue": "Yes",
+      "historyValueFalse": "No",
+      "historyFields": {
+        "refTeam1": "Team 1",
+        "refTeam2": "Team 2",
+        "scoreTeam1": "Team 1 score",
+        "scoreTeam2": "Team 2 score",
+        "date": "Date",
+        "comment": "Comment",
+        "isBye": "Bye (no match)",
+        "referees": "Referees",
+        "other": "Other"
+      }
     },
     "teams": {
       "empty": "No teams",

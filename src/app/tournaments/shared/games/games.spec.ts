@@ -717,6 +717,54 @@ describe('Games', () => {
     expect(commentButton.querySelector('.pi-comment')).not.toBeNull();
   });
 
+  it('should show history button only for admin when game has score history', async () => {
+    const team1Ref = createDocumentReference('team-1');
+    const team2Ref = createDocumentReference('team-2');
+
+    authStore.setUser({ role: 'admin' } as never);
+    patchState(poulesStore, {
+      teams: [
+        { ref: team1Ref, name: 'Alpha' },
+        { ref: team2Ref, name: 'Bravo' },
+      ] satisfies Team[],
+      series: [
+        {
+          ref: createDocumentReference('serie-1'),
+          name: 'Serie A',
+          poules: [
+            {
+              ref: createDocumentReference('poule-1'),
+              name: 'Poule A',
+              refTeams: [team1Ref, team2Ref],
+              games: [
+                {
+                  ref: createDocumentReference('game-1'),
+                  refTeam1: team1Ref,
+                  refTeam2: team2Ref,
+                  scoreHistory: [
+                    {
+                      changedAt: new Date('2026-01-01T10:00:00.000Z'),
+                      changes: [{ field: 'scoreTeam1', before: 8, after: 10 }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const historyButton = fixture.nativeElement.querySelector(
+      '[aria-label="Voir l\'historique des modifications de cette partie"]',
+    );
+
+    expect(historyButton).not.toBeNull();
+    expect(historyButton.querySelector('.pi-history')).not.toBeNull();
+  });
+
   it('should detect only future free slots that are not already scheduled', () => {
     const now = new Date(2026, 4, 1, 9, 0);
     const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(now.getTime());

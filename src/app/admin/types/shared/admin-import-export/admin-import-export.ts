@@ -10,7 +10,23 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { dump, load } from 'js-yaml';
 import { FirebaseService } from '../../../../shared/services/firebase.service';
 import { Tournament } from '../../../../home/tournament.interface';
-import { Game, Serie, Team, TimeSlot } from '../../../../tournaments/models';
+import { Game, GameScoreHistoryEntry, Serie, Team, TimeSlot } from '../../../../tournaments/models';
+
+export interface TournamentYamlGameHistoryChange {
+  field: string;
+  before: string | number | boolean | null;
+  after: string | number | boolean | null;
+}
+
+export interface TournamentYamlGameHistoryEntry {
+  changedAt: string;
+  changedBy?: {
+    username?: string;
+    email?: string;
+    role?: string;
+  };
+  changes: TournamentYamlGameHistoryChange[];
+}
 
 export interface TournamentYamlTeam {
   id: string;
@@ -26,6 +42,7 @@ export interface TournamentYamlGame {
   date?: string;
   referees?: string[];
   comment?: string;
+  scoreHistory?: TournamentYamlGameHistoryEntry[];
 }
 
 export interface TournamentYamlPlayoffGame {
@@ -39,6 +56,7 @@ export interface TournamentYamlPlayoffGame {
   date?: string;
   referees?: string[];
   comment?: string;
+  scoreHistory?: TournamentYamlGameHistoryEntry[];
 }
 
 export interface TournamentYamlPlayoff {
@@ -284,6 +302,9 @@ export class AdminImportExport {
             if (game.comment) {
               yamlGame.comment = game.comment;
             }
+            if (game.scoreHistory && game.scoreHistory.length > 0) {
+              yamlGame.scoreHistory = this.toYamlScoreHistory(game.scoreHistory);
+            }
             return yamlGame;
           }),
       })),
@@ -314,6 +335,9 @@ export class AdminImportExport {
             }
             if (game.comment) {
               yamlGame.comment = game.comment;
+            }
+            if (game.scoreHistory && game.scoreHistory.length > 0) {
+              yamlGame.scoreHistory = this.toYamlScoreHistory(game.scoreHistory);
             }
             return yamlGame;
           }),
@@ -349,5 +373,29 @@ export class AdminImportExport {
     if (!Array.isArray(d['teams'])) return false;
     if (!Array.isArray(d['series'])) return false;
     return true;
+  }
+
+  private toYamlScoreHistory(
+    history: GameScoreHistoryEntry[],
+  ): TournamentYamlGameHistoryEntry[] {
+    const result: TournamentYamlGameHistoryEntry[] = [];
+    for (const entry of history) {
+      const changedAt = entry.changedAt instanceof Date ? entry.changedAt.toISOString() : null;
+      if (!changedAt || !Array.isArray(entry.changes) || entry.changes.length === 0) {
+        continue;
+      }
+
+      result.push({
+        changedAt,
+        ...(entry.changedBy ? { changedBy: entry.changedBy } : {}),
+        changes: entry.changes.map((change) => ({
+          field: change.field,
+          before: change.before ?? null,
+          after: change.after ?? null,
+        })),
+      });
+    }
+
+    return result;
   }
 }

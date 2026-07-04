@@ -191,6 +191,19 @@
               @if (role() === 'admin' || role() === 'organizer') {
                 <td [attr.data-label]="'shared.table.columns.actions' | transloco">
                   <div class="flex justify-end gap-1">
+                    @if (role() === 'admin' && (game | call: hasScoreHistory)) {
+                      <p-button
+                        icon="pi pi-history"
+                        [ariaLabel]="'admin.games.historyAria' | transloco"
+                        [pTooltip]="'admin.games.historyTooltip' | transloco"
+                        tooltipPosition="top"
+                        severity="contrast"
+                        size="small"
+                        [rounded]="true"
+                        [text]="true"
+                        (onClick)="onShowHistory($event, game)"
+                      />
+                    }
                     @if (game.comment) {
                       <p-button
                         icon="pi pi-comment"
@@ -264,4 +277,37 @@
   >
     {{ currentCommentText() }}
   </p>
+</p-popover>
+
+<p-popover #historyPopover>
+  <div
+    class="max-w-96 max-h-80 overflow-auto space-y-3"
+    role="status"
+    [attr.aria-label]="'admin.games.historyAria' | transloco"
+  >
+    @for (entry of currentHistoryEntries(); track entry.changedAt.getTime()) {
+      <div class="border border-surface-200 dark:border-surface-700 rounded-md p-2">
+        <div class="text-xs text-color-secondary mb-1">
+          <span>{{ entry.changedAt | date: 'short' : undefined : activeLanguage() }}</span>
+          @if (entry.changedBy?.username || entry.changedBy?.email) {
+            <span> · {{ entry.changedBy?.username || entry.changedBy?.email }}</span>
+          }
+        </div>
+        <ul class="m-0 pl-4 list-disc text-sm space-y-1">
+          @for (change of entry.changes; track $index) {
+            <li>
+              <strong>{{ change | call: getHistoryChangeLabel }}:</strong>
+              {{ change.before | call: formatHistoryValue }}
+              <span aria-hidden="true">→</span>
+              {{ change.after | call: formatHistoryValue }}
+            </li>
+          }
+        </ul>
+      </div>
+    } @empty {
+      <p class="m-0 text-sm text-color-secondary">
+        {{ 'admin.games.historyEmpty' | transloco }}
+      </p>
+    }
+  </div>
 </p-popover>

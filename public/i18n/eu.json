@@ -387,7 +387,23 @@
       "comment": "Iruzkina",
       "isBye": "Partidarik gabe (bye)",
       "commentAria": "Partida honen iruzkina ikusi",
-      "commentTooltip": "Iruzkina"
+      "commentTooltip": "Iruzkina",
+      "historyAria": "Partida honen aldaketen historia ikusi",
+      "historyTooltip": "Historia",
+      "historyEmpty": "Ez dago aldaketarik erregistratuta.",
+      "historyValueTrue": "Bai",
+      "historyValueFalse": "Ez",
+      "historyFields": {
+        "refTeam1": "1. taldea",
+        "refTeam2": "2. taldea",
+        "scoreTeam1": "1. taldearen puntuazioa",
+        "scoreTeam2": "2. taldearen puntuazioa",
+        "date": "Data",
+        "comment": "Iruzkina",
+        "isBye": "Partidarik gabe (bye)",
+        "referees": "Arbitroak",
+        "other": "Beste"
+      }
     },
     "teams": {
       "empty": "Ez dago talderik",

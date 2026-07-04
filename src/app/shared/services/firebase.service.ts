@@ -646,18 +646,11 @@ export class FirebaseService {
 
     const changes = this.buildGameHistoryChanges(previousData, gameData);
     if (changes.length > 0) {
-      const previousDataRecord = previousData as Record<string, unknown>;
-      const existingHistory = Array.isArray(previousDataRecord['scoreHistory'])
-        ? previousDataRecord['scoreHistory']
-        : [];
-      data['scoreHistory'] = [
-        ...existingHistory,
-        {
-          changedAt: new Date(),
-          ...(options.changedBy ? { changedBy: options.changedBy } : {}),
-          changes,
-        } satisfies Omit<GameScoreHistoryEntry, 'changedAt'> & { changedAt: Date },
-      ];
+      data['scoreHistory'] = arrayUnion({
+        changedAt: new Date(),
+        ...(options.changedBy ? { changedBy: options.changedBy } : {}),
+        changes,
+      } satisfies Omit<GameScoreHistoryEntry, 'changedAt'> & { changedAt: Date });
     }
 
     await runInInjectionContext(this.environmentInjector, async () => {

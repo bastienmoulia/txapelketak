@@ -572,6 +572,29 @@ export class Games {
     return String(value);
   }
 
+  formatHistoryChangeValue(
+    change: GameScoreHistoryChange,
+    side: 'before' | 'after',
+  ): string {
+    const rawValue = side === 'before' ? change.before : change.after;
+    if (rawValue == null || rawValue === '') {
+      return '-';
+    }
+
+    if ((change.field === 'refTeam1' || change.field === 'refTeam2') && typeof rawValue === 'string') {
+      return this.teamNameMap().get(rawValue) ?? rawValue;
+    }
+
+    if (change.field === 'date' && typeof rawValue === 'string') {
+      const date = new Date(rawValue);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleString(this.activeLanguage());
+      }
+    }
+
+    return this.formatHistoryValue(rawValue);
+  }
+
   getHistoryChangeLabel(change: GameScoreHistoryChange): string {
     return this.translocoService.translate(`admin.games.historyFields.${change.field}`);
   }

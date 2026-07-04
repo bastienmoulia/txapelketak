@@ -296,10 +296,10 @@
         <ul class="m-0 pl-4 list-disc text-sm space-y-1">
           @for (change of entry.changes; track $index) {
             <li>
-              <strong>{{ change | call: getHistoryChangeLabel }}:</strong>
-              {{ change.before | call: formatHistoryValue }}
+              <strong>{{ getHistoryChangeLabel(change) }}:</strong>
+              {{ formatHistoryChangeValue(change, 'before') }}
               <span aria-hidden="true">→</span>
-              {{ change.after | call: formatHistoryValue }}
+              {{ formatHistoryChangeValue(change, 'after') }}
             </li>
           }
         </ul>

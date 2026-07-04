@@ -86,6 +86,7 @@ export class GameFormDialog {
   firstDayOfWeek = this.datepickerConfig.firstDayOfWeek;
   datePlaceholder = this.datepickerConfig.datePlaceholder;
   datePickerFormat = this.datepickerConfig.datePickerFormat;
+  activeLanguage = this.datepickerConfig.activeLanguage;
 
   gameDateString = '';
 
@@ -252,6 +253,30 @@ export class GameFormDialog {
         : this.translocoService.translate('admin.games.historyValueFalse');
     }
     return String(value);
+  }
+
+  formatHistoryChangeValue(
+    change: GameScoreHistoryChange,
+    side: 'before' | 'after',
+  ): string {
+    const rawValue = side === 'before' ? change.before : change.after;
+    if (rawValue == null || rawValue === '') {
+      return '-';
+    }
+
+    if ((change.field === 'refTeam1' || change.field === 'refTeam2') && typeof rawValue === 'string') {
+      const teamName = this.data.teams.find((team: Team) => team.ref?.id === rawValue)?.name;
+      return teamName ?? rawValue;
+    }
+
+    if (change.field === 'date' && typeof rawValue === 'string') {
+      const date = new Date(rawValue);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleString(this.activeLanguage());
+      }
+    }
+
+    return this.formatHistoryValue(rawValue);
   }
 
   getHistoryChangeLabel(change: GameScoreHistoryChange): string {

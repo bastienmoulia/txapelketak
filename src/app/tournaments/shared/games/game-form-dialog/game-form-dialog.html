@@ -211,7 +211,7 @@
     @for (entry of orderedScoreHistory(); track entry.changedAt.getTime()) {
       <div class="border border-surface-200 dark:border-surface-700 rounded-md p-2">
         <div class="text-xs text-color-secondary mb-1">
-          <span>{{ entry.changedAt | date: 'short' }}</span>
+          <span>{{ entry.changedAt | date: 'short' : undefined : activeLanguage() }}</span>
           @if (entry.changedBy?.username || entry.changedBy?.email) {
             <span> · {{ entry.changedBy?.username || entry.changedBy?.email }}</span>
           }
@@ -220,9 +220,9 @@
           @for (change of entry.changes; track $index) {
             <li>
               <strong>{{ getHistoryChangeLabel(change) }}:</strong>
-              {{ formatHistoryValue(change.before) }}
+              {{ formatHistoryChangeValue(change, 'before') }}
               <span aria-hidden="true">→</span>
-              {{ formatHistoryValue(change.after) }}
+              {{ formatHistoryChangeValue(change, 'after') }}
             </li>
           }
         </ul>

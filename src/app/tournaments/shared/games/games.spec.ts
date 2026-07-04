@@ -717,7 +717,7 @@ describe('Games', () => {
     expect(commentButton.querySelector('.pi-comment')).not.toBeNull();
   });
 
-  it('should show history button only for admin when game has score history', async () => {
+  it('should show history button for admin when game has score history', async () => {
     const team1Ref = createDocumentReference('team-1');
     const team2Ref = createDocumentReference('team-2');
 

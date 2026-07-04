@@ -118,6 +118,7 @@ export const PoulesStore = signalStore(
               ...data,
               ref: item.ref,
               date: firebaseService.parseFirestoreDate(data.date),
+              scoreHistory: firebaseService.parseGameScoreHistory(data.scoreHistory),
             } as Game;
           });
           patchState(store, {
@@ -155,6 +156,7 @@ export const PoulesStore = signalStore(
               ...data,
               ref: item.ref,
               date: firebaseService.parseFirestoreDate(data.date),
+              scoreHistory: firebaseService.parseGameScoreHistory(data.scoreHistory),
             } as Game;
           });
 

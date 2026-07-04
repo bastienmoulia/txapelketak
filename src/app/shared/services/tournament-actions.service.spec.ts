@@ -8,6 +8,7 @@ import { TournamentActionsService } from './tournament-actions.service';
 import { FirebaseService } from './firebase.service';
 import { TournamentDetailStore } from '../../store/tournament-detail.store';
 import { PoulesStore } from '../../store/poules.store';
+import { AuthStore } from '../../store/auth.store';
 
 describe('TournamentActionsService', () => {
   const addGameToPoule = vi.fn();
@@ -60,6 +61,16 @@ describe('TournamentActionsService', () => {
             patchTeams: vi.fn(),
           },
         },
+        {
+          provide: AuthStore,
+          useValue: {
+            currentUser: () => ({
+              username: 'admin-user',
+              email: 'admin@example.com',
+              role: 'admin',
+            }),
+          },
+        },
       ],
     });
 
@@ -85,6 +96,36 @@ describe('TournamentActionsService', () => {
         scoreTeam2: 11,
         comment: 'test',
       }),
+    );
+  });
+
+  it('should pass editor metadata when updating a game', async () => {
+    const gameRef = { id: 'game-1', path: 'tournaments/t1/poules/p1/games/g1' } as DocumentReference;
+
+    await service.saveGame({
+      pouleRef,
+      gameRef,
+      refTeam1: team1Ref,
+      refTeam2: team2Ref,
+      scoreTeam1: 15,
+      scoreTeam2: 9,
+    });
+
+    expect(updateGame).toHaveBeenCalledWith(
+      gameRef,
+      expect.objectContaining({
+        refTeam1: team1Ref,
+        refTeam2: team2Ref,
+        scoreTeam1: 15,
+        scoreTeam2: 9,
+      }),
+      {
+        changedBy: {
+          username: 'admin-user',
+          email: 'admin@example.com',
+          role: 'admin',
+        },
+      },
     );
   });
 });

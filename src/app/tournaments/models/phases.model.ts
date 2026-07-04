@@ -49,4 +49,32 @@ export interface Game {
   name?: string;
   roundSize?: number;
   matchNumber?: number;
+  scoreHistory?: GameScoreHistoryEntry[];
+}
+
+export interface GameScoreHistoryActor {
+  username?: string;
+  email?: string;
+  role?: string;
+}
+
+export interface GameScoreHistoryChange {
+  field:
+    | 'refTeam1'
+    | 'refTeam2'
+    | 'scoreTeam1'
+    | 'scoreTeam2'
+    | 'date'
+    | 'comment'
+    | 'isBye'
+    | 'referees'
+    | 'other';
+  before: string | number | boolean | null;
+  after: string | number | boolean | null;
+}
+
+export interface GameScoreHistoryEntry {
+  changedAt: Date;
+  changedBy?: GameScoreHistoryActor;
+  changes: GameScoreHistoryChange[];
 }

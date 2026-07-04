@@ -13,6 +13,7 @@ import {
   getDocs,
   limit,
   query,
+  runTransaction,
   setDoc,
   updateDoc,
   addDoc,
@@ -23,7 +24,14 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
 import { map, Observable, of, throwError } from 'rxjs';
 import { Tournament, TournamentStatus, User } from '../../home/tournament.interface';
 import { TournamentYamlData } from '../../admin/types/shared/admin-import-export/admin-import-export';
-import { Game, Team, TimeSlot } from '../../tournaments/models';
+import {
+  Game,
+  GameScoreHistoryActor,
+  GameScoreHistoryChange,
+  GameScoreHistoryEntry,
+  Team,
+  TimeSlot,
+} from '../../tournaments/models';
 import { environment } from '../../../environments/environment';
 import { getPlayoffRoundKey } from '../utils/playoff-label';
 
@@ -39,6 +47,10 @@ export interface ContactIssueRequest {
 export interface ContactIssueResponse {
   issueNumber: number;
   issueUrl: string;
+}
+
+export interface UpdateGameOptions {
+  changedBy?: GameScoreHistoryActor;
 }
 
 @Injectable({
@@ -615,20 +627,36 @@ export class FirebaseService {
   async updateGame(
     gameRef: DocumentReference,
     gameData: Partial<Omit<Game, 'ref'>>,
+    options: UpdateGameOptions = {},
   ): Promise<void> {
     console.debug(`[Firestore] updateGame: updating game`, gameData);
-    const data: Record<string, unknown> = {};
-    data['refTeam1'] = gameData.refTeam1 ?? null;
-    data['refTeam2'] = gameData.refTeam2 ?? null;
-    data['isBye'] = gameData.isBye ?? false;
-    data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
-    data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
-    data['date'] = gameData.date ?? null;
-    data['referees'] = gameData.referees?.length ? gameData.referees : null;
-    data['comment'] = gameData.comment ?? null;
     await runInInjectionContext(this.environmentInjector, async () => {
-      console.debug(`[Firestore] updateDoc: game`);
-      await updateDoc(gameRef, data);
+      await runTransaction(this.firestore!, async (transaction) => {
+        const gameSnapshot = await transaction.get(gameRef);
+        const previousData = gameSnapshot.exists() ? (gameSnapshot.data() as Partial<Game>) : {};
+
+        const data: Record<string, unknown> = {};
+        data['refTeam1'] = gameData.refTeam1 ?? null;
+        data['refTeam2'] = gameData.refTeam2 ?? null;
+        data['isBye'] = gameData.isBye ?? false;
+        data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
+        data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
+        data['date'] = gameData.date ?? null;
+        data['referees'] = gameData.referees?.length ? gameData.referees : null;
+        data['comment'] = gameData.comment ?? null;
+
+        const changes = this.buildGameHistoryChanges(previousData, gameData);
+        if (changes.length > 0) {
+          data['scoreHistory'] = arrayUnion({
+            changedAt: new Date(),
+            ...(options.changedBy ? { changedBy: options.changedBy } : {}),
+            changes,
+          } satisfies Omit<GameScoreHistoryEntry, 'changedAt'> & { changedAt: Date });
+        }
+
+        console.debug(`[Firestore] updateDoc: game`);
+        transaction.update(gameRef, data);
+      });
     });
   }
 
@@ -892,6 +920,10 @@ export class FirebaseService {
               gameData['comment'] = trimmedComment;
             }
           }
+          const scoreHistory = this.parseGameScoreHistory(yamlGame.scoreHistory);
+          if (scoreHistory.length > 0) {
+            gameData['scoreHistory'] = scoreHistory;
+          }
           await runInInjectionContext(this.environmentInjector, async () => {
             console.debug(`[Firestore] setDoc: game (batch import)`);
             await setDoc(gameDocRef, gameData);
@@ -941,6 +973,10 @@ export class FirebaseService {
             if (trimmedComment.length > 0) {
               gameData['comment'] = trimmedComment;
             }
+          }
+          const scoreHistory = this.parseGameScoreHistory(yamlGame.scoreHistory);
+          if (scoreHistory.length > 0) {
+            gameData['scoreHistory'] = scoreHistory;
           }
 
           await runInInjectionContext(this.environmentInjector, async () => {
@@ -1011,6 +1047,177 @@ export class FirebaseService {
     if (typeof (value as { toDate?: unknown }).toDate === 'function') {
       return (value as { toDate: () => Date }).toDate();
     }
-    return new Date(value as string);
+    const date = new Date(value as string | Date);
+    return isNaN(date.getTime()) ? undefined : date;
+  }
+
+  parseGameScoreHistory(value: unknown): GameScoreHistoryEntry[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
+      .map((entry): GameScoreHistoryEntry | null => {
+        if (!entry || typeof entry !== 'object') {
+          return null;
+        }
+
+        const record = entry as Record<string, unknown>;
+        const changedAt = this.parseFirestoreDate(record['changedAt']);
+        if (!changedAt) {
+          return null;
+        }
+
+        const rawChanges = Array.isArray(record['changes']) ? record['changes'] : [];
+        const changes = rawChanges
+          .map((change): GameScoreHistoryChange | null => {
+            if (!change || typeof change !== 'object') {
+              return null;
+            }
+            const changeRecord = change as Record<string, unknown>;
+            const fieldValue = typeof changeRecord['field'] === 'string' ? changeRecord['field'] : '';
+            return {
+              field: this.isHistoryField(fieldValue) ? fieldValue : 'other',
+              before: this.coerceHistoryPrimitive(changeRecord['before']),
+              after: this.coerceHistoryPrimitive(changeRecord['after']),
+            };
+          })
+          .filter((change): change is GameScoreHistoryChange => change !== null);
+
+        if (changes.length === 0) {
+          return null;
+        }
+
+        const changedBy = this.parseHistoryActor(record['changedBy']);
+        return {
+          changedAt,
+          ...(changedBy ? { changedBy } : {}),
+          changes,
+        };
+      })
+      .filter((entry): entry is GameScoreHistoryEntry => entry !== null);
+  }
+
+  private buildGameHistoryChanges(
+    previousData: Partial<Game>,
+    gameData: Partial<Omit<Game, 'ref'>>,
+  ): GameScoreHistoryChange[] {
+    const trackedFields: Exclude<GameScoreHistoryChange['field'], 'other'>[] = [
+      'refTeam1',
+      'refTeam2',
+      'scoreTeam1',
+      'scoreTeam2',
+      'date',
+      'comment',
+      'isBye',
+      'referees',
+    ];
+
+    return trackedFields
+      .map((field): GameScoreHistoryChange | null => {
+        const before = this.normalizeHistoryValue(field, previousData[field]);
+        const after = this.normalizeHistoryValue(field, gameData[field]);
+        if (before === after) {
+          return null;
+        }
+        return { field, before, after };
+      })
+      .filter((change): change is GameScoreHistoryChange => change !== null);
+  }
+
+  private normalizeHistoryValue(
+    field: Exclude<GameScoreHistoryChange['field'], 'other'>,
+    value: unknown,
+  ): string | number | boolean | null {
+    if (value == null) {
+      return field === 'isBye' ? false : null;
+    }
+
+    if (field === 'refTeam1' || field === 'refTeam2') {
+      const id = this.extractDocumentId(value);
+      return id ?? null;
+    }
+
+    if (field === 'date') {
+      const date = this.parseFirestoreDate(value);
+      return date ? date.toISOString() : null;
+    }
+
+    if (field === 'referees') {
+      if (!Array.isArray(value)) {
+        return null;
+      }
+      const normalized = value
+        .map((referee) => String(referee).trim())
+        .filter((referee) => referee.length > 0)
+        .join(', ');
+      return normalized || null;
+    }
+
+    if (field === 'comment' && typeof value === 'string') {
+      const trimmed = value.trim();
+      return trimmed || null;
+    }
+
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'string') {
+      return value;
+    }
+
+    return null;
+  }
+
+  private extractDocumentId(value: unknown): string | null {
+    if (!value || typeof value !== 'object') {
+      return null;
+    }
+    const id = (value as { id?: unknown }).id;
+    return typeof id === 'string' ? id : null;
+  }
+
+  private parseHistoryActor(value: unknown): GameScoreHistoryActor | undefined {
+    if (!value || typeof value !== 'object') {
+      return undefined;
+    }
+
+    const actor = value as Record<string, unknown>;
+    const username = typeof actor['username'] === 'string' ? actor['username'] : undefined;
+    const email = typeof actor['email'] === 'string' ? actor['email'] : undefined;
+    const role = typeof actor['role'] === 'string' ? actor['role'] : undefined;
+
+    if (!username && !email && !role) {
+      return undefined;
+    }
+
+    return { ...(username ? { username } : {}), ...(email ? { email } : {}), ...(role ? { role } : {}) };
+  }
+
+  private coerceHistoryPrimitive(value: unknown): string | number | boolean | null {
+    if (value == null) {
+      return null;
+    }
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return value;
+    }
+    if (typeof value === 'object') {
+      const id = this.extractDocumentId(value);
+      if (id) {
+        return id;
+      }
+    }
+    return String(value);
+  }
+
+  private isHistoryField(field: string): field is GameScoreHistoryChange['field'] {
+    return (
+      field === 'refTeam1' ||
+      field === 'refTeam2' ||
+      field === 'scoreTeam1' ||
+      field === 'scoreTeam2' ||
+      field === 'date' ||
+      field === 'comment' ||
+      field === 'isBye' ||
+      field === 'referees' ||
+      field === 'other'
+    );
   }
 }

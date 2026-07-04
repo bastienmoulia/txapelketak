@@ -10,6 +10,7 @@ import {
 } from '../../tournaments/shared/games/games';
 import { TournamentDetailStore } from '../../store/tournament-detail.store';
 import { PoulesStore } from '../../store/poules.store';
+import { AuthStore } from '../../store/auth.store';
 import {
   DeletePouleEvent,
   SavePouleEvent,
@@ -27,6 +28,7 @@ export class TournamentActionsService {
   private translocoService = inject(TranslocoService);
   private tournamentDetailStore = inject(TournamentDetailStore);
   private poulesStore = inject(PoulesStore);
+  private authStore = inject(AuthStore);
 
   async saveGame(event: SaveGameEvent): Promise<void> {
     const gameData: Partial<Omit<Game, 'ref'>> = {
@@ -40,7 +42,16 @@ export class TournamentActionsService {
     if (event.gameRef) {
       gameData.refTeam1 = event.refTeam1;
       gameData.refTeam2 = event.refTeam2;
-      await this.firebaseService.updateGame(event.gameRef, gameData);
+      const currentUser = this.authStore.currentUser();
+      await this.firebaseService.updateGame(event.gameRef, gameData, {
+        changedBy: currentUser
+          ? {
+              username: currentUser.username,
+              email: currentUser.email,
+              role: currentUser.role,
+            }
+          : undefined,
+      });
       this.messageService.add({
         severity: 'success',
         summary: this.translocoService.translate('admin.games.edited'),

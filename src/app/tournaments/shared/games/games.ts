@@ -6,7 +6,7 @@ import { Component,
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Game, Playoff, Poule, Serie } from '../../models';
+import { Game, GameScoreHistoryChange, GameScoreHistoryEntry, Playoff, Poule, Serie } from '../../models';
 import { Message } from 'primeng/message';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -138,7 +138,9 @@ export class Games {
   timeSlots = this.poulesStore.timeSlots;
 
   commentPopover = viewChild<Popover>('commentPopover');
+  historyPopover = viewChild<Popover>('historyPopover');
   currentCommentText = signal<string>('');
+  currentHistoryEntries = signal<GameScoreHistoryEntry[]>([]);
 
   showOnlyFreeSlots = signal(false);
   showPastGames = signal(false);
@@ -538,6 +540,7 @@ export class Games {
         initialDate: game.date,
         initialReferees: game.referees,
         initialComment: game.comment,
+        initialScoreHistory: game.scoreHistory,
         gameRef: game.ref,
       });
     }
@@ -546,6 +549,54 @@ export class Games {
   onShowComment(event: MouseEvent, comment: string): void {
     this.currentCommentText.set(comment);
     this.commentPopover()?.toggle(event);
+  }
+
+  onShowHistory(event: MouseEvent, game: GameByDate): void {
+    this.currentHistoryEntries.set([...(game.scoreHistory ?? [])].reverse());
+    this.historyPopover()?.toggle(event);
+  }
+
+  hasScoreHistory(game: GameByDate): boolean {
+    return (game.scoreHistory?.length ?? 0) > 0;
+  }
+
+  formatHistoryValue(value: string | number | boolean | null): string {
+    if (value == null || value === '') {
+      return '-';
+    }
+    if (typeof value === 'boolean') {
+      return value
+        ? this.translocoService.translate('admin.games.historyValueTrue')
+        : this.translocoService.translate('admin.games.historyValueFalse');
+    }
+    return String(value);
+  }
+
+  formatHistoryChangeValue(
+    change: GameScoreHistoryChange,
+    side: 'before' | 'after',
+  ): string {
+    const rawValue = side === 'before' ? change.before : change.after;
+    if (rawValue == null || rawValue === '') {
+      return '-';
+    }
+
+    if ((change.field === 'refTeam1' || change.field === 'refTeam2') && typeof rawValue === 'string') {
+      return this.teamNameMap().get(rawValue) ?? rawValue;
+    }
+
+    if (change.field === 'date' && typeof rawValue === 'string') {
+      const date = new Date(rawValue);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleString(this.activeLanguage());
+      }
+    }
+
+    return this.formatHistoryValue(rawValue);
+  }
+
+  getHistoryChangeLabel(change: GameScoreHistoryChange): string {
+    return this.translocoService.translate(`admin.games.historyFields.${change.field}`);
   }
 
   scrollToToday(): void {
@@ -579,6 +630,7 @@ export class Games {
     initialDate?: Date | null;
     initialReferees?: string[] | null;
     initialComment?: string | null;
+    initialScoreHistory?: GameScoreHistoryEntry[] | null;
     gameRef?: DocumentReference | null;
   }): void {
     const dialogRef = this.dialogService.open(GameFormDialog, {

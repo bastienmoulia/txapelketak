@@ -13,6 +13,7 @@ import {
   getDocs,
   limit,
   query,
+  runTransaction,
   setDoc,
   updateDoc,
   addDoc,
@@ -629,33 +630,33 @@ export class FirebaseService {
     options: UpdateGameOptions = {},
   ): Promise<void> {
     console.debug(`[Firestore] updateGame: updating game`, gameData);
-    const gameSnapshot = await runInInjectionContext(this.environmentInjector, async () =>
-      getDoc(gameRef),
-    );
-    const previousData = gameSnapshot.exists() ? (gameSnapshot.data() as Partial<Game>) : {};
-
-    const data: Record<string, unknown> = {};
-    data['refTeam1'] = gameData.refTeam1 ?? null;
-    data['refTeam2'] = gameData.refTeam2 ?? null;
-    data['isBye'] = gameData.isBye ?? false;
-    data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
-    data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
-    data['date'] = gameData.date ?? null;
-    data['referees'] = gameData.referees?.length ? gameData.referees : null;
-    data['comment'] = gameData.comment ?? null;
-
-    const changes = this.buildGameHistoryChanges(previousData, gameData);
-    if (changes.length > 0) {
-      data['scoreHistory'] = arrayUnion({
-        changedAt: new Date(),
-        ...(options.changedBy ? { changedBy: options.changedBy } : {}),
-        changes,
-      } satisfies Omit<GameScoreHistoryEntry, 'changedAt'> & { changedAt: Date });
-    }
-
     await runInInjectionContext(this.environmentInjector, async () => {
-      console.debug(`[Firestore] updateDoc: game`);
-      await updateDoc(gameRef, data);
+      await runTransaction(this.firestore!, async (transaction) => {
+        const gameSnapshot = await transaction.get(gameRef);
+        const previousData = gameSnapshot.exists() ? (gameSnapshot.data() as Partial<Game>) : {};
+
+        const data: Record<string, unknown> = {};
+        data['refTeam1'] = gameData.refTeam1 ?? null;
+        data['refTeam2'] = gameData.refTeam2 ?? null;
+        data['isBye'] = gameData.isBye ?? false;
+        data['scoreTeam1'] = gameData.scoreTeam1 ?? null;
+        data['scoreTeam2'] = gameData.scoreTeam2 ?? null;
+        data['date'] = gameData.date ?? null;
+        data['referees'] = gameData.referees?.length ? gameData.referees : null;
+        data['comment'] = gameData.comment ?? null;
+
+        const changes = this.buildGameHistoryChanges(previousData, gameData);
+        if (changes.length > 0) {
+          data['scoreHistory'] = arrayUnion({
+            changedAt: new Date(),
+            ...(options.changedBy ? { changedBy: options.changedBy } : {}),
+            changes,
+          } satisfies Omit<GameScoreHistoryEntry, 'changedAt'> & { changedAt: Date });
+        }
+
+        console.debug(`[Firestore] updateDoc: game`);
+        transaction.update(gameRef, data);
+      });
     });
   }
 

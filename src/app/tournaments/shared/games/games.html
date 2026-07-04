@@ -193,6 +193,7 @@
                   <div class="flex justify-end gap-1">
                     @if (role() === 'admin' && (game | call: hasScoreHistory)) {
                       <p-button
+                        class="game-history-button"
                         icon="pi pi-history"
                         [ariaLabel]="'admin.games.historyAria' | transloco"
                         [pTooltip]="'admin.games.historyTooltip' | transloco"
@@ -281,6 +282,7 @@
 
 <p-popover #historyPopover>
   <div
+    data-testid="games-history-popover"
     class="max-w-96 max-h-80 overflow-auto space-y-3"
     role="status"
     [attr.aria-label]="'admin.games.historyAria' | transloco"

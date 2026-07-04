@@ -757,9 +757,7 @@ describe('Games', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    const historyButton = fixture.nativeElement.querySelector(
-      '[aria-label="Voir l\'historique des modifications de cette partie"]',
-    );
+    const historyButton = fixture.nativeElement.querySelector('.game-history-button');
 
     expect(historyButton).not.toBeNull();
     expect(historyButton.querySelector('.pi-history')).not.toBeNull();

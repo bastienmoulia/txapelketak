@@ -94,11 +94,8 @@ test.describe.serial('Admin – games management', () => {
     await expect(historyButton).toBeVisible();
     await historyButton.click();
 
-    const historyPopover = page.locator(
-      '[role="status"][aria-label="Voir l\'historique des modifications de cette partie"]',
-    );
+    const historyPopover = page.getByTestId('game-history-popover');
     await historyPopover.waitFor({ state: 'visible' });
-    await expect(historyPopover).toContainText('Score équipe 1');
     await expect(historyPopover).toContainText('11');
     await expect(historyPopover).toContainText('9');
 

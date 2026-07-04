@@ -1130,7 +1130,7 @@ export class FirebaseService {
     value: unknown,
   ): string | number | boolean | null {
     if (value == null) {
-      return null;
+      return field === 'isBye' ? false : null;
     }
 
     if (field === 'refTeam1' || field === 'refTeam2') {

@@ -60,6 +60,18 @@ export class GamesPage {
   async filterByDate(date: Date): Promise<void> {
     await this.ensureGamesTab();
     await this.page.getByTestId('date-filter-picker').locator('input').click();
+    const targetMonthOffset =
+      (date.getUTCFullYear() - new Date().getUTCFullYear()) * 12 +
+      (date.getUTCMonth() - new Date().getUTCMonth());
+    if (targetMonthOffset > 0) {
+      for (let index = 0; index < targetMonthOffset; index += 1) {
+        await this.page.locator('.p-datepicker-next-button').click();
+      }
+    } else if (targetMonthOffset < 0) {
+      for (let index = 0; index < Math.abs(targetMonthOffset); index += 1) {
+        await this.page.locator('.p-datepicker-prev-button').click();
+      }
+    }
     await this.page
       .locator('.p-datepicker-calendar td:not(.p-datepicker-other-month) .p-datepicker-day')
       .filter({ hasText: String(date.getUTCDate()) })

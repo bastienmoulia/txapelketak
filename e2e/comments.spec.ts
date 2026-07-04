@@ -5,6 +5,7 @@ import { GamesPage } from './pages/games.page';
 import { TeamsPage } from './pages/teams.page';
 import { TournamentBasePage } from './pages/tournament-base.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
+import { extractTournamentId } from './utils/tournament-url';
 
 /**
  * E2E tests for comments on games and teams.
@@ -62,9 +63,8 @@ test.describe.serial('Comments – games and teams', () => {
       await adminPage.goto(adminUrl);
       await adminPage.importYamlFixture(fixturePath);
 
-      // Capture tournament ID from the admin URL path (/tournaments/{id}/...)
-      const match = adminUrl.match(/\/tournaments\/([^/]+)\//);
-      tournamentId = match?.[1] ?? '';
+      tournamentId = extractTournamentId(adminUrl);
+      expect(tournamentId).not.toBe('');
 
       // Create an organizer for organizer-specific tests
       organizerUrl = await adminPage.addUserAndGetAdminUrl(

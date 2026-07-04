@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { AdminPage } from './pages/admin.page';
 import { TournamentListPage } from './pages/tournament-list.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
+import { extractTournamentId } from './utils/tournament-url';
 
 /**
  * E2E tests for the tournament creation wizard.
@@ -104,9 +105,7 @@ test.describe.serial('Tournament creation', () => {
     });
 
     await test.step('visit public tournament URL and verify validation warning', async () => {
-      // Extract tournament ID from admin URL (format: /tournaments/[id]/[token])
-      const match = adminUrl.match(/\/tournaments\/([^/]+)\//);
-      const tournamentId = match?.[1];
+      const tournamentId = extractTournamentId(adminUrl);
       expect(tournamentId).toBeTruthy();
 
       // Navigate to public tournament URL

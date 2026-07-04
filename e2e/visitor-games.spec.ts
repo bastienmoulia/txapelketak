@@ -5,6 +5,7 @@ import { AdminPage } from './pages/admin.page';
 import { GamesPage } from './pages/games.page';
 import { TournamentBasePage } from './pages/tournament-base.page';
 import { TournamentNewPage } from './pages/tournament-new.page';
+import { extractTournamentId } from './utils/tournament-url';
 
 const seed = yaml.load(readFileSync('e2e/fixtures/visitor-seed.yaml', 'utf8')) as {
   teams: { id: string; name: string }[];
@@ -54,8 +55,8 @@ test.describe('Visitor – games', () => {
 
       await page.getByTestId('success-state').waitFor({ state: 'visible', timeout: 15000 });
       adminUrl = await newPage.getAdminUrl();
-      const match = adminUrl.match(/\/tournaments\/([^/]+)\//);
-      tournamentId = match?.[1] ?? '';
+      tournamentId = extractTournamentId(adminUrl);
+      expect(tournamentId).not.toBe('');
 
       // Step 2: Validate tournament by visiting the admin URL
       const adminPage = new AdminPage(page);

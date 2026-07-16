@@ -40,7 +40,7 @@
     "@jsverse/transloco": "^8.4.0",
     "@ngrx/signals": "^21.1.1",
     "@primeuix/themes": "^2.0.3",
-    "js-yaml": "^5.0.0",
+    "js-yaml": "^5.1.0",
     "marked": "^18.0.5",
     "ngxtension": "^7.2.0",
     "primeng": "^21.1.9",
